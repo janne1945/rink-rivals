@@ -50,6 +50,28 @@ export interface SupabaseMockOptions {
   readonly duplicateClaim?: boolean;
   readonly loginError?: boolean;
   readonly profileError?: boolean;
+  readonly settlementError?: boolean;
+  readonly state?: SupabaseMockState;
+}
+
+export interface SupabaseMockState {
+  onboardingCompleted: boolean;
+  credits: number;
+  completedMatches: number;
+  settlements: Map<string, { matchId: string; rewardCredits: number }>;
+  objectives: Array<Record<string, unknown>>;
+  rivalryRoad: { user_id: string; current_step_index: number; completed_step_ids: string[]; status: string; selected_card_id: null; updated_at: string };
+}
+
+export function createSupabaseMockState(onboardingCompleted = true): SupabaseMockState {
+  return {
+    onboardingCompleted,
+    credits: onboardingCompleted ? 1000 : 0,
+    completedMatches: 0,
+    settlements: new Map(),
+    objectives: [],
+    rivalryRoad: { user_id: userId, current_step_index: 0, completed_step_ids: [], status: "in-progress", selected_card_id: null, updated_at: "2026-07-13T00:00:00.000Z" },
+  };
 }
 
 async function json(route: Route, body: unknown, status = 200) {
@@ -62,7 +84,7 @@ async function json(route: Route, body: unknown, status = 200) {
 }
 
 export async function installSupabaseMock(page: Page, options: SupabaseMockOptions = {}) {
-  let onboardingCompleted = options.onboardingCompleted ?? true;
+  const state = options.state ?? createSupabaseMockState(options.onboardingCompleted ?? true);
   if (options.authenticated) {
     await page.addInitScript(({ key, value }) => localStorage.setItem(key, value), {
       key: `sb-${projectRef}-auth-token`,
@@ -102,10 +124,11 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       await json(route, {
         id: userId,
         display_name: "Alex",
-        favorite_team_id: onboardingCompleted ? "edmonton-oilers" : null,
-        credits: onboardingCompleted ? 1000 : 0,
-        onboarding_completed: onboardingCompleted,
-        starter_claimed_at: onboardingCompleted ? "2026-07-13T00:00:00.000Z" : null,
+        favorite_team_id: state.onboardingCompleted ? "edmonton-oilers" : null,
+        credits: state.credits,
+        completed_matches: state.completedMatches,
+        onboarding_completed: state.onboardingCompleted,
+        starter_claimed_at: state.onboardingCompleted ? "2026-07-13T00:00:00.000Z" : null,
         created_at: "2026-07-13T00:00:00.000Z",
         updated_at: "2026-07-13T00:00:00.000Z",
       });
@@ -123,13 +146,50 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       await json(route, starterCards.map(([slot, cardId]) => ({ lineup_id: "33333333-3333-4333-8333-333333333333", user_id: userId, slot, card_id: cardId })));
       return;
     }
+    if (url.pathname === "/rest/v1/objective_progress") {
+      await json(route, state.objectives);
+      return;
+    }
+    if (url.pathname === "/rest/v1/rivalry_road_progress") {
+      await json(route, state.completedMatches > 0 ? state.rivalryRoad : null);
+      return;
+    }
     if (url.pathname === "/rest/v1/rpc/claim_starter_team") {
       if (options.duplicateClaim) {
         await json(route, { code: "P0001", message: "Starter team has already been claimed.", details: null, hint: null }, 400);
       } else {
-        onboardingCompleted = true;
+        state.onboardingCompleted = true;
+        state.credits = 1000;
         await json(route, "33333333-3333-4333-8333-333333333333");
       }
+      return;
+    }
+    if (url.pathname === "/rest/v1/rpc/settle_match") {
+      if (options.settlementError) {
+        await json(route, { code: "40001", message: "Match settlement temporarily unavailable", details: null, hint: null }, 503);
+        return;
+      }
+      const body = request.postDataJSON() as { client_match_id: string; match_mode: string; match_difficulty: string; match_outcome: string };
+      const previous = state.settlements.get(body.client_match_id);
+      if (previous) {
+        await json(route, { status: "already-settled", match_id: previous.matchId, reward_credits: previous.rewardCredits, credits: state.credits, completed_matches: state.completedMatches });
+        return;
+      }
+      const baseRewards = { rookie: { win: 120, draw: 90, loss: 60 }, pro: { win: 180, draw: 120, loss: 80 }, elite: { win: 260, draw: 160, loss: 100 } } as const;
+      const base = baseRewards[body.match_difficulty as keyof typeof baseRewards][body.match_outcome as "win" | "draw" | "loss"];
+      const rewardCredits = base + 75 + (body.match_outcome === "win" ? 100 : 0) + (body.match_mode === "nhl-circuit" ? 150 : 0);
+      state.completedMatches += 1;
+      state.credits += rewardCredits;
+      const now = "2026-07-13T12:00:00.000Z";
+      state.objectives = [
+        { user_id: userId, objective_id: "daily-match-complete", period_key: "2026-07-13", current: 1, target: 1, completed_modes: [], completed_at: now, reward_credits: 75, updated_at: now },
+        ...(body.match_outcome === "win" ? [{ user_id: userId, objective_id: "daily-match-win", period_key: "2026-07-13", current: 1, target: 1, completed_modes: [], completed_at: now, reward_credits: 100, updated_at: now }] : []),
+        { user_id: userId, objective_id: "weekly-circuit-tour", period_key: "2026-07-13", current: 1, target: 5, completed_modes: [body.match_mode], completed_at: null, reward_credits: 350, updated_at: now },
+      ];
+      if (body.match_mode === "nhl-circuit") state.rivalryRoad = { ...state.rivalryRoad, current_step_index: 1, completed_step_ids: ["nhl-circuit-complete"], updated_at: now };
+      const matchId = `settled-${body.client_match_id}`;
+      state.settlements.set(body.client_match_id, { matchId, rewardCredits });
+      await json(route, { status: "settled", match_id: matchId, reward_credits: rewardCredits, credits: state.credits, completed_matches: state.completedMatches });
       return;
     }
     await json(route, { message: `Unhandled Supabase mock request: ${request.method()} ${url.pathname}` }, 500);

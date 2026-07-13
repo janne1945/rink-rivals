@@ -30,7 +30,9 @@ describe("Supabase account boundary", () => {
     expect(localOnly.activeLineupIds["nhl-circuit"]).toBeNull();
     expect(localOnly.unlockedAiTierIds).toEqual(["rookie"]);
     expect(localOnly.settings.soundEnabled).toBe(false);
-    expect(localOnly.completedMatches).toBe(4);
+    expect(localOnly.completedMatches).toBe(0);
+    expect(localOnly.rewardHistory).toEqual([]);
+    expect(localOnly.progression.processedMatchIds).toEqual([]);
     expect(localOnly.progression).toEqual(save.progression);
   });
 });

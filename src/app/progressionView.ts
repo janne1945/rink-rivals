@@ -103,7 +103,7 @@ export function buildProgressionScreenModels(
     rivalrySteps,
     goalsSummary: { dailyObjectives, weeklyObjective, nextRivalryStep },
     rewardChoice: rewardChoiceModel(view, catalog, Boolean(options.isSubmitting), options.errorMessage),
-    dailyPeriodLabel: `Local day · ${view.normalizedState.daily.periodKey}`,
+    dailyPeriodLabel: `UTC day · ${view.normalizedState.daily.periodKey}`,
     weeklyPeriodLabel: `Week of ${view.normalizedState.weekly.periodKey}`,
   };
 }

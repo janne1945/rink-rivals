@@ -1,7 +1,7 @@
 # Supabase integration boundary
 
 Supabase now owns authenticated account data: the profile, owned cards, and
-server-backed lineups. The browser app accesses those records through
+server-backed lineups and match progression. The browser app accesses those records through
 `src/infrastructure/supabase`.
 
 The checked-in migrations are additive to the early schema that already existed
@@ -16,29 +16,32 @@ After authentication, Supabase is the only source read by the UI for:
 - profile identity, onboarding state, and Credits (`profiles`)
 - the owned-card collection (`user_cards`)
 - the active lineup and its slots (`lineups`, `lineup_slots`)
+- completed matches and immutable reward receipts (`matches`, `match_rewards`)
+- daily/weekly goals and Rivalry Road (`objective_progress`, `rivalry_road_progress`)
 
 App bootstrap strips the legacy `SaveGameV2` copies of Credits, collection,
 lineups, active lineup ids, collection score, unlock ids, and purchase history
+as well as completed-match, reward-idempotency, objective and Rivalry Road data
 before persisting the local record. Local updates pass through the same boundary,
 so stale Dexie account fields cannot become authoritative again.
 
-## Data that remains Dexie-led
+## Data that remains Dexie-led or cached
 
-- objective and Rivalry Road progress
-- completed-match count and local match-reward idempotency history
-- preferred AI difficulty
+- preferred AI difficulty (local setting)
 - sound and reduced-motion settings
 - rotating-shop UI state
 
-The battle currently lives in React memory and is not persisted. Match completion
-updates local progression, but does not change the Supabase Credit balance. The
-UI states this explicitly.
+The in-progress battle currently lives in React memory and is not persisted.
+Once it reaches the final horn, `settle_match` is the only writer for Credits,
+the completed-match counter, reward idempotency, goals, and Rivalry Road. Legacy
+Dexie fields remain in the V2 schema only for backward-compatible decoding and
+are reset at the account boundary; they can be removed in the next save-format
+version. No local history is automatically uploaded.
 
 Server mutations still required before these features can be re-enabled:
 
 - atomic market purchase RPC for Credits and `user_cards`
 - atomic lineup editing/activation RPC
-- server-backed match Credit and objective reward claims
 - server-backed Rivalry Road card claim
 
 Until those APIs exist, market purchases, lineup edits, and Rivalry Road card

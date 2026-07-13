@@ -1,10 +1,15 @@
 import type { GameSaveRepository } from "./GameSaveRepository";
 import type { SaveGameV2 } from "./saveSchema";
+import { createInitialProgressionState } from "../../domain/progression";
 
 export function withoutAccountData(save: SaveGameV2): SaveGameV2 {
   return {
     ...save,
     credits: 0,
+    completedMatches: 0,
+    rewardHistory: [],
+    processedRewardIds: [],
+    progression: createInitialProgressionState(),
     collection: {},
     lineups: {},
     activeLineupIds: {

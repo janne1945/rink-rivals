@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { installSupabaseMock } from "./supabaseMock";
+import { createSupabaseMockState, installSupabaseMock } from "./supabaseMock";
 
 test.describe("Supabase account flow", () => {
   test("loads the same Supabase account in two independent sessions", async ({ browser }) => {
@@ -17,6 +17,33 @@ test.describe("Supabase account flow", () => {
     await Promise.all([firstPage.reload(), secondPage.reload()]);
     await expect(firstPage.getByLabel(/credits/i)).toContainText("1,000");
     await expect(secondPage.getByRole("heading", { name: "Edmonton Oilers Starter" })).toBeVisible();
+    await firstContext.close();
+    await secondContext.close();
+  });
+
+  test("settles the same match only once across two independent sessions", async ({ browser }) => {
+    const sharedState = createSupabaseMockState(true);
+    const firstContext = await browser.newContext();
+    const secondContext = await browser.newContext();
+    const firstPage = await firstContext.newPage();
+    const secondPage = await secondContext.newPage();
+    await installSupabaseMock(firstPage, { authenticated: true, state: sharedState });
+    await installSupabaseMock(secondPage, { authenticated: true, state: sharedState });
+    await Promise.all([firstPage.goto("/"), secondPage.goto("/")]);
+    const settle = (page: typeof firstPage) => page.evaluate(async () => {
+      const response = await fetch("https://zsyoxpirfxajkruqeqam.supabase.co/rest/v1/rpc/settle_match", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ client_match_id: "shared-match", match_mode: "nhl-circuit", match_difficulty: "rookie", match_outcome: "win" }),
+      });
+      return response.json() as Promise<{ status: string }>;
+    });
+    const results = await Promise.all([settle(firstPage), settle(secondPage)]);
+    expect(results.map((result) => result.status).sort()).toEqual(["already-settled", "settled"]);
+    expect(sharedState.completedMatches).toBe(1);
+    expect(sharedState.credits).toBe(1445);
+    await Promise.all([firstPage.reload(), secondPage.reload()]);
+    await expect(firstPage.getByLabel(/credits/i)).toContainText("1,445");
+    await expect(secondPage.getByText("1 matches completed")).toBeVisible();
     await firstContext.close();
     await secondContext.close();
   });

@@ -6,7 +6,11 @@ export type {
   AccountCard,
   AccountLineup,
   AccountProfile,
+  AccountObjectiveProgress,
+  AccountRivalryRoadProgress,
   AccountRepository,
+  SettleMatchInput,
+  SettleMatchResult,
 } from "./AccountRepository";
 export { SupabaseAccountRepository } from "./AccountRepository";
 export type {

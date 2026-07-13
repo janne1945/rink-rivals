@@ -6,6 +6,8 @@ import type {
   AuthService,
   RegistrationCredentials,
   AccountRepository,
+  SettleMatchInput,
+  SettleMatchResult,
 } from "../../infrastructure/supabase";
 import { AuthScreen } from "./AuthScreen";
 import { StarterTeamScreen } from "./StarterTeamScreen";
@@ -15,7 +17,12 @@ import styles from "./AccountFlow.module.css";
 interface AccountGateProps {
   readonly auth: AuthService;
   readonly repository: AccountRepository;
-  readonly children: (account: AccountSnapshot, logout: () => Promise<void>) => ReactNode;
+  readonly children: (account: AccountSnapshot, actions: AccountActions) => ReactNode;
+}
+
+export interface AccountActions {
+  readonly logout: () => Promise<void>;
+  readonly settleMatch: (input: SettleMatchInput) => Promise<SettleMatchResult>;
 }
 
 type GateState =
@@ -37,6 +44,14 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
   const [actionSuccess, setActionSuccess] = useState("");
   const loadVersion = useRef(0);
 
+  async function loadReadyAccount(profile: Awaited<ReturnType<AccountRepository["loadProfile"]>>): Promise<AccountSnapshot> {
+    const [cards, activeLineup, objectives, rivalryRoad] = await Promise.all([
+      repository.loadOwnCards(), repository.loadLineup(),
+      repository.loadObjectiveProgress(), repository.loadRivalryRoadProgress(),
+    ]);
+    return { profile, cards, activeLineup, objectives, rivalryRoad };
+  }
+
   async function loadAccount(session: Session): Promise<void> {
     const version = ++loadVersion.current;
     setState({ status: "loading-account" });
@@ -44,15 +59,15 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
       const profile = await repository.loadProfile();
       if (version !== loadVersion.current) return;
       if (!profile.onboardingCompleted) {
-        setState({ status: "onboarding", account: { profile, cards: [], activeLineup: null } });
+        setState({ status: "onboarding", account: {
+          profile, cards: [], activeLineup: null, objectives: [],
+          rivalryRoad: { currentStepIndex: 0, completedStepIds: [], status: "in-progress", selectedCardId: null },
+        } });
         return;
       }
-      const [cards, activeLineup] = await Promise.all([
-        repository.loadOwnCards(),
-        repository.loadLineup(),
-      ]);
+      const account = await loadReadyAccount(profile);
       if (version === loadVersion.current && session.user.id === profile.id) {
-        setState({ status: "ready", account: { profile, cards, activeLineup } });
+        setState({ status: "ready", account });
       }
     } catch (error) {
       if (version === loadVersion.current) setState({ status: "error", message: messageFor(error) });
@@ -133,17 +148,20 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     setActionError("");
     try {
       await repository.claimStarterTeam("edmonton-oilers");
-      const [profile, cards, activeLineup] = await Promise.all([
-        repository.loadProfile(),
-        repository.loadOwnCards(),
-        repository.loadLineup(),
-      ]);
-      setState({ status: "ready", account: { profile, cards, activeLineup } });
+      const profile = await repository.loadProfile();
+      setState({ status: "ready", account: await loadReadyAccount(profile) });
     } catch (error) {
       setActionError(messageFor(error));
     } finally {
       setActionBusy(false);
     }
+  }
+
+  async function settleMatch(input: SettleMatchInput): Promise<SettleMatchResult> {
+    const result = await repository.settleMatch(input);
+    const profile = await repository.loadProfile();
+    setState({ status: "ready", account: await loadReadyAccount(profile) });
+    return result;
   }
 
   if (state.status === "booting" || state.status === "loading-account") {
@@ -162,7 +180,7 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
       </main>
     );
   }
-  return <>{children(state.account, logout)}</>;
+  return <>{children(state.account, { logout, settleMatch })}</>;
 }
 
 function AccountLoading({ label }: { readonly label: string }) {

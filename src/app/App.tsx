@@ -4,18 +4,16 @@ import {
   createBattle,
   getBattleView,
   getEligibleCards,
-  getMatchRewardCredits,
   revealRound,
   selectAiCard,
   selectCard,
   type AiDifficulty,
   type BattleState,
 } from "../domain/battle";
-import { grantMatchReward, type CardOffer } from "../domain/economy";
+import { type CardOffer } from "../domain/economy";
 import type { GameMode, Lineup } from "../domain/lineups";
 import {
   AI_TIER_THRESHOLDS,
-  applyProgressionEvent,
   calculateCollectionScore,
   getUnlockedAiTierIds,
   RIVALRY_REWARD_CARD_IDS,
@@ -25,6 +23,7 @@ import { createBaseMarket, createEventShopRotation } from "../domain/shop";
 import { gameCatalog } from "../data/generated/gameCatalog";
 import { AccountGate } from "../features/account/AccountGate";
 import type { AccountSnapshot } from "../features/account/types";
+import { progressionFromAccount } from "../features/account/accountProgression";
 import { CollectionScreen } from "../features/collection/CollectionScreen";
 import { HomeScreen } from "../features/home/HomeScreen";
 import { LineupsScreen } from "../features/lineup/LineupsScreen";
@@ -41,6 +40,8 @@ import {
 import {
   createAccountRepository,
   createAuthService,
+  type SettleMatchInput,
+  type SettleMatchResult,
 } from "../infrastructure/supabase";
 import { AppShell } from "./AppShell";
 import { buildProgressionScreenModels } from "./progressionView";
@@ -72,18 +73,24 @@ function outcomeFor(battle: BattleState): MatchOutcome {
 export function App() {
   return (
     <AccountGate auth={authService} repository={accountRepository}>
-      {(account, logout) => <GameApp account={account} onLogout={logout} />}
+      {(account, actions) => <GameApp account={account} onLogout={actions.logout} onSettleMatch={actions.settleMatch} />}
     </AccountGate>
   );
 }
 
-function GameApp({ account, onLogout }: { readonly account: AccountSnapshot; readonly onLogout: () => Promise<void> }) {
+function GameApp({ account, onLogout, onSettleMatch }: {
+  readonly account: AccountSnapshot;
+  readonly onLogout: () => Promise<void>;
+  readonly onSettleMatch: (input: SettleMatchInput) => Promise<SettleMatchResult>;
+}) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [save, setSave] = useState<SaveGameV2 | null>(null);
   const [battle, setBattle] = useState<BattleState | null>(null);
   const [rewardGranted, setRewardGranted] = useState(false);
   const [matchProgressionMessage, setMatchProgressionMessage] = useState("");
+  const [matchSettlementError, setMatchSettlementError] = useState("");
+  const [matchSettling, setMatchSettling] = useState(false);
   const [clock, setClock] = useState(() => new Date());
   const [choiceSubmitting, setChoiceSubmitting] = useState(false);
   const [choiceError, setChoiceError] = useState("");
@@ -161,6 +168,7 @@ function GameApp({ account, onLogout }: { readonly account: AccountSnapshot; rea
     setBattle(nextBattle);
     setRewardGranted(false);
     setMatchProgressionMessage("");
+    setMatchSettlementError("");
     navigate("/match");
   }
 
@@ -170,53 +178,33 @@ function GameApp({ account, onLogout }: { readonly account: AccountSnapshot; rea
     setBattle(selectAiCard(playerSelected));
   }
 
+  async function settleCompletedBattle(completedBattle: BattleState) {
+    setMatchSettling(true);
+    setMatchSettlementError("");
+    try {
+      const result = await onSettleMatch({
+        clientMatchId: completedBattle.id,
+        mode: completedBattle.mode,
+        difficulty: completedBattle.difficulty,
+        outcome: outcomeFor(completedBattle),
+      });
+      setMatchProgressionMessage(result.status === "already-settled"
+        ? "This match was already settled. No reward was granted twice."
+        : `Match settled on the server. +${result.rewardCredits} Credits including completed goals.`);
+      setRewardGranted(true);
+    } catch (error) {
+      setMatchSettlementError(error instanceof Error ? error.message : "The match could not be settled.");
+    } finally {
+      setMatchSettling(false);
+    }
+  }
+
   function reveal() {
     if (!battle) return;
     const nextBattle = revealRound(battle);
     setBattle(nextBattle);
     if (nextBattle.phase === "complete") {
-      const rewardCredits = getMatchRewardCredits(nextBattle.difficulty, nextBattle.winner ?? "tie");
-      const completedAt = new Date();
-      let completionMessage = "";
-      void updateLocalState(repository, (current) => {
-        const matchResult = grantMatchReward(current, {
-          rewardId: `reward-${nextBattle.id}`,
-          matchId: nextBattle.id,
-          credits: rewardCredits,
-        }, completedAt.toISOString());
-        if (!matchResult.ok) {
-          throw new Error(matchResult.reason === "reward_conflict"
-            ? "This match reward conflicts with the saved reward history."
-            : "This match reward is invalid.");
-        }
-        const progressionResult = applyProgressionEvent(matchResult.state.progression, {
-          id: `progression-${nextBattle.id}`,
-          type: "match-completed",
-          matchId: nextBattle.id,
-          mode: nextBattle.mode,
-          outcome: outcomeFor(nextBattle),
-          difficulty: nextBattle.difficulty,
-        }, completedAt);
-        const hasCardChoice = progressionResult.grantedRewards.some((reward) => reward.type === "card-choice");
-        completionMessage = hasCardChoice
-          ? "Rivalry Road progress is saved locally; its card reward still needs a server claim."
-          : "Progression updated locally.";
-        return {
-          ...current,
-          completedMatches: matchResult.state.completedMatches,
-          rewardHistory: matchResult.state.rewardHistory,
-          processedRewardIds: matchResult.state.processedRewardIds,
-          progression: progressionResult.state,
-        };
-      }).then((updated) => {
-        setSave(updated);
-        setMatchProgressionMessage(
-          ["Match recorded locally. Credit rewards require server support.", completionMessage]
-            .filter(Boolean)
-            .join(" "),
-        );
-        setRewardGranted(true);
-      }).catch((error: unknown) => setFatalError(error instanceof Error ? error.message : "The match reward could not be saved."));
+      void settleCompletedBattle(nextBattle);
     }
   }
 
@@ -269,7 +257,11 @@ function GameApp({ account, onLogout }: { readonly account: AccountSnapshot; rea
     : "rookie";
   const uniqueCards = account.cards.length;
   const safeBattle = battle ? getBattleView(battle, "player") : null;
-  const progressionModels = buildProgressionScreenModels(save.progression, gameCatalog, clock, {
+  const serverProgressionClock = new Date(
+    clock.getUTCFullYear(), clock.getUTCMonth(), clock.getUTCDate(),
+    clock.getUTCHours(), clock.getUTCMinutes(), clock.getUTCSeconds(), clock.getUTCMilliseconds(),
+  );
+  const progressionModels = buildProgressionScreenModels(progressionFromAccount(account, clock), gameCatalog, serverProgressionClock, {
     isSubmitting: choiceSubmitting,
     errorMessage: choiceError || undefined,
   });
@@ -277,13 +269,13 @@ function GameApp({ account, onLogout }: { readonly account: AccountSnapshot; rea
   return (
     <AppShell credits={account.profile.credits} displayName={account.profile.displayName} onLogout={onLogout}>
       <Routes>
-        <Route path="/" element={<HomeScreen credits={account.profile.credits} uniqueCards={uniqueCards} collectionScore={cloudCollectionScore} completedMatches={save.completedMatches} goals={progressionModels.goalsSummary} />} />
+        <Route path="/" element={<HomeScreen credits={account.profile.credits} uniqueCards={uniqueCards} collectionScore={cloudCollectionScore} completedMatches={account.profile.completedMatches} goals={progressionModels.goalsSummary} />} />
         <Route path="/collection" element={<CollectionScreen catalog={gameCatalog} collection={cloudCollection} />} />
         <Route path="/lineups" element={<LineupsScreen lineups={lineups} activeLineupIds={Object.fromEntries(Object.entries(activeLineupIds).map(([mode, id]) => [mode, id ?? ""]))} catalog={gameCatalog} collection={cloudCollection} onActivate={() => undefined} onSave={rejectCloudLineupWrite} />} />
         <Route path="/play" element={<PlayScreen lineups={lineups} activeLineupIds={Object.fromEntries(Object.entries(activeLineupIds).map(([mode, id]) => [mode, id ?? ""]))} collectionScore={cloudCollectionScore} preferredDifficulty={preferredDifficulty} onDifficultyChange={(difficulty) => void selectDifficulty(difficulty)} onStart={startMatch} />} />
         <Route path="/market" element={<MarketScreen catalog={gameCatalog} collection={cloudCollection} credits={account.profile.credits} baseOffers={baseMarket.offers} eventRotation={eventRotation} onBuy={rejectCloudPurchase} />} />
         <Route path="/objectives" element={<ObjectiveScreen dailyObjectives={progressionModels.dailyObjectives} dailyPeriodLabel={progressionModels.dailyPeriodLabel} weeklyObjective={progressionModels.weeklyObjective} weeklyPeriodLabel={progressionModels.weeklyPeriodLabel} rivalrySteps={progressionModels.rivalrySteps} rewardChoice={progressionModels.rewardChoice} statusMessage={goalsStatus || undefined} onChooseRivalryCard={(cardId) => void chooseRivalryCard(cardId)} />} />
-        <Route path="/match" element={battle && safeBattle ? <MatchScreen battle={safeBattle} eligibleCardIds={getEligibleCards(battle, "player").map(({ card }) => card.id)} rewardGranted={rewardGranted} progressionMessage={matchProgressionMessage} onSelect={chooseCard} onReveal={reveal} onFinish={() => navigate("/")} /> : <Navigate to="/play" replace />} />
+        <Route path="/match" element={battle && safeBattle ? <MatchScreen battle={safeBattle} eligibleCardIds={getEligibleCards(battle, "player").map(({ card }) => card.id)} rewardGranted={rewardGranted} settling={matchSettling} settlementError={matchSettlementError} progressionMessage={matchProgressionMessage} onSelect={chooseCard} onReveal={reveal} onRetrySettlement={() => void settleCompletedBattle(battle)} onFinish={() => navigate("/")} /> : <Navigate to="/play" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppShell>

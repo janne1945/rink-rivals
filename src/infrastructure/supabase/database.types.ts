@@ -95,8 +95,141 @@ export type Database = {
           },
         ]
       }
+      match_rewards: {
+        Row: {
+          breakdown: Json
+          granted_at: string
+          match_credits: number
+          match_id: string
+          objective_credits: number
+          rivalry_credits: number
+          rule_version: string
+          total_credits: number | null
+          user_id: string
+        }
+        Insert: {
+          breakdown?: Json
+          granted_at?: string
+          match_credits: number
+          match_id: string
+          objective_credits?: number
+          rivalry_credits?: number
+          rule_version: string
+          total_credits?: number | null
+          user_id: string
+        }
+        Update: {
+          breakdown?: Json
+          granted_at?: string
+          match_credits?: number
+          match_id?: string
+          objective_credits?: number
+          rivalry_credits?: number
+          rule_version?: string
+          total_credits?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_rewards_match_id_user_id_fkey"
+            columns: ["match_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
+      matches: {
+        Row: {
+          client_match_id: string
+          completed_at: string
+          created_at: string
+          difficulty: string
+          id: string
+          mode: string
+          outcome: string
+          reward_rule_version: string
+          user_id: string
+        }
+        Insert: {
+          client_match_id: string
+          completed_at?: string
+          created_at?: string
+          difficulty: string
+          id?: string
+          mode: string
+          outcome: string
+          reward_rule_version: string
+          user_id: string
+        }
+        Update: {
+          client_match_id?: string
+          completed_at?: string
+          created_at?: string
+          difficulty?: string
+          id?: string
+          mode?: string
+          outcome?: string
+          reward_rule_version?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      objective_progress: {
+        Row: {
+          completed_at: string | null
+          completed_modes: string[]
+          current: number
+          objective_id: string
+          period_key: string
+          reward_credits: number
+          target: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_modes?: string[]
+          current?: number
+          objective_id: string
+          period_key: string
+          reward_credits: number
+          target: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_modes?: string[]
+          current?: number
+          objective_id?: string
+          period_key?: string
+          reward_credits?: number
+          target?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "objective_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
+          completed_matches: number
           created_at: string
           credits: number
           display_name: string | null
@@ -107,6 +240,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          completed_matches?: number
           created_at?: string
           credits?: number
           display_name?: string | null
@@ -117,6 +251,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          completed_matches?: number
           created_at?: string
           credits?: number
           display_name?: string | null
@@ -127,6 +262,41 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      rivalry_road_progress: {
+        Row: {
+          completed_step_ids: string[]
+          current_step_index: number
+          selected_card_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_step_ids?: string[]
+          current_step_index?: number
+          selected_card_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_step_ids?: string[]
+          current_step_index?: number
+          selected_card_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rivalry_road_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       starter_team_cards: {
         Row: {
@@ -183,6 +353,15 @@ export type Database = {
       claim_starter_team: {
         Args: { selected_team_id: string }
         Returns: string
+      }
+      settle_match: {
+        Args: {
+          client_match_id: string
+          match_difficulty: string
+          match_mode: string
+          match_outcome: string
+        }
+        Returns: Json
       }
     }
     Enums: {

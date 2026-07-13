@@ -7,18 +7,21 @@ interface MatchScreenProps {
   battle: BattleViewState;
   eligibleCardIds: readonly string[];
   rewardGranted: boolean;
+  settling: boolean;
+  settlementError?: string;
   progressionMessage?: string;
   onSelect: (cardId: string) => void;
   onReveal: () => void;
+  onRetrySettlement: () => void;
   onFinish: () => void;
 }
 
-export function MatchScreen({ battle, eligibleCardIds, rewardGranted, progressionMessage, onSelect, onReveal, onFinish }: MatchScreenProps) {
+export function MatchScreen({ battle, eligibleCardIds, rewardGranted, settling, settlementError, progressionMessage, onSelect, onReveal, onRetrySettlement, onFinish }: MatchScreenProps) {
   if (battle.phase === "complete") {
     const label = battle.winner === "player" ? "Rivalry won" : battle.winner === "opponent" ? "Hard-fought loss" : "Dead even";
     return (
       <section className={styles.final}>
-        <div><p className={styles.round}>Final horn</p><h1>{label}</h1><div className={styles.finalScore}>{battle.roundWins.player} — {battle.roundWins.opponent}</div><div role="status" aria-live="polite"><p className={styles.reward}>{rewardGranted ? progressionMessage : "Recording match…"}</p></div><Button onClick={onFinish} disabled={!rewardGranted}>Return to club</Button></div>
+        <div><p className={styles.round}>Final horn</p><h1>{label}</h1><div className={styles.finalScore}>{battle.roundWins.player} — {battle.roundWins.opponent}</div><div role="status" aria-live="polite"><p className={styles.reward}>{rewardGranted ? progressionMessage : settling ? "Settling match securely…" : settlementError || "Recording match…"}</p></div>{settlementError && !rewardGranted ? <Button onClick={onRetrySettlement} disabled={settling}>Retry settlement</Button> : null}<Button onClick={onFinish} disabled={!rewardGranted}>Return to club</Button></div>
       </section>
     );
   }

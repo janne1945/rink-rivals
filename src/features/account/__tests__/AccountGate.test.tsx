@@ -26,6 +26,7 @@ const readyProfile: AccountProfile = {
   selectedTeamId: "edmonton-oilers",
   starterClaimedAt: "2026-07-13T00:00:00.000Z",
   onboardingCompleted: true,
+  completedMatches: 0,
 };
 
 const onboardingProfile: AccountProfile = {
@@ -76,7 +77,14 @@ function createRepository(profile: AccountProfile = readyProfile): AccountReposi
     loadProfile: vi.fn().mockResolvedValue(profile),
     loadOwnCards: vi.fn().mockResolvedValue([]),
     loadLineup: vi.fn().mockResolvedValue(lineup),
+    loadObjectiveProgress: vi.fn().mockResolvedValue([]),
+    loadRivalryRoadProgress: vi.fn().mockResolvedValue({
+      currentStepIndex: 0, completedStepIds: [], status: "in-progress", selectedCardId: null,
+    }),
     claimStarterTeam: vi.fn().mockResolvedValue(lineup),
+    settleMatch: vi.fn().mockResolvedValue({
+      status: "settled", matchId: "match-db-1", rewardCredits: 345, credits: 1345, completedMatches: 1,
+    }),
   };
 }
 
@@ -120,6 +128,20 @@ describe("AccountGate", () => {
     renderGate(auth, createRepository());
     expect(await screen.findByRole("heading", { name: "Main menu" })).toBeVisible();
     expect(auth.restoreSession).toHaveBeenCalledOnce();
+  });
+
+  it("settles through the repository and refreshes all server-owned account data", async () => {
+    const { auth } = createAuth(session);
+    const repository = createRepository();
+    render(
+      <AccountGate auth={auth} repository={repository}>
+        {(_account, actions) => <button onClick={() => void actions.settleMatch({ clientMatchId: "client-1", mode: "nhl-circuit", difficulty: "rookie", outcome: "win" })}>Settle</button>}
+      </AccountGate>,
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Settle" }));
+    await waitFor(() => expect(repository.settleMatch).toHaveBeenCalledOnce());
+    await waitFor(() => expect(repository.loadObjectiveProgress).toHaveBeenCalledTimes(2));
+    expect(repository.loadRivalryRoadProgress).toHaveBeenCalledTimes(2);
   });
 
   it("claims Edmonton and reloads profile, cards, and lineup", async () => {

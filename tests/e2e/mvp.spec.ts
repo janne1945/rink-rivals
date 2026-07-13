@@ -94,9 +94,9 @@ test.describe("Rink Rivals MVP", () => {
     }
 
     await expect(page.getByText("Final horn")).toBeVisible();
-    await expect(page.getByText(/Credit rewards require server support/)).toBeVisible();
+    await expect(page.getByText(/Match settled on the server/)).toBeVisible();
     const finalCredits = await page.getByLabel(/credits/i).innerText();
-    expect(finalCredits).toContain("1,000");
+    expect(finalCredits).not.toContain("1,000");
     await page.getByRole("button", { name: "Return to club" }).click();
     await expect(page).toHaveURL("/");
     await page.reload();
@@ -109,6 +109,20 @@ test.describe("Rink Rivals MVP", () => {
     });
     await expect(dropGoal.getByText("Completed", { exact: true })).toBeVisible();
     await expect(dropGoal.getByText("Claimed", { exact: true })).toBeVisible();
+  });
+
+  test("keeps the completed match retryable when server settlement fails", async ({ page }) => {
+    await page.unrouteAll({ behavior: "wait" });
+    await installSupabaseMock(page, { authenticated: true, onboardingCompleted: true, settlementError: true });
+    await page.goto("/play");
+    await page.getByRole("button", { name: "Start match" }).click();
+    for (let round = 1; round <= 5; round += 1) {
+      await page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='overall']:not([disabled])").first().click();
+      await page.getByRole("button", { name: "Reveal shift" }).click();
+    }
+    await expect(page.getByText("Match settlement temporarily unavailable")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Retry settlement" })).toBeEnabled();
+    await expect(page.getByRole("button", { name: "Return to club" })).toBeDisabled();
   });
 
   test("opens the Goals hub with three dailies, the weekly tour, and Rivalry Road", async ({ page }) => {
@@ -143,22 +157,17 @@ test.describe("Rink Rivals MVP", () => {
     await expect(page.getByText("Win +120 · Draw +90 · Loss +60 Credits")).toBeVisible();
   });
 
-  test("does not write a Rivalry Road reward into the local collection", async ({ page }) => {
+  test("ignores legacy local Rivalry Road progress and never writes its reward locally", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { name: /own the ice/i })).toBeVisible();
     await seedRivalryChoicePending(page);
     await page.goto("/objectives");
 
-    const kaprizov = page.getByRole("button", { name: /Choose Kirill Kaprizov as your Rivalry Road reward/i });
-    const coyneSchofield = page.getByRole("button", { name: /Choose Kendall Coyne Schofield as your Rivalry Road reward/i });
-    await expect(kaprizov).toBeEnabled();
-    await kaprizov.click();
-    await expect(page.getByRole("alert")).toContainText(/server-backed reward claiming is not available/i);
-    await expect(kaprizov).toBeEnabled();
-    await expect(coyneSchofield).toBeEnabled();
+    await expect(page.getByRole("button", { name: /Choose Kirill Kaprizov as your Rivalry Road reward/i })).toHaveCount(0);
+    await expect(page.getByText("NHL Circuit debut")).toBeVisible();
 
     await page.reload();
-    await expect(page.getByRole("button", { name: /Choose Kirill Kaprizov as your Rivalry Road reward/i })).toBeEnabled();
+    await expect(page.getByRole("button", { name: /Choose Kirill Kaprizov as your Rivalry Road reward/i })).toHaveCount(0);
 
     const saved = await readPrimarySave(page) as {
       collection: Record<string, { quantity: number }>;
@@ -173,7 +182,7 @@ test.describe("Rink Rivals MVP", () => {
     expect(saved.progression.rewardHistory.filter((reward) => reward.type === "card")).toHaveLength(0);
   });
 
-  test("strips legacy account data from a V1 device save while preserving local progress", async ({ page }) => {
+  test("strips legacy account and progression data from a V1 device save", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { name: /own the ice/i })).toBeVisible();
     await page.evaluate(async () => {
@@ -220,7 +229,7 @@ test.describe("Rink Rivals MVP", () => {
 
     await page.reload();
     await expect(page.getByLabel(/credits/i)).toContainText("1,000");
-    await expect(page.getByText("4 matches completed")).toBeVisible();
+    await expect(page.getByText("Make your debut")).toBeVisible();
     const migrated = await readPrimarySave(page) as {
       version: number;
       credits: number;
@@ -231,7 +240,7 @@ test.describe("Rink Rivals MVP", () => {
     };
     expect(migrated.version).toBe(2);
     expect(migrated.credits).toBe(0);
-    expect(migrated.completedMatches).toBe(4);
+    expect(migrated.completedMatches).toBe(0);
     expect(migrated.collection).toEqual({});
     expect(migrated.lineups).toEqual({});
     expect(migrated.processedPurchaseIds).toEqual([]);
