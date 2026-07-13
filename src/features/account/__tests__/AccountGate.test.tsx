@@ -155,4 +155,13 @@ describe("AccountGate", () => {
     emit("SIGNED_OUT", null);
     expect(await screen.findByRole("heading", { name: "Welcome back" })).toBeVisible();
   });
+
+  it("shows an account-loading error instead of falling back to Dexie", async () => {
+    const { auth } = createAuth(session);
+    const repository = createRepository();
+    vi.mocked(repository.loadProfile).mockRejectedValue(new Error("Profile service unavailable"));
+    renderGate(auth, repository);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Profile service unavailable");
+    expect(screen.queryByRole("heading", { name: "Main menu" })).not.toBeInTheDocument();
+  });
 });

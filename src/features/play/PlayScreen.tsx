@@ -39,7 +39,8 @@ export function PlayScreen({
   onDifficultyChange,
   onStart,
 }: PlayScreenProps) {
-  const [selected, setSelected] = useState<GameMode>("open-ice");
+  const initialMode = modes.find((mode) => lineups.some((lineup) => lineup.id === activeLineupIds[mode.id]))?.id ?? "nhl-circuit";
+  const [selected, setSelected] = useState<GameMode>(initialMode);
   const [difficulty, setDifficulty] = useState<AiDifficulty>(preferredDifficulty);
   const active = lineups.find((lineup) => lineup.id === activeLineupIds[selected]);
   const selectedDifficulty = difficulties.find((option) => option.id === difficulty) ?? difficulties[0];

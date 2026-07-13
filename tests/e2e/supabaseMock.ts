@@ -48,6 +48,8 @@ export interface SupabaseMockOptions {
   readonly authenticated?: boolean;
   readonly onboardingCompleted?: boolean;
   readonly duplicateClaim?: boolean;
+  readonly loginError?: boolean;
+  readonly profileError?: boolean;
 }
 
 async function json(route: Route, body: unknown, status = 200) {
@@ -73,6 +75,10 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
     const url = new URL(request.url());
 
     if (url.pathname === "/auth/v1/token") {
+      if (options.loginError) {
+        await json(route, { code: "invalid_credentials", msg: "Invalid login credentials" }, 400);
+        return;
+      }
       await json(route, session);
       return;
     }
@@ -89,6 +95,10 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       return;
     }
     if (url.pathname === "/rest/v1/profiles") {
+      if (options.profileError) {
+        await json(route, { code: "XX000", message: "Profile service unavailable", details: null, hint: null }, 503);
+        return;
+      }
       await json(route, {
         id: userId,
         display_name: "Alex",

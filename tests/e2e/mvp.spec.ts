@@ -94,7 +94,7 @@ test.describe("Rink Rivals MVP", () => {
     }
 
     await expect(page.getByText("Final horn")).toBeVisible();
-    await expect(page.getByText(/Credits added to your club/)).toBeVisible();
+    await expect(page.getByText(/Credit rewards require server support/)).toBeVisible();
     const finalCredits = await page.getByLabel(/credits/i).innerText();
     expect(finalCredits).toContain("1,000");
     await page.getByRole("button", { name: "Return to club" }).click();
@@ -143,7 +143,7 @@ test.describe("Rink Rivals MVP", () => {
     await expect(page.getByText("Win +120 · Draw +90 · Loss +60 Credits")).toBeVisible();
   });
 
-  test("claims exactly one Rivalry Road card and restores the choice after reload", async ({ page }) => {
+  test("does not write a Rivalry Road reward into the local collection", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { name: /own the ice/i })).toBeVisible();
     await seedRivalryChoicePending(page);
@@ -153,13 +153,12 @@ test.describe("Rink Rivals MVP", () => {
     const coyneSchofield = page.getByRole("button", { name: /Choose Kendall Coyne Schofield as your Rivalry Road reward/i });
     await expect(kaprizov).toBeEnabled();
     await kaprizov.click();
-    await expect(page.getByRole("status")).toContainText("Featured card added to your collection.");
-    await expect(kaprizov).toHaveText("Added to collection");
-    await expect(coyneSchofield).toBeDisabled();
+    await expect(page.getByRole("alert")).toContainText(/server-backed reward claiming is not available/i);
+    await expect(kaprizov).toBeEnabled();
+    await expect(coyneSchofield).toBeEnabled();
 
     await page.reload();
-    await expect(page.getByRole("button", { name: /Choose Kirill Kaprizov as your Rivalry Road reward/i })).toHaveText("Added to collection");
-    await expect(page.getByRole("button", { name: /Choose Kendall Coyne Schofield as your Rivalry Road reward/i })).toBeDisabled();
+    await expect(page.getByRole("button", { name: /Choose Kirill Kaprizov as your Rivalry Road reward/i })).toBeEnabled();
 
     const saved = await readPrimarySave(page) as {
       collection: Record<string, { quantity: number }>;
@@ -168,22 +167,15 @@ test.describe("Rink Rivals MVP", () => {
         rewardHistory: Array<{ type: string; cardId?: string }>;
       };
     };
-    expect(saved.progression.rivalryRoad.selectedCardId).toBe("nhl-kirill-kaprizov-rivalry-2026");
-    expect(saved.collection["nhl-kirill-kaprizov-rivalry-2026"]?.quantity).toBe(1);
+    expect(saved.progression.rivalryRoad.selectedCardId).toBeUndefined();
+    expect(saved.collection["nhl-kirill-kaprizov-rivalry-2026"]).toBeUndefined();
     expect(saved.collection["pwhl-kendall-coyne-schofield-rivalry-2026"]).toBeUndefined();
-    expect(saved.progression.rewardHistory.filter((reward) => reward.type === "card")).toHaveLength(1);
+    expect(saved.progression.rewardHistory.filter((reward) => reward.type === "card")).toHaveLength(0);
   });
 
-  test("migrates a V1 device save through app bootstrap without losing club data", async ({ page }) => {
+  test("strips legacy account data from a V1 device save while preserving local progress", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { name: /own the ice/i })).toBeVisible();
-    const original = await readPrimarySave(page) as {
-      collection: Record<string, { quantity: number }>;
-      lineups: Record<string, unknown>;
-    };
-    const preservedCardId = Object.keys(original.collection)[0];
-    const preservedLineupCount = Object.keys(original.lineups).length;
-
     await page.evaluate(async () => {
       await new Promise<void>((resolve, reject) => {
         const openRequest = indexedDB.open("rink-rivals");
@@ -202,6 +194,7 @@ test.describe("Rink Rivals MVP", () => {
             legacy.version = 1;
             legacy.credits = 777;
             legacy.completedMatches = 4;
+            legacy.collection = { "legacy-card": { cardId: "legacy-card", quantity: 1, acquiredAt: "2026-07-01T10:00:00.000Z" } };
             legacy.completedObjectiveIds = [];
             legacy.eventProgress = {};
             legacy.purchaseHistory = [{
@@ -237,11 +230,11 @@ test.describe("Rink Rivals MVP", () => {
       processedPurchaseIds: string[];
     };
     expect(migrated.version).toBe(2);
-    expect(migrated.credits).toBe(777);
+    expect(migrated.credits).toBe(0);
     expect(migrated.completedMatches).toBe(4);
-    expect(migrated.collection[preservedCardId]?.quantity).toBe(original.collection[preservedCardId]?.quantity);
-    expect(Object.keys(migrated.lineups)).toHaveLength(preservedLineupCount);
-    expect(migrated.processedPurchaseIds).toEqual(["legacy-purchase-1"]);
+    expect(migrated.collection).toEqual({});
+    expect(migrated.lineups).toEqual({});
+    expect(migrated.processedPurchaseIds).toEqual([]);
   });
 
   test("honors reduced motion without horizontal overflow", async ({ page }) => {
