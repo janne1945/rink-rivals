@@ -37,6 +37,9 @@ function validateConfig(config: EventShopConfig): void {
   if (!Number.isSafeInteger(config.offerCount) || config.offerCount <= 0) {
     throw new RangeError("Event Shop offerCount must be a positive integer.");
   }
+  if (config.periodAnchor !== undefined && !Number.isFinite(Date.parse(config.periodAnchor))) {
+    throw new TypeError("Event Shop periodAnchor must be a valid ISO timestamp.");
+  }
   if (
     !Number.isFinite(config.spotlightDiscountPercent) ||
     config.spotlightDiscountPercent < 0 ||
@@ -76,12 +79,27 @@ export function createEventShopRotation(
   }
 
   const periodMs = config.periodDays * DAY_IN_MS;
-  const periodIndex = Math.floor(timestamp / periodMs);
-  const startsAtMs = periodIndex * periodMs;
+  const anchorMs = config.periodAnchor === undefined ? 0 : Date.parse(config.periodAnchor);
+  const periodIndex = Math.floor((timestamp - anchorMs) / periodMs);
+  const startsAtMs = anchorMs + periodIndex * periodMs;
   const rotationKey = `${config.eventSetId}:${config.periodDays}d:${periodIndex}`;
 
   const eligibleCards = cards
-    .filter((card) => !card.isPermanent && card.setId === config.eventSetId)
+    .filter((card) => {
+      if (card.isPermanent || card.setId !== config.eventSetId) return false;
+      const availableFrom = card.availableFrom === undefined ? Number.NEGATIVE_INFINITY : Date.parse(card.availableFrom);
+      const availableTo = card.availableTo === undefined ? Number.POSITIVE_INFINITY : Date.parse(card.availableTo);
+      if (!Number.isFinite(availableFrom) && availableFrom !== Number.NEGATIVE_INFINITY) {
+        throw new TypeError(`Invalid availableFrom for Event Shop card ${card.id}.`);
+      }
+      if (!Number.isFinite(availableTo) && availableTo !== Number.POSITIVE_INFINITY) {
+        throw new TypeError(`Invalid availableTo for Event Shop card ${card.id}.`);
+      }
+      if (availableFrom >= availableTo) {
+        throw new RangeError(`Invalid availability window for Event Shop card ${card.id}.`);
+      }
+      return timestamp >= availableFrom && timestamp < availableTo;
+    })
     .sort((left, right) => left.id.localeCompare(right.id));
 
   const ids = new Set<string>();

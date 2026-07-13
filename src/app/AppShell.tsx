@@ -14,10 +14,12 @@ interface AppShellProps {
   readonly credits: number;
   readonly displayName: string | null;
   readonly onLogout: () => Promise<void>;
+  readonly logoutBusy?: boolean;
+  readonly logoutError?: string;
   readonly children: ReactNode;
 }
 
-export function AppShell({ credits, displayName, onLogout, children }: AppShellProps) {
+export function AppShell({ credits, displayName, onLogout, logoutBusy = false, logoutError, children }: AppShellProps) {
   return (
     <div className={styles.shell}>
       <header className={styles.header}>
@@ -33,12 +35,14 @@ export function AppShell({ credits, displayName, onLogout, children }: AppShellP
             <div className={styles.credits} aria-label={`${credits.toLocaleString("en-US")} credits`}>
               {credits.toLocaleString("en-US")} <span>CREDITS</span>
             </div>
-            <button className={styles.logout} type="button" onClick={() => void onLogout()} aria-label={`Sign out${displayName ? ` ${displayName}` : ""}`}>
-              Sign out
+            <button className={styles.logout} type="button" disabled={logoutBusy} onClick={() => void onLogout()} aria-label={`Sign out${displayName ? ` ${displayName}` : ""}`}>
+              {logoutBusy ? "Signing out…" : "Sign out"}
             </button>
           </div>
         </div>
       </header>
+
+      {logoutError ? <p className={styles.accountError} role="alert">{logoutError}</p> : null}
 
       <nav className={styles.nav} aria-label="Main navigation">
         <div className={styles.navInner}>

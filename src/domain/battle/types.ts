@@ -98,6 +98,8 @@ export interface CreateBattleInput {
   readonly playerLineup: Lineup;
   readonly opponentLineup: Lineup;
   readonly situationDeck?: readonly BattleSituation[];
+  /** Exact server-authoritative round order; unlike situationDeck this is never shuffled. */
+  readonly situationSequence?: readonly BattleSituation[];
 }
 
 export type BattleViewState = Omit<BattleState, 'pendingSelections'> & {

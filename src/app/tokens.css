@@ -17,6 +17,7 @@
   --success: #62d89b;
   --warning: #ffc76b;
   --danger: #ff7283;
+  --bg: var(--ink-950);
   --text: var(--ice-50);
   --muted: #8fa9b8;
   --line: rgb(175 210 226 / 15%);

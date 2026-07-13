@@ -145,6 +145,16 @@ export function validateSituationDeck(deck: readonly BattleSituation[]): void {
   }
 }
 
+export function validateSituationSequence(sequence: readonly BattleSituation[]): void {
+  if (sequence.length !== BATTLE_ROUND_COUNT) {
+    throw new BattleRuleError(
+      'invalid-situation-deck',
+      `A situation sequence requires exactly ${BATTLE_ROUND_COUNT} ordered rounds.`,
+    );
+  }
+  validateSituationDeck(sequence);
+}
+
 export function selectBattleSituations(
   deck: readonly BattleSituation[],
   seed: string | number,

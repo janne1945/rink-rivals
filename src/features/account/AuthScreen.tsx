@@ -33,6 +33,7 @@ export function AuthScreen({
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (busy) return;
     if (mode === "register") {
       await onRegister({ email, password, displayName });
       return;

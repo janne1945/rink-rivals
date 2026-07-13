@@ -35,4 +35,22 @@ describe("Supabase account boundary", () => {
     expect(localOnly.progression.processedMatchIds).toEqual([]);
     expect(localOnly.progression).toEqual(save.progression);
   });
+
+  it("preserves a local Pro preference without retaining cloud collection data", () => {
+    const save = createDefaultSaveGame();
+    save.preferredAiDifficulty = "pro";
+    save.collectionScore = 1_500;
+    save.unlockedAiTierIds = ["rookie", "pro"];
+    save.collection["cloud-card"] = {
+      cardId: "cloud-card",
+      quantity: 1,
+      acquiredAt: "2026-07-13T00:00:00.000Z",
+    };
+
+    const localOnly = withoutAccountData(save);
+
+    expect(localOnly.preferredAiDifficulty).toBe("pro");
+    expect(localOnly.collection).toEqual({});
+    expect(localOnly.unlockedAiTierIds).toEqual(["rookie", "pro"]);
+  });
 });

@@ -5,17 +5,23 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "typecheck": "tsc -b --pretty false",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:production": "pnpm build && E2E_PRODUCTION=1 playwright test",
     "catalog:validate": "tsx scripts/validate-catalog.ts",
+    "catalog:sql": "tsx scripts/generate-supabase-catalog.ts",
+    "catalog:sql:write": "tsx scripts/generate-supabase-catalog.ts --write",
+    "catalog:sql:check": "tsx scripts/generate-supabase-catalog.ts --check",
     "catalog:import": "tsx scripts/import-stats.ts",
     "balance": "tsx scripts/balance-diagnostics.ts",
     "supabase:start": "supabase start",
     "supabase:test": "supabase test db",
-    "supabase:types": "supabase gen types typescript --local > src/infrastructure/supabase/database.types.ts"
+    "supabase:types": "supabase gen types typescript --local > src/infrastructure/supabase/database.types.ts",
+    "qa:core": "pnpm typecheck && pnpm test && pnpm catalog:validate && pnpm catalog:sql:check && pnpm balance && pnpm build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.2",

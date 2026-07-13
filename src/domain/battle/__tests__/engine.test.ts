@@ -2,6 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import { chooseAiCard, selectAiCard } from '../ai';
 import {
+  AUTHORITATIVE_MATCH_POLICY_VERSION,
+  AUTHORITATIVE_MATCH_SITUATIONS,
+  selectAuthoritativeOpponentCard,
+} from '../authoritativePolicy';
+import {
+  calculateBaseScore,
   createBattle,
   getBattleView,
   getEligibleCards,
@@ -82,6 +88,60 @@ describe('battle engine', () => {
     expect(state.situations).toHaveLength(5);
     expect(new Set(state.situations.map(({ id }) => id))).toHaveLength(5);
     expect(state.situations.filter(({ role }) => role === 'goalie')).toHaveLength(1);
+  });
+
+  it('preserves an exact server-authoritative situation sequence', () => {
+    const sequence = [
+      DEFAULT_SITUATION_DECK[6],
+      DEFAULT_SITUATION_DECK[3],
+      DEFAULT_SITUATION_DECK[1],
+      DEFAULT_SITUATION_DECK[4],
+      DEFAULT_SITUATION_DECK[0],
+    ];
+    const state = createBattle({
+      seed: 'server-sequence',
+      mode: 'open-ice',
+      catalog: createTestCatalog(),
+      playerLineup: createTestLineup('nhl-alpha', 'open-ice'),
+      opponentLineup: createTestLineup('pwhl-alpha', 'open-ice'),
+      situationSequence: sequence,
+    });
+    expect(state.situations.map(({ id }) => id)).toEqual(sequence.map(({ id }) => id));
+    expect(() => createBattle({
+      seed: 'short-server-sequence',
+      mode: 'open-ice',
+      catalog: createTestCatalog(),
+      playerLineup: createTestLineup('nhl-alpha', 'open-ice'),
+      opponentLineup: createTestLineup('pwhl-alpha', 'open-ice'),
+      situationSequence: sequence.slice(0, 4),
+    })).toThrowError(expect.objectContaining<Partial<BattleRuleError>>({ code: 'invalid-situation-deck' }));
+  });
+
+  it('shares the fixed server policy and deterministic tier card choices', () => {
+    const state = createBattle({
+      seed: 'authoritative-policy',
+      mode: 'open-ice',
+      catalog: createTestCatalog(),
+      playerLineup: createTestLineup('nhl-alpha', 'open-ice'),
+      opponentLineup: createTestLineup('pwhl-alpha', 'open-ice'),
+      situationSequence: AUTHORITATIVE_MATCH_SITUATIONS,
+    });
+    const situation = state.situations[0];
+    const eligible = getEligibleCards(state, 'opponent');
+    const rookie = selectAuthoritativeOpponentCard(eligible, situation, 'rookie', state.seed);
+    const pro = selectAuthoritativeOpponentCard(eligible, situation, 'pro', state.seed);
+    const repeatedPro = selectAuthoritativeOpponentCard(eligible, situation, 'pro', state.seed);
+    const elite = selectAuthoritativeOpponentCard(eligible, situation, 'elite', state.seed);
+
+    expect(AUTHORITATIVE_MATCH_POLICY_VERSION).toBe('server-authority-v1');
+    expect(state.situations.map(({ id }) => id)).toEqual([
+      'transition-rush', 'cycle-pressure', 'blue-line-command', 'late-game-shift', 'crease-under-fire',
+    ]);
+    expect(pro).toBe(repeatedPro);
+    expect(calculateBaseScore(rookie.card, situation))
+      .toBeLessThanOrEqual(calculateBaseScore(pro.card, situation));
+    expect(calculateBaseScore(pro.card, situation))
+      .toBeLessThanOrEqual(calculateBaseScore(elite.card, situation));
   });
 
   it('is deterministic for the same seed and command choices', () => {

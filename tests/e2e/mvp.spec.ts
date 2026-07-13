@@ -89,7 +89,7 @@ test.describe("Rink Rivals MVP", () => {
       const availableCard = page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='overall']:not([disabled])").first();
       await expect(availableCard).toBeEnabled();
       await availableCard.click();
-      await expect(page.getByText("Both locked in")).toBeVisible();
+      await expect(page.getByText("Card locked in")).toBeVisible();
       await page.getByRole("button", { name: "Reveal shift" }).click();
     }
 

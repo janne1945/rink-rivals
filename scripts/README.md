@@ -20,6 +20,19 @@ These tools are development-only. The app never downloads NHL or PWHL statistics
 5. Review every warning, proxy result, override, player identity, position, league distribution, and asset reference. The candidate remains `REQUIRES_MANUAL_REVIEW`; it must not be released or copied into `gameCatalog.ts` without human approval.
 6. After an approved catalog edit, run `pnpm catalog:validate`, `pnpm balance`, and the full test suite.
 
+The same approved TypeScript data is projected into the server-authority
+migration. After editing events, cards, or AI lineups, regenerate and verify the
+marked SQL sections:
+
+```sh
+pnpm catalog:sql:write
+pnpm catalog:sql:check
+```
+
+Only the generated blocks for event definitions, curated opponents, and the
+106-card catalog are replaced. The surrounding constraints, RLS, and RPC SQL
+remain hand-reviewed migration code.
+
 The PWHL has fewer completed seasons than the NHL. The configured three-season window must reflect seasons that have actually finished at review time. Players with fewer available seasons are allowed, but their 60/30/10 weights are renormalized and the report flags the reduced sample.
 
 ## Required CSV columns
@@ -56,8 +69,16 @@ Output is written to a temporary file and renamed only after CSV, identity, over
 
 ## Validation and balance
 
-`pnpm catalog:validate` checks duplicate IDs, player references, role/schema separation, permanent base inventory, 18/18 league parity, three players per lineup position per league, five event cards per league, starter lineups, neutral placeholder references, and base-rating parity.
+`pnpm catalog:validate` checks duplicate IDs, player references, role/schema separation, permanent Base inventory, 18/18 league parity, three players per lineup position per league, starter lineups, neutral placeholder references, and Base-rating parity. It also validates the recurring Event Calendar as structured data: ten exact event IDs, six cards per event, 3 NHL/3 PWHL parity, availability windows, player-derived IDs, and event attribute tradeoffs. The 60 calendar cards are distinct from the ten legacy Rivalry reward-only cards and the two allowed Rivalry Road claim choices.
 
-`pnpm balance -- --paired-seeds 2000 --seed rink-rivals-balance-v1` builds deterministic lineups across the complete Base pool and runs paired, side-swapped Open Ice matches through the real battle engine. It reports league win rates, ties, round and situation wins, rating ranges, and the league win-rate gap. Paired seeds reduce home-side and command-order bias; a gap above five percentage points is flagged for manual review.
+`pnpm balance -- --paired-seeds 2000 --seed rink-rivals-balance-v2` emits the human-readable MVP balance report. Add `--json` for the complete machine-readable report. The command exits nonzero when the NHL/PWHL gap exceeds five percentage points, AI win rates are not ordered Rookie > Pro > Elite, a tier enters an implausible win-rate band, reward ordering is invalid, catalog prices contain configured extreme outliers, or any reward-authority, period, or idempotency guard is absent.
+
+The report has three evidence blocks:
+
+- Paired, side-swapped Open Ice simulations across the complete Base pool report league win rates, ties, situation results, rating ranges, and cross-league gap.
+- Nine AI tier simulations use `server-authority-v1`: the same fixed five situations, slot eligibility, no-reuse rule, Rookie weakest / Pro seeded / Elite strongest opponent policy, and tier-specific variance ranges as the match RPC. The TypeScript seeded PRNG is a behavioral distribution mirror of PostgreSQL `hashtextextended`, not a byte-identical database replay.
+- Economy diagnostics report expected credits per match, Base/strong Base/Event/Spotlight price statistics, matches-to-purchase from zero and from 1,000 starter credits, recurring Objective effects, collection-score unlock estimates, and reward-loop/outlier checks. Reward-loop checks fail closed against the actual migration SQL: they replay one settlement 1,000 times and require unique settlement/objective receipts, finite Rivalry rewards, immutable five-round server tickets, one resumable (never silently abandoned) open ticket per account, persisted round transcripts, revoked browser writes, and post-lock UTC period timestamps.
+
+Economy pacing assumes five valid settled matches per day (35 per week), all three daily Objective rewards (275 credits total), the weekly Objective (350 credits), and excludes the two one-time 150-credit Rivalry Road steps from the sustainable recurring rate. Purchases and positive loss rewards only remain safe when the server-authoritative idempotency and settlement constraints are in force.
 
 The checked-in preview catalog uses real player names with generic team text, neutral asset references, and plausible stats-driven fantasy values. It is an unofficial prototype dataset, not a claim of scientific cross-league equivalence, and still requires product, data, and rights review before any public release.

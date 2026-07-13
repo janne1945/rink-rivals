@@ -103,6 +103,22 @@
   font-weight: 850;
 }
 
+.logout:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.accountError {
+  width: min(100% - 32px, var(--content));
+  margin: 12px auto 0;
+  padding: 10px 14px;
+  border: 1px solid rgb(255 114 131 / 28%);
+  border-radius: 12px;
+  color: #ffc3cb;
+  background: rgb(255 114 131 / 8%);
+  font-size: 0.78rem;
+}
+
 .credits span {
   color: var(--muted);
   font-size: 0.58rem;

@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { createBaseMarket, createEventShopRotation } from ".";
+import {
+  createBaseMarket,
+  createEventShopRotation,
+  EVENT_CALENDAR,
+  EVENT_IDS,
+  getActiveEvent,
+  resolveEventCalendarRotation,
+} from ".";
 import type { EventShopConfig, MarketCard } from ".";
 
 const cards: MarketCard[] = [
@@ -84,5 +91,56 @@ describe("createEventShopRotation", () => {
     expect(offeredIds).toEqual(
       new Set(Array.from({ length: 8 }, (_, index) => `event-${index + 1}`)),
     );
+  });
+
+  it("filters cards against their authoritative availability window", () => {
+    const windowed = cards.map((card) => card.isPermanent ? card : {
+      ...card,
+      availableFrom: "2026-07-13T06:00:00.000Z",
+      availableTo: "2026-07-14T06:00:00.000Z",
+    });
+    expect(createEventShopRotation(config, windowed, new Date("2026-07-13T05:59:59.999Z")).offers).toHaveLength(0);
+    expect(createEventShopRotation(config, windowed, new Date("2026-07-13T06:00:00.000Z")).offers).toHaveLength(4);
+    expect(createEventShopRotation(config, windowed, new Date("2026-07-14T06:00:00.000Z")).offers).toHaveLength(0);
+  });
+});
+
+describe("recurring Event Calendar", () => {
+  it("publishes exactly the ten named, metadata-rich events", () => {
+    expect(EVENT_CALENDAR.map(({ id }) => id)).toEqual(EVENT_IDS);
+    expect(EVENT_CALENDAR.map(({ name }) => name)).toEqual([
+      "Frozen Frights", "Signature Series", "Winter Holidays", "Winter Classic",
+      "International Ice", "Rising Stars", "Playoff Heroes", "Franchise Icons",
+      "Record Breakers", "Clutch Performers",
+    ]);
+    expect(EVENT_CALENDAR.every(({ description, visual, gameplay, rotation }) =>
+      description.length > 20 && visual.accentColor && visual.motif && gameplay.summary.length > 20 && rotation.recurrenceWeeks === 10)).toBe(true);
+  });
+
+  it("changes at Monday 00:00 UTC and repeats deterministically after ten weeks", () => {
+    expect(getActiveEvent(new Date("2026-01-11T23:59:59.999Z")).id).toBe("frozen-frights");
+    expect(getActiveEvent(new Date("2026-01-12T00:00:00.000Z")).id).toBe("signature-series");
+    expect(getActiveEvent(new Date("2026-03-16T00:00:00.000Z")).id).toBe("frozen-frights");
+    expect(getActiveEvent(new Date("2026-01-12T01:00:00.000+01:00")).id).toBe("signature-series");
+  });
+
+  it("returns several offers, one discounted Spotlight, and excludes unavailable cards", () => {
+    const activeCards: MarketCard[] = Array.from({ length: 7 }, (_, index) => ({
+      id: `frozen-${index}`,
+      price: 2_000 + index * 50,
+      setId: "frozen-frights",
+      isPermanent: false,
+      availableFrom: "2026-01-01T00:00:00.000Z",
+      availableTo: index === 6 ? "2026-01-05T00:00:00.000Z" : "2030-01-01T00:00:00.000Z",
+    }));
+    const rotation = resolveEventCalendarRotation(activeCards, new Date("2026-01-05T12:00:00.000Z"));
+    expect(rotation.event.id).toBe("frozen-frights");
+    expect(rotation.shop.startsAt).toBe("2026-01-05T00:00:00.000Z");
+    expect(rotation.shop.endsAt).toBe("2026-01-12T00:00:00.000Z");
+    expect(rotation.shop.offers).toHaveLength(6);
+    expect(rotation.shop.offers.every(({ cardId }) => cardId !== "frozen-6")).toBe(true);
+    const spotlight = rotation.shop.offers.filter(({ placement }) => placement === "spotlight");
+    expect(spotlight).toHaveLength(1);
+    expect(spotlight[0].price).toBeLessThan(spotlight[0].regularPrice);
   });
 });

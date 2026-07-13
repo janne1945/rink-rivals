@@ -6,8 +6,18 @@ import type {
   AuthService,
   RegistrationCredentials,
   AccountRepository,
+  ClaimRivalryRewardInput,
+  ClaimRivalryRewardResult,
+  LineupMutationResult,
+  PlayMatchRoundInput,
+  PlayMatchRoundResult,
+  PurchaseCardInput,
+  PurchaseCardResult,
+  SaveLineupInput,
   SettleMatchInput,
   SettleMatchResult,
+  StartMatchInput,
+  StartMatchResult,
 } from "../../infrastructure/supabase";
 import { AuthScreen } from "./AuthScreen";
 import { StarterTeamScreen } from "./StarterTeamScreen";
@@ -22,6 +32,14 @@ interface AccountGateProps {
 
 export interface AccountActions {
   readonly logout: () => Promise<void>;
+  readonly busy: boolean;
+  readonly errorMessage: string;
+  readonly purchaseCard: (input: PurchaseCardInput) => Promise<PurchaseCardResult>;
+  readonly saveLineup: (input: SaveLineupInput) => Promise<LineupMutationResult>;
+  readonly activateLineup: (lineupId: string) => Promise<LineupMutationResult>;
+  readonly claimRivalryReward: (input: ClaimRivalryRewardInput) => Promise<ClaimRivalryRewardResult>;
+  readonly startMatch: (input: StartMatchInput) => Promise<StartMatchResult>;
+  readonly playMatchRound: (input: PlayMatchRoundInput) => Promise<PlayMatchRoundResult>;
   readonly settleMatch: (input: SettleMatchInput) => Promise<SettleMatchResult>;
 }
 
@@ -37,19 +55,38 @@ function messageFor(error: unknown): string {
   return error instanceof Error ? error.message : "Something went wrong. Please try again.";
 }
 
+const emptyMarket = {
+  serverTime: new Date(0).toISOString(),
+  currentEvent: null,
+  offers: [],
+} as const;
+
 export function AccountGate({ auth, repository, children }: AccountGateProps) {
   const [state, setState] = useState<GateState>({ status: "booting" });
   const [actionBusy, setActionBusy] = useState(false);
   const [actionError, setActionError] = useState("");
   const [actionSuccess, setActionSuccess] = useState("");
   const loadVersion = useRef(0);
+  const actionBusyRef = useRef(false);
 
   async function loadReadyAccount(profile: Awaited<ReturnType<AccountRepository["loadProfile"]>>): Promise<AccountSnapshot> {
-    const [cards, activeLineup, objectives, rivalryRoad] = await Promise.all([
-      repository.loadOwnCards(), repository.loadLineup(),
-      repository.loadObjectiveProgress(), repository.loadRivalryRoadProgress(),
+    const [cards, lineups, objectives, rivalryRoad, market] = await Promise.all([
+      repository.loadOwnCards(), repository.loadLineups(),
+      repository.loadObjectiveProgress(), repository.loadRivalryRoadProgress(), repository.loadMarketState(),
     ]);
-    return { profile, cards, activeLineup, objectives, rivalryRoad };
+    return { profile, cards, lineups, objectives, rivalryRoad, market };
+  }
+
+  function beginAction(): boolean {
+    if (actionBusyRef.current) return false;
+    actionBusyRef.current = true;
+    setActionBusy(true);
+    return true;
+  }
+
+  function endAction(): void {
+    actionBusyRef.current = false;
+    setActionBusy(false);
   }
 
   async function loadAccount(session: Session): Promise<void> {
@@ -60,7 +97,7 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
       if (version !== loadVersion.current) return;
       if (!profile.onboardingCompleted) {
         setState({ status: "onboarding", account: {
-          profile, cards: [], activeLineup: null, objectives: [],
+          profile, cards: [], lineups: [], objectives: [], market: emptyMarket,
           rivalryRoad: { currentStepIndex: 0, completedStepIds: [], status: "in-progress", selectedCardId: null },
         } });
         return;
@@ -76,6 +113,7 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
 
   useEffect(() => {
     let active = true;
+    const restoreVersion = loadVersion.current;
     const unsubscribe = auth.subscribe((_event, session) => {
       if (!active) return;
       setActionError("");
@@ -86,11 +124,14 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
       }
     });
     void auth.restoreSession().then((session) => {
-      if (!active) return;
+      if (!active || restoreVersion !== loadVersion.current) return;
       if (session) void loadAccount(session);
-      else setState({ status: "signed-out" });
+      else {
+        loadVersion.current += 1;
+        setState({ status: "signed-out" });
+      }
     }).catch((error: unknown) => {
-      if (active) setState({ status: "error", message: messageFor(error) });
+      if (active && restoreVersion === loadVersion.current) setState({ status: "error", message: messageFor(error) });
     });
     return () => {
       active = false;
@@ -99,8 +140,41 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     };
   }, [auth, repository]);
 
+  const marketRefreshKey = state.status === "ready"
+    ? `${state.account.market.serverTime}:${state.account.market.currentEvent?.endsAt ?? "none"}`
+    : "";
+
+  useEffect(() => {
+    if (state.status !== "ready") return;
+    let active = true;
+    const market = state.account.market;
+    const serverTime = Date.parse(market.serverTime);
+    const eventEnd = market.currentEvent ? Date.parse(market.currentEvent.endsAt) : Number.NaN;
+    const remaining = Number.isFinite(serverTime) && Number.isFinite(eventEnd) ? eventEnd - serverTime : 60_000;
+    const refreshDelay = market.currentEvent ? Math.max(1_000, remaining + 500) : 60_000;
+    const refreshMarket = async () => {
+      try {
+        const refreshed = await repository.loadMarketState();
+        if (!active) return;
+        setState((current) => current.status === "ready"
+          ? { status: "ready", account: { ...current.account, market: refreshed } }
+          : current);
+      } catch (error) {
+        if (active) setActionError(messageFor(error));
+      }
+    };
+    const timer = window.setTimeout(() => void refreshMarket(), refreshDelay);
+    const onFocus = () => void refreshMarket();
+    window.addEventListener("focus", onFocus);
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [marketRefreshKey, repository]);
+
   async function login(credentials: AuthCredentials) {
-    setActionBusy(true);
+    if (!beginAction()) return;
     setActionError("");
     setActionSuccess("");
     try {
@@ -109,12 +183,12 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     } catch (error) {
       setActionError(messageFor(error));
     } finally {
-      setActionBusy(false);
+      endAction();
     }
   }
 
   async function register(credentials: RegistrationCredentials) {
-    setActionBusy(true);
+    if (!beginAction()) return;
     setActionError("");
     setActionSuccess("");
     try {
@@ -124,12 +198,12 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     } catch (error) {
       setActionError(messageFor(error));
     } finally {
-      setActionBusy(false);
+      endAction();
     }
   }
 
   async function logout() {
-    setActionBusy(true);
+    if (!beginAction()) return;
     setActionError("");
     try {
       await auth.logout();
@@ -138,30 +212,66 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     } catch (error) {
       setActionError(messageFor(error));
     } finally {
-      setActionBusy(false);
+      endAction();
     }
   }
 
   async function claimStarterTeam() {
     if (state.status !== "onboarding") return;
-    setActionBusy(true);
+    if (!beginAction()) return;
+    const version = loadVersion.current;
     setActionError("");
     try {
       await repository.claimStarterTeam("edmonton-oilers");
+      if (version !== loadVersion.current) return;
       const profile = await repository.loadProfile();
-      setState({ status: "ready", account: await loadReadyAccount(profile) });
+      if (version !== loadVersion.current) return;
+      const account = await loadReadyAccount(profile);
+      if (version === loadVersion.current) setState({ status: "ready", account });
     } catch (error) {
-      setActionError(messageFor(error));
+      if (version === loadVersion.current) setActionError(messageFor(error));
     } finally {
-      setActionBusy(false);
+      endAction();
     }
   }
 
-  async function settleMatch(input: SettleMatchInput): Promise<SettleMatchResult> {
-    const result = await repository.settleMatch(input);
+  async function refreshAfterMutation<T>(operation: () => Promise<T>): Promise<T> {
+    const version = loadVersion.current;
+    const result = await operation();
+    if (version !== loadVersion.current) return result;
     const profile = await repository.loadProfile();
-    setState({ status: "ready", account: await loadReadyAccount(profile) });
+    if (version !== loadVersion.current) return result;
+    const account = await loadReadyAccount(profile);
+    if (version === loadVersion.current) setState({ status: "ready", account });
     return result;
+  }
+
+  function purchaseCard(input: PurchaseCardInput): Promise<PurchaseCardResult> {
+    return refreshAfterMutation(() => repository.purchaseCard(input));
+  }
+
+  function saveLineup(input: SaveLineupInput): Promise<LineupMutationResult> {
+    return refreshAfterMutation(() => repository.saveLineup(input));
+  }
+
+  function activateLineup(lineupId: string): Promise<LineupMutationResult> {
+    return refreshAfterMutation(() => repository.activateLineup(lineupId));
+  }
+
+  function claimRivalryReward(input: ClaimRivalryRewardInput): Promise<ClaimRivalryRewardResult> {
+    return refreshAfterMutation(() => repository.claimRivalryReward(input));
+  }
+
+  function startMatch(input: StartMatchInput): Promise<StartMatchResult> {
+    return repository.startMatch(input);
+  }
+
+  function playMatchRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult> {
+    return repository.playMatchRound(input);
+  }
+
+  async function settleMatch(input: SettleMatchInput): Promise<SettleMatchResult> {
+    return refreshAfterMutation(() => repository.settleMatch(input));
   }
 
   if (state.status === "booting" || state.status === "loading-account") {
@@ -180,7 +290,18 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
       </main>
     );
   }
-  return <>{children(state.account, { logout, settleMatch })}</>;
+  return <>{children(state.account, {
+    logout,
+    busy: actionBusy,
+    errorMessage: actionError,
+    purchaseCard,
+    saveLineup,
+    activateLineup,
+    claimRivalryReward,
+    startMatch,
+    playMatchRound,
+    settleMatch,
+  })}</>;
 }
 
 function AccountLoading({ label }: { readonly label: string }) {

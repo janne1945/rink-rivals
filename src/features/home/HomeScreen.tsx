@@ -40,7 +40,7 @@ export function HomeScreen({ credits, uniqueCards, collectionScore, completedMat
             <p className={styles.eyebrow}>Club progress</p>
             <h2 id="progress-heading">Rivalry report</h2>
           </div>
-          <p>Saved locally on this device</p>
+          <p>Synced securely with your account</p>
         </div>
         <div className={styles.statGrid}>
           <div className={styles.stat}><small>Credits</small><strong>{credits.toLocaleString("en-US")}</strong></div>

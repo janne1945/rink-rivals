@@ -590,6 +590,51 @@
   background: var(--surface);
 }
 
+.modeLineupGrid {
+  display: grid;
+  gap: 22px;
+}
+
+.modeLineupSection {
+  display: grid;
+  gap: 16px;
+  padding: clamp(18px, 4vw, 26px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: rgb(7 16 28 / 48%);
+}
+
+.lineupSectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lineupSectionHead h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 4vw, 2rem);
+  text-transform: uppercase;
+}
+
+.lineupEmpty {
+  grid-column: 1 / -1;
+  display: grid;
+  min-height: 160px;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  padding: 24px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-lg);
+  color: var(--muted);
+  text-align: center;
+}
+
+.lineupEmpty p {
+  margin: 0;
+}
+
 .lineupCardActive {
   border-color: var(--gold-400);
   box-shadow: inset 0 0 0 1px rgb(246 217 139 / 12%);
@@ -637,8 +682,25 @@
   border-radius: 9px;
   color: var(--ice-300);
   background: rgb(3 7 13 / 25%);
+  gap: 4px;
+  padding: 5px;
   font-size: 0.62rem;
   font-weight: 900;
+  text-align: center;
+}
+
+.miniSlot strong {
+  color: var(--gold-300);
+}
+
+.miniSlot small {
+  width: 100%;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .lineupActions {
@@ -661,6 +723,27 @@
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 8px;
+}
+
+.lineupNameLabel {
+  display: grid;
+  max-width: 520px;
+  gap: 8px;
+  color: var(--ice-100);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.lineupNameInput {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  color: var(--text);
+  background: rgb(3 7 13 / 45%);
 }
 
 .slotButton {
@@ -741,6 +824,58 @@
   background: rgb(3 7 13 / 32%);
 }
 
+.marketHero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: clamp(20px, 5vw, 32px);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at 88% 12%, rgb(246 217 139 / 15%), transparent 30%),
+    linear-gradient(145deg, rgb(17 42 64 / 95%), rgb(7 16 28 / 98%));
+  box-shadow: var(--shadow-lg);
+}
+
+.marketHero h2 {
+  margin: 0 0 8px;
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+  text-transform: uppercase;
+}
+
+.marketHero p:not(.eyebrow) {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.countdown {
+  display: grid;
+  min-width: 190px;
+  gap: 4px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: rgb(3 7 13 / 35%);
+  text-align: right;
+}
+
+.countdown span,
+.countdown small {
+  color: var(--muted);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.countdown strong {
+  color: var(--gold-300);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+}
+
 .marketTabs button {
   min-height: 40px;
   padding: 0 15px;
@@ -762,9 +897,47 @@
 }
 
 .shopCard {
+  position: relative;
   display: grid;
   min-width: 0;
   gap: 10px;
+}
+
+.shopCardSpotlight {
+  padding: 8px;
+  border: 1px solid var(--gold-400);
+  border-radius: 20px;
+  background: rgb(246 217 139 / 5%);
+  box-shadow: 0 14px 40px rgb(220 184 92 / 12%);
+}
+
+.spotlightBadge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: var(--ink-950);
+  background: var(--gold-300);
+  font-size: 0.55rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.offerMeta {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.65rem;
+}
+
+.offerMeta s {
+  color: var(--danger);
 }
 
 .shopAction {
@@ -811,6 +984,8 @@
   .candidateGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .objectiveGrid, .difficultyGrid, .rivalryRoad { grid-template-columns: 1fr; }
   .goalsHero { align-items: flex-start; flex-direction: column; }
+  .marketHero { align-items: flex-start; flex-direction: column; }
+  .countdown { width: 100%; text-align: left; }
   .goalCard, .difficultyCard, .rivalryStep { min-height: 0; }
 }
 
@@ -822,6 +997,8 @@
   .stat strong { font-size: 1.35rem; }
   .stat small { font-size: 0.52rem; }
   .sectionHead { align-items: flex-start; flex-direction: column; }
+  .lineupSectionHead { align-items: stretch; flex-direction: column; }
+  .lineupSectionHead > button { width: 100%; }
   .cardGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .candidateGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .filters { width: 100%; flex-wrap: wrap; padding-bottom: 4px; overflow-x: hidden; }
@@ -831,6 +1008,8 @@
   .homeGoalGrid { grid-template-columns: 1fr; }
   .homeGoal { min-height: 118px; }
   .goalSummaryStrip, .rewardChoiceGrid { grid-template-columns: 1fr; }
+  .marketTabs { width: 100%; }
+  .marketTabs button { flex: 1; }
   .goalSummaryStrip strong { white-space: normal; }
 }
 
