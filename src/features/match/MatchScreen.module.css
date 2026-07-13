@@ -1,0 +1,203 @@
+.screen {
+  position: relative;
+  display: grid;
+  min-height: calc(100vh - 250px);
+  gap: 20px;
+}
+
+.arena {
+  position: relative;
+  display: grid;
+  min-height: 340px;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(12px, 4vw, 42px);
+  padding: clamp(20px, 5vw, 42px);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(ellipse at 50% 52%, rgb(131 211 225 / 18%), transparent 36%),
+    linear-gradient(155deg, #0e2841, #07101c 58%, #111d2c);
+  box-shadow: var(--shadow-lg);
+  isolation: isolate;
+}
+
+.arena::before {
+  position: absolute;
+  inset: 12% 6%;
+  z-index: -1;
+  border: 1px solid rgb(220 240 249 / 11%);
+  border-radius: 50%;
+  content: "";
+  box-shadow: inset 0 0 0 40px rgb(255 255 255 / 1%);
+}
+
+.scoreSide {
+  min-width: 0;
+  text-align: center;
+}
+
+.scoreSide small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.scoreSide strong {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 950;
+  line-height: 0.8;
+}
+
+.situation {
+  width: min(38vw, 320px);
+  text-align: center;
+}
+
+.round {
+  color: var(--gold-300);
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.situation h1 {
+  margin: 10px 0 8px;
+  font-size: clamp(1.8rem, 5vw, 3.4rem);
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.situation p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.result {
+  display: grid;
+  grid-template-columns: minmax(0, 180px) minmax(140px, 1fr) minmax(0, 180px);
+  align-items: center;
+  gap: clamp(12px, 4vw, 36px);
+  padding: 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgb(19 46 69 / 96%), rgb(7 16 28 / 96%));
+  box-shadow: var(--shadow-lg);
+  animation: reveal 380ms ease both;
+}
+
+@keyframes reveal {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.resultCopy {
+  text-align: center;
+}
+
+.resultCopy strong {
+  display: block;
+  color: var(--gold-300);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  text-transform: uppercase;
+}
+
+.resultCopy span {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.handHeader {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.handHeader h2 {
+  margin-bottom: 3px;
+  font-size: 1.45rem;
+  text-transform: uppercase;
+}
+
+.handHeader p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.hand {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(7px, 1.5vw, 13px);
+}
+
+.final {
+  display: grid;
+  min-height: 480px;
+  place-items: center;
+  padding: 34px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at 50% 35%, rgb(220 184 92 / 18%), transparent 30%),
+    linear-gradient(145deg, #102b43, #07101c 60%);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.final h1 {
+  margin: 10px 0;
+  font-size: clamp(3rem, 11vw, 6.8rem);
+  line-height: 0.8;
+  text-transform: uppercase;
+}
+
+.finalScore {
+  margin: 20px 0;
+  color: var(--gold-300);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 950;
+}
+
+.reward {
+  margin-bottom: 24px;
+  color: var(--ice-100);
+}
+
+@media (max-width: 700px) {
+  .arena { min-height: 280px; padding: 18px 13px; border-radius: 22px; }
+  .situation { width: min(46vw, 250px); }
+  .scoreSide strong { font-size: 3rem; }
+  .result { grid-template-columns: minmax(0, 1fr) minmax(90px, 0.7fr) minmax(0, 1fr); padding: 12px; }
+  .resultCopy strong { font-size: 1.15rem; }
+  .resultCopy span { font-size: 0.62rem; }
+  .hand { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 430px) {
+  .arena { min-height: 250px; }
+  .situation h1 { font-size: 1.55rem; }
+  .situation p { font-size: 0.68rem; }
+  .scoreSide strong { font-size: 2.4rem; }
+  .scoreSide small { font-size: 0.5rem; }
+  .result { gap: 8px; }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .arena { min-height: 190px; }
+  .hand { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .final { min-height: 280px; }
+}
