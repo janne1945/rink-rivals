@@ -35,7 +35,7 @@ function opportunityCost(state: BattleState, candidate: ResolvedLineupCard): num
 
 export function chooseAiCard(
   state: BattleState,
-  difficulty: AiDifficulty = 'pro',
+  difficulty: AiDifficulty = state.difficulty,
 ): ResolvedLineupCard {
   const eligible = getEligibleCards(state, 'opponent');
   if (eligible.length === 0) {
@@ -63,7 +63,7 @@ export function chooseAiCard(
 
 export function selectAiCard(
   state: BattleState,
-  difficulty: AiDifficulty = 'pro',
+  difficulty: AiDifficulty = state.difficulty,
 ): BattleState {
   const choice = chooseAiCard(state, difficulty);
   return selectCard(state, 'opponent', choice.card.id);

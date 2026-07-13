@@ -1,5 +1,55 @@
 import { expect, test } from "@playwright/test";
 
+async function seedRivalryChoicePending(page: import("@playwright/test").Page) {
+  await page.evaluate(async () => {
+    await new Promise<void>((resolve, reject) => {
+      const openRequest = indexedDB.open("rink-rivals");
+      openRequest.onerror = () => reject(openRequest.error);
+      openRequest.onsuccess = () => {
+        const database = openRequest.result;
+        const transaction = database.transaction("saves", "readwrite");
+        const store = transaction.objectStore("saves");
+        const getRequest = store.get("primary");
+        getRequest.onerror = () => reject(getRequest.error);
+        getRequest.onsuccess = () => {
+          const record = getRequest.result;
+          record.payload.progression.rivalryRoad = {
+            status: "choice-pending",
+            currentStepIndex: 3,
+            completedStepIds: [
+              "nhl-circuit-complete",
+              "pwhl-circuit-complete",
+              "open-ice-pro-win",
+            ],
+          };
+          store.put(record);
+        };
+        transaction.oncomplete = () => {
+          database.close();
+          resolve();
+        };
+        transaction.onerror = () => reject(transaction.error);
+        transaction.onabort = () => reject(transaction.error);
+      };
+    });
+  });
+}
+
+async function readPrimarySave(page: import("@playwright/test").Page) {
+  return page.evaluate(async () => new Promise<Record<string, unknown>>((resolve, reject) => {
+    const openRequest = indexedDB.open("rink-rivals");
+    openRequest.onerror = () => reject(openRequest.error);
+    openRequest.onsuccess = () => {
+      const database = openRequest.result;
+      const transaction = database.transaction("saves", "readonly");
+      const getRequest = transaction.objectStore("saves").get("primary");
+      getRequest.onerror = () => reject(getRequest.error);
+      getRequest.onsuccess = () => resolve(getRequest.result.payload);
+      transaction.oncomplete = () => database.close();
+    };
+  }));
+}
+
 test.describe("Rink Rivals MVP", () => {
   test("loads the club and navigates every primary area without browser errors", async ({ page }) => {
     const errors: string[] = [];
@@ -48,6 +98,161 @@ test.describe("Rink Rivals MVP", () => {
     await page.reload();
     await expect(page.getByLabel(/credits/i)).toContainText(finalCredits.trim());
     await expect(page.getByText("1 matches completed")).toBeVisible();
+    await page.getByRole("button", { name: "View all goals" }).click();
+    await expect(page.getByRole("progressbar", { name: /Circuit tour: 1 of 5/i })).toBeVisible();
+    const dropGoal = page.locator("article").filter({
+      has: page.getByRole("heading", { name: "Drop the puck", exact: true }),
+    });
+    await expect(dropGoal.getByText("Completed", { exact: true })).toBeVisible();
+    await expect(dropGoal.getByText("Claimed", { exact: true })).toBeVisible();
+  });
+
+  test("opens the Goals hub with three dailies, the weekly tour, and Rivalry Road", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "View all goals" }).click();
+
+    await expect(page).toHaveURL(/\/objectives$/);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+    await expect(page.getByRole("heading", { name: "Goals hub" })).toBeVisible();
+    await expect(page.locator('section[aria-labelledby="daily-goals-heading"] article')).toHaveCount(3);
+    await expect(page.getByRole("progressbar", { name: /Circuit tour: 0 of 5/i })).toBeVisible();
+    await expect(page.locator('section[aria-labelledby="rivalry-road-heading"] li')).toHaveCount(3);
+  });
+
+  test("persists an unlocked difficulty and keeps Elite locked", async ({ page }) => {
+    await page.goto("/play");
+    const rookie = page.getByRole("button", { name: /Rookie Unlocked/i });
+    const elite = page.getByRole("button", { name: /Elite Locked/i });
+
+    await expect(page.getByText("Collection score: 2,982")).toBeVisible();
+    await expect(elite).toHaveAttribute("aria-disabled", "true");
+    await expect(elite).toContainText("518 more Collection Score");
+    await rookie.focus();
+    await page.keyboard.press("Enter");
+    await expect(rookie).toHaveAttribute("aria-pressed", "true");
+    await expect.poll(async () => {
+      const saved = await readPrimarySave(page) as { preferredAiDifficulty?: string };
+      return saved.preferredAiDifficulty;
+    }).toBe("rookie");
+    await page.reload();
+    await expect(page.getByRole("button", { name: /Rookie Unlocked/i })).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByText("Win +120 · Draw +90 · Loss +60 Credits")).toBeVisible();
+  });
+
+  test("claims exactly one Rivalry Road card and restores the choice after reload", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: /own the ice/i })).toBeVisible();
+    await seedRivalryChoicePending(page);
+    await page.goto("/objectives");
+
+    const kaprizov = page.getByRole("button", { name: /Choose Kirill Kaprizov as your Rivalry Road reward/i });
+    const coyneSchofield = page.getByRole("button", { name: /Choose Kendall Coyne Schofield as your Rivalry Road reward/i });
+    await expect(kaprizov).toBeEnabled();
+    await kaprizov.click();
+    await expect(page.getByRole("status")).toContainText("Featured card added to your collection.");
+    await expect(kaprizov).toHaveText("Added to collection");
+    await expect(coyneSchofield).toBeDisabled();
+
+    await page.reload();
+    await expect(page.getByRole("button", { name: /Choose Kirill Kaprizov as your Rivalry Road reward/i })).toHaveText("Added to collection");
+    await expect(page.getByRole("button", { name: /Choose Kendall Coyne Schofield as your Rivalry Road reward/i })).toBeDisabled();
+
+    const saved = await readPrimarySave(page) as {
+      collection: Record<string, { quantity: number }>;
+      progression: {
+        rivalryRoad: { selectedCardId?: string };
+        rewardHistory: Array<{ type: string; cardId?: string }>;
+      };
+    };
+    expect(saved.progression.rivalryRoad.selectedCardId).toBe("nhl-kirill-kaprizov-rivalry-2026");
+    expect(saved.collection["nhl-kirill-kaprizov-rivalry-2026"]?.quantity).toBe(1);
+    expect(saved.collection["pwhl-kendall-coyne-schofield-rivalry-2026"]).toBeUndefined();
+    expect(saved.progression.rewardHistory.filter((reward) => reward.type === "card")).toHaveLength(1);
+  });
+
+  test("migrates a V1 device save through app bootstrap without losing club data", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: /own the ice/i })).toBeVisible();
+    const original = await readPrimarySave(page) as {
+      collection: Record<string, { quantity: number }>;
+      lineups: Record<string, unknown>;
+    };
+    const preservedCardId = Object.keys(original.collection)[0];
+    const preservedLineupCount = Object.keys(original.lineups).length;
+
+    await page.evaluate(async () => {
+      await new Promise<void>((resolve, reject) => {
+        const openRequest = indexedDB.open("rink-rivals");
+        openRequest.onerror = () => reject(openRequest.error);
+        openRequest.onsuccess = () => {
+          const database = openRequest.result;
+          const transaction = database.transaction("saves", "readwrite");
+          const store = transaction.objectStore("saves");
+          const getRequest = store.get("primary");
+          getRequest.onerror = () => reject(getRequest.error);
+          getRequest.onsuccess = () => {
+            const record = getRequest.result;
+            const legacy = structuredClone(record.payload);
+            delete legacy.preferredAiDifficulty;
+            delete legacy.progression;
+            legacy.version = 1;
+            legacy.credits = 777;
+            legacy.completedMatches = 4;
+            legacy.completedObjectiveIds = [];
+            legacy.eventProgress = {};
+            legacy.purchaseHistory = [{
+              requestId: "legacy-purchase-1",
+              offerId: "base-market:legacy-card",
+              cardId: "legacy-card",
+              price: 125,
+              source: "base_market",
+              purchasedAt: "2026-07-01T10:00:00.000Z",
+            }];
+            legacy.processedPurchaseIds = ["legacy-purchase-1"];
+            store.put({ key: "primary", payload: legacy });
+          };
+          transaction.oncomplete = () => {
+            database.close();
+            resolve();
+          };
+          transaction.onerror = () => reject(transaction.error);
+          transaction.onabort = () => reject(transaction.error);
+        };
+      });
+    });
+
+    await page.reload();
+    await expect(page.getByLabel(/credits/i)).toContainText("777");
+    await expect(page.getByText("4 matches completed")).toBeVisible();
+    const migrated = await readPrimarySave(page) as {
+      version: number;
+      credits: number;
+      completedMatches: number;
+      collection: Record<string, { quantity: number }>;
+      lineups: Record<string, unknown>;
+      processedPurchaseIds: string[];
+    };
+    expect(migrated.version).toBe(2);
+    expect(migrated.credits).toBe(777);
+    expect(migrated.completedMatches).toBe(4);
+    expect(migrated.collection[preservedCardId]?.quantity).toBe(original.collection[preservedCardId]?.quantity);
+    expect(Object.keys(migrated.lineups)).toHaveLength(preservedLineupCount);
+    expect(migrated.processedPurchaseIds).toEqual(["legacy-purchase-1"]);
+  });
+
+  test("honors reduced motion without horizontal overflow", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/objectives");
+    await expect(page.getByRole("heading", { name: "Goals hub" })).toBeVisible();
+    expect(await page.evaluate(() => {
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+      return document.getAnimations().every((animation) => {
+        const duration = animation.effect?.getComputedTiming().duration;
+        return typeof duration === "number" && duration <= 1;
+      });
+    })).toBe(true);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
   });
 
   test("never overflows the tested viewport", async ({ page }) => {

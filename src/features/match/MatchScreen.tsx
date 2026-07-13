@@ -8,17 +8,18 @@ interface MatchScreenProps {
   eligibleCardIds: readonly string[];
   rewardCredits: number;
   rewardGranted: boolean;
+  progressionMessage?: string;
   onSelect: (cardId: string) => void;
   onReveal: () => void;
   onFinish: () => void;
 }
 
-export function MatchScreen({ battle, eligibleCardIds, rewardCredits, rewardGranted, onSelect, onReveal, onFinish }: MatchScreenProps) {
+export function MatchScreen({ battle, eligibleCardIds, rewardCredits, rewardGranted, progressionMessage, onSelect, onReveal, onFinish }: MatchScreenProps) {
   if (battle.phase === "complete") {
     const label = battle.winner === "player" ? "Rivalry won" : battle.winner === "opponent" ? "Hard-fought loss" : "Dead even";
     return (
       <section className={styles.final}>
-        <div><p className={styles.round}>Final horn</p><h1>{label}</h1><div className={styles.finalScore}>{battle.roundWins.player} — {battle.roundWins.opponent}</div><p className={styles.reward}>{rewardGranted ? `+${rewardCredits} Credits added to your club` : "Securing match reward…"}</p><Button onClick={onFinish} disabled={!rewardGranted}>Return to club</Button></div>
+        <div><p className={styles.round}>Final horn</p><h1>{label}</h1><div className={styles.finalScore}>{battle.roundWins.player} — {battle.roundWins.opponent}</div><div role="status" aria-live="polite"><p className={styles.reward}>{rewardGranted ? `+${rewardCredits} Credits added to your club` : "Securing match reward…"}</p>{rewardGranted && progressionMessage ? <p className={styles.reward}>{progressionMessage}</p> : null}</div><Button onClick={onFinish} disabled={!rewardGranted}>Return to club</Button></div>
       </section>
     );
   }

@@ -99,6 +99,7 @@ export function createBattle(input: CreateBattleInput): BattleState {
     id: `battle-${seed}`,
     seed,
     mode: input.mode,
+    difficulty: input.difficulty ?? 'pro',
     phase: 'selecting',
     roundIndex: 0,
     situations,

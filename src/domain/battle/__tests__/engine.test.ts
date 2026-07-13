@@ -37,6 +37,45 @@ function playMatch(seed: string | number = 'deterministic-seed'): BattleState {
 }
 
 describe('battle engine', () => {
+  it('stores the selected AI difficulty and defaults legacy callers to pro', () => {
+    expect(createState().difficulty).toBe('pro');
+    expect(createBattle({
+      seed: 'elite-difficulty',
+      mode: 'open-ice',
+      difficulty: 'elite',
+      catalog: createTestCatalog(),
+      playerLineup: createTestLineup('nhl-alpha', 'open-ice'),
+      opponentLineup: createTestLineup('pwhl-alpha', 'open-ice'),
+    }).difficulty).toBe('elite');
+  });
+
+  it('uses the difficulty stored in battle state when the AI caller omits it', () => {
+    const state = createBattle({
+      seed: 'stored-difficulty',
+      mode: 'open-ice',
+      difficulty: 'rookie',
+      catalog: createTestCatalog(),
+      playerLineup: createTestLineup('nhl-alpha', 'open-ice'),
+      opponentLineup: createTestLineup('pwhl-alpha', 'open-ice'),
+    });
+    expect(chooseAiCard(state)).toEqual(chooseAiCard(state, 'rookie'));
+  });
+
+  it('makes distinct, deterministic, and legal decisions at every AI tier', () => {
+    const state = createState('tier-0');
+    const legalIds = getEligibleCards(state, 'opponent').map(({ card }) => card.id);
+    const firstChoices = (['rookie', 'pro', 'elite'] as const).map(
+      (difficulty) => chooseAiCard(state, difficulty).card.id,
+    );
+    const repeatedChoices = (['rookie', 'pro', 'elite'] as const).map(
+      (difficulty) => chooseAiCard(state, difficulty).card.id,
+    );
+
+    expect(new Set(firstChoices)).toHaveLength(3);
+    expect(repeatedChoices).toEqual(firstChoices);
+    expect(firstChoices.every((cardId) => legalIds.includes(cardId))).toBe(true);
+  });
+
   it('selects five unique situations with exactly one guaranteed goalie round', () => {
     const state = createState();
 

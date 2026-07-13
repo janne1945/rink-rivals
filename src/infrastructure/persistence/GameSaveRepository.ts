@@ -2,16 +2,16 @@ import Dexie, { type Table } from "dexie";
 
 import { parseOrCreateSaveGame } from "./migrations";
 import type { SaveLoadResult } from "./migrations";
-import { saveGameV1Schema } from "./saveSchema";
-import type { SaveGameV1 } from "./saveSchema";
+import { saveGameV2Schema } from "./saveSchema";
+import type { SaveGameV2 } from "./saveSchema";
 
-export type SaveUpdater = (current: SaveGameV1) => SaveGameV1;
+export type SaveUpdater = (current: SaveGameV2) => SaveGameV2;
 
 export interface GameSaveRepository {
-  load(): Promise<SaveGameV1>;
+  load(): Promise<SaveGameV2>;
   inspect(): Promise<SaveLoadResult>;
-  save(save: SaveGameV1): Promise<SaveGameV1>;
-  update(updater: SaveUpdater): Promise<SaveGameV1>;
+  save(save: SaveGameV2): Promise<SaveGameV2>;
+  update(updater: SaveUpdater): Promise<SaveGameV2>;
   clear(): Promise<void>;
 }
 
@@ -32,18 +32,18 @@ export class InMemoryGameSaveRepository implements GameSaveRepository {
     return { ...result, save: clone(result.save) };
   }
 
-  async load(): Promise<SaveGameV1> {
+  async load(): Promise<SaveGameV2> {
     return (await this.inspect()).save;
   }
 
-  async save(save: SaveGameV1): Promise<SaveGameV1> {
-    const validated = saveGameV1Schema.parse(clone(save));
+  async save(save: SaveGameV2): Promise<SaveGameV2> {
+    const validated = saveGameV2Schema.parse(clone(save));
     this.raw = clone(validated);
     return clone(validated);
   }
 
-  async update(updater: SaveUpdater): Promise<SaveGameV1> {
-    let result: SaveGameV1 | undefined;
+  async update(updater: SaveUpdater): Promise<SaveGameV2> {
+    let result: SaveGameV2 | undefined;
     const operation = this.updateQueue.then(async () => {
       const current = await this.load();
       result = await this.save(updater(current));
@@ -90,21 +90,21 @@ export class DexieGameSaveRepository implements GameSaveRepository {
     return parseOrCreateSaveGame(record?.payload);
   }
 
-  async load(): Promise<SaveGameV1> {
+  async load(): Promise<SaveGameV2> {
     return (await this.inspect()).save;
   }
 
-  async save(save: SaveGameV1): Promise<SaveGameV1> {
-    const validated = saveGameV1Schema.parse(save);
+  async save(save: SaveGameV2): Promise<SaveGameV2> {
+    const validated = saveGameV2Schema.parse(save);
     await this.database.saves.put({ key: "primary", payload: validated });
     return validated;
   }
 
-  async update(updater: SaveUpdater): Promise<SaveGameV1> {
+  async update(updater: SaveUpdater): Promise<SaveGameV2> {
     return this.database.transaction("rw", this.database.saves, async () => {
       const record = await this.database.saves.get("primary");
       const current = parseOrCreateSaveGame(record?.payload).save;
-      const updated = saveGameV1Schema.parse(updater(current));
+      const updated = saveGameV2Schema.parse(updater(current));
       await this.database.saves.put({ key: "primary", payload: updated });
       return updated;
     });
@@ -118,4 +118,3 @@ export class DexieGameSaveRepository implements GameSaveRepository {
     this.database.close();
   }
 }
-

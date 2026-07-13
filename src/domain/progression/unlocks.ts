@@ -3,6 +3,12 @@ export interface AiTierThreshold {
   minimumCollectionScore: number;
 }
 
+export const AI_TIER_THRESHOLDS = [
+  { id: 'rookie', minimumCollectionScore: 0 },
+  { id: 'pro', minimumCollectionScore: 1_500 },
+  { id: 'elite', minimumCollectionScore: 3_500 },
+] as const satisfies readonly AiTierThreshold[];
+
 export function getUnlockedAiTierIds(
   collectionScore: number,
   thresholds: readonly AiTierThreshold[],

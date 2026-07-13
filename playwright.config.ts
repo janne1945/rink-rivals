@@ -17,6 +17,14 @@ export default defineConfig({
   },
   projects: [
     { name: "mobile-chromium", use: { ...devices["iPhone 13"], browserName: "chromium" } },
+    {
+      name: "mobile-landscape",
+      use: {
+        ...devices["iPhone 13"],
+        browserName: "chromium",
+        viewport: { width: 844, height: 390 },
+      },
+    },
     { name: "tablet", use: { ...devices["iPad Mini"], browserName: "chromium" } },
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
   ],

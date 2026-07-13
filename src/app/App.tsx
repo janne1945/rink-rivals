@@ -1,17 +1,28 @@
 import { useEffect, useMemo, useState } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import {
   createBattle,
   getBattleView,
   getEligibleCards,
+  getMatchRewardCredits,
   revealRound,
   selectAiCard,
   selectCard,
+  type AiDifficulty,
   type BattleState,
 } from "../domain/battle";
 import { grantMatchReward, purchaseCard, type CardOffer } from "../domain/economy";
 import type { GameMode, Lineup } from "../domain/lineups";
-import { calculateCollectionScore, getUnlockedAiTierIds } from "../domain/progression";
+import {
+  AI_TIER_THRESHOLDS,
+  applyProgressionEvent,
+  chooseRivalryRoadCard,
+  calculateCollectionScore,
+  getUnlockedAiTierIds,
+  RIVALRY_REWARD_CARD_IDS,
+  type MatchOutcome,
+  type ProgressionReward,
+} from "../domain/progression";
 import { createBaseMarket, createEventShopRotation } from "../domain/shop";
 import { gameCatalog, starterLineups } from "../data/generated/gameCatalog";
 import { CollectionScreen } from "../features/collection/CollectionScreen";
@@ -19,22 +30,20 @@ import { HomeScreen } from "../features/home/HomeScreen";
 import { LineupsScreen } from "../features/lineup/LineupsScreen";
 import { MarketScreen } from "../features/market/MarketScreen";
 import { MatchScreen } from "../features/match/MatchScreen";
+import { ObjectiveScreen } from "../features/objectives/ObjectiveScreen";
 import { PlayScreen } from "../features/play/PlayScreen";
 import {
   createDefaultSaveGame,
   DexieGameSaveRepository,
-  type SaveGameV1,
+  type SaveGameV2,
 } from "../infrastructure/persistence";
 import { AppShell } from "./AppShell";
+import { buildProgressionScreenModels } from "./progressionView";
 import styles from "./App.module.css";
 
 const repository = new DexieGameSaveRepository();
-const AI_TIER_THRESHOLDS = [
-  { id: "rookie", minimumCollectionScore: 0 },
-  { id: "pro", minimumCollectionScore: 1_500 },
-  { id: "elite", minimumCollectionScore: 3_500 },
-] as const;
 const baseMarket = createBaseMarket(gameCatalog.cards);
+const rivalryRewardCardIds = new Set<string>(RIVALRY_REWARD_CARD_IDS);
 const eventRotation = createEventShopRotation(
   {
     seed: "rink-rivals-event-2026",
@@ -43,15 +52,15 @@ const eventRotation = createEventShopRotation(
     offerCount: 5,
     spotlightDiscountPercent: 15,
   },
-  gameCatalog.cards,
+  gameCatalog.cards.filter((card) => !rivalryRewardCardIds.has(card.id)),
   new Date(),
 );
 
-function scoreFor(save: SaveGameV1): number {
+function scoreFor(save: SaveGameV2): number {
   return calculateCollectionScore(save.collection, gameCatalog.cards).score;
 }
 
-function createStarterSave(): SaveGameV1 {
+function createStarterSave(): SaveGameV2 {
   const save = createDefaultSaveGame();
   const acquiredAt = new Date().toISOString();
   for (const lineup of starterLineups) {
@@ -63,28 +72,64 @@ function createStarterSave(): SaveGameV1 {
   }
   save.collectionScore = scoreFor(save);
   save.unlockedAiTierIds = getUnlockedAiTierIds(save.collectionScore, AI_TIER_THRESHOLDS);
+  save.preferredAiDifficulty = save.unlockedAiTierIds.includes("pro") ? "pro" : "rookie";
   return save;
 }
 
-function rewardFor(battle: BattleState): number {
-  if (battle.winner === "player") return 180;
-  if (battle.winner === "tie") return 120;
-  return 80;
+function addStarterContent(save: SaveGameV2): SaveGameV2 {
+  if (Object.keys(save.lineups).length > 0) return save;
+
+  const starter = createStarterSave();
+  const collection = { ...starter.collection, ...save.collection };
+  const collectionScore = calculateCollectionScore(collection, gameCatalog.cards).score;
+  const unlockedAiTierIds = getUnlockedAiTierIds(collectionScore, AI_TIER_THRESHOLDS);
+  return {
+    ...save,
+    collection,
+    lineups: starter.lineups,
+    activeLineupIds: starter.activeLineupIds,
+    collectionScore,
+    unlockedAiTierIds,
+    preferredAiDifficulty: unlockedAiTierIds.includes(save.preferredAiDifficulty)
+      ? save.preferredAiDifficulty
+      : unlockedAiTierIds.includes("pro")
+        ? "pro"
+        : "rookie",
+  };
+}
+
+function outcomeFor(battle: BattleState): MatchOutcome {
+  if (battle.winner === "player") return "win";
+  if (battle.winner === "tie") return "draw";
+  return "loss";
+}
+
+function creditTotal(rewards: readonly ProgressionReward[]): number {
+  return rewards.reduce((total, reward) => total + (reward.type === "credits" ? reward.credits : 0), 0);
 }
 
 export function App() {
   const navigate = useNavigate();
-  const [save, setSave] = useState<SaveGameV1 | null>(null);
+  const { pathname } = useLocation();
+  const [save, setSave] = useState<SaveGameV2 | null>(null);
   const [battle, setBattle] = useState<BattleState | null>(null);
   const [rewardGranted, setRewardGranted] = useState(false);
+  const [displayedRewardCredits, setDisplayedRewardCredits] = useState(0);
+  const [matchProgressionMessage, setMatchProgressionMessage] = useState("");
+  const [clock, setClock] = useState(() => new Date());
+  const [choiceSubmitting, setChoiceSubmitting] = useState(false);
+  const [choiceError, setChoiceError] = useState("");
+  const [goalsStatus, setGoalsStatus] = useState("");
   const [fatalError, setFatalError] = useState("");
 
   useEffect(() => {
     let active = true;
     void repository.inspect().then(async (result) => {
       let loaded = result.save;
-      if (result.status !== "valid" || Object.keys(loaded.lineups).length === 0) {
+      if (result.status === "default_missing" || result.status === "default_corrupt" || result.status === "default_unknown_version") {
         loaded = await repository.save(createStarterSave());
+      } else if (result.status === "migrated" || Object.keys(loaded.lineups).length === 0) {
+        loaded = await repository.save(addStarterContent(loaded));
       }
       if (active) setSave(loaded);
     }).catch((error: unknown) => {
@@ -92,6 +137,20 @@ export function App() {
     });
     return () => { active = false; };
   }, []);
+
+  useEffect(() => {
+    const refreshClock = () => setClock(new Date());
+    const timer = window.setInterval(refreshClock, 60_000);
+    window.addEventListener("focus", refreshClock);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("focus", refreshClock);
+    };
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   const lineups = useMemo(() => save ? Object.values(save.lineups) as Lineup[] : [], [save]);
 
@@ -128,27 +187,40 @@ export function App() {
     return response;
   }
 
-  function startMatch(mode: GameMode) {
+  async function selectDifficulty(difficulty: AiDifficulty) {
+    if (!save?.unlockedAiTierIds.includes(difficulty)) return;
+    const updated = await repository.update((current) => ({
+      ...current,
+      preferredAiDifficulty: difficulty,
+    }));
+    setSave(updated);
+  }
+
+  function startMatch(mode: GameMode, difficulty: AiDifficulty) {
     if (!save) return;
+    if (!save.unlockedAiTierIds.includes(difficulty)) return;
     const activeId = save.activeLineupIds[mode];
     const lineup = activeId ? save.lineups[activeId] : undefined;
     if (!lineup) return;
     const nextBattle = createBattle({
       seed: crypto.randomUUID(),
       mode,
+      difficulty,
       catalog: gameCatalog,
       playerLineup: lineup,
       opponentLineup: lineup,
     });
     setBattle(nextBattle);
     setRewardGranted(false);
+    setDisplayedRewardCredits(0);
+    setMatchProgressionMessage("");
     navigate("/match");
   }
 
   function chooseCard(cardId: string) {
     if (!battle || battle.phase !== "selecting") return;
     const playerSelected = selectCard(battle, "player", cardId);
-    setBattle(selectAiCard(playerSelected, "pro"));
+    setBattle(selectAiCard(playerSelected));
   }
 
   function reveal() {
@@ -156,18 +228,104 @@ export function App() {
     const nextBattle = revealRound(battle);
     setBattle(nextBattle);
     if (nextBattle.phase === "complete") {
-      const rewardCredits = rewardFor(nextBattle);
+      const rewardCredits = getMatchRewardCredits(nextBattle.difficulty, nextBattle.winner ?? "tie");
+      const completedAt = new Date();
+      let totalRewardCredits = rewardCredits;
+      let completionMessage = "";
       void repository.update((current) => {
-        const result = grantMatchReward(current, {
+        const matchResult = grantMatchReward(current, {
           rewardId: `reward-${nextBattle.id}`,
           matchId: nextBattle.id,
           credits: rewardCredits,
-        });
-        return result.ok ? result.state : current;
+        }, completedAt.toISOString());
+        if (!matchResult.ok) {
+          throw new Error(matchResult.reason === "reward_conflict"
+            ? "This match reward conflicts with the saved reward history."
+            : "This match reward is invalid.");
+        }
+        const progressionResult = applyProgressionEvent(matchResult.state.progression, {
+          id: `progression-${nextBattle.id}`,
+          type: "match-completed",
+          matchId: nextBattle.id,
+          mode: nextBattle.mode,
+          outcome: outcomeFor(nextBattle),
+          difficulty: nextBattle.difficulty,
+        }, completedAt);
+        const bonusCredits = creditTotal(progressionResult.grantedRewards);
+        totalRewardCredits = matchResult.record.credits + bonusCredits;
+        const hasCardChoice = progressionResult.grantedRewards.some((reward) => reward.type === "card-choice");
+        completionMessage = hasCardChoice
+          ? "Rivalry Road complete — choose your Featured star in Goals."
+          : bonusCredits > 0
+            ? `Objective bonus included: +${bonusCredits} Credits.`
+            : "";
+        return {
+          ...matchResult.state,
+          credits: matchResult.state.credits + bonusCredits,
+          progression: progressionResult.state,
+        };
       }).then((updated) => {
         setSave(updated);
+        setDisplayedRewardCredits(totalRewardCredits);
+        setMatchProgressionMessage(completionMessage);
         setRewardGranted(true);
       }).catch((error: unknown) => setFatalError(error instanceof Error ? error.message : "The match reward could not be saved."));
+    }
+  }
+
+  async function chooseRivalryCard(cardId: string) {
+    setChoiceSubmitting(true);
+    setChoiceError("");
+    setGoalsStatus("");
+    const chosenAt = new Date();
+    let choiceWasAlreadySaved = false;
+    try {
+      const updated = await repository.update((current) => {
+        const result = chooseRivalryRoadCard(
+          current.progression,
+          cardId,
+          "rivalry-road-card-choice-v1",
+          chosenAt,
+        );
+        if (result.status !== "applied") {
+          if (current.progression.rivalryRoad.selectedCardId === cardId) {
+            choiceWasAlreadySaved = true;
+            return current;
+          }
+          throw new Error(result.status === "invalid-card"
+            ? "This card is not a valid Rivalry Road reward."
+            : "The Rivalry Road reward is not ready to be selected.");
+        }
+        const cardReward = result.grantedRewards.find((reward) => reward.type === "card");
+        if (!cardReward || cardReward.type !== "card") {
+          throw new Error("The Rivalry Road card reward history is inconsistent.");
+        }
+        const owned = current.collection[cardReward.cardId];
+        const next = {
+          ...current,
+          collection: {
+            ...current.collection,
+            [cardReward.cardId]: owned
+              ? { ...owned, quantity: owned.quantity + 1 }
+              : { cardId: cardReward.cardId, quantity: 1, acquiredAt: chosenAt.toISOString() },
+          },
+          progression: result.state,
+        };
+        const collectionScore = scoreFor(next);
+        return {
+          ...next,
+          collectionScore,
+          unlockedAiTierIds: getUnlockedAiTierIds(collectionScore, AI_TIER_THRESHOLDS),
+        };
+      });
+      setSave(updated);
+      setGoalsStatus(choiceWasAlreadySaved
+        ? "This Featured card was already added to your collection."
+        : "Featured card added to your collection.");
+    } catch (error) {
+      setChoiceError(error instanceof Error ? error.message : "The reward card could not be added.");
+    } finally {
+      setChoiceSubmitting(false);
     }
   }
 
@@ -181,16 +339,21 @@ export function App() {
 
   const uniqueCards = Object.keys(save.collection).length;
   const safeBattle = battle ? getBattleView(battle, "player") : null;
+  const progressionModels = buildProgressionScreenModels(save.progression, gameCatalog, clock, {
+    isSubmitting: choiceSubmitting,
+    errorMessage: choiceError || undefined,
+  });
 
   return (
     <AppShell credits={save.credits}>
       <Routes>
-        <Route path="/" element={<HomeScreen credits={save.credits} uniqueCards={uniqueCards} collectionScore={save.collectionScore} completedMatches={save.completedMatches} />} />
+        <Route path="/" element={<HomeScreen credits={save.credits} uniqueCards={uniqueCards} collectionScore={save.collectionScore} completedMatches={save.completedMatches} goals={progressionModels.goalsSummary} />} />
         <Route path="/collection" element={<CollectionScreen catalog={gameCatalog} collection={save.collection} />} />
         <Route path="/lineups" element={<LineupsScreen lineups={lineups} activeLineupIds={Object.fromEntries(Object.entries(save.activeLineupIds).map(([mode, id]) => [mode, id ?? ""]))} catalog={gameCatalog} collection={save.collection} onActivate={(lineup) => void activateLineup(lineup)} onSave={saveLineup} />} />
-        <Route path="/play" element={<PlayScreen lineups={lineups} activeLineupIds={Object.fromEntries(Object.entries(save.activeLineupIds).map(([mode, id]) => [mode, id ?? ""]))} onStart={startMatch} />} />
+        <Route path="/play" element={<PlayScreen lineups={lineups} activeLineupIds={Object.fromEntries(Object.entries(save.activeLineupIds).map(([mode, id]) => [mode, id ?? ""]))} collectionScore={save.collectionScore} preferredDifficulty={save.preferredAiDifficulty} onDifficultyChange={(difficulty) => void selectDifficulty(difficulty)} onStart={startMatch} />} />
         <Route path="/market" element={<MarketScreen catalog={gameCatalog} collection={save.collection} credits={save.credits} baseOffers={baseMarket.offers} eventRotation={eventRotation} onBuy={buyCard} />} />
-        <Route path="/match" element={battle && safeBattle ? <MatchScreen battle={safeBattle} eligibleCardIds={getEligibleCards(battle, "player").map(({ card }) => card.id)} rewardCredits={rewardFor(battle)} rewardGranted={rewardGranted} onSelect={chooseCard} onReveal={reveal} onFinish={() => navigate("/")} /> : <Navigate to="/play" replace />} />
+        <Route path="/objectives" element={<ObjectiveScreen dailyObjectives={progressionModels.dailyObjectives} dailyPeriodLabel={progressionModels.dailyPeriodLabel} weeklyObjective={progressionModels.weeklyObjective} weeklyPeriodLabel={progressionModels.weeklyPeriodLabel} rivalrySteps={progressionModels.rivalrySteps} rewardChoice={progressionModels.rewardChoice} statusMessage={goalsStatus || undefined} onChooseRivalryCard={(cardId) => void chooseRivalryCard(cardId)} />} />
+        <Route path="/match" element={battle && safeBattle ? <MatchScreen battle={safeBattle} eligibleCardIds={getEligibleCards(battle, "player").map(({ card }) => card.id)} rewardCredits={displayedRewardCredits || getMatchRewardCredits(battle.difficulty, battle.winner ?? "tie")} rewardGranted={rewardGranted} progressionMessage={matchProgressionMessage} onSelect={chooseCard} onReveal={reveal} onFinish={() => navigate("/")} /> : <Navigate to="/play" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppShell>

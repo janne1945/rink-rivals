@@ -1,15 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../shared/Button";
 import styles from "../Screens.module.css";
+import type { GoalsSummaryViewModel, ObjectiveViewModel } from "../objectives/viewModels";
 
-interface HomeScreenProps {
+export interface HomeScreenProps {
   credits: number;
   uniqueCards: number;
   collectionScore: number;
   completedMatches: number;
+  goals?: GoalsSummaryViewModel;
 }
 
-export function HomeScreen({ credits, uniqueCards, collectionScore, completedMatches }: HomeScreenProps) {
+function compactProgress(objective: ObjectiveViewModel): string {
+  return `${Math.max(0, Math.min(objective.progress, objective.target))}/${objective.target}`;
+}
+
+export function HomeScreen({ credits, uniqueCards, collectionScore, completedMatches, goals }: HomeScreenProps) {
   const navigate = useNavigate();
 
   return (
@@ -43,11 +49,42 @@ export function HomeScreen({ credits, uniqueCards, collectionScore, completedMat
         </div>
       </section>
 
+      {goals ? (
+        <section aria-labelledby="goals-summary-heading">
+          <div className={styles.sectionHead}>
+            <div>
+              <p className={styles.eyebrow}>Goals</p>
+              <h2 id="goals-summary-heading">Today&apos;s assignments</h2>
+            </div>
+            <Button variant="ghost" onClick={() => navigate("/objectives")}>View all goals</Button>
+          </div>
+          <div className={styles.homeGoalGrid}>
+            {goals.dailyObjectives.map((objective) => (
+              <article key={objective.id} className={`${styles.homeGoal} ${objective.completed ? styles.goalCompleted : ""}`}>
+                <span className={styles.goalState}>{objective.completed ? "Done" : compactProgress(objective)}</span>
+                <h3>{objective.title}</h3>
+                <strong>{objective.completed ? "Reward added" : `+${objective.rewardCredits} CR`}</strong>
+              </article>
+            ))}
+          </div>
+          <div className={styles.goalSummaryStrip}>
+            <div>
+              <span>Weekly tour</span>
+              <strong>{compactProgress(goals.weeklyObjective)} matches</strong>
+            </div>
+            <div>
+              <span>Rivalry Road</span>
+              <strong>{goals.nextRivalryStep?.title ?? "Road complete"}</strong>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <section className={styles.panel}>
         <p className={styles.eyebrow}>Next shift</p>
         <div className={styles.sectionHead}>
           <div>
-            <h2>{completedMatches === 0 ? "Make your debut" : "Keep the streak alive"}</h2>
+            <h2>{completedMatches === 0 ? "Make your debut" : "Keep building momentum"}</h2>
             <p>{completedMatches === 0 ? "Choose a circuit and learn the five-round rivalry format." : `${completedMatches} matches completed. Your next reward is waiting.`}</p>
           </div>
           <Button variant="secondary" onClick={() => navigate("/play")}>Choose mode</Button>

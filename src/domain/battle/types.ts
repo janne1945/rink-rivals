@@ -78,6 +78,7 @@ export interface BattleState {
   readonly id: string;
   readonly seed: string;
   readonly mode: GameMode;
+  readonly difficulty: AiDifficulty;
   readonly phase: BattlePhase;
   readonly roundIndex: number;
   readonly situations: readonly BattleSituation[];
@@ -92,6 +93,7 @@ export interface BattleState {
 export interface CreateBattleInput {
   readonly seed: string | number;
   readonly mode: GameMode;
+  readonly difficulty?: AiDifficulty;
   readonly catalog: CardCatalog;
   readonly playerLineup: Lineup;
   readonly opponentLineup: Lineup;
