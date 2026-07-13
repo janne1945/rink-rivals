@@ -137,5 +137,11 @@ Database and web changes form one contract and should be released together:
    lineup save/activation, logout/login, and a second-session reload.
 8. Re-run Supabase security and performance advisors.
 
+The completion release uses a second additive migration,
+`20260713201000_index_mvp_foreign_keys.sql`, for the covering indexes reported
+by the performance advisor. Fresh indexes can remain in the advisor's
+"unused" informational list until representative hosted traffic exercises
+them.
+
 Never deploy the one-argument `settle_match` client before its matching
 database migration, or keep an old four-argument client after that migration.

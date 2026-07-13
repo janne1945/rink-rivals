@@ -10,6 +10,8 @@ The project is a non-commercial prototype. It uses neutral team treatment and
 replaceable placeholder artwork; no official league, team, or player imagery is
 required at runtime.
 
+Live MVP: <https://rink-rivals.vercel.app>
+
 ## Stack and architecture
 
 - React 19, TypeScript, Vite, React Router, and CSS Modules

@@ -134,21 +134,18 @@ export type Database = {
       lineup_slots: {
         Row: {
           card_id: string
-          created_at: string
           lineup_id: string
           slot: string
           user_id: string
         }
         Insert: {
           card_id: string
-          created_at?: string
           lineup_id: string
           slot: string
           user_id: string
         }
         Update: {
           card_id?: string
-          created_at?: string
           lineup_id?: string
           slot?: string
           user_id?: string
@@ -212,6 +209,50 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      match_rewards: {
+        Row: {
+          breakdown: Json
+          granted_at: string
+          match_credits: number
+          match_id: string
+          objective_credits: number
+          rivalry_credits: number
+          rule_version: string
+          total_credits: number | null
+          user_id: string
+        }
+        Insert: {
+          breakdown?: Json
+          granted_at?: string
+          match_credits: number
+          match_id: string
+          objective_credits?: number
+          rivalry_credits?: number
+          rule_version: string
+          total_credits?: number | null
+          user_id: string
+        }
+        Update: {
+          breakdown?: Json
+          granted_at?: string
+          match_credits?: number
+          match_id?: string
+          objective_credits?: number
+          rivalry_credits?: number
+          rule_version?: string
+          total_credits?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_rewards_match_id_user_id_fkey"
+            columns: ["match_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id", "user_id"]
           },
         ]
       }
@@ -371,50 +412,6 @@ export type Database = {
           },
         ]
       }
-      match_rewards: {
-        Row: {
-          breakdown: Json
-          granted_at: string
-          match_credits: number
-          match_id: string
-          objective_credits: number
-          rivalry_credits: number
-          rule_version: string
-          total_credits: number | null
-          user_id: string
-        }
-        Insert: {
-          breakdown?: Json
-          granted_at?: string
-          match_credits: number
-          match_id: string
-          objective_credits?: number
-          rivalry_credits?: number
-          rule_version: string
-          total_credits?: number | null
-          user_id: string
-        }
-        Update: {
-          breakdown?: Json
-          granted_at?: string
-          match_credits?: number
-          match_id?: string
-          objective_credits?: number
-          rivalry_credits?: number
-          rule_version?: string
-          total_credits?: number | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_rewards_match_id_user_id_fkey"
-            columns: ["match_id", "user_id"]
-            isOneToOne: false
-            referencedRelation: "matches"
-            referencedColumns: ["id", "user_id"]
-          },
-        ]
-      }
       matches: {
         Row: {
           client_match_id: string
@@ -503,6 +500,53 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          completed_matches: number
+          created_at: string
+          credits: number
+          display_name: string | null
+          favorite_team_id: string | null
+          id: string
+          onboarding_completed: boolean
+          starter_claimed_at: string | null
+          starter_lineup_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          completed_matches?: number
+          created_at?: string
+          credits?: number
+          display_name?: string | null
+          favorite_team_id?: string | null
+          id: string
+          onboarding_completed?: boolean
+          starter_claimed_at?: string | null
+          starter_lineup_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          completed_matches?: number
+          created_at?: string
+          credits?: number
+          display_name?: string | null
+          favorite_team_id?: string | null
+          id?: string
+          onboarding_completed?: boolean
+          starter_claimed_at?: string | null
+          starter_lineup_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_starter_lineup_user_fkey"
+            columns: ["starter_lineup_id", "id"]
+            isOneToOne: false
+            referencedRelation: "lineups"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
       purchase_receipts: {
         Row: {
           card_id: string
@@ -558,53 +602,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
-          },
-        ]
-      }
-      profiles: {
-        Row: {
-          completed_matches: number
-          created_at: string
-          credits: number
-          display_name: string | null
-          favorite_team_id: string | null
-          id: string
-          onboarding_completed: boolean
-          starter_claimed_at: string | null
-          starter_lineup_id: string | null
-          updated_at: string
-        }
-        Insert: {
-          completed_matches?: number
-          created_at?: string
-          credits?: number
-          display_name?: string | null
-          favorite_team_id?: string | null
-          id: string
-          onboarding_completed?: boolean
-          starter_claimed_at?: string | null
-          starter_lineup_id?: string | null
-          updated_at?: string
-        }
-        Update: {
-          completed_matches?: number
-          created_at?: string
-          credits?: number
-          display_name?: string | null
-          favorite_team_id?: string | null
-          id?: string
-          onboarding_completed?: boolean
-          starter_claimed_at?: string | null
-          starter_lineup_id?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_starter_lineup_user_fkey"
-            columns: ["starter_lineup_id", "id"]
-            isOneToOne: false
-            referencedRelation: "lineups"
-            referencedColumns: ["id", "user_id"]
           },
         ]
       }
@@ -775,10 +772,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      activate_lineup: {
-        Args: { lineup_id: string }
-        Returns: Json
-      }
+      activate_lineup: { Args: { lineup_id: string }; Returns: Json }
       assert_valid_lineup: {
         Args: {
           lineup_mode: string
@@ -803,20 +797,17 @@ export type Database = {
         Args: { at_time: string }
         Returns: {
           card_id: string
-          ends_at: string | null
-          event_id: string | null
+          ends_at: string
+          event_id: string
           offer_id: string
           placement: string
           price: number
           regular_price: number
           source: string
-          starts_at: string | null
+          starts_at: string
         }[]
       }
-      get_market_state: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      get_market_state: { Args: never; Returns: Json }
       lineup_as_json: {
         Args: { requested_lineup_id: string; requesting_user_id: string }
         Returns: Json
@@ -835,18 +826,10 @@ export type Database = {
         Returns: Json
       }
       save_lineup: {
-        Args: {
-          lineup_id: string | null
-          mode: string
-          name: string
-          slots: Json
-        }
+        Args: { lineup_id: string; mode: string; name: string; slots: Json }
         Returns: Json
       }
-      settle_match: {
-        Args: { client_match_id: string }
-        Returns: Json
-      }
+      settle_match: { Args: { client_match_id: string }; Returns: Json }
       start_match: {
         Args: { client_match_id: string; difficulty: string; mode: string }
         Returns: Json
