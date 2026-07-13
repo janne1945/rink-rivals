@@ -40,6 +40,27 @@ pnpm supabase:types
 `supabase:test` runs the pgTAP files under `supabase/tests`. Regenerate
 `src/infrastructure/supabase/database.types.ts` whenever the schema changes.
 
+## Migration-history reconciliation (2026-07-14)
+
+The eight checked-in migration filenames were reconciled with the versions
+already recorded by the hosted project. This was a local rename only: it did
+not alter the hosted migration history, schema, or data, and the local SQL
+bodies were preserved byte for byte. Check the ordered versions, names, and
+local body hashes without connecting to Supabase:
+
+```sh
+pnpm exec tsx scripts/check-migration-history.ts
+```
+
+Four historical entries have known local-versus-hosted body drift:
+`20260713035200`, `20260713035355`, `20260713035431`, and `20260713040004`.
+The two local settle-match fixes at `20260713035355` and `20260713035431` also
+have identical SQL bodies; the check detects and explicitly reports this known
+duplicate while rejecting any new duplicate. A clean local `db reset` and the
+pgTAP suite remain required before treating the checked-in chain as a proven
+fresh-install history. Do not rename or edit an applied migration again; add a
+new migration for every future schema change.
+
 For a linked non-production project, review the generated diff before applying
 it:
 
