@@ -44,8 +44,23 @@ import { buildProgressionScreenModels } from "./progressionView";
 import styles from "./App.module.css";
 
 const repository = new DexieGameSaveRepository();
-const accountRepository = createAccountRepository();
-const authService = createAuthService();
+const cloudServices = (() => {
+  try {
+    return {
+      ready: true as const,
+      accountRepository: createAccountRepository(),
+      authService: createAuthService(),
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      ready: false as const,
+      message: error instanceof Error
+        ? error.message
+        : "Rink Rivals could not start because the server configuration is invalid.",
+    };
+  }
+})();
 const LINEUP_SLOT_IDS = ["LW", "C", "RW", "LD", "RD", "G"] as const;
 
 function completeLineup(lineup: AccountLineup): Lineup | null {
@@ -75,8 +90,20 @@ function hydrateAuthoritativeRounds(
 }
 
 export function App() {
+  if (!cloudServices.ready) {
+    return (
+      <main className={styles.loading}>
+        <section className={styles.fatal} role="alert" aria-labelledby="configuration-error-heading">
+          <p>Configuration required</p>
+          <h1 id="configuration-error-heading">Rink Rivals could not start</h1>
+          <p>{cloudServices.message}</p>
+          <p>The deployment needs a Supabase URL and a publishable browser key.</p>
+        </section>
+      </main>
+    );
+  }
   return (
-    <AccountGate auth={authService} repository={accountRepository}>
+    <AccountGate auth={cloudServices.authService} repository={cloudServices.accountRepository}>
       {(account, actions) => <GameApp account={account} actions={actions} />}
     </AccountGate>
   );

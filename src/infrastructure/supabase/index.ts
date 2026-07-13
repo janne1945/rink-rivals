@@ -34,6 +34,8 @@ export type {
 } from "./AuthService";
 export { SupabaseAuthService } from "./AuthService";
 export type { Database } from "./database.types";
+export { validateClientEnvironment } from "./environment";
+export type { ClientEnvironment, ClientEnvironmentResult, ValidClientEnvironment } from "./environment";
 
 export function createAccountRepository(): SupabaseAccountRepository {
   return new SupabaseAccountRepository(getSupabaseClient());

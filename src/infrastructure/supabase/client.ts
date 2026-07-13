@@ -1,19 +1,16 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "./database.types";
+import { validateClientEnvironment } from "./environment";
 
 let browserClient: SupabaseClient<Database> | undefined;
 
 export function getSupabaseClient(): SupabaseClient<Database> {
   if (browserClient) return browserClient;
 
-  const url = import.meta.env.VITE_SUPABASE_URL;
-  const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !publishableKey) {
-    throw new Error(
-      "Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY.",
-    );
-  }
+  const result = validateClientEnvironment(import.meta.env);
+  if (!result.valid) throw new Error(result.message);
+  const { url, publishableKey } = result.configuration;
 
   browserClient = createClient<Database>(url, publishableKey, {
     auth: {
