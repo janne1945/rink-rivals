@@ -37,10 +37,9 @@ select lives_ok(
   $$select public.claim_starter_team('edmonton-oilers')$$,
   'first starter claim succeeds'
 );
-select throws_ok(
+select lives_ok(
   $$select public.claim_starter_team('edmonton-oilers')$$,
-  'P0001', 'Starter team has already been claimed.',
-  'second starter claim is rejected'
+  'identical starter claim retry succeeds idempotently'
 );
 select is((select credits from public.profiles where id = auth.uid()), 1000, 'claim awards 1000 credits');
 select is((select count(*)::integer from public.user_cards where user_id = auth.uid()), 6, 'claim creates six cards');

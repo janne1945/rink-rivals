@@ -5,7 +5,7 @@ import {
   getDailyObjectiveDefinitions,
   WEEKLY_OBJECTIVE,
 } from './objectives';
-import { getLocalDayKey, getLocalWeekKey } from './periods';
+import { getUtcDayKey, getUtcWeekKey } from './periods';
 import {
   matchesRivalryRoadStep,
   RIVALRY_REWARD_CARDS,
@@ -70,11 +70,11 @@ export function refreshProgressionPeriods(
 ): ProgressionState {
   assertValidDate(now);
   const daily =
-    state.daily.periodKey === getLocalDayKey(now)
+    state.daily.periodKey === getUtcDayKey(now)
       ? state.daily
       : createDailyProgress(now);
   const weekly =
-    state.weekly.periodKey === getLocalWeekKey(now)
+    state.weekly.periodKey === getUtcWeekKey(now)
       ? state.weekly
       : createWeeklyProgress(now);
 

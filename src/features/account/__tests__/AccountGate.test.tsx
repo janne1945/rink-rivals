@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { describe, expect, it, vi } from "vitest";
 
@@ -76,12 +76,24 @@ function createRepository(profile: AccountProfile = readyProfile): AccountReposi
   return {
     loadProfile: vi.fn().mockResolvedValue(profile),
     loadOwnCards: vi.fn().mockResolvedValue([]),
+    loadLineups: vi.fn().mockResolvedValue([lineup]),
     loadLineup: vi.fn().mockResolvedValue(lineup),
     loadObjectiveProgress: vi.fn().mockResolvedValue([]),
     loadRivalryRoadProgress: vi.fn().mockResolvedValue({
       currentStepIndex: 0, completedStepIds: [], status: "in-progress", selectedCardId: null,
     }),
     claimStarterTeam: vi.fn().mockResolvedValue(lineup),
+    loadMarketState: vi.fn().mockResolvedValue({
+      serverTime: "2026-07-13T00:00:00.000Z",
+      currentEvent: null,
+      offers: [],
+    }),
+    purchaseCard: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    saveLineup: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    activateLineup: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    claimRivalryReward: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    startMatch: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    playMatchRound: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
     settleMatch: vi.fn().mockResolvedValue({
       status: "settled", matchId: "match-db-1", rewardCredits: 345, credits: 1345, completedMatches: 1,
     }),
@@ -94,6 +106,12 @@ function renderGate(auth: AuthService, repository: AccountRepository) {
       {(account) => <main><h1>Main menu</h1><span>{account.profile.credits} Credits</span></main>}
     </AccountGate>,
   );
+}
+
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((next) => { resolve = next; });
+  return { promise, resolve };
 }
 
 describe("AccountGate", () => {
@@ -135,7 +153,7 @@ describe("AccountGate", () => {
     const repository = createRepository();
     render(
       <AccountGate auth={auth} repository={repository}>
-        {(_account, actions) => <button onClick={() => void actions.settleMatch({ clientMatchId: "client-1", mode: "nhl-circuit", difficulty: "rookie", outcome: "win" })}>Settle</button>}
+        {(_account, actions) => <button onClick={() => void actions.settleMatch({ clientMatchId: "client-1" })}>Settle</button>}
       </AccountGate>,
     );
     fireEvent.click(await screen.findByRole("button", { name: "Settle" }));
@@ -157,7 +175,7 @@ describe("AccountGate", () => {
     expect(repository.claimStarterTeam).toHaveBeenCalledWith("edmonton-oilers");
     expect(repository.loadProfile).toHaveBeenCalledTimes(2);
     expect(repository.loadOwnCards).toHaveBeenCalledOnce();
-    expect(repository.loadLineup).toHaveBeenCalledOnce();
+    expect(repository.loadLineups).toHaveBeenCalledOnce();
   });
 
   it("shows the database error when a duplicate starter claim is rejected", async () => {
@@ -176,6 +194,59 @@ describe("AccountGate", () => {
     await screen.findByRole("heading", { name: "Main menu" });
     emit("SIGNED_OUT", null);
     expect(await screen.findByRole("heading", { name: "Welcome back" })).toBeVisible();
+  });
+
+  it("does not let a stale session restore overwrite a newer signed-out event", async () => {
+    const { auth, emit } = createAuth();
+    const restore = deferred<Session | null>();
+    vi.mocked(auth.restoreSession).mockReturnValue(restore.promise);
+    const repository = createRepository();
+    renderGate(auth, repository);
+
+    act(() => emit("SIGNED_OUT", null));
+    expect(await screen.findByRole("heading", { name: "Welcome back" })).toBeVisible();
+    await act(async () => { restore.resolve(session); });
+
+    expect(screen.getByRole("heading", { name: "Welcome back" })).toBeVisible();
+    expect(repository.loadProfile).not.toHaveBeenCalled();
+  });
+
+  it.each(["purchase", "settlement"] as const)("keeps the account signed out when a delayed %s resolves", async (operation) => {
+    const { auth, emit } = createAuth(session);
+    const repository = createRepository();
+    const pending = deferred<unknown>();
+    if (operation === "purchase") {
+      vi.mocked(repository.purchaseCard).mockReturnValue(pending.promise as ReturnType<AccountRepository["purchaseCard"]>);
+    } else {
+      vi.mocked(repository.settleMatch).mockReturnValue(pending.promise as ReturnType<AccountRepository["settleMatch"]>);
+    }
+    render(
+      <AccountGate auth={auth} repository={repository}>
+        {(_account, actions) => (
+          <button onClick={() => {
+            if (operation === "purchase") {
+              void actions.purchaseCard({ clientRequestId: "request-1", offerId: "offer-1" });
+            } else {
+              void actions.settleMatch({ clientMatchId: "match-1" });
+            }
+          }}>Run mutation</button>
+        )}
+      </AccountGate>,
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Run mutation" }));
+    await waitFor(() => expect(operation === "purchase" ? repository.purchaseCard : repository.settleMatch).toHaveBeenCalledOnce());
+
+    act(() => emit("SIGNED_OUT", null));
+    expect(await screen.findByRole("heading", { name: "Welcome back" })).toBeVisible();
+    await act(async () => {
+      pending.resolve(operation === "purchase"
+        ? { status: "purchased", requestId: "request-1", offerId: "offer-1", cardId: "card-1", price: 100, credits: 900, quantity: 1, purchasedAt: "2026-07-13T00:00:00.000Z" }
+        : { status: "settled", matchId: "match-1", rewardCredits: 100, credits: 1100, completedMatches: 1 });
+    });
+
+    expect(screen.getByRole("heading", { name: "Welcome back" })).toBeVisible();
+    expect(screen.queryByRole("heading", { name: "Main menu" })).not.toBeInTheDocument();
+    expect(repository.loadProfile).toHaveBeenCalledTimes(1);
   });
 
   it("shows an account-loading error instead of falling back to Dexie", async () => {

@@ -2,7 +2,11 @@ import type { CardVersion } from '../cards/types';
 import { resolveLineup } from '../lineups/validation';
 import type { ResolvedLineupCard } from '../lineups/types';
 import { randomBetween } from './rng';
-import { DEFAULT_SITUATION_DECK, selectBattleSituations } from './situations';
+import {
+  DEFAULT_SITUATION_DECK,
+  selectBattleSituations,
+  validateSituationSequence,
+} from './situations';
 import {
   BATTLE_ROUND_COUNT,
   BattleRuleError,
@@ -90,10 +94,13 @@ export function createBattle(input: CreateBattleInput): BattleState {
   const seed = String(input.seed);
   const playerLineup = resolveLineup(input.playerLineup, input.catalog);
   const opponentLineup = resolveLineup(input.opponentLineup, input.catalog);
-  const situations = selectBattleSituations(
-    input.situationDeck ?? DEFAULT_SITUATION_DECK,
-    seed,
-  );
+  let situations: readonly BattleSituation[];
+  if (input.situationSequence) {
+    validateSituationSequence(input.situationSequence);
+    situations = [...input.situationSequence];
+  } else {
+    situations = selectBattleSituations(input.situationDeck ?? DEFAULT_SITUATION_DECK, seed);
+  }
 
   return {
     id: `battle-${seed}`,

@@ -1,5 +1,5 @@
 import { GAME_MODES, type GameMode } from '../lineups/types';
-import { getLocalDayKey, getLocalDayOrdinal, getLocalWeekKey } from './periods';
+import { getUtcDayKey, getUtcDayOrdinal, getUtcWeekKey } from './periods';
 import type {
   ObjectiveDefinition,
   ObjectivePeriodProgress,
@@ -35,7 +35,7 @@ export const WEEKLY_OBJECTIVE: ObjectiveDefinition = {
 };
 
 export function getDailySpotlightMode(date: Date): GameMode {
-  return GAME_MODES[getLocalDayOrdinal(date) % GAME_MODES.length];
+  return GAME_MODES[getUtcDayOrdinal(date) % GAME_MODES.length];
 }
 
 export function getDailyObjectiveDefinitions(
@@ -69,7 +69,7 @@ function createObjectiveProgress(
 }
 
 export function createDailyProgress(date: Date): ObjectivePeriodProgress {
-  const periodKey = getLocalDayKey(date);
+  const periodKey = getUtcDayKey(date);
   return {
     periodKey,
     objectives: getDailyObjectiveDefinitions(date).map((definition) =>
@@ -79,7 +79,7 @@ export function createDailyProgress(date: Date): ObjectivePeriodProgress {
 }
 
 export function createWeeklyProgress(date: Date): WeeklyObjectivePeriodProgress {
-  const periodKey = getLocalWeekKey(date);
+  const periodKey = getUtcWeekKey(date);
   return {
     periodKey,
     objective: createObjectiveProgress(WEEKLY_OBJECTIVE, periodKey),

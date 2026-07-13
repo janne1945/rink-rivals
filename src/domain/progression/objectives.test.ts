@@ -7,9 +7,9 @@ import {
   createInitialProgressionState,
   getDailyObjectiveDefinitions,
   getDailySpotlightMode,
-  getLocalDayKey,
-  getLocalDayOrdinal,
-  getLocalWeekKey,
+  getUtcDayKey,
+  getUtcDayOrdinal,
+  getUtcWeekKey,
   getProgressionView,
   refreshProgressionPeriods,
   RIVALRY_REWARD_CARDS,
@@ -21,8 +21,8 @@ import {
 import type { AiDifficulty } from '../battle/types';
 import type { GameMode } from '../lineups/types';
 
-const sundayBeforeDst = new Date(2026, 2, 29, 1, 30);
-const mondayAfterDst = new Date(2026, 2, 30, 1, 30);
+const sundayBeforeDst = new Date('2026-03-29T01:30:00.000Z');
+const mondayAfterDst = new Date('2026-03-30T01:30:00.000Z');
 
 function event(
   id: string,
@@ -43,12 +43,12 @@ function event(
 function apply(
   state: ProgressionState,
   nextEvent: ObjectiveEvent,
-  now = new Date(2026, 6, 13, 12),
+  now = new Date('2026-07-13T12:00:00.000Z'),
 ): ProgressionState {
   return applyProgressionEvent(state, nextEvent, now).state;
 }
 
-function unlockCardChoice(now = new Date(2026, 6, 13, 12)): ProgressionState {
+function unlockCardChoice(now = new Date('2026-07-13T12:00:00.000Z')): ProgressionState {
   let state = createInitialProgressionState(now);
   state = apply(state, event('nhl', 'nhl-circuit'), now);
   state = apply(state, event('pwhl', 'pwhl-circuit'), now);
@@ -56,33 +56,34 @@ function unlockCardChoice(now = new Date(2026, 6, 13, 12)): ProgressionState {
   return state;
 }
 
-describe('local progression periods', () => {
-  it('creates local calendar keys across month and year boundaries', () => {
-    expect(getLocalDayKey(new Date(2026, 6, 31, 23, 59))).toBe('2026-07-31');
-    expect(getLocalDayKey(new Date(2026, 7, 1, 0, 1))).toBe('2026-08-01');
-    expect(getLocalDayKey(new Date(2026, 11, 31, 23, 59))).toBe('2026-12-31');
-    expect(getLocalDayKey(new Date(2027, 0, 1, 0, 1))).toBe('2027-01-01');
+describe('UTC progression periods', () => {
+  it('creates UTC calendar keys across month and year boundaries', () => {
+    expect(getUtcDayKey(new Date('2026-07-31T23:59:59.999Z'))).toBe('2026-07-31');
+    expect(getUtcDayKey(new Date('2026-08-01T00:00:00.000Z'))).toBe('2026-08-01');
+    expect(getUtcDayKey(new Date('2026-12-31T23:59:59.999Z'))).toBe('2026-12-31');
+    expect(getUtcDayKey(new Date('2027-01-01T00:00:00.000Z'))).toBe('2027-01-01');
+    expect(getUtcDayKey(new Date('2026-07-14T01:30:00.000+02:00'))).toBe('2026-07-13');
   });
 
-  it('uses Monday as the local week boundary, including across years', () => {
-    expect(getLocalWeekKey(new Date(2026, 6, 13, 0, 1))).toBe('2026-07-13');
-    expect(getLocalWeekKey(new Date(2026, 6, 19, 23, 59))).toBe('2026-07-13');
-    expect(getLocalWeekKey(new Date(2026, 6, 20, 0, 1))).toBe('2026-07-20');
-    expect(getLocalWeekKey(new Date(2027, 0, 1, 12))).toBe('2026-12-28');
-    expect(getLocalWeekKey(new Date(2027, 0, 4, 12))).toBe('2027-01-04');
+  it('uses Monday 00:00 UTC as the week boundary, including across years', () => {
+    expect(getUtcWeekKey(new Date('2026-07-13T00:00:00.000Z'))).toBe('2026-07-13');
+    expect(getUtcWeekKey(new Date('2026-07-19T23:59:59.999Z'))).toBe('2026-07-13');
+    expect(getUtcWeekKey(new Date('2026-07-20T00:00:00.000Z'))).toBe('2026-07-20');
+    expect(getUtcWeekKey(new Date('2027-01-01T12:00:00.000Z'))).toBe('2026-12-28');
+    expect(getUtcWeekKey(new Date('2027-01-04T00:00:00.000Z'))).toBe('2027-01-04');
   });
 
-  it('keeps calendar ordinals and week keys stable near a DST transition', () => {
-    expect(getLocalDayOrdinal(mondayAfterDst) - getLocalDayOrdinal(sundayBeforeDst)).toBe(1);
-    expect(getLocalWeekKey(sundayBeforeDst)).toBe('2026-03-23');
-    expect(getLocalWeekKey(mondayAfterDst)).toBe('2026-03-30');
+  it('is unaffected by a local DST transition', () => {
+    expect(getUtcDayOrdinal(mondayAfterDst) - getUtcDayOrdinal(sundayBeforeDst)).toBe(1);
+    expect(getUtcWeekKey(sundayBeforeDst)).toBe('2026-03-23');
+    expect(getUtcWeekKey(mondayAfterDst)).toBe('2026-03-30');
   });
 });
 
 describe('objective definitions and progression', () => {
   it('rotates the daily spotlight deterministically through all modes', () => {
     const dates = [0, 1, 2, 3].map(
-      (offset) => new Date(2026, 6, 13 + offset, 12),
+      (offset) => new Date(Date.UTC(2026, 6, 13 + offset, 12)),
     );
     const modes = dates.map(getDailySpotlightMode);
 
@@ -100,7 +101,7 @@ describe('objective definitions and progression', () => {
   });
 
   it('applies matching daily objectives and emits each reward exactly once', () => {
-    const now = new Date(2026, 6, 13, 12);
+    const now = new Date('2026-07-13T12:00:00.000Z');
     const spotlightMode = getDailySpotlightMode(now);
     const initial = createInitialProgressionState(now);
     const first = applyProgressionEvent(
@@ -141,7 +142,7 @@ describe('objective definitions and progression', () => {
   });
 
   it('requires five weekly matches and at least one in every mode', () => {
-    const now = new Date(2026, 6, 13, 12);
+    const now = new Date('2026-07-13T12:00:00.000Z');
     let state = createInitialProgressionState(now);
     for (let index = 0; index < 5; index += 1) {
       state = apply(state, event(`nhl-${index}`, 'nhl-circuit'), now);
@@ -170,8 +171,8 @@ describe('objective definitions and progression', () => {
   });
 
   it('resets expired periods while preserving permanent ledgers and road state', () => {
-    const sunday = new Date(2026, 6, 19, 23, 30);
-    const monday = new Date(2026, 6, 20, 0, 30);
+    const sunday = new Date('2026-07-19T23:30:00.000Z');
+    const monday = new Date('2026-07-20T00:30:00.000Z');
     const progressed = apply(
       createInitialProgressionState(sunday),
       event('period', 'nhl-circuit'),
@@ -192,7 +193,7 @@ describe('objective definitions and progression', () => {
 
 describe('Rivalry Road', () => {
   it('only advances the current step and never counts earlier matches retroactively', () => {
-    const now = new Date(2026, 6, 13, 12);
+    const now = new Date('2026-07-13T12:00:00.000Z');
     let state = createInitialProgressionState(now);
     state = apply(state, event('early-pwhl', 'pwhl-circuit'), now);
     expect(state.rivalryRoad.currentStepIndex).toBe(0);
@@ -235,7 +236,7 @@ describe('Rivalry Road', () => {
   });
 
   it('allows exactly one of the two fixed equal-value cards', () => {
-    const now = new Date(2026, 6, 13, 12);
+    const now = new Date('2026-07-13T12:00:00.000Z');
     const pending = unlockCardChoice(now);
     const invalid = chooseRivalryRoadCard(pending, 'not-a-card', 'invalid', now);
     const selected = chooseRivalryRoadCard(
@@ -285,8 +286,8 @@ describe('Rivalry Road', () => {
 
 describe('progression view and balance constants', () => {
   it('normalizes expired objectives for display without losing saved history', () => {
-    const firstDay = new Date(2026, 6, 13, 12);
-    const nextDay = new Date(2026, 6, 14, 12);
+    const firstDay = new Date('2026-07-13T12:00:00.000Z');
+    const nextDay = new Date('2026-07-14T12:00:00.000Z');
     const state = apply(
       createInitialProgressionState(firstDay),
       event('view', 'nhl-circuit'),

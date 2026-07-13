@@ -9,6 +9,10 @@ import type {
 } from '../../domain/cards/types';
 import type { Lineup } from '../../domain/lineups/types';
 import { parseCatalog } from '../catalogSchema';
+import {
+  buildEventCardManifest,
+  eventCardsFromManifest,
+} from './eventCardManifest';
 
 const placeholderFor = (playerId: string) => `placeholder:player/${playerId}`;
 
@@ -154,12 +158,15 @@ const cards: readonly CardVersion[] = [
   baseGoalieCard('pwhl-kristen-campbell', 93, { reflexes: 94, positioning: 96, glove: 93, blocker: 94, reboundControl: 95, puckHandling: 90, consistency: 96, clutch: 93 }, ['steady sequence']),
 ];
 
+export const eventCardManifest = buildEventCardManifest(players, cards);
+const calendarEventCards = eventCardsFromManifest(eventCardManifest);
+
 const EVENT_WINDOW = {
   availableFrom: '2026-07-01T00:00:00.000Z',
   availableTo: '2027-07-01T00:00:00.000Z',
 } as const;
 
-const eventCards: readonly CardVersion[] = [
+const rivalryRewardCards: readonly CardVersion[] = [
   { ...baseSkaterCard('nhl-connor-mcdavid', 97, { speed: 99, shooting: 96, passing: 98, puckControl: 99, defense: 85, physicality: 84, hockeyIq: 99, clutch: 99 }, ['rivalry rush', 'late-game gear']), id: 'nhl-connor-mcdavid-rivalry-2026', setId: 'rivalry-series-2026', cardType: 'featured', price: 2500, isPermanent: false, ...EVENT_WINDOW },
   { ...baseSkaterCard('nhl-quinn-hughes', 95, { speed: 97, shooting: 89, passing: 99, puckControl: 99, defense: 92, physicality: 77, hockeyIq: 99, clutch: 95 }, ['rivalry breakout']), id: 'nhl-quinn-hughes-rivalry-2026', setId: 'rivalry-series-2026', cardType: 'featured', price: 2250, isPermanent: false, ...EVENT_WINDOW },
   { ...baseSkaterCard('nhl-david-pastrnak', 95, { speed: 93, shooting: 99, passing: 93, puckControl: 97, defense: 79, physicality: 81, hockeyIq: 96, clutch: 97 }, ['rivalry one-timer']), id: 'nhl-david-pastrnak-rivalry-2026', setId: 'rivalry-series-2026', cardType: 'featured', price: 2250, isPermanent: false, ...EVENT_WINDOW },
@@ -181,7 +188,7 @@ const generated = parseCatalog({
     requiresManualApproval: true,
   },
   players,
-  cards: [...cards, ...eventCards],
+  cards: [...cards, ...calendarEventCards, ...rivalryRewardCards],
 });
 
 export const catalogMetadata = generated.metadata;

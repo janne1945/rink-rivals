@@ -1,6 +1,7 @@
 import type {
   AccountCard,
   AccountLineup,
+  AccountMarketState,
   AccountProfile,
   AccountObjectiveProgress,
   AccountRivalryRoadProgress,
@@ -9,7 +10,8 @@ import type {
 export interface AccountSnapshot {
   readonly profile: AccountProfile;
   readonly cards: readonly AccountCard[];
-  readonly activeLineup: AccountLineup | null;
+  readonly lineups: readonly AccountLineup[];
   readonly objectives: readonly AccountObjectiveProgress[];
   readonly rivalryRoad: AccountRivalryRoadProgress;
+  readonly market: AccountMarketState;
 }

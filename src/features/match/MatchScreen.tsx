@@ -8,6 +8,8 @@ interface MatchScreenProps {
   eligibleCardIds: readonly string[];
   rewardGranted: boolean;
   settling: boolean;
+  roundPlaying: boolean;
+  roundError?: string;
   settlementError?: string;
   progressionMessage?: string;
   onSelect: (cardId: string) => void;
@@ -16,7 +18,7 @@ interface MatchScreenProps {
   onFinish: () => void;
 }
 
-export function MatchScreen({ battle, eligibleCardIds, rewardGranted, settling, settlementError, progressionMessage, onSelect, onReveal, onRetrySettlement, onFinish }: MatchScreenProps) {
+export function MatchScreen({ battle, eligibleCardIds, rewardGranted, settling, roundPlaying, roundError, settlementError, progressionMessage, onSelect, onReveal, onRetrySettlement, onFinish }: MatchScreenProps) {
   if (battle.phase === "complete") {
     const label = battle.winner === "player" ? "Rivalry won" : battle.winner === "opponent" ? "Hard-fought loss" : "Dead even";
     return (
@@ -41,7 +43,12 @@ export function MatchScreen({ battle, eligibleCardIds, rewardGranted, settling, 
       {battle.phase === "awaiting-reveal" ? (
         <div className={styles.result}>
           <div aria-hidden="true" />
-          <div className={styles.resultCopy}><strong>Both locked in</strong><span>Selections stay hidden until the reveal</span><div style={{ marginTop: 14 }}><Button onClick={onReveal}>Reveal shift</Button></div></div>
+          <div className={styles.resultCopy}>
+            <strong>Card locked in</strong>
+            <span>The rival selection and server score stay hidden until the reveal.</span>
+            {roundError ? <span role="alert">{roundError}</span> : null}
+            <div style={{ marginTop: 14 }}><Button onClick={onReveal} disabled={roundPlaying}>{roundPlaying ? "Playing round…" : roundError ? "Retry reveal" : "Reveal shift"}</Button></div>
+          </div>
           <div aria-hidden="true" />
         </div>
       ) : latest ? (

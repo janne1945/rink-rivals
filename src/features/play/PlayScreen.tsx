@@ -27,8 +27,10 @@ export interface PlayScreenProps {
   readonly activeLineupIds: Record<string, string>;
   readonly collectionScore?: number;
   readonly preferredDifficulty?: AiDifficulty;
+  readonly starting?: boolean;
+  readonly startError?: string;
   readonly onDifficultyChange?: (difficulty: AiDifficulty) => void;
-  readonly onStart: (mode: GameMode, difficulty: AiDifficulty) => void;
+  readonly onStart: (mode: GameMode, difficulty: AiDifficulty) => Promise<void> | void;
 }
 
 export function PlayScreen({
@@ -36,6 +38,8 @@ export function PlayScreen({
   activeLineupIds,
   collectionScore = 0,
   preferredDifficulty = "rookie",
+  starting = false,
+  startError,
   onDifficultyChange,
   onStart,
 }: PlayScreenProps) {
@@ -101,8 +105,9 @@ export function PlayScreen({
             <p>{selectedDifficulty.label} · five rounds · goalie guaranteed</p>
             <p className={styles.rewardRange}>Win +{rewards.player} · Draw +{rewards.tie} · Loss +{rewards.opponent} Credits</p>
           </div>
-          <Button onClick={() => onStart(selected, difficulty)} disabled={!active || !difficultyUnlocked}>Start match</Button>
+          <Button onClick={() => void onStart(selected, difficulty)} disabled={!active || !difficultyUnlocked || starting}>{starting ? "Preparing rival…" : "Start match"}</Button>
         </div>
+        {startError ? <p className={styles.error} role="alert">{startError}</p> : null}
       </section>
     </div>
   );
