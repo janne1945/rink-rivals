@@ -86,6 +86,23 @@
   font-weight: 900;
 }
 
+.accountActions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.logout {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgb(255 255 255 / 3%);
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
 .credits span {
   color: var(--muted);
   font-size: 0.58rem;
@@ -202,5 +219,17 @@
 
   .credits span {
     display: none;
+  }
+
+  .logout {
+    width: 40px;
+    overflow: hidden;
+    padding: 0;
+    color: transparent;
+  }
+
+  .logout::after {
+    color: var(--muted);
+    content: "↗";
   }
 }

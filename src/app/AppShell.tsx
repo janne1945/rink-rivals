@@ -10,7 +10,14 @@ const navItems = [
   ["/market", "✦", "Market"],
 ] as const;
 
-export function AppShell({ credits, children }: { credits: number; children: ReactNode }) {
+interface AppShellProps {
+  readonly credits: number;
+  readonly displayName: string | null;
+  readonly onLogout: () => Promise<void>;
+  readonly children: ReactNode;
+}
+
+export function AppShell({ credits, displayName, onLogout, children }: AppShellProps) {
   return (
     <div className={styles.shell}>
       <header className={styles.header}>
@@ -22,8 +29,13 @@ export function AppShell({ credits, children }: { credits: number; children: Rea
               <span className={styles.tagline}>Two leagues. One collection.</span>
             </span>
           </NavLink>
-          <div className={styles.credits} aria-label={`${credits.toLocaleString("en-US")} credits`}>
-            {credits.toLocaleString("en-US")} <span>CREDITS</span>
+          <div className={styles.accountActions}>
+            <div className={styles.credits} aria-label={`${credits.toLocaleString("en-US")} credits`}>
+              {credits.toLocaleString("en-US")} <span>CREDITS</span>
+            </div>
+            <button className={styles.logout} type="button" onClick={() => void onLogout()} aria-label={`Sign out${displayName ? ` ${displayName}` : ""}`}>
+              Sign out
+            </button>
           </div>
         </div>
       </header>

@@ -14,6 +14,7 @@ export interface AccountProfile {
   readonly credits: number;
   readonly selectedTeamId: string | null;
   readonly starterClaimedAt: string | null;
+  readonly onboardingCompleted: boolean;
 }
 
 export interface AccountCard {
@@ -30,6 +31,13 @@ export interface AccountLineup {
   readonly slots: Readonly<Partial<Record<LineupSlot, string>>>;
 }
 
+export interface AccountRepository {
+  loadProfile(): Promise<AccountProfile>;
+  loadOwnCards(): Promise<readonly AccountCard[]>;
+  loadLineup(lineupId?: string): Promise<AccountLineup | null>;
+  claimStarterTeam(selectedTeamId: string): Promise<AccountLineup>;
+}
+
 function requireData<T>(data: T | null, error: { message: string } | null): T {
   if (error) throw new Error(error.message);
   if (data === null) throw new Error("Supabase returned no data.");
@@ -43,6 +51,7 @@ function toProfile(row: ProfileRow): AccountProfile {
     credits: row.credits,
     selectedTeamId: row.favorite_team_id,
     starterClaimedAt: row.starter_claimed_at,
+    onboardingCompleted: row.onboarding_completed,
   };
 }
 
@@ -54,7 +63,7 @@ function toCard(row: UserCardRow): AccountCard {
   };
 }
 
-export class SupabaseAccountRepository {
+export class SupabaseAccountRepository implements AccountRepository {
   constructor(private readonly client: SupabaseClient<Database>) {}
 
   async loadProfile(): Promise<AccountProfile> {

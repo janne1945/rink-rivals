@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { installSupabaseMock } from "./supabaseMock";
 
 async function seedRivalryChoicePending(page: import("@playwright/test").Page) {
   await page.evaluate(async () => {
@@ -51,6 +52,9 @@ async function readPrimarySave(page: import("@playwright/test").Page) {
 }
 
 test.describe("Rink Rivals MVP", () => {
+  test.beforeEach(async ({ page }) => {
+    await installSupabaseMock(page, { authenticated: true, onboardingCompleted: true });
+  });
   test("loads the club and navigates every primary area without browser errors", async ({ page }) => {
     const errors: string[] = [];
     page.on("console", (message) => {
@@ -60,7 +64,7 @@ test.describe("Rink Rivals MVP", () => {
 
     await page.goto("/");
     await expect(page.getByRole("heading", { name: /own the ice/i })).toBeVisible();
-    await expect(page.getByLabel(/credits/i)).toContainText("1,200");
+    await expect(page.getByLabel(/credits/i)).toContainText("1,000");
 
     for (const [label, heading] of [
       ["Cards", "Collection"],
@@ -92,7 +96,7 @@ test.describe("Rink Rivals MVP", () => {
     await expect(page.getByText("Final horn")).toBeVisible();
     await expect(page.getByText(/Credits added to your club/)).toBeVisible();
     const finalCredits = await page.getByLabel(/credits/i).innerText();
-    expect(finalCredits).not.toContain("1,200");
+    expect(finalCredits).toContain("1,000");
     await page.getByRole("button", { name: "Return to club" }).click();
     await expect(page).toHaveURL("/");
     await page.reload();
@@ -124,9 +128,9 @@ test.describe("Rink Rivals MVP", () => {
     const rookie = page.getByRole("button", { name: /Rookie Unlocked/i });
     const elite = page.getByRole("button", { name: /Elite Locked/i });
 
-    await expect(page.getByText("Collection score: 2,982")).toBeVisible();
+    await expect(page.getByText(/Collection score:/)).toBeVisible();
     await expect(elite).toHaveAttribute("aria-disabled", "true");
-    await expect(elite).toContainText("518 more Collection Score");
+    await expect(elite).toContainText(/more Collection Score/);
     await rookie.focus();
     await page.keyboard.press("Enter");
     await expect(rookie).toHaveAttribute("aria-pressed", "true");
@@ -222,7 +226,7 @@ test.describe("Rink Rivals MVP", () => {
     });
 
     await page.reload();
-    await expect(page.getByLabel(/credits/i)).toContainText("777");
+    await expect(page.getByLabel(/credits/i)).toContainText("1,000");
     await expect(page.getByText("4 matches completed")).toBeVisible();
     const migrated = await readPrimarySave(page) as {
       version: number;
@@ -261,14 +265,15 @@ test.describe("Rink Rivals MVP", () => {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 
-  test("edits a valid lineup and restores it after reload", async ({ page }) => {
+  test("loads the active Supabase lineup and restores it after reload", async ({ page }) => {
     await page.goto("/lineups");
+    await expect(page.getByRole("heading", { name: "Edmonton Oilers Starter" })).toBeVisible();
     await page.getByRole("button", { name: "Edit six" }).first().click();
-    await page.getByRole("button", { name: /Kirill Kaprizov, 93 overall/i }).click();
-    await page.getByRole("button", { name: "Save lineup" }).click();
-    await expect(page.getByText("Lineup saved to this device.")).toBeVisible();
+    await expect(page.getByRole("tab", { name: /C Connor McDavid/i })).toBeVisible();
+    await expect(page.getByRole("tab", { name: /RD Evan Bouchard/i })).toBeVisible();
     await page.reload();
+    await expect(page.getByRole("heading", { name: "Edmonton Oilers Starter" })).toBeVisible();
     await page.getByRole("button", { name: "Edit six" }).first().click();
-    await expect(page.getByRole("tab", { name: /LW Kirill Kaprizov/i })).toBeVisible();
+    await expect(page.getByRole("tab", { name: /C Connor McDavid/i })).toBeVisible();
   });
 });

@@ -25,6 +25,8 @@ import {
 } from "../domain/progression";
 import { createBaseMarket, createEventShopRotation } from "../domain/shop";
 import { gameCatalog, starterLineups } from "../data/generated/gameCatalog";
+import { AccountGate } from "../features/account/AccountGate";
+import type { AccountSnapshot } from "../features/account/types";
 import { CollectionScreen } from "../features/collection/CollectionScreen";
 import { HomeScreen } from "../features/home/HomeScreen";
 import { LineupsScreen } from "../features/lineup/LineupsScreen";
@@ -37,11 +39,17 @@ import {
   DexieGameSaveRepository,
   type SaveGameV2,
 } from "../infrastructure/persistence";
+import {
+  createAccountRepository,
+  createAuthService,
+} from "../infrastructure/supabase";
 import { AppShell } from "./AppShell";
 import { buildProgressionScreenModels } from "./progressionView";
 import styles from "./App.module.css";
 
 const repository = new DexieGameSaveRepository();
+const accountRepository = createAccountRepository();
+const authService = createAuthService();
 const baseMarket = createBaseMarket(gameCatalog.cards);
 const rivalryRewardCardIds = new Set<string>(RIVALRY_REWARD_CARD_IDS);
 const eventRotation = createEventShopRotation(
@@ -109,6 +117,14 @@ function creditTotal(rewards: readonly ProgressionReward[]): number {
 }
 
 export function App() {
+  return (
+    <AccountGate auth={authService} repository={accountRepository}>
+      {(account, logout) => <GameApp account={account} onLogout={logout} />}
+    </AccountGate>
+  );
+}
+
+function GameApp({ account, onLogout }: { readonly account: AccountSnapshot; readonly onLogout: () => Promise<void> }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [save, setSave] = useState<SaveGameV2 | null>(null);
@@ -152,7 +168,7 @@ export function App() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const lineups = useMemo(() => save ? Object.values(save.lineups) as Lineup[] : [], [save]);
+  const localLineups = useMemo(() => save ? Object.values(save.lineups) as Lineup[] : [], [save]);
 
   async function activateLineup(lineup: Lineup) {
     const updated = await repository.update((current) => ({
@@ -198,9 +214,17 @@ export function App() {
 
   function startMatch(mode: GameMode, difficulty: AiDifficulty) {
     if (!save) return;
-    if (!save.unlockedAiTierIds.includes(difficulty)) return;
+    const cloudScore = calculateCollectionScore(
+      Object.fromEntries(account.cards.map((card) => [card.cardId, { cardId: card.cardId, quantity: card.quantity, acquiredAt: card.acquiredAt }])),
+      gameCatalog.cards,
+    ).score;
+    if (!getUnlockedAiTierIds(cloudScore, AI_TIER_THRESHOLDS).includes(difficulty)) return;
+    const cloudLineup = account.activeLineup?.mode === mode
+      && ["LW", "C", "RW", "LD", "RD", "G"].every((slot) => account.activeLineup?.slots[slot as keyof typeof account.activeLineup.slots])
+      ? { id: account.activeLineup.id, name: account.activeLineup.name, mode, slots: account.activeLineup.slots as Lineup["slots"] }
+      : undefined;
     const activeId = save.activeLineupIds[mode];
-    const lineup = activeId ? save.lineups[activeId] : undefined;
+    const lineup = cloudLineup ?? (activeId ? save.lineups[activeId] : undefined);
     if (!lineup) return;
     const nextBattle = createBattle({
       seed: crypto.randomUUID(),
@@ -337,7 +361,31 @@ export function App() {
     return <div className={styles.loading}><div><div className={styles.puck} /><h1>Preparing the ice</h1><p>Loading your local collection…</p></div></div>;
   }
 
-  const uniqueCards = Object.keys(save.collection).length;
+  const cloudCollection = Object.fromEntries(account.cards.map((card) => [
+    card.cardId,
+    { cardId: card.cardId, quantity: card.quantity, acquiredAt: card.acquiredAt },
+  ]));
+  const cloudLineup = account.activeLineup && ["LW", "C", "RW", "LD", "RD", "G"].every((slot) => account.activeLineup?.slots[slot as keyof typeof account.activeLineup.slots])
+    ? {
+        id: account.activeLineup.id,
+        name: account.activeLineup.name,
+        mode: account.activeLineup.mode,
+        slots: account.activeLineup.slots as Lineup["slots"],
+      }
+    : null;
+  const lineups = cloudLineup
+    ? [cloudLineup, ...localLineups.filter((lineup) => lineup.mode !== cloudLineup.mode)]
+    : localLineups;
+  const activeLineupIds = {
+    ...save.activeLineupIds,
+    ...(cloudLineup ? { [cloudLineup.mode]: cloudLineup.id } : {}),
+  };
+  const cloudCollectionScore = calculateCollectionScore(cloudCollection, gameCatalog.cards).score;
+  const cloudUnlockedDifficultyIds = getUnlockedAiTierIds(cloudCollectionScore, AI_TIER_THRESHOLDS);
+  const preferredDifficulty = cloudUnlockedDifficultyIds.includes(save.preferredAiDifficulty)
+    ? save.preferredAiDifficulty
+    : "rookie";
+  const uniqueCards = account.cards.length;
   const safeBattle = battle ? getBattleView(battle, "player") : null;
   const progressionModels = buildProgressionScreenModels(save.progression, gameCatalog, clock, {
     isSubmitting: choiceSubmitting,
@@ -345,13 +393,13 @@ export function App() {
   });
 
   return (
-    <AppShell credits={save.credits}>
+    <AppShell credits={account.profile.credits} displayName={account.profile.displayName} onLogout={onLogout}>
       <Routes>
-        <Route path="/" element={<HomeScreen credits={save.credits} uniqueCards={uniqueCards} collectionScore={save.collectionScore} completedMatches={save.completedMatches} goals={progressionModels.goalsSummary} />} />
-        <Route path="/collection" element={<CollectionScreen catalog={gameCatalog} collection={save.collection} />} />
-        <Route path="/lineups" element={<LineupsScreen lineups={lineups} activeLineupIds={Object.fromEntries(Object.entries(save.activeLineupIds).map(([mode, id]) => [mode, id ?? ""]))} catalog={gameCatalog} collection={save.collection} onActivate={(lineup) => void activateLineup(lineup)} onSave={saveLineup} />} />
-        <Route path="/play" element={<PlayScreen lineups={lineups} activeLineupIds={Object.fromEntries(Object.entries(save.activeLineupIds).map(([mode, id]) => [mode, id ?? ""]))} collectionScore={save.collectionScore} preferredDifficulty={save.preferredAiDifficulty} onDifficultyChange={(difficulty) => void selectDifficulty(difficulty)} onStart={startMatch} />} />
-        <Route path="/market" element={<MarketScreen catalog={gameCatalog} collection={save.collection} credits={save.credits} baseOffers={baseMarket.offers} eventRotation={eventRotation} onBuy={buyCard} />} />
+        <Route path="/" element={<HomeScreen credits={account.profile.credits} uniqueCards={uniqueCards} collectionScore={cloudCollectionScore} completedMatches={save.completedMatches} goals={progressionModels.goalsSummary} />} />
+        <Route path="/collection" element={<CollectionScreen catalog={gameCatalog} collection={cloudCollection} />} />
+        <Route path="/lineups" element={<LineupsScreen lineups={lineups} activeLineupIds={Object.fromEntries(Object.entries(activeLineupIds).map(([mode, id]) => [mode, id ?? ""]))} catalog={gameCatalog} collection={cloudCollection} onActivate={(lineup) => void activateLineup(lineup)} onSave={saveLineup} />} />
+        <Route path="/play" element={<PlayScreen lineups={lineups} activeLineupIds={Object.fromEntries(Object.entries(activeLineupIds).map(([mode, id]) => [mode, id ?? ""]))} collectionScore={cloudCollectionScore} preferredDifficulty={preferredDifficulty} onDifficultyChange={(difficulty) => void selectDifficulty(difficulty)} onStart={startMatch} />} />
+        <Route path="/market" element={<MarketScreen catalog={gameCatalog} collection={cloudCollection} credits={account.profile.credits} baseOffers={baseMarket.offers} eventRotation={eventRotation} onBuy={buyCard} />} />
         <Route path="/objectives" element={<ObjectiveScreen dailyObjectives={progressionModels.dailyObjectives} dailyPeriodLabel={progressionModels.dailyPeriodLabel} weeklyObjective={progressionModels.weeklyObjective} weeklyPeriodLabel={progressionModels.weeklyPeriodLabel} rivalrySteps={progressionModels.rivalrySteps} rewardChoice={progressionModels.rewardChoice} statusMessage={goalsStatus || undefined} onChooseRivalryCard={(cardId) => void chooseRivalryCard(cardId)} />} />
         <Route path="/match" element={battle && safeBattle ? <MatchScreen battle={safeBattle} eligibleCardIds={getEligibleCards(battle, "player").map(({ card }) => card.id)} rewardCredits={displayedRewardCredits || getMatchRewardCredits(battle.difficulty, battle.winner ?? "tie")} rewardGranted={rewardGranted} progressionMessage={matchProgressionMessage} onSelect={chooseCard} onReveal={reveal} onFinish={() => navigate("/")} /> : <Navigate to="/play" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
