@@ -78,7 +78,7 @@ test.describe("Rink Rivals MVP", () => {
 
     await page.goto("/");
     await expect(page.getByRole("heading", { name: /own the ice/i })).toBeVisible();
-    await expect(page.getByLabel(/credits/i)).toContainText("1,000");
+    await expect(page.getByLabel(/rivalry points/i)).toContainText("1,000");
 
     for (const [label, heading] of [
       ["Cards", "Collection"],
@@ -113,12 +113,12 @@ test.describe("Rink Rivals MVP", () => {
     await expect(roundSummaries).toHaveCount(5);
     expect((await roundSummaries.allTextContents()).every((summary) => summary.includes("vs"))).toBe(true);
     await expect(page.getByText(/Match settled on the server/)).toBeVisible();
-    const finalCredits = await page.getByLabel(/credits/i).innerText();
+    const finalCredits = await page.getByLabel(/rivalry points/i).innerText();
     expect(finalCredits).not.toContain("1,000");
     await page.getByRole("button", { name: "Back to overview" }).click();
     await expect(page).toHaveURL("/");
     await page.reload();
-    await expect(page.getByLabel(/credits/i)).toContainText(finalCredits.trim());
+    await expect(page.getByLabel(/rivalry points/i)).toContainText(finalCredits.trim());
     await expect(page.getByText("1 matches completed")).toBeVisible();
     await page.getByRole("button", { name: "View all goals" }).click();
     await expect(page.getByRole("progressbar", { name: /Circuit tour: 1 of 5/i })).toBeVisible();
@@ -202,7 +202,7 @@ test.describe("Rink Rivals MVP", () => {
     }).toBe("rookie");
     await page.reload();
     await expect(page.getByRole("button", { name: /Rookie Unlocked/i })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByText("Win +120 · Draw +90 · Loss +60 Credits")).toBeVisible();
+    await expect(page.getByText("Win +120 RP · Draw +90 RP · Loss +60 RP")).toBeVisible();
   });
 
   test("ignores legacy local Rivalry Road progress and never writes its reward locally", async ({ page }) => {
@@ -276,7 +276,7 @@ test.describe("Rink Rivals MVP", () => {
     });
 
     await page.reload();
-    await expect(page.getByLabel(/credits/i)).toContainText("1,000");
+    await expect(page.getByLabel(/rivalry points/i)).toContainText("1,000");
     await expect(page.getByText("Make your debut")).toBeVisible();
     const migrated = await readPrimarySave(page) as {
       version: number;

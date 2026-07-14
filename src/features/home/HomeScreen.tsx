@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../shared/Button";
+import { formatRivalryPoints } from "../../shared/rivalryPoints";
 import styles from "../Screens.module.css";
 import type { GoalsSummaryViewModel, ObjectiveViewModel } from "../objectives/viewModels";
 
@@ -43,7 +44,7 @@ export function HomeScreen({ credits, uniqueCards, collectionScore, completedMat
           <p>Synced securely with your account</p>
         </div>
         <div className={styles.statGrid}>
-          <div className={styles.stat}><small>Credits</small><strong>{credits.toLocaleString("en-US")}</strong></div>
+          <div className={styles.stat}><small>Rivalry Points</small><strong>{formatRivalryPoints(credits)}</strong></div>
           <div className={styles.stat}><small>Unique cards</small><strong>{uniqueCards}</strong></div>
           <div className={styles.stat}><small>Collection score</small><strong>{collectionScore}</strong></div>
         </div>
@@ -63,7 +64,7 @@ export function HomeScreen({ credits, uniqueCards, collectionScore, completedMat
               <article key={objective.id} className={`${styles.homeGoal} ${objective.completed ? styles.goalCompleted : ""}`}>
                 <span className={styles.goalState}>{objective.completed ? "Done" : compactProgress(objective)}</span>
                 <h3>{objective.title}</h3>
-                <strong>{objective.completed ? "Reward added" : `+${objective.rewardCredits} CR`}</strong>
+                <strong>{objective.completed ? "Reward added" : `+${formatRivalryPoints(objective.rewardCredits)}`}</strong>
               </article>
             ))}
           </div>

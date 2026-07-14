@@ -37,6 +37,7 @@ import type {
   AccountLineup,
   PlayMatchRoundResult,
 } from "../infrastructure/supabase";
+import { formatRivalryPoints } from "../shared/rivalryPoints";
 import { createServerClockAnchor, serverTimestampAt } from "../shared/serverClock";
 import { AppShell } from "./AppShell";
 import { buildProgressionScreenModels } from "./progressionView";
@@ -227,7 +228,7 @@ export function GameApp({ account, actions }: {
       const result = await actions.settleMatch({ clientMatchId: clientId });
       setMatchProgressionMessage(result.status === "already-settled"
         ? "This match was already settled. No reward was granted twice."
-        : `Match settled on the server. +${result.rewardCredits} Credits including completed goals.`);
+        : `Match settled on the server. +${formatRivalryPoints(result.rewardCredits)} including completed goals.`);
       setRewardGranted(true);
     } catch (error) {
       setMatchSettlementError(error instanceof Error ? error.message : "The match could not be settled.");

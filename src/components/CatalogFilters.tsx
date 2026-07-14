@@ -19,6 +19,10 @@ interface CatalogFiltersProps {
   readonly setIds: readonly string[];
   readonly resultCount: number;
   readonly searchLabel?: string;
+  readonly searchPlaceholder?: string;
+  readonly title?: string;
+  readonly description?: string;
+  readonly resultLabel?: string;
   readonly resetOwnership?: CatalogFilterState["ownership"];
   readonly showOwnership?: boolean;
   readonly showPrice?: boolean;
@@ -53,6 +57,10 @@ export function CatalogFilters({
   setIds,
   resultCount,
   searchLabel = "Search",
+  searchPlaceholder = "Player, team, set…",
+  title = "Filter cards",
+  description,
+  resultLabel,
   resetOwnership = "all",
   showOwnership = true,
   showPrice = true,
@@ -83,8 +91,9 @@ export function CatalogFilters({
     <section className={styles.panel} aria-labelledby="catalog-filter-heading">
       <div className={styles.heading}>
         <div>
-          <h2 id="catalog-filter-heading">Filter cards</h2>
-          <p aria-live="polite">{resultCount} result{resultCount === 1 ? "" : "s"}</p>
+          <h2 id="catalog-filter-heading">{title}</h2>
+          {description ? <p>{description}</p> : null}
+          <p aria-live="polite">{resultLabel ?? `${resultCount} result${resultCount === 1 ? "" : "s"}`}</p>
         </div>
         <button
           className={styles.reset}
@@ -102,7 +111,7 @@ export function CatalogFilters({
             type="search"
             value={filters.query}
             onChange={(event) => update("query", event.target.value)}
-            placeholder="Player, team, set…"
+            placeholder={searchPlaceholder}
           />
         </label>
 

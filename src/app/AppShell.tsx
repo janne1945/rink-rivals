@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
+import { rivalryPointsLabel } from "../shared/rivalryPoints";
 import styles from "./AppShell.module.css";
 
 const navItems = [
@@ -32,8 +33,8 @@ export function AppShell({ credits, displayName, onLogout, logoutBusy = false, l
             </span>
           </NavLink>
           <div className={styles.accountActions}>
-            <div className={styles.credits} aria-label={`${credits.toLocaleString("en-US")} credits`}>
-              {credits.toLocaleString("en-US")} <span>CREDITS</span>
+            <div className={styles.credits} aria-label={rivalryPointsLabel(credits)}>
+              {credits.toLocaleString("en-US")} <span>RP</span>
             </div>
             <button className={styles.logout} type="button" disabled={logoutBusy} onClick={() => void onLogout()} aria-label={`Sign out${displayName ? ` ${displayName}` : ""}`}>
               {logoutBusy ? "Signing out…" : "Sign out"}

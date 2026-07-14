@@ -3,6 +3,7 @@ import { MATCH_REWARDS, type AiDifficulty } from "../../domain/battle";
 import type { GameMode, Lineup } from "../../domain/lineups";
 import { AI_TIER_THRESHOLDS } from "../../domain/progression";
 import { Button } from "../../shared/Button";
+import { formatRivalryPoints } from "../../shared/rivalryPoints";
 import styles from "../Screens.module.css";
 
 const modes: Array<{ id: GameMode; label: string; kicker: string; copy: string }> = [
@@ -91,7 +92,7 @@ export function PlayScreen({
               >
                 <span className={styles.difficultyTopline}><strong>{option.label}</strong><span>{unlocked ? "Unlocked" : "Locked"}</span></span>
                 <p>{option.copy}</p>
-                <small>{unlocked ? `Win +${MATCH_REWARDS[option.id].player} CR` : `${scoreNeeded.toLocaleString("en-US")} more Collection Score`}</small>
+                <small>{unlocked ? `Win +${formatRivalryPoints(MATCH_REWARDS[option.id].player)}` : `${scoreNeeded.toLocaleString("en-US")} more Collection Score`}</small>
               </button>
             );
           })}
@@ -103,7 +104,7 @@ export function PlayScreen({
             <p className={styles.eyebrow}>Active six</p>
             <h2>{active?.name ?? "No valid lineup"}</h2>
             <p>{selectedDifficulty.label} · five rounds · goalie guaranteed</p>
-            <p className={styles.rewardRange}>Win +{rewards.player} · Draw +{rewards.tie} · Loss +{rewards.opponent} Credits</p>
+            <p className={styles.rewardRange}>Win +{formatRivalryPoints(rewards.player)} · Draw +{formatRivalryPoints(rewards.tie)} · Loss +{formatRivalryPoints(rewards.opponent)}</p>
           </div>
           <Button onClick={() => void onStart(selected, difficulty)} disabled={!active || !difficultyUnlocked || starting}>{starting ? "Preparing rival…" : "Start match"}</Button>
         </div>

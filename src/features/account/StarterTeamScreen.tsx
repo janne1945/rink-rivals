@@ -69,7 +69,7 @@ export function StarterTeamScreen({ busy, errorMessage, displayName, onClaim, on
         <div className={styles.starterIntro}>
           <p className={styles.eyebrow}>Welcome{displayName ? `, ${displayName}` : ""}</p>
           <h1 id="starter-heading">Choose your club</h1>
-          <p className={styles.intro}>Pick any NHL or PWHL team. You’ll receive six balanced Starter cards and 1,000 Credits.</p>
+          <p className={styles.intro}>Pick any NHL or PWHL team. You’ll receive six balanced Starter cards and 1,000 Rivalry Points.</p>
           <div className={styles.starterExplanation}>
             <strong>Starter cards are entry editions</strong>
             <p>They are entry editions tuned below the full Base profiles. Floor cases may share 68 OVR, but their attributes remain weaker; the Base Market still gives you clear upgrades to chase.</p>
@@ -139,7 +139,7 @@ export function StarterTeamScreen({ busy, errorMessage, displayName, onClaim, on
               ))}
             </ul>
 
-            <div className={styles.claimSummary}><strong>6 Starter Cards</strong><strong>1,000 Credits</strong></div>
+            <div className={styles.claimSummary}><strong>6 Starter Cards</strong><strong>1,000 RP</strong></div>
             {errorMessage ? <p className={styles.error} role="alert">{errorMessage}</p> : null}
             <button
               className={styles.primaryButton}

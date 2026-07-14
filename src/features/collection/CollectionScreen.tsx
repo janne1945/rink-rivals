@@ -13,6 +13,7 @@ import {
 } from "../../domain/cards";
 import type { OwnedCard } from "../../domain/economy";
 import { HockeyCard } from "../../shared/HockeyCard";
+import { formatRivalryPoints } from "../../shared/rivalryPoints";
 import { marketAvailabilityLabel } from "../../shared/marketAvailabilityLabel";
 import styles from "../Screens.module.css";
 
@@ -87,7 +88,7 @@ export function CollectionScreen({ catalog, collection }: CollectionScreenProps)
               <HockeyCard card={card} player={player} disabled={!owned} status={ownershipLabel} marketStatus={marketStatus} />
               <div className={styles.ownedMeta}>
                 <span>{ownershipLabel}</span>
-                <span>{card.price.toLocaleString("en-US")} CR</span>
+                <span>{formatRivalryPoints(card.price)}</span>
               </div>
             </div>
           );

@@ -104,7 +104,7 @@ describe("progression UI", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /pro/i }));
     expect(onDifficultyChange).toHaveBeenCalledWith("pro");
-    expect(screen.getByText(/win \+180 · draw \+120 · loss \+80 credits/i)).toBeVisible();
+    expect(screen.getByText(/win \+180 rp · draw \+120 rp · loss \+80 rp/i)).toBeVisible();
 
     fireEvent.click(screen.getByRole("button", { name: "Start match" }));
     expect(onStart).toHaveBeenCalledWith("open-ice", "pro");

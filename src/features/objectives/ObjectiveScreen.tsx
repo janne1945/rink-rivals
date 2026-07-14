@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../shared/Button";
 import { HockeyCard } from "../../shared/HockeyCard";
+import { formatRivalryPoints } from "../../shared/rivalryPoints";
 import styles from "../Screens.module.css";
 import type {
   ObjectiveViewModel,
@@ -21,7 +22,7 @@ function GoalCard({ objective }: GoalCardProps) {
     <article className={`${styles.goalCard} ${objective.completed ? styles.goalCompleted : ""}`}>
       <div className={styles.goalCardTop}>
         <span className={styles.goalState}>{objective.completed ? "Completed" : "In progress"}</span>
-        <strong className={styles.goalReward}>{objective.completed ? "Claimed" : `+${objective.rewardCredits} CR`}</strong>
+        <strong className={styles.goalReward}>{objective.completed ? "Claimed" : `+${formatRivalryPoints(objective.rewardCredits)}`}</strong>
       </div>
       <div>
         <h3>{objective.title}</h3>

@@ -28,7 +28,7 @@ const baseUpgradeCard = gameCatalog.cards
   .sort((left, right) => left.price - right.price || right.overall - left.overall)[0]!;
 const baseUpgradePlayer = playersById.get(baseUpgradeCard.playerId)!;
 const baseUpgradeAccessibleName = new RegExp(`${baseUpgradePlayer.name}, ${baseUpgradeCard.overall} overall`, "i");
-const baseUpgradeBuyName = `Buy ${baseUpgradePlayer.name} for ${baseUpgradeCard.price.toLocaleString("en-US")} Credits`;
+const baseUpgradeAcquireName = `Add ${baseUpgradePlayer.name} to Collection for ${baseUpgradeCard.price.toLocaleString("en-US")} RP`;
 const torontoSampleCard = cardsById.get(torontoStarter.lineup.LW)!;
 const torontoSamplePlayer = playersById.get(torontoSampleCard.playerId)!;
 const secondaryPositionPlayer = gameCatalog.players.find((player) =>
@@ -79,11 +79,11 @@ test.describe("Supabase account flow", () => {
     await installSupabaseMock(firstPage, { authenticated: true, onboardingCompleted: true });
     await installSupabaseMock(secondPage, { authenticated: true, onboardingCompleted: true });
     await Promise.all([firstPage.goto("/collection"), secondPage.goto("/lineups")]);
-    await expect(firstPage.getByLabel(/credits/i)).toContainText("1,000");
+    await expect(firstPage.getByLabel(/rivalry points/i)).toContainText("1,000");
     await expect(firstPage.locator("article")).toHaveCount(6);
     await expect(secondPage.getByRole("heading", { name: "Edmonton Oilers Starter" })).toBeVisible();
     await Promise.all([firstPage.reload(), secondPage.reload()]);
-    await expect(firstPage.getByLabel(/credits/i)).toContainText("1,000");
+    await expect(firstPage.getByLabel(/rivalry points/i)).toContainText("1,000");
     await expect(secondPage.getByRole("heading", { name: "Edmonton Oilers Starter" })).toBeVisible();
     await firstContext.close();
     await secondContext.close();
@@ -130,7 +130,7 @@ test.describe("Supabase account flow", () => {
     expect(sharedState.completedMatches).toBe(1);
     expect(sharedState.credits).toBe(1000 + sharedState.settlements.get("shared-match")!.rewardCredits);
     await Promise.all([firstPage.reload(), secondPage.reload()]);
-    await expect(firstPage.getByLabel(/credits/i)).toContainText(sharedState.credits.toLocaleString("en-US"));
+    await expect(firstPage.getByLabel(/rivalry points/i)).toContainText(sharedState.credits.toLocaleString("en-US"));
     await expect(secondPage.getByText("1 matches completed")).toBeVisible();
     await firstContext.close();
     await secondContext.close();
@@ -157,7 +157,7 @@ test.describe("Supabase account flow", () => {
     await expect(page.getByText("Starter cards are entry editions")).toBeVisible();
     await page.getByRole("button", { name: "Choose Edmonton Oilers" }).click();
     await expect(page.getByRole("heading", { name: "Collection" })).toBeVisible();
-    await expect(page.getByLabel(/credits/i)).toContainText("1,000");
+    await expect(page.getByLabel(/rivalry points/i)).toContainText("1,000");
     await expect(page.locator("article")).toHaveCount(6);
   });
 
@@ -233,8 +233,9 @@ test.describe("Supabase account flow", () => {
 
     await page.getByRole("link", { name: "Market", exact: true }).click();
     await page.getByLabel("Search market").fill(baseUpgradePlayer.name);
-    await page.getByRole("button", { name: baseUpgradeBuyName }).click();
-    await expect(page.getByRole("status")).toContainText("Card added to your collection");
+    await page.getByRole("button", { name: baseUpgradeAcquireName }).click();
+    await page.getByRole("button", { name: "Acquire Player" }).click();
+    await expect(page.getByRole("status")).toContainText("added to your Collection");
 
     await page.getByRole("link", { name: "Cards", exact: true }).click();
     await page.getByLabel("Search collection").fill(baseUpgradePlayer.name);
@@ -270,18 +271,56 @@ test.describe("Supabase account flow", () => {
   test("prevents a double purchase submit before React can disable the button", async ({ page }) => {
     const state = createSupabaseMockState(true);
     state.credits = baseUpgradeCard.price;
-    await installSupabaseMock(page, { authenticated: true, purchaseDelayMs: 200, state });
+    await installSupabaseMock(page, { authenticated: true, purchaseDelayMs: 600, state });
     await page.goto("/market");
     await page.getByLabel("Search market").fill(baseUpgradePlayer.name);
-    const purchase = page.getByRole("button", { name: baseUpgradeBuyName });
+    await page.getByRole("button", { name: baseUpgradeAcquireName }).click();
+    const purchase = page.getByRole("button", { name: "Acquire Player" });
     await purchase.evaluate((button) => {
       (button as HTMLButtonElement).click();
       (button as HTMLButtonElement).click();
     });
-    await expect(page.getByRole("status")).toContainText("Card added to your collection");
+    const cancel = page.getByRole("button", { name: "Cancel" });
+    await expect(cancel).toHaveAttribute("aria-disabled", "true");
+    await page.keyboard.press("Tab");
+    await expect(cancel).toBeFocused();
+    const purchaseStatus = page.getByRole("status");
+    await expect(purchaseStatus).toContainText("added to your Collection");
+    await expect(purchaseStatus.getByRole("heading", { name: "Player Acquired" })).toBeFocused();
     expect(state.purchaseCallCount).toBe(1);
     expect(state.credits).toBe(0);
     expect(state.cards.get(baseUpgradeCard.id)?.quantity).toBe(1);
+  });
+
+  test("uses premium Market language and confirms an acquisition accessibly", async ({ page }) => {
+    const state = createSupabaseMockState(true);
+    state.credits = baseUpgradeCard.price;
+    await installSupabaseMock(page, { authenticated: true, state });
+    await page.goto("/market");
+
+    await expect(page.getByRole("heading", { name: "Player Market" })).toBeVisible();
+    await expect(page.getByText(/server verified.*instant delivery/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Explore the Market" })).toBeVisible();
+    await page.getByLabel("Search market").fill(baseUpgradePlayer.name);
+
+    const acquisition = page.getByRole("button", { name: baseUpgradeAcquireName });
+    await acquisition.click();
+    const dialog = page.getByRole("dialog", { name: "Confirm Acquisition" });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "Acquire Player" })).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    expect(state.purchaseCallCount).toBe(0);
+
+    await acquisition.click();
+    await page.getByRole("button", { name: "Acquire Player" }).click();
+    const status = page.getByRole("status");
+    const statusHeading = status.getByRole("heading", { name: "Player Acquired" });
+    await expect(statusHeading).toBeVisible();
+    await expect(statusHeading).toBeFocused();
+    await expect(page.getByRole("link", { name: "View Collection" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Continue Browsing" })).toBeVisible();
+    expect(state.purchaseCallCount).toBe(1);
   });
 
   test("shows a purchase server error without charging or losing retryability", async ({ page }) => {
@@ -290,8 +329,9 @@ test.describe("Supabase account flow", () => {
     await installSupabaseMock(page, { authenticated: true, purchaseError: true, state });
     await page.goto("/market");
     await page.getByLabel("Search market").fill(baseUpgradePlayer.name);
-    const purchase = page.getByRole("button", { name: baseUpgradeBuyName });
+    const purchase = page.getByRole("button", { name: baseUpgradeAcquireName });
     await purchase.click();
+    await page.getByRole("button", { name: "Acquire Player" }).click();
     await expect(page.getByRole("alert")).toContainText("Purchase service temporarily unavailable");
     await expect(purchase).toBeEnabled();
     expect(state.credits).toBe(baseUpgradeCard.price);
@@ -304,21 +344,23 @@ test.describe("Supabase account flow", () => {
     await installSupabaseMock(page, { authenticated: true, state });
     await page.goto("/market");
     await page.getByLabel("Search market").fill(baseUpgradePlayer.name);
-    const purchase = page.getByRole("button", { name: baseUpgradeBuyName });
+    const purchase = page.getByRole("button", { name: new RegExp(`${baseUpgradePlayer.name} requires .* additional`, "i") });
     await expect(purchase).toBeDisabled();
-    await expect(purchase).toHaveText("Not enough Credits");
+    await expect(purchase).toHaveText(`Requires ${baseUpgradeCard.price.toLocaleString("en-US")} RP`);
     expect(state.purchaseCallCount).toBe(0);
   });
 
   test("shows six event offers and removes them when their server window expires", async ({ page }) => {
+    await page.clock.install({ time: new Date("2026-07-14T12:00:00.000Z") });
     const state = createSupabaseMockState(true);
-    state.eventOfferEndsAt = "2026-07-14T12:00:06.000Z";
+    state.eventOfferEndsAt = "2026-07-14T12:01:00.000Z";
     await installSupabaseMock(page, { authenticated: true, state });
     await page.goto("/market");
     await page.getByRole("button", { name: "Event Shop", pressed: false }).click();
     await expect(page.getByRole("heading", { name: "Signature Series" })).toBeVisible();
-    state.eventOfferEndsAt = "2026-07-14T11:59:59.000Z";
-    const eventOffers = page.getByRole("button", { name: /^Buy .+ for .+ Credits$/ });
+    const eventOffers = page.getByRole("button", {
+      name: /^(?:Add .+ to Collection for .+ RP|.+ requires .+ RP additional)$/,
+    });
     await expect(eventOffers).toHaveCount(6);
     await page.getByLabel("League").selectOption("NHL");
     const nhlOfferCount = await eventOffers.count();
@@ -328,8 +370,9 @@ test.describe("Supabase account flow", () => {
     const pwhlOfferCount = await eventOffers.count();
     expect(pwhlOfferCount).toBeGreaterThan(0);
     expect(nhlOfferCount + pwhlOfferCount).toBe(6);
-    await expect(page.getByRole("heading", { name: "Signature Series" })).toBeVisible({ timeout: 9_000 });
-    await expect(eventOffers).toHaveCount(0, { timeout: 9_000 });
+    await page.clock.fastForward(61_000);
+    await expect(page.getByRole("heading", { name: "Signature Series" })).toBeVisible();
+    await expect(eventOffers).toHaveCount(0);
   });
 
   test("filters the full catalog by league, team, position, card type, set, overall, price, and ownership", async ({ page }) => {
@@ -380,7 +423,7 @@ test.describe("Supabase account flow", () => {
     await page.goto("/market");
     const renderedOffers = page.getByLabel("Market offers").locator(":scope > article");
     await expect(renderedOffers).toHaveCount(48);
-    const showMore = page.getByRole("button", { name: "Show more offers" });
+    const showMore = page.getByRole("button", { name: "Show More Releases" });
     await expect(showMore).toBeVisible();
     expect(await renderedOffers.count()).toBeLessThan(gameCatalog.cards.length);
     await showMore.click();

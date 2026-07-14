@@ -51,7 +51,7 @@ export function AuthScreen({
         <p className={styles.eyebrow}>Your club starts here</p>
         <h1 id="auth-heading">{mode === "login" ? "Welcome back" : "Create your account"}</h1>
         <p className={styles.intro}>
-          Sign in to keep your collection, Credits, and lineup tied to your account.
+          Sign in to keep your Collection, Rivalry Points, and lineup tied to your account.
         </p>
 
         <div className={styles.modeSwitch} role="tablist" aria-label="Account action">

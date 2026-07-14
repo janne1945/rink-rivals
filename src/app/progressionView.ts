@@ -12,6 +12,7 @@ import type {
   RivalryRewardChoiceViewModel,
   RivalryRoadStepViewModel,
 } from "../features/objectives/viewModels";
+import { formatRivalryPoints } from "../shared/rivalryPoints";
 
 const MODE_LABELS = {
   "nhl-circuit": "NHL Circuit",
@@ -37,7 +38,7 @@ function rivalryModels(view: ReturnType<typeof getProgressionView>): RivalryRoad
     id: step.id,
     title: step.title,
     description: step.description,
-    rewardLabel: step.reward.type === "credits" ? `+${step.reward.credits} Credits` : "Choose one 94 OVR Featured card",
+    rewardLabel: step.reward.type === "credits" ? `+${formatRivalryPoints(step.reward.credits)}` : "Choose one 94 OVR Featured card",
     status: view.rivalryRoad.completedStepIds.includes(step.id)
       ? "completed"
       : view.rivalryRoad.currentStep?.id === step.id

@@ -518,7 +518,7 @@ test.describe("card asset integration", () => {
 
       const outerOffer = marketOffers.filter({ has: image });
       await expect(outerOffer).toHaveCount(1);
-      const visibleOwnershipLabels = await outerOffer.getByText("Owned ×2", { exact: true }).evaluateAll(
+      const visibleOwnershipLabels = await outerOffer.getByText("Collection owned ×2", { exact: true }).evaluateAll(
         (nodes) => nodes.filter((node) => {
           const rect = (node as HTMLElement).getBoundingClientRect();
           const style = getComputedStyle(node);
@@ -527,13 +527,13 @@ test.describe("card asset integration", () => {
       );
       expect(visibleOwnershipLabels).toBe(1);
       const purchase = outerOffer.getByRole("button", {
-        name: `Buy ${player.name} for ${offer.price.toLocaleString("en-US")} Credits`,
+        name: `Add ${player.name} to Collection for ${offer.price.toLocaleString("en-US")} RP`,
       });
       await expect(purchase).toBeEnabled();
-      await expect(purchase).toHaveText(`${offer.price.toLocaleString("en-US")} Credits`);
+      await expect(purchase).toHaveText("Add to Collection");
       if (offer.placement === "spotlight") {
         expect(offer.price).toBeLessThan(offer.regular_price);
-        await expect(outerOffer.locator("s")).toHaveText(`${offer.regular_price.toLocaleString("en-US")} CR`);
+        await expect(outerOffer.locator("s")).toHaveText(`${offer.regular_price.toLocaleString("en-US")} RP`);
       } else {
         expect(offer.price).toBe(offer.regular_price);
         await expect(outerOffer.locator("s")).toHaveCount(0);
@@ -543,7 +543,7 @@ test.describe("card asset integration", () => {
         const imageNode = node.querySelector<HTMLImageElement>("img[data-card-image]")!;
         const cardNode = imageNode.closest<HTMLElement>("article")!;
         const ownershipNode = [...node.querySelectorAll<HTMLElement>("span")].find((candidate) =>
-          candidate.textContent?.trim() === "Owned ×2" && getComputedStyle(candidate).display !== "none")!;
+          candidate.textContent?.trim() === "Collection owned ×2" && getComputedStyle(candidate).display !== "none")!;
         const buttonNode = node.querySelector<HTMLElement>(":scope > button")!;
         const cardRect = cardNode.getBoundingClientRect();
         const ownershipRect = ownershipNode.getBoundingClientRect();
@@ -565,7 +565,7 @@ test.describe("card asset integration", () => {
       expect(layout.cardVerticalOverflow).toBeLessThanOrEqual(1);
     }
 
-    const spotlightBadge = page.getByText("Spotlight", { exact: true });
+    const spotlightBadge = page.getByText("Featured Release", { exact: true });
     await expect(spotlightBadge).toHaveCount(1);
     const spotlightOffer = marketOffers.filter({ has: spotlightBadge });
     const spotlightImage = spotlightOffer.locator("img[data-card-image]");

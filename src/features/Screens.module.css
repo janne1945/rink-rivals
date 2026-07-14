@@ -807,7 +807,10 @@
 }
 
 .empty {
+  display: grid;
   grid-column: 1 / -1;
+  justify-items: center;
+  gap: 10px;
   padding: 50px 20px;
   border: 1px dashed var(--line);
   border-radius: var(--radius-lg);
@@ -853,6 +856,24 @@
   background: rgb(3 7 13 / 32%);
 }
 
+.marketPageHeader {
+  display: grid;
+  max-width: 790px;
+  gap: 4px;
+}
+
+.marketTrust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 0;
+  color: var(--ice-300);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
 .marketHero {
   display: flex;
   align-items: center;
@@ -878,6 +899,29 @@
   margin: 0;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.marketHeroAction {
+  min-height: 44px;
+  margin-top: 20px;
+  padding: 0 18px;
+  border: 1px solid var(--gold-400);
+  border-radius: 999px;
+  color: var(--ink-950);
+  background: var(--gold-300);
+  font-size: 0.7rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.marketBrowse {
+  display: grid;
+  gap: 18px;
+}
+
+.marketBrowse .sectionHead > div:first-child {
+  max-width: 760px;
 }
 
 .countdown {
@@ -929,7 +973,7 @@
   position: relative;
   display: grid;
   min-width: 0;
-  grid-template-rows: auto minmax(48px, auto) 48px;
+  grid-template-rows: auto minmax(54px, auto) 48px;
   align-content: start;
   gap: 10px;
   isolation: isolate;
@@ -956,11 +1000,25 @@
   text-transform: uppercase;
 }
 
+.releaseBadge {
+  color: var(--ice-300);
+  font-size: 0.55rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .offerDetails {
   display: grid;
   min-width: 0;
   grid-template-rows: 24px minmax(24px, auto);
   gap: 4px;
+}
+
+.offerRequirement {
+  color: var(--danger);
+  font-size: 0.55rem;
+  line-height: 1.3;
 }
 
 .offerBadgeRow {
@@ -1024,6 +1082,111 @@
   opacity: 0.65;
 }
 
+.marketFeedback,
+.marketFeedbackError {
+  display: grid;
+  gap: 8px;
+  padding: clamp(18px, 4vw, 26px);
+  border: 1px solid rgb(98 216 155 / 28%);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(145deg, rgb(20 64 61 / 76%), rgb(7 22 29 / 94%));
+}
+
+.marketFeedbackError {
+  border-color: rgb(255 114 131 / 28%);
+  background: linear-gradient(145deg, rgb(69 28 42 / 70%), rgb(24 10 20 / 94%));
+}
+
+.marketFeedback h2,
+.marketFeedbackError h2,
+.empty h2,
+.marketDialog h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 4vw, 2rem);
+  text-transform: uppercase;
+}
+
+.marketFeedback p,
+.marketFeedbackError p,
+.empty p,
+.marketDialog p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.marketFeedbackActions,
+.marketDialogActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.marketFeedbackActions a,
+.marketFeedbackActions button,
+.marketDialogActions button,
+.empty button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--gold-300);
+  background: rgb(246 217 139 / 7%);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.marketDialogBackdrop {
+  position: fixed;
+  z-index: 80;
+  display: grid;
+  padding: 20px;
+  background: rgb(1 5 10 / 78%);
+  inset: 0;
+  place-items: center;
+  backdrop-filter: blur(12px);
+}
+
+.marketDialog {
+  display: grid;
+  width: min(100%, 520px);
+  gap: 12px;
+  padding: clamp(22px, 5vw, 34px);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at 90% 0%, rgb(246 217 139 / 13%), transparent 35%),
+    rgb(8 19 32 / 98%);
+  box-shadow: 0 30px 90px rgb(0 0 0 / 52%);
+}
+
+.marketDialog p strong {
+  color: var(--gold-300);
+}
+
+.marketDialogSupport {
+  padding-top: 4px;
+  font-size: 0.82rem;
+}
+
+.marketDialogActions button:first-child {
+  border-color: var(--gold-400);
+  color: var(--ink-950);
+  background: var(--gold-300);
+}
+
+.marketDialogActions button:disabled,
+.marketDialogActions button[aria-disabled="true"] {
+  cursor: wait;
+  opacity: 0.62;
+}
+
 .stickyAction {
   position: sticky;
   bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 8px);
@@ -1078,6 +1241,7 @@
   .goalSummaryStrip, .rewardChoiceGrid { grid-template-columns: 1fr; }
   .marketTabs { width: 100%; }
   .marketTabs button { flex: 1; }
+  .marketFeedbackActions > *, .marketDialogActions > * { width: 100%; }
   .goalSummaryStrip strong { white-space: normal; }
 }
 
