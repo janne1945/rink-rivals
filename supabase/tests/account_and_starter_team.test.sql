@@ -1,13 +1,14 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(15);
+select plan(17);
 
 select has_table('public', 'profiles', 'profiles exists');
 select has_table('public', 'user_cards', 'user_cards exists');
 select has_table('public', 'lineups', 'lineups exists');
 select has_table('public', 'lineup_slots', 'lineup_slots exists');
 select has_table('public', 'starter_team_cards', 'starter_team_cards exists');
+select has_column('public', 'lineup_slots', 'created_at', 'lineup slots record their creation time');
 
 select ok((select relrowsecurity from pg_class where oid = 'public.profiles'::regclass), 'profiles RLS enabled');
 select ok((select relrowsecurity from pg_class where oid = 'public.user_cards'::regclass), 'user_cards RLS enabled');
@@ -44,6 +45,11 @@ select lives_ok(
 select is((select credits from public.profiles where id = auth.uid()), 1000, 'claim awards 1000 credits');
 select is((select count(*)::integer from public.user_cards where user_id = auth.uid()), 6, 'claim creates six cards');
 select is((select count(*)::integer from public.lineup_slots where user_id = auth.uid()), 6, 'claim fills six slots');
+select is(
+  (select count(*)::integer from public.lineup_slots where user_id = auth.uid() and created_at is not null),
+  6,
+  'claimed lineup slots receive a creation time'
+);
 
 select * from finish();
 rollback;
