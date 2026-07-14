@@ -4,6 +4,7 @@ import type {
   League,
   Player,
 } from '../../cards/types';
+import { createCardImageReference } from '../../cards/assets';
 import { LINEUP_SLOTS, type GameMode, type Lineup, type LineupSlot } from '../../lineups/types';
 
 const skaterAttributes = {
@@ -63,8 +64,9 @@ function createPlayer(prefix: string, league: League, slot: LineupSlot, index: n
 }
 
 function createCard(player: Player, prefix: string, index: number): CardVersion {
+  const id = `${prefix}-${player.primaryPosition.toLowerCase()}-card`;
   const common = {
-    id: `${prefix}-${player.primaryPosition.toLowerCase()}-card`,
+    id,
     playerId: player.id,
     teamId: player.currentTeamId,
     setId: 'base-set',
@@ -75,7 +77,7 @@ function createCard(player: Player, prefix: string, index: number): CardVersion 
     price: 1_000 + index * 100,
     marketAvailability: 'base-market' as const,
     isPermanent: true,
-    imageReference: `placeholder:card/${player.id}`,
+    imageReference: createCardImageReference(player.id, 'base', id),
     visualMetadata: { treatment: 'neutral-placeholder' as const, accent: '#667788', frame: 'standard' as const },
   };
 

@@ -16,6 +16,7 @@
     radial-gradient(circle at 50% 33%, rgb(103 183 210 / 28%), transparent 36%),
     linear-gradient(145deg, #173650, #08111f 55%, #0f2134);
   box-shadow: var(--shadow-card), inset 0 0 0 1px rgb(255 255 255 / 4%);
+  contain: paint;
   isolation: isolate;
   transition: transform 180ms ease, border-color 180ms ease, filter 180ms ease;
 }
@@ -23,22 +24,100 @@
 .card::before {
   position: absolute;
   inset: 7px;
-  z-index: -1;
+  z-index: 3;
   border: 1px solid rgb(246 217 139 / 18%);
   border-radius: 13px;
   content: "";
+  pointer-events: none;
 }
 
 .card::after {
   position: absolute;
   top: -20%;
   left: 42%;
-  z-index: -2;
+  z-index: 1;
   width: 42%;
   height: 135%;
   background: linear-gradient(90deg, transparent, rgb(255 255 255 / 11%), transparent);
   content: "";
+  pointer-events: none;
   transform: rotate(23deg);
+}
+
+.artwork {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  overflow: hidden;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 50% 33%, rgb(103 183 210 / 28%), transparent 36%),
+    linear-gradient(145deg, #173650, #08111f 55%, #0f2134);
+  pointer-events: none;
+}
+
+.artwork::before,
+.artwork::after {
+  position: absolute;
+  z-index: 1;
+  content: "";
+  pointer-events: none;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: transparent;
+  object-fit: cover;
+}
+
+.artwork.headshot .image {
+  top: 15%;
+  right: -4%;
+  bottom: auto;
+  left: -4%;
+  width: 108%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.artwork.headshot::after,
+.artwork.placeholder::after {
+  inset: 47% 0 0;
+  background: linear-gradient(180deg, transparent, rgb(5 12 22 / 90%) 48%, #07111e 100%);
+}
+
+.artwork.fullCard .image,
+.artwork.placeholder .image {
+  object-position: center;
+}
+
+/* Provided full-card art includes legacy values. The L-shaped top/side mask
+   covers baked OVR and stat blocks; the footer mask covers baked identity. */
+.artwork.fullCard::before {
+  top: 0;
+  left: 0;
+  width: 39%;
+  height: 82%;
+  background: linear-gradient(145deg, #040a14, #0c1e30);
+  box-shadow: 5px 6px 18px rgb(0 0 0 / 32%);
+  clip-path: polygon(0 0, 100% 0, 100% 38%, 62% 38%, 62% 100%, 0 100%);
+}
+
+.artwork.fullCard::after {
+  inset: auto 0 0;
+  height: 21%;
+  background: linear-gradient(180deg, #07111e, #03070d 30%);
+}
+
+.hasStatus .artwork.fullCard::after {
+  height: 29%;
 }
 
 .interactive {
@@ -87,6 +166,7 @@
   top: 14px;
   right: 14px;
   left: 14px;
+  z-index: 2;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -121,26 +201,11 @@
   letter-spacing: 0.12em;
 }
 
-.silhouette {
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  z-index: -1;
-  width: 47%;
-  aspect-ratio: 0.72;
-  border: 1px solid rgb(255 255 255 / 8%);
-  border-radius: 50% 50% 42% 42%;
-  background:
-    radial-gradient(circle at 50% 22%, #5e7e90 0 13%, transparent 14%),
-    radial-gradient(ellipse at 50% 75%, #29485c 0 38%, transparent 39%);
-  opacity: 0.72;
-  transform: translateX(-50%);
-}
-
 .position {
   position: absolute;
   top: 52px;
   left: 14px;
+  z-index: 2;
   color: var(--ice-300);
   font-size: 0.62rem;
   font-weight: 900;
@@ -148,11 +213,14 @@
 }
 
 .content {
+  position: relative;
+  z-index: 2;
   display: block;
   width: 100%;
   min-width: 0;
   padding-top: 62%;
   text-align: left;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 88%);
 }
 
 .hasStatus .content {
@@ -221,6 +289,7 @@
 .status {
   position: absolute;
   inset: auto 10px 10px;
+  z-index: 4;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 6px;

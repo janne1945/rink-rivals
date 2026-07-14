@@ -1,5 +1,10 @@
-import type { ButtonHTMLAttributes } from "react";
+import { memo, type ButtonHTMLAttributes, type SyntheticEvent } from "react";
 import type { CardVersion, Player } from "../domain/cards";
+import {
+  playerAssetManifest,
+  resolveCardImage,
+  type PlayerAssetPresentation,
+} from "../domain/cards/assets";
 import styles from "./HockeyCard.module.css";
 
 type HockeyCardProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
@@ -10,7 +15,43 @@ type HockeyCardProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children">
   compact?: boolean;
   status?: string;
   marketStatus?: string;
+  eager?: boolean;
 };
+
+const presentationClasses = {
+  headshot: styles.headshot,
+  "full-card": styles.fullCard,
+  placeholder: styles.placeholder,
+} satisfies Record<PlayerAssetPresentation, string>;
+
+const neutralFallback = playerAssetManifest().fallback;
+
+function handleImageError(event: SyntheticEvent<HTMLImageElement>): void {
+  const image = event.currentTarget;
+  if (image.dataset.assetFallbackApplied === "true") {
+    image.hidden = true;
+    return;
+  }
+
+  image.dataset.assetFallbackApplied = "true";
+  image.dataset.assetPresentation = neutralFallback.presentation;
+  image.dataset.assetResolution = "placeholder";
+  image.dataset.assetResolvedVariant = "placeholder";
+  image.setAttribute("src", neutralFallback.path);
+  image.setAttribute("width", String(neutralFallback.width));
+  image.setAttribute("height", String(neutralFallback.height));
+  image.classList.remove(...Object.values(presentationClasses));
+  image.classList.add(presentationClasses.placeholder);
+
+  const artwork = image.parentElement;
+  if (artwork) {
+    artwork.dataset.assetPresentation = neutralFallback.presentation;
+    artwork.dataset.assetResolution = "placeholder";
+    artwork.dataset.assetResolvedVariant = "placeholder";
+    artwork.classList.remove(...Object.values(presentationClasses));
+    artwork.classList.add(presentationClasses.placeholder);
+  }
+}
 
 function displayLabel(value: string): string {
   return value
@@ -20,9 +61,13 @@ function displayLabel(value: string): string {
     .join(" ");
 }
 
-export function HockeyCard({ card, player, selected, used, compact, status, marketStatus, className = "", disabled, onClick, ...props }: HockeyCardProps) {
+function HockeyCardView({ card, player, selected, used, compact, status, marketStatus, eager = false, className = "", disabled, onClick, ...props }: HockeyCardProps) {
   const cardTypeLabel = displayLabel(card.cardType);
   const setLabel = displayLabel(card.setId);
+  const cardImage = resolveCardImage(card, player);
+  const imageKey = `${card.id}:${cardImage.src}`;
+  const presentationClass = presentationClasses[cardImage.presentation];
+  const fallbackApplied = cardImage.resolution === "placeholder";
   const classes = [
     styles.card,
     onClick ? styles.interactive : "",
@@ -47,12 +92,40 @@ export function HockeyCard({ card, player, selected, used, compact, status, mark
   ].filter(Boolean).join(", ");
   const content = (
     <>
+      <span
+        key={imageKey}
+        className={`${styles.artwork} ${presentationClass}`}
+        aria-hidden="true"
+        data-asset-presentation={cardImage.presentation}
+        data-asset-resolution={cardImage.resolution}
+        data-asset-resolved-variant={cardImage.resolvedVariant}
+      >
+        <img
+          key={imageKey}
+          className={`${styles.image} ${presentationClass}`}
+          src={cardImage.src}
+          alt=""
+          aria-hidden="true"
+          width={cardImage.width}
+          height={cardImage.height}
+          loading={eager ? "eager" : "lazy"}
+          decoding="async"
+          fetchPriority={eager ? "high" : "auto"}
+          onError={handleImageError}
+          data-card-image={card.id}
+          data-player-id={player.id}
+          data-asset-presentation={cardImage.presentation}
+          data-asset-resolution={cardImage.resolution}
+          data-asset-requested-variant={cardImage.requestedVariant}
+          data-asset-resolved-variant={cardImage.resolvedVariant}
+          data-asset-fallback-applied={fallbackApplied ? "true" : "false"}
+        />
+      </span>
       <span className={styles.topline}>
         <span className={styles.overall}>{card.overall}<small>OVR</small></span>
         <span className={styles.league}>{player.league}</span>
       </span>
       <span className={styles.position}>{player.primaryPosition}</span>
-      <span className={styles.silhouette} aria-hidden="true" />
       <span className={styles.content}>
         <span className={styles.cardMeta}>
           <span className={styles.cardType}>{cardTypeLabel}</span>
@@ -88,3 +161,6 @@ export function HockeyCard({ card, player, selected, used, compact, status, mark
 
   return <article className={classes} aria-label={accessibleName}>{content}</article>;
 }
+
+export const HockeyCard = memo(HockeyCardView);
+HockeyCard.displayName = "HockeyCard";

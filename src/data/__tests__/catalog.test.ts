@@ -12,6 +12,7 @@ import {
   starterSquads,
 } from '../generated/gameCatalog';
 import { validateGameCatalog } from '../../../scripts/lib/catalogValidation';
+import { validateCardAssets } from '../../domain/cards/assets';
 
 describe('generated content foundation catalog', () => {
   it('contains the complete launch universe and passes the cross-domain validator', () => {
@@ -31,6 +32,14 @@ describe('generated content foundation catalog', () => {
     expect(Math.abs(report.baseOverallAverage.NHL - report.baseOverallAverage.PWHL))
       .toBeLessThanOrEqual(1);
     expect(Math.min(...Object.values(report.eventCoverageByTeam))).toBeGreaterThanOrEqual(2);
+  });
+
+  it('gives every CardVersion one valid asset reference and a direct or safe fallback image', () => {
+    const report = validateCardAssets(gameCatalog);
+    expect(report.valid).toBe(true);
+    expect(report.directCards + report.baseFallbackCards + report.placeholderCards)
+      .toBe(gameCatalog.cards.length);
+    expect(report.issues.filter(({ severity }) => severity === 'error')).toEqual([]);
   });
 
   it('gives every active team 18 Base identities and one complete StarterSquad', () => {

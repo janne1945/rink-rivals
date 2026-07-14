@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { createCardImageReference } from '../../src/domain/cards/assets';
 import type {
   CardVersion,
   GoalieAttributes,
@@ -414,7 +415,7 @@ export function buildImportCandidate(
         price: 450 + Math.max(0, overall - 70) * 75,
         marketAvailability: 'base-market',
         isPermanent: true,
-        imageReference: `placeholder:card/${playerId}-base`,
+        imageReference: createCardImageReference(playerId, 'base', `${playerId}-base`),
         visualMetadata: { treatment: 'neutral-placeholder', accent: '#667788', frame: 'standard' },
       });
     } else {
@@ -439,7 +440,7 @@ export function buildImportCandidate(
         price: 450 + Math.max(0, overall - 70) * 75,
         marketAvailability: 'base-market',
         isPermanent: true,
-        imageReference: `placeholder:card/${playerId}-base`,
+        imageReference: createCardImageReference(playerId, 'base', `${playerId}-base`),
         visualMetadata: { treatment: 'neutral-placeholder', accent: '#667788', frame: 'standard' },
       });
     }

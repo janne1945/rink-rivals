@@ -7,8 +7,9 @@ battles, server-settled rewards, permanent Base Market cards, recurring Event
 Shop rotations, daily and weekly objectives, and Rivalry Road.
 
 The project is a non-commercial prototype. It uses neutral team treatment and
-replaceable placeholder artwork; no official league, team, or player imagery is
-required at runtime.
+replaceable, locally served player artwork. Player images are imported only by
+an explicit development command; the app makes no runtime requests to NHL or
+PWHL image services. Missing approved images resolve to a neutral placeholder.
 
 Published MVP: <https://rink-rivals.vercel.app>. The published site can lag the
 current checkout; this content-foundation change is not deployed automatically.
@@ -90,6 +91,7 @@ pnpm test:e2e              # Playwright on phone, landscape, tablet, and desktop
 pnpm test:e2e:production   # gated production build plus Playwright
 pnpm catalog:generate:check # generated catalog matches the approved snapshot
 pnpm catalog:validate      # catalog/schema/lineup/event validation
+pnpm assets:validate       # asset references/files/fallbacks/source diagnostics
 pnpm catalog:sql:check     # generated SQL projection matches TypeScript data
 pnpm balance               # league, opponent, economy, and progression diagnostics
 ```
@@ -113,6 +115,8 @@ the official snapshot workflow, deterministic generation, audited overrides,
 validation rules, generated SQL projection, and balance workflow. Source
 provenance, reviewed secondary-position evidence, and the 371 manual-review records are documented in
 [`docs/content-data-sources.md`](docs/content-data-sources.md).
+The canonical player-art structure, resolver rules, import command, and current
+source gaps are documented in [`docs/asset-pipeline.md`](docs/asset-pipeline.md).
 
 ## MVP data authority
 

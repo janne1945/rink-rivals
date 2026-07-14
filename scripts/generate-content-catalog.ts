@@ -1,8 +1,10 @@
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
+import signatureAssetSources from '../data/content/signature-asset-sources.json';
 import { parseCatalog } from '../src/data/catalogSchema';
 import { STARTER_OVR_FLOOR_EXCEPTION_PLAYER_ID_SET } from '../src/data/starterFloorExceptions';
+import { createCardImageReference } from '../src/domain/cards/assets';
 import type {
   CardTier,
   CardVersion,
@@ -197,11 +199,9 @@ const LEGACY_REWARD_IDS = [
   'pwhl-kendall-coyne-schofield',
 ] as const;
 
-const APPROVED_SIGNATURE_ASSETS: Readonly<Record<string, string>> = {
-  'nhl-connor-mcdavid': 'assets/Event Cards/Signature Series/NHL/Connor-McDavid-Signature-Series.png',
-  'nhl-david-pastrnak': 'assets/Event Cards/Signature Series/NHL/David-Pastrnak-Signature-Series.png',
-  'nhl-cale-makar': 'assets/Event Cards/Signature Series/NHL/Cale-Makar-Signature-Series.png',
-};
+const APPROVED_SIGNATURE_ASSET_PLAYER_IDS = new Set(signatureAssetSources.sources
+  .filter(({ status }) => status === 'integrated')
+  .map(({ playerId }) => playerId));
 
 function eventSeeds(eventId: string, playerIds: readonly string[]): EventSeed[] {
   return playerIds.map((playerId) => ({ eventId, playerId }));
@@ -499,7 +499,7 @@ function baseCard(candidate: SourceCandidate, overall: number): CardVersion {
     setId: 'base-2026', cardType: 'base' as const, cardTier: 'standard' as const,
     overall, abilities: [candidate.archetype as string], price: priceForCard('base', overall),
     marketAvailability: 'base-market' as const, isPermanent: true,
-    imageReference: `placeholder:card/${candidate.id}-base`,
+    imageReference: createCardImageReference(candidate.id as string, 'base', `${candidate.id}-base`),
     visualMetadata: { treatment: 'neutral-placeholder' as const, accent: '#5e7180', frame: 'standard' as const },
   };
   return rating.role === 'goalie'
@@ -627,7 +627,11 @@ function createStarterContent(
         setId: 'starter-2026', cardType: 'starter' as const, cardTier: 'starter' as const,
         overall: selection.overall, abilities: ['development path'], price: 0,
         marketAvailability: 'unavailable' as const, isPermanent: true,
-        imageReference: `placeholder:card/${selection.player.id}-starter`,
+        imageReference: createCardImageReference(
+          selection.player.id,
+          'starter',
+          `${selection.player.id}-starter`,
+        ),
         visualMetadata: { treatment: 'neutral-placeholder' as const, accent: '#7f8c8d', frame: 'starter' as const },
       };
       const card = rating.role === 'goalie'
@@ -689,14 +693,15 @@ function createEventCard(
 ): CardVersion {
   const tier = eventTier(eventId);
   const overall = eventOverall(base.overall, `${eventId}:${player.id}`);
-  const approvedAsset = eventId === 'signature-series' ? APPROVED_SIGNATURE_ASSETS[player.id] : undefined;
+  const approvedAsset = eventId === 'signature-series'
+    && APPROVED_SIGNATURE_ASSET_PLAYER_IDS.has(player.id);
   const common = {
     id: `${player.id}-${eventId}`, playerId: player.id, teamId: base.teamId, setId: eventId,
     cardType: 'event' as const, cardTier: tier, overall,
     abilities: [`${eventId.replace(/-/g, ' ')} specialist`], price: priceForCard('event', overall),
     marketAvailability: 'event-shop' as const, availableFrom: EVENT_FROM, availableTo: EVENT_TO,
     isPermanent: false,
-    imageReference: approvedAsset ?? `placeholder:card/${player.id}-${eventId}`,
+    imageReference: createCardImageReference(player.id, 'event', `${player.id}-${eventId}`),
     visualMetadata: {
       treatment: approvedAsset ? 'approved-local-asset' as const : 'neutral-placeholder' as const,
       accent: tier === 'signature' ? '#d4af37' : tier === 'elite' ? '#7d5fff' : '#3ba3ec',
@@ -820,7 +825,12 @@ function createLegacyRetainedContent(
         role: 'skater', overall: cardSpec.overall,
         attributes: buildAttributes(candidate, cardSpec.overall, `legacy:${cardSpec.idSuffix}`) as SkaterAttributes,
         abilities: ['legacy retained'], price: 0, marketAvailability: 'reward-only',
-        isPermanent: true, imageReference: `placeholder:card/${playerId}-${cardSpec.idSuffix}`,
+        isPermanent: true,
+        imageReference: createCardImageReference(
+          playerId,
+          'reward',
+          `${playerId}-${cardSpec.idSuffix}`,
+        ),
         visualMetadata: { treatment: 'neutral-placeholder', accent: '#777777', frame: cardSpec.tier },
       });
     }
@@ -862,7 +872,7 @@ function createRewardCards(
       setId: 'rivalry-series-2026', cardType: 'reward' as const, cardTier: tier,
       overall, abilities: ['rivalry reward'], price: 0,
       marketAvailability: 'reward-only' as const, isPermanent: true,
-      imageReference: `placeholder:card/${playerId}-rivalry-2026`,
+      imageReference: createCardImageReference(playerId, 'reward', `${playerId}-rivalry-2026`),
       visualMetadata: { treatment: 'neutral-placeholder' as const, accent: '#d14747', frame: tier },
     };
     const rating = ratingCandidate(candidate);

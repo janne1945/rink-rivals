@@ -100,6 +100,8 @@ export interface SupabaseMockOptions {
   readonly roundResponseLossOnce?: boolean;
   readonly roundDelayMs?: number;
   readonly settlementError?: boolean;
+  /** Test-only server clock override for deterministic Event Shop rotations. */
+  readonly marketNow?: string;
   readonly state?: SupabaseMockState;
 }
 
@@ -271,7 +273,11 @@ function queryValue(url: URL, field: string, operator: "eq" | "in"): string | nu
   return raw?.startsWith(prefix) ? raw.slice(prefix.length) : null;
 }
 
-function currentOffers(state: SupabaseMockState) {
+function currentOffers(
+  state: SupabaseMockState,
+  eventRotation = mockEventRotation,
+  serverNow = mockNow,
+) {
   const baseOffers = gameCatalog.cards
     .filter((card) => card.cardType === "base" && card.marketAvailability === "base-market")
     .map((card) => ({
@@ -286,16 +292,16 @@ function currentOffers(state: SupabaseMockState) {
       ends_at: null,
       owned_quantity: state.cards.get(card.id)?.quantity ?? 0,
     }));
-  if (Date.parse(state.eventEndsAt) <= Date.parse(mockNow)) return baseOffers;
-  const eventOffers = mockEventRotation.shop.offers.map((offer) => ({
-    offer_id: `event-shop:${mockEventRotation.event.id}:${mockEventRotation.shop.startsAt.slice(0, 10)}:${offer.cardId}`,
+  if (Date.parse(state.eventEndsAt) <= Date.parse(serverNow)) return baseOffers;
+  const eventOffers = eventRotation.shop.offers.map((offer) => ({
+    offer_id: `event-shop:${eventRotation.event.id}:${eventRotation.shop.startsAt.slice(0, 10)}:${offer.cardId}`,
     card_id: offer.cardId,
     source: "event_shop",
     regular_price: offer.regularPrice,
     price: offer.price,
-    event_id: mockEventRotation.event.id,
+    event_id: eventRotation.event.id,
     placement: offer.placement,
-    starts_at: mockEventRotation.shop.startsAt,
+    starts_at: eventRotation.shop.startsAt,
     ends_at: state.eventOfferEndsAt ?? state.eventEndsAt,
     owned_quantity: state.cards.get(offer.cardId)?.quantity ?? 0,
   }));
@@ -381,6 +387,13 @@ function completeSettlement(
 
 export async function installSupabaseMock(page: Page, options: SupabaseMockOptions = {}): Promise<SupabaseMockState> {
   const state = options.state ?? createSupabaseMockState(options.onboardingCompleted ?? true, options.selectedTeamId ?? defaultStarterTeamId);
+  const marketNow = options.marketNow ?? mockNow;
+  const marketDate = new Date(marketNow);
+  if (!Number.isFinite(marketDate.getTime())) throw new TypeError("Supabase mock marketNow must be a valid timestamp.");
+  const marketEventRotation = options.marketNow
+    ? resolveEventCalendarRotation(gameCatalog.cards, marketDate)
+    : mockEventRotation;
+  if (options.marketNow && !options.state) state.eventEndsAt = marketEventRotation.shop.endsAt;
   let dropClaimResponseOnce = options.claimResponseLossOnce ?? false;
   let dropRoundResponseOnce = options.roundResponseLossOnce ?? false;
   if (options.authenticated) {
@@ -471,18 +484,18 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       return json(route, starterLineupId);
     }
     if (url.pathname === "/rest/v1/rpc/get_market_state") {
-      const activeEvent = Date.parse(state.eventEndsAt) > Date.parse(mockNow);
+      const activeEvent = Date.parse(state.eventEndsAt) > Date.parse(marketNow);
       return json(route, {
-        server_time: mockNow,
+        server_time: marketNow,
         current_event: activeEvent ? {
-          id: mockEventRotation.event.id,
-          name: mockEventRotation.event.name,
-          description: mockEventRotation.event.description,
-          starts_at: mockEventRotation.shop.startsAt,
+          id: marketEventRotation.event.id,
+          name: marketEventRotation.event.name,
+          description: marketEventRotation.event.description,
+          starts_at: marketEventRotation.shop.startsAt,
           ends_at: state.eventEndsAt,
-          visual_metadata: mockEventRotation.event.visual,
+          visual_metadata: marketEventRotation.event.visual,
         } : null,
-        offers: currentOffers(state),
+        offers: currentOffers(state, marketEventRotation, marketNow),
       });
     }
     if (url.pathname === "/rest/v1/rpc/purchase_card") {
@@ -504,7 +517,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
           purchased_at: previous.purchasedAt,
         });
       }
-      const offer = currentOffers(state).find((candidate) => candidate.offer_id === body.offer_id);
+      const offer = currentOffers(state, marketEventRotation, marketNow).find((candidate) => candidate.offer_id === body.offer_id);
       if (!offer) return databaseError(route, "Offer is not available.");
       if (state.credits < offer.price) return databaseError(route, "Not enough Credits.");
       state.credits -= offer.price;

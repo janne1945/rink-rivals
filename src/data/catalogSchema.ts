@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+import {
+  CARD_IMAGE_REFERENCE_PATTERN,
+  createCardImageReference,
+} from '../domain/cards/assets';
 import type { CardCatalog, ContentCatalog } from '../domain/cards/types';
 import { STARTER_OVR_FLOOR_EXCEPTION_PLAYER_ID_SET } from './starterFloorExceptions';
 
@@ -131,7 +135,10 @@ const commonCardSchema = z.object({
   availableFrom: z.string().datetime().optional(),
   availableTo: z.string().datetime().optional(),
   isPermanent: z.boolean(),
-  imageReference: z.string().min(3),
+  imageReference: z.string().regex(
+    CARD_IMAGE_REFERENCE_PATTERN,
+    'Use a semantic player-asset reference instead of a file path',
+  ),
   visualMetadata: z.object({
     treatment: z.enum(['neutral-placeholder', 'approved-local-asset']),
     accent: z.string().regex(/^#[0-9a-f]{6}$/i),
@@ -219,6 +226,9 @@ export const catalogSchema = z.object({
   for (const id of new Set(duplicate(catalog.teams.map(({ id }) => id)))) context.addIssue({ code: 'custom', message: `Duplicate team ID: ${id}` });
   for (const id of new Set(duplicate(catalog.players.map(({ id }) => id)))) context.addIssue({ code: 'custom', message: `Duplicate player ID: ${id}` });
   for (const id of new Set(duplicate(catalog.cards.map(({ id }) => id)))) context.addIssue({ code: 'custom', message: `Duplicate card ID: ${id}` });
+  for (const reference of new Set(duplicate(catalog.cards.map(({ imageReference }) => imageReference)))) {
+    context.addIssue({ code: 'custom', message: `Duplicate card image reference: ${reference}` });
+  }
   for (const id of new Set(duplicate(catalog.starterSquads.map(({ teamId }) => teamId)))) context.addIssue({ code: 'custom', message: `Duplicate StarterSquad team ID: ${id}` });
 
   if (catalog.teams.some((team) => team.id.startsWith('pwhl-pwhl-'))) {
@@ -228,6 +238,16 @@ export const catalogSchema = z.object({
   const teams = new Map(catalog.teams.map((team) => [team.id, team]));
   const players = new Map(catalog.players.map((player) => [player.id, player]));
   const cards = new Map(catalog.cards.map((card) => [card.id, card]));
+
+  for (const card of catalog.cards) {
+    const expected = createCardImageReference(card.playerId, card.cardType, card.id);
+    if (card.imageReference !== expected) {
+      context.addIssue({
+        code: 'custom',
+        message: `${card.id} must use semantic image reference ${expected}`,
+      });
+    }
+  }
   const baseByPlayer = new Map(catalog.cards
     .filter((card) => card.cardType === 'base')
     .map((card) => [card.playerId, card]));

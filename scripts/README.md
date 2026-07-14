@@ -18,6 +18,10 @@ pnpm catalog:generate
 pnpm catalog:generate:check
 pnpm catalog:validate
 
+# Explicit network import for player artwork, then deterministic local QA.
+pnpm assets:sync
+pnpm assets:validate
+
 # Project the same validated catalog into the additive Supabase migration.
 pnpm catalog:sql:write
 pnpm catalog:sql:check
@@ -29,6 +33,17 @@ pnpm qa:core
 `import-official-content.ts` discovers the public HockeyTech feed configuration from the official PWHL Stats page. Any feed key is transient request configuration and must never be written to the snapshot, generated catalog, SQL, logs, fixtures, or docs. The importer is fail-closed and replaces its output atomically only after every official-source check succeeds.
 
 `generate-content-catalog.ts` reads only the approved snapshot, stable-ID registry, audited rating overrides, and reviewed `data/content/position-evidence.json`. Secondary-position evidence must use an official HTTPS source, be reviewed on or after the snapshot, and be consumed by the launch selection; stale or unused evidence aborts generation. The generator writes `src/data/generated/gameCatalog.json`; the small TypeScript wrapper validates that JSON and exposes the application contract. Do not hand-edit the generated JSON or recreate a giant hand-maintained TypeScript array.
+
+`sync-player-assets.ts` is the separate, manually triggered image import. It
+writes optimized files under `public/assets/players` and replaces, via temporary
+files, the full audit record `src/assets/generated/playerAssetManifest.json`
+plus the browser-safe projection
+`src/assets/generated/playerAssetRuntimeManifest.json`.
+Validation requires both manifests to describe exactly the same runtime mapping;
+only the audit record contains hashes and source provenance. The importer never
+changes player IDs, CardVersions, ratings, prices, or progression. See
+[`docs/asset-pipeline.md`](../docs/asset-pipeline.md) for the fallback contract
+and audited Signature source mismatches.
 
 ## Legacy CSV review-candidate tool
 

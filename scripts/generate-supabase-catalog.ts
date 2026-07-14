@@ -18,7 +18,23 @@ const CATALOG_START = '-- BEGIN GENERATED CARD CATALOG';
 const CATALOG_END = '-- END GENERATED CARD CATALOG';
 const STARTER_START = '-- BEGIN GENERATED STARTER SQUADS';
 const STARTER_END = '-- END GENERATED STARTER SQUADS';
+const CARD_ASSETS_START = '-- BEGIN GENERATED CARD ASSET REFERENCES';
+const CARD_ASSETS_END = '-- END GENERATED CARD ASSET REFERENCES';
 const LINEUP_SLOTS = ['LW', 'C', 'RW', 'LD', 'RD', 'G'] as const;
+const FOUNDATION_SIGNATURE_ASSET_REFERENCES = new Map<string, string>([
+  [
+    'nhl-cale-makar-signature-series',
+    'assets/Event Cards/Signature Series/NHL/Cale-Makar-Signature-Series.png',
+  ],
+  [
+    'nhl-connor-mcdavid-signature-series',
+    'assets/Event Cards/Signature Series/NHL/Connor-McDavid-Signature-Series.png',
+  ],
+  [
+    'nhl-david-pastrnak-signature-series',
+    'assets/Event Cards/Signature Series/NHL/David-Pastrnak-Signature-Series.png',
+  ],
+]);
 const eventOfferCounts = new Set(EVENT_CALENDAR.map((event) => event.rotation.offerCount));
 if (eventOfferCounts.size !== 1) {
   throw new Error('All launch events must share one server offer-count contract.');
@@ -181,6 +197,7 @@ function renderCardCatalog(): string {
       const player = players.get(card.playerId);
       if (!player) throw new Error(`Card ${card.id} references unknown player ${card.playerId}.`);
       const legacyRetained = player.sourceMetadata.sourceRosterStatus === 'legacy-retained';
+      const foundationSignatureReference = FOUNDATION_SIGNATURE_ASSET_REFERENCES.get(card.id);
       return {
         card_id: card.id,
         player_id: card.playerId,
@@ -201,8 +218,13 @@ function renderCardCatalog(): string {
         is_active: true,
         available_from: card.availableFrom ?? null,
         available_to: card.availableTo ?? null,
-        image_reference: card.imageReference,
-        visual_metadata: card.visualMetadata,
+        // This section belongs to an already-applied migration. Keep its original
+        // asset projection frozen; current asset references are emitted separately.
+        image_reference: foundationSignatureReference ?? `placeholder:card/${card.id}`,
+        visual_metadata: {
+          ...card.visualMetadata,
+          treatment: foundationSignatureReference ? 'approved-local-asset' : 'neutral-placeholder',
+        },
         source_metadata: {
           status: legacyRetained ? 'legacy-retained' : 'generated',
           catalogId: catalogMetadata.catalogId,
@@ -248,6 +270,96 @@ function renderCardCatalog(): string {
   );
 }
 
+function renderCardAssetReferences(): string {
+  const rows = [...gameCatalog.cards]
+    .sort((left, right) => left.id.localeCompare(right.id))
+    .map((card) => ({
+      card_id: card.id,
+      image_reference: card.imageReference,
+      visual_metadata: card.visualMetadata,
+    }));
+  const payload = JSON.stringify(rows);
+  if (payload.includes('$card_asset_catalog$')) {
+    throw new Error('Generated card asset payload contains its SQL dollar-quote delimiter.');
+  }
+  return [
+    'do $card_asset_projection$',
+    'declare',
+    `  asset_rows jsonb := $card_asset_catalog$${payload}$card_asset_catalog$::jsonb;`,
+    '  expected_count bigint;',
+    '  distinct_count bigint;',
+    '  catalog_count bigint;',
+    '  matched_count bigint;',
+    '  updated_count bigint;',
+    'begin',
+    '  expected_count := jsonb_array_length(asset_rows);',
+    '',
+    '  select count(distinct seeded.card_id)',
+    '  into distinct_count',
+    '  from jsonb_to_recordset(asset_rows) as seeded(',
+    '    card_id text,',
+    '    image_reference text,',
+    '    visual_metadata jsonb',
+    '  );',
+    '',
+    '  if distinct_count <> expected_count then',
+    "    raise exception 'Card asset projection contains duplicate card IDs (% distinct / % rows).', distinct_count, expected_count;",
+    '  end if;',
+    '',
+    '  if exists (',
+    '    select 1',
+    '    from jsonb_to_recordset(asset_rows) as seeded(',
+    '      card_id text,',
+    '      image_reference text,',
+    '      visual_metadata jsonb',
+    '    )',
+    "    where seeded.image_reference is null or seeded.image_reference = ''",
+    "      or jsonb_typeof(seeded.visual_metadata) <> 'object'",
+    '  ) then',
+    "    raise exception 'Card asset projection contains an empty reference or invalid visual metadata.';",
+    '  end if;',
+    '',
+    '  select count(*)',
+    '  into catalog_count',
+    '  from public.card_catalog;',
+    '',
+    '  if catalog_count <> expected_count then',
+    "    raise exception 'Card asset projection expects % cards, but public.card_catalog contains %.', expected_count, catalog_count;",
+    '  end if;',
+    '',
+    '  select count(*)',
+    '  into matched_count',
+    '  from public.card_catalog as catalog',
+    '  inner join jsonb_to_recordset(asset_rows) as seeded(',
+    '    card_id text,',
+    '    image_reference text,',
+    '    visual_metadata jsonb',
+    '  ) on seeded.card_id = catalog.card_id;',
+    '',
+    '  if matched_count <> expected_count then',
+    "    raise exception 'Card asset projection matched % of % cards.', matched_count, expected_count;",
+    '  end if;',
+    '',
+    '  update public.card_catalog as catalog',
+    '  set',
+    '    image_reference = seeded.image_reference,',
+    '    visual_metadata = seeded.visual_metadata',
+    '  from jsonb_to_recordset(asset_rows) as seeded(',
+    '    card_id text,',
+    '    image_reference text,',
+    '    visual_metadata jsonb',
+    '  )',
+    '  where catalog.card_id = seeded.card_id;',
+    '',
+    '  get diagnostics updated_count = row_count;',
+    '  if updated_count <> expected_count then',
+    "    raise exception 'Card asset projection updated % of % cards.', updated_count, expected_count;",
+    '  end if;',
+    'end',
+    '$card_asset_projection$;',
+  ].join('\n');
+}
+
 function renderStarterSquads(): string {
   const rows = [...starterSquads]
     .sort((left, right) => left.teamId.localeCompare(right.teamId))
@@ -269,7 +381,7 @@ function renderStarterSquads(): string {
   );
 }
 
-const sections = [
+const foundationSections = [
   { start: TEAM_START, end: TEAM_END, body: renderTeams() },
   { start: PLAYER_START, end: PLAYER_END, body: renderPlayers() },
   { start: EVENT_START, end: EVENT_END, body: renderEventDefinitions() },
@@ -277,6 +389,12 @@ const sections = [
   { start: CATALOG_START, end: CATALOG_END, body: renderCardCatalog() },
   { start: STARTER_START, end: STARTER_END, body: renderStarterSquads() },
 ] as const;
+
+const cardAssetSection = {
+  start: CARD_ASSETS_START,
+  end: CARD_ASSETS_END,
+  body: renderCardAssetReferences(),
+} as const;
 
 function replaceSection(source: string, start: string, end: string, body: string): string {
   const startIndex = source.indexOf(start);
@@ -295,10 +413,14 @@ function replaceSection(source: string, start: string, end: string, body: string
 }
 
 function updateGeneratedSections(source: string): string {
-  return sections.reduce(
+  return foundationSections.reduce(
     (updated, section) => replaceSection(updated, section.start, section.end, section.body),
     source,
   );
+}
+
+function updateCardAssetSection(source: string): string {
+  return replaceSection(source, cardAssetSection.start, cardAssetSection.end, cardAssetSection.body);
 }
 
 function assertManualMarketContract(source: string): void {
@@ -318,7 +440,10 @@ function assertManualMarketContract(source: string): void {
   }
 }
 
-function findMigration(): string {
+function findMigrationWithSections(
+  sections: readonly { start: string; end: string }[],
+  label: string,
+): string {
   const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
   const migrationDirectory = join(repositoryRoot, 'supabase', 'migrations');
   const candidates = readdirSync(migrationDirectory)
@@ -329,27 +454,53 @@ function findMigration(): string {
     const source = readFileSync(join(migrationDirectory, candidate), 'utf8');
     return sections.every(({ start, end }) => source.includes(start) && source.includes(end));
   });
-  if (!name) throw new Error('No Supabase migration contains all generated seed markers.');
+  if (!name) throw new Error(`No Supabase migration contains all ${label} markers.`);
   return join(migrationDirectory, name);
+}
+
+function findFoundationMigration(): string {
+  return findMigrationWithSections(foundationSections, 'generated seed');
+}
+
+function findCardAssetMigration(): string {
+  return findMigrationWithSections([cardAssetSection], 'generated card asset');
 }
 
 const mode = process.argv[2];
 if (mode === '--write' || mode === '--check') {
-  const migration = findMigration();
-  const current = readFileSync(migration, 'utf8');
-  const generated = updateGeneratedSections(current);
-  assertManualMarketContract(generated);
+  const foundationMigration = findFoundationMigration();
+  const foundationCurrent = readFileSync(foundationMigration, 'utf8');
+  const foundationGenerated = updateGeneratedSections(foundationCurrent);
+  assertManualMarketContract(foundationGenerated);
+  if (foundationCurrent !== foundationGenerated) {
+    throw new Error(
+      `Immutable Supabase foundation projection is stale in ${foundationMigration}. `
+      + 'Restore the applied migration; publish changes through a new additive migration.',
+    );
+  }
+
+  const assetMigration = findCardAssetMigration();
+  const assetCurrent = readFileSync(assetMigration, 'utf8');
+  const assetGenerated = updateCardAssetSection(assetCurrent);
   if (mode === '--write') {
-    writeFileSync(migration, generated);
-    console.log(`Updated generated Supabase projections in ${migration}.`);
-  } else if (current !== generated) {
-    console.error(`Generated Supabase projections are stale in ${migration}. Run pnpm catalog:sql:write.`);
+    writeFileSync(assetMigration, assetGenerated);
+    console.log(`Verified immutable Supabase foundation projection in ${foundationMigration}.`);
+    console.log(`Updated generated card asset projection in ${assetMigration}.`);
+  } else if (assetCurrent !== assetGenerated) {
+    console.error(
+      `Generated card asset projection is stale in ${assetMigration}. Run pnpm catalog:sql:write.`,
+    );
     process.exitCode = 1;
   } else {
-    console.log(`Generated Supabase projections are current in ${migration}.`);
+    console.log(`Immutable Supabase foundation projection is current in ${foundationMigration}.`);
+    console.log(`Generated card asset projection is current in ${assetMigration}.`);
   }
 } else if (mode === undefined) {
-  console.log(sections.map(({ start, end, body }) => `${start}\n${body}\n${end}`).join('\n\n'));
+  console.log(
+    [...foundationSections, cardAssetSection]
+      .map(({ start, end, body }) => `${start}\n${body}\n${end}`)
+      .join('\n\n'),
+  );
 } else {
   throw new Error(`Unknown argument ${mode}. Use --write, --check, or no argument.`);
 }

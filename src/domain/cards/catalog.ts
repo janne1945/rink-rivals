@@ -6,11 +6,14 @@ import type {
   ResolvedCard,
   SkaterAttributes,
 } from './types';
+import { expectedCardImageReference } from './assets';
 
 export type CatalogIssueCode =
   | 'duplicate-player-id'
   | 'duplicate-card-id'
+  | 'duplicate-card-image-reference'
   | 'invalid-player-reference'
+  | 'invalid-image-reference'
   | 'role-mismatch'
   | 'invalid-player-position'
   | 'invalid-rating'
@@ -136,6 +139,7 @@ export function validateCatalog(catalog: CardCatalog): CatalogValidationResult {
   const issues: CatalogValidationIssue[] = [];
   const playerIds = findDuplicates(catalog.players.map(({ id }) => id));
   const cardIds = findDuplicates(catalog.cards.map(({ id }) => id));
+  const cardImageReferences = findDuplicates(catalog.cards.map(({ imageReference }) => imageReference));
   const playersById = new Map(catalog.players.map((player) => [player.id, player]));
 
   for (const duplicateId of playerIds) {
@@ -154,10 +158,26 @@ export function validateCatalog(catalog: CardCatalog): CatalogValidationResult {
     });
   }
 
+  for (const duplicateReference of cardImageReferences) {
+    issues.push({
+      code: 'duplicate-card-image-reference',
+      path: 'cards',
+      message: `Card image reference ${duplicateReference} is duplicated.`,
+    });
+  }
+
   catalog.players.forEach((player, index) => issues.push(...validatePlayer(player, index)));
 
   catalog.cards.forEach((card, index) => {
     issues.push(...validateCard(card, index));
+    const expectedImageReference = expectedCardImageReference(card);
+    if (card.imageReference !== expectedImageReference) {
+      issues.push({
+        code: 'invalid-image-reference',
+        path: `cards[${index}].imageReference`,
+        message: `Card ${card.id} must reference ${expectedImageReference}.`,
+      });
+    }
     const player = playersById.get(card.playerId);
 
     if (!player) {

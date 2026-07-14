@@ -5,6 +5,7 @@ playwright-report/
 test-results/
 *.tsbuildinfo
 .DS_Store
+.asset-sync.lock
 .vercel/
 .env
 .env.*

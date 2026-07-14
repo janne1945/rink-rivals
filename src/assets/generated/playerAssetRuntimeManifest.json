@@ -1,0 +1,6834 @@
+{
+  "schemaVersion": 1,
+  "fallback": {
+    "path": "/assets/cards/neutral-card.svg",
+    "mediaType": "image/svg+xml",
+    "presentation": "placeholder",
+    "width": 512,
+    "height": 720
+  },
+  "assets": [
+    {
+      "playerId": "nhl-a-j-greer",
+      "variant": "base",
+      "path": "/assets/players/nhl/a-j-greer/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-aaron-ekblad",
+      "variant": "base",
+      "path": "/assets/players/nhl/aaron-ekblad/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-aatu-raty",
+      "variant": "base",
+      "path": "/assets/players/nhl/aatu-raty/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-adam-fantilli",
+      "variant": "base",
+      "path": "/assets/players/nhl/adam-fantilli/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-adam-fox",
+      "variant": "base",
+      "path": "/assets/players/nhl/adam-fox/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-adam-gaudette",
+      "variant": "base",
+      "path": "/assets/players/nhl/adam-gaudette/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-adam-klapka",
+      "variant": "base",
+      "path": "/assets/players/nhl/adam-klapka/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-adam-larsson",
+      "variant": "base",
+      "path": "/assets/players/nhl/adam-larsson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-adam-lowry",
+      "variant": "base",
+      "path": "/assets/players/nhl/adam-lowry/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-adam-pelech",
+      "variant": "base",
+      "path": "/assets/players/nhl/adam-pelech/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-adam-wilsby",
+      "variant": "base",
+      "path": "/assets/players/nhl/adam-wilsby/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-adin-hill",
+      "variant": "base",
+      "path": "/assets/players/nhl/adin-hill/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-adrian-kempe",
+      "variant": "base",
+      "path": "/assets/players/nhl/adrian-kempe/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-akira-schmid",
+      "variant": "base",
+      "path": "/assets/players/nhl/akira-schmid/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-albert-johansson",
+      "variant": "base",
+      "path": "/assets/players/nhl/albert-johansson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alex-bump",
+      "variant": "base",
+      "path": "/assets/players/nhl/alex-bump/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alex-debrincat",
+      "variant": "base",
+      "path": "/assets/players/nhl/alex-debrincat/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alex-iafallo",
+      "variant": "base",
+      "path": "/assets/players/nhl/alex-iafallo/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alex-killorn",
+      "variant": "base",
+      "path": "/assets/players/nhl/alex-killorn/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alex-laferriere",
+      "variant": "base",
+      "path": "/assets/players/nhl/alex-laferriere/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alex-lyon",
+      "variant": "base",
+      "path": "/assets/players/nhl/alex-lyon/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alex-nedeljkovic",
+      "variant": "base",
+      "path": "/assets/players/nhl/alex-nedeljkovic/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alex-newhook",
+      "variant": "base",
+      "path": "/assets/players/nhl/alex-newhook/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alex-ovechkin",
+      "variant": "base",
+      "path": "/assets/players/nhl/alex-ovechkin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alex-tuch",
+      "variant": "base",
+      "path": "/assets/players/nhl/alex-tuch/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alex-vlasic",
+      "variant": "base",
+      "path": "/assets/players/nhl/alex-vlasic/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alexander-nikishin",
+      "variant": "base",
+      "path": "/assets/players/nhl/alexander-nikishin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alexander-wennberg",
+      "variant": "base",
+      "path": "/assets/players/nhl/alexander-wennberg/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alexandre-carrier",
+      "variant": "base",
+      "path": "/assets/players/nhl/alexandre-carrier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alexandre-texier",
+      "variant": "base",
+      "path": "/assets/players/nhl/alexandre-texier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-alexis-lafreniere",
+      "variant": "base",
+      "path": "/assets/players/nhl/alexis-lafreniere/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-aliaksei-protas",
+      "variant": "base",
+      "path": "/assets/players/nhl/aliaksei-protas/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-anders-lee",
+      "variant": "base",
+      "path": "/assets/players/nhl/anders-lee/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-andre-burakovsky",
+      "variant": "base",
+      "path": "/assets/players/nhl/andre-burakovsky/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-andrei-kuzmenko",
+      "variant": "base",
+      "path": "/assets/players/nhl/andrei-kuzmenko/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-andrei-svechnikov",
+      "variant": "base",
+      "path": "/assets/players/nhl/andrei-svechnikov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-andrei-vasilevskiy",
+      "variant": "base",
+      "path": "/assets/players/nhl/andrei-vasilevskiy/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-andrew-copp",
+      "variant": "base",
+      "path": "/assets/players/nhl/andrew-copp/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-andrew-mangiapane",
+      "variant": "base",
+      "path": "/assets/players/nhl/andrew-mangiapane/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-andrew-peeke",
+      "variant": "base",
+      "path": "/assets/players/nhl/andrew-peeke/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-anthony-beauvillier",
+      "variant": "base",
+      "path": "/assets/players/nhl/anthony-beauvillier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-anthony-cirelli",
+      "variant": "base",
+      "path": "/assets/players/nhl/anthony-cirelli/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-anthony-duclair",
+      "variant": "base",
+      "path": "/assets/players/nhl/anthony-duclair/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-anthony-stolarz",
+      "variant": "base",
+      "path": "/assets/players/nhl/anthony-stolarz/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-anton-forsberg",
+      "variant": "base",
+      "path": "/assets/players/nhl/anton-forsberg/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-anton-lundell",
+      "variant": "base",
+      "path": "/assets/players/nhl/anton-lundell/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-arseny-gritsyuk",
+      "variant": "base",
+      "path": "/assets/players/nhl/arseny-gritsyuk/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-artem-zub",
+      "variant": "base",
+      "path": "/assets/players/nhl/artem-zub/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-artemi-panarin",
+      "variant": "base",
+      "path": "/assets/players/nhl/artemi-panarin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-arttu-hyry",
+      "variant": "base",
+      "path": "/assets/players/nhl/arttu-hyry/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-artturi-lehkonen",
+      "variant": "base",
+      "path": "/assets/players/nhl/artturi-lehkonen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-arturs-silovs",
+      "variant": "base",
+      "path": "/assets/players/nhl/arturs-silovs/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-artyom-levshunov",
+      "variant": "base",
+      "path": "/assets/players/nhl/artyom-levshunov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-arvid-soderblom",
+      "variant": "base",
+      "path": "/assets/players/nhl/arvid-soderblom/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-auston-matthews",
+      "variant": "base",
+      "path": "/assets/players/nhl/auston-matthews/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-barrett-hayton",
+      "variant": "base",
+      "path": "/assets/players/nhl/barrett-hayton/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-beckett-sennecke",
+      "variant": "base",
+      "path": "/assets/players/nhl/beckett-sennecke/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ben-chiarot",
+      "variant": "base",
+      "path": "/assets/players/nhl/ben-chiarot/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ben-kindel",
+      "variant": "base",
+      "path": "/assets/players/nhl/ben-kindel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ben-meyers",
+      "variant": "base",
+      "path": "/assets/players/nhl/ben-meyers/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-blake-coleman",
+      "variant": "base",
+      "path": "/assets/players/nhl/blake-coleman/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-bo-horvat",
+      "variant": "base",
+      "path": "/assets/players/nhl/bo-horvat/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-bobby-brink",
+      "variant": "base",
+      "path": "/assets/players/nhl/bobby-brink/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-bobby-mcmann",
+      "variant": "base",
+      "path": "/assets/players/nhl/bobby-mcmann/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-boone-jenner",
+      "variant": "base",
+      "path": "/assets/players/nhl/boone-jenner/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-bowen-byram",
+      "variant": "base",
+      "path": "/assets/players/nhl/bowen-byram/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brad-marchand",
+      "variant": "base",
+      "path": "/assets/players/nhl/brad-marchand/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-braden-schneider",
+      "variant": "base",
+      "path": "/assets/players/nhl/braden-schneider/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brady-skjei",
+      "variant": "base",
+      "path": "/assets/players/nhl/brady-skjei/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brady-tkachuk",
+      "variant": "base",
+      "path": "/assets/players/nhl/brady-tkachuk/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-braeden-bowman",
+      "variant": "base",
+      "path": "/assets/players/nhl/braeden-bowman/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brandon-bussi",
+      "variant": "base",
+      "path": "/assets/players/nhl/brandon-bussi/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brandon-carlo",
+      "variant": "base",
+      "path": "/assets/players/nhl/brandon-carlo/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brandon-duhaime",
+      "variant": "base",
+      "path": "/assets/players/nhl/brandon-duhaime/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brandon-hagel",
+      "variant": "base",
+      "path": "/assets/players/nhl/brandon-hagel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brandon-montour",
+      "variant": "base",
+      "path": "/assets/players/nhl/brandon-montour/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brandt-clarke",
+      "variant": "base",
+      "path": "/assets/players/nhl/brandt-clarke/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brayden-mcnabb",
+      "variant": "base",
+      "path": "/assets/players/nhl/brayden-mcnabb/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brayden-point",
+      "variant": "base",
+      "path": "/assets/players/nhl/brayden-point/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brayden-schenn",
+      "variant": "base",
+      "path": "/assets/players/nhl/brayden-schenn/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brendan-gallagher",
+      "variant": "base",
+      "path": "/assets/players/nhl/brendan-gallagher/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brenden-dillon",
+      "variant": "base",
+      "path": "/assets/players/nhl/brenden-dillon/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brent-burns",
+      "variant": "base",
+      "path": "/assets/players/nhl/brent-burns/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brett-howden",
+      "variant": "base",
+      "path": "/assets/players/nhl/brett-howden/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brett-kulak",
+      "variant": "base",
+      "path": "/assets/players/nhl/brett-kulak/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brett-pesce",
+      "variant": "base",
+      "path": "/assets/players/nhl/brett-pesce/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brian-dumoulin",
+      "variant": "base",
+      "path": "/assets/players/nhl/brian-dumoulin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brock-boeser",
+      "variant": "base",
+      "path": "/assets/players/nhl/brock-boeser/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brock-faber",
+      "variant": "base",
+      "path": "/assets/players/nhl/brock-faber/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-brock-nelson",
+      "variant": "base",
+      "path": "/assets/players/nhl/brock-nelson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-bryan-rust",
+      "variant": "base",
+      "path": "/assets/players/nhl/bryan-rust/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cale-fleury",
+      "variant": "base",
+      "path": "/assets/players/nhl/cale-fleury/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cale-makar",
+      "variant": "base",
+      "path": "/assets/players/nhl/cale-makar/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cale-makar",
+      "variant": "signature",
+      "path": "/assets/players/nhl/cale-makar/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 1008
+    },
+    {
+      "playerId": "nhl-cam-fowler",
+      "variant": "base",
+      "path": "/assets/players/nhl/cam-fowler/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cam-york",
+      "variant": "base",
+      "path": "/assets/players/nhl/cam-york/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-carter-hart",
+      "variant": "base",
+      "path": "/assets/players/nhl/carter-hart/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-carter-verhaeghe",
+      "variant": "base",
+      "path": "/assets/players/nhl/carter-verhaeghe/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-casey-cizikas",
+      "variant": "base",
+      "path": "/assets/players/nhl/casey-cizikas/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-casey-desmith",
+      "variant": "base",
+      "path": "/assets/players/nhl/casey-desmith/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-casey-mittelstadt",
+      "variant": "base",
+      "path": "/assets/players/nhl/casey-mittelstadt/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-chandler-stephenson",
+      "variant": "base",
+      "path": "/assets/players/nhl/chandler-stephenson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-charle-edouard-d-astous",
+      "variant": "base",
+      "path": "/assets/players/nhl/charle-edouard-d-astous/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-charlie-coyle",
+      "variant": "base",
+      "path": "/assets/players/nhl/charlie-coyle/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-charlie-lindgren",
+      "variant": "base",
+      "path": "/assets/players/nhl/charlie-lindgren/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-charlie-mcavoy",
+      "variant": "base",
+      "path": "/assets/players/nhl/charlie-mcavoy/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-chris-kreider",
+      "variant": "base",
+      "path": "/assets/players/nhl/chris-kreider/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-christian-dvorak",
+      "variant": "base",
+      "path": "/assets/players/nhl/christian-dvorak/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-claude-giroux",
+      "variant": "base",
+      "path": "/assets/players/nhl/claude-giroux/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-clayton-keller",
+      "variant": "base",
+      "path": "/assets/players/nhl/clayton-keller/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cody-ceci",
+      "variant": "base",
+      "path": "/assets/players/nhl/cody-ceci/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cody-glass",
+      "variant": "base",
+      "path": "/assets/players/nhl/cody-glass/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cole-caufield",
+      "variant": "base",
+      "path": "/assets/players/nhl/cole-caufield/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cole-perfetti",
+      "variant": "base",
+      "path": "/assets/players/nhl/cole-perfetti/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cole-reinhardt",
+      "variant": "base",
+      "path": "/assets/players/nhl/cole-reinhardt/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cole-sillinger",
+      "variant": "base",
+      "path": "/assets/players/nhl/cole-sillinger/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cole-smith",
+      "variant": "base",
+      "path": "/assets/players/nhl/cole-smith/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-collin-graf",
+      "variant": "base",
+      "path": "/assets/players/nhl/collin-graf/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-colton-dach",
+      "variant": "base",
+      "path": "/assets/players/nhl/colton-dach/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-colton-parayko",
+      "variant": "base",
+      "path": "/assets/players/nhl/colton-parayko/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-connor-bedard",
+      "variant": "base",
+      "path": "/assets/players/nhl/connor-bedard/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-connor-brown",
+      "variant": "base",
+      "path": "/assets/players/nhl/connor-brown/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-connor-hellebuyck",
+      "variant": "base",
+      "path": "/assets/players/nhl/connor-hellebuyck/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-connor-mcdavid",
+      "variant": "base",
+      "path": "/assets/players/nhl/connor-mcdavid/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-connor-mcdavid",
+      "variant": "signature",
+      "path": "/assets/players/nhl/connor-mcdavid/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 1008
+    },
+    {
+      "playerId": "nhl-connor-mcmichael",
+      "variant": "base",
+      "path": "/assets/players/nhl/connor-mcmichael/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-connor-murphy",
+      "variant": "base",
+      "path": "/assets/players/nhl/connor-murphy/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-connor-zary",
+      "variant": "base",
+      "path": "/assets/players/nhl/connor-zary/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-conor-garland",
+      "variant": "base",
+      "path": "/assets/players/nhl/conor-garland/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-conor-sheary",
+      "variant": "base",
+      "path": "/assets/players/nhl/conor-sheary/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-conor-timmins",
+      "variant": "base",
+      "path": "/assets/players/nhl/conor-timmins/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-corey-perry",
+      "variant": "base",
+      "path": "/assets/players/nhl/corey-perry/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-cutter-gauthier",
+      "variant": "base",
+      "path": "/assets/players/nhl/cutter-gauthier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dakota-joshua",
+      "variant": "base",
+      "path": "/assets/players/nhl/dakota-joshua/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dalibor-dvorsky",
+      "variant": "base",
+      "path": "/assets/players/nhl/dalibor-dvorsky/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-damon-severson",
+      "variant": "base",
+      "path": "/assets/players/nhl/damon-severson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dan-vladar",
+      "variant": "base",
+      "path": "/assets/players/nhl/dan-vladar/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-daniil-tarasov",
+      "variant": "base",
+      "path": "/assets/players/nhl/daniil-tarasov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-danila-yurov",
+      "variant": "base",
+      "path": "/assets/players/nhl/danila-yurov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dante-fabbro",
+      "variant": "base",
+      "path": "/assets/players/nhl/dante-fabbro/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-darcy-kuemper",
+      "variant": "base",
+      "path": "/assets/players/nhl/darcy-kuemper/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-darnell-nurse",
+      "variant": "base",
+      "path": "/assets/players/nhl/darnell-nurse/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-darren-raddysh",
+      "variant": "base",
+      "path": "/assets/players/nhl/darren-raddysh/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-david-pastrnak",
+      "variant": "base",
+      "path": "/assets/players/nhl/david-pastrnak/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 335,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-david-pastrnak",
+      "variant": "signature",
+      "path": "/assets/players/nhl/david-pastrnak/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 1003
+    },
+    {
+      "playerId": "nhl-david-rittich",
+      "variant": "base",
+      "path": "/assets/players/nhl/david-rittich/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dawson-mercer",
+      "variant": "base",
+      "path": "/assets/players/nhl/dawson-mercer/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-declan-carlile",
+      "variant": "base",
+      "path": "/assets/players/nhl/declan-carlile/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dennis-hildeby",
+      "variant": "base",
+      "path": "/assets/players/nhl/dennis-hildeby/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-denton-mateychuk",
+      "variant": "base",
+      "path": "/assets/players/nhl/denton-mateychuk/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-devin-cooley",
+      "variant": "base",
+      "path": "/assets/players/nhl/devin-cooley/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-devon-toews",
+      "variant": "base",
+      "path": "/assets/players/nhl/devon-toews/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dmitri-voronkov",
+      "variant": "base",
+      "path": "/assets/players/nhl/dmitri-voronkov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dmitry-orlov",
+      "variant": "base",
+      "path": "/assets/players/nhl/dmitry-orlov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dougie-hamilton",
+      "variant": "base",
+      "path": "/assets/players/nhl/dougie-hamilton/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-drake-batherson",
+      "variant": "base",
+      "path": "/assets/players/nhl/drake-batherson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-drew-doughty",
+      "variant": "base",
+      "path": "/assets/players/nhl/drew-doughty/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-drew-helleson",
+      "variant": "base",
+      "path": "/assets/players/nhl/drew-helleson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-drew-o-connor",
+      "variant": "base",
+      "path": "/assets/players/nhl/drew-o-connor/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dustin-wolf",
+      "variant": "base",
+      "path": "/assets/players/nhl/dustin-wolf/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dylan-cozens",
+      "variant": "base",
+      "path": "/assets/players/nhl/dylan-cozens/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dylan-demelo",
+      "variant": "base",
+      "path": "/assets/players/nhl/dylan-demelo/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dylan-guenther",
+      "variant": "base",
+      "path": "/assets/players/nhl/dylan-guenther/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dylan-holloway",
+      "variant": "base",
+      "path": "/assets/players/nhl/dylan-holloway/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dylan-larkin",
+      "variant": "base",
+      "path": "/assets/players/nhl/dylan-larkin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dylan-samberg",
+      "variant": "base",
+      "path": "/assets/players/nhl/dylan-samberg/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-dylan-strome",
+      "variant": "base",
+      "path": "/assets/players/nhl/dylan-strome/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-eetu-luostarinen",
+      "variant": "base",
+      "path": "/assets/players/nhl/eetu-luostarinen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-egor-chinakhov",
+      "variant": "base",
+      "path": "/assets/players/nhl/egor-chinakhov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-elias-lindholm",
+      "variant": "base",
+      "path": "/assets/players/nhl/elias-lindholm/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-elias-pettersson-8480012",
+      "variant": "base",
+      "path": "/assets/players/nhl/elias-pettersson-8480012/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-elias-pettersson-8483678",
+      "variant": "base",
+      "path": "/assets/players/nhl/elias-pettersson-8483678/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-elvis-merzlikins",
+      "variant": "base",
+      "path": "/assets/players/nhl/elvis-merzlikins/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-emil-andrae",
+      "variant": "base",
+      "path": "/assets/players/nhl/emil-andrae/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-emil-heineman",
+      "variant": "base",
+      "path": "/assets/players/nhl/emil-heineman/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-emil-lilleberg",
+      "variant": "base",
+      "path": "/assets/players/nhl/emil-lilleberg/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-emmitt-finnie",
+      "variant": "base",
+      "path": "/assets/players/nhl/emmitt-finnie/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-eric-comrie",
+      "variant": "base",
+      "path": "/assets/players/nhl/eric-comrie/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-erik-gudbranson",
+      "variant": "base",
+      "path": "/assets/players/nhl/erik-gudbranson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-erik-haula",
+      "variant": "base",
+      "path": "/assets/players/nhl/erik-haula/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-erik-karlsson",
+      "variant": "base",
+      "path": "/assets/players/nhl/erik-karlsson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-esa-lindell",
+      "variant": "base",
+      "path": "/assets/players/nhl/esa-lindell/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-evan-bouchard",
+      "variant": "base",
+      "path": "/assets/players/nhl/evan-bouchard/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-evan-rodrigues",
+      "variant": "base",
+      "path": "/assets/players/nhl/evan-rodrigues/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-evgeni-malkin",
+      "variant": "base",
+      "path": "/assets/players/nhl/evgeni-malkin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-fabian-zetterlund",
+      "variant": "base",
+      "path": "/assets/players/nhl/fabian-zetterlund/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-filip-forsberg",
+      "variant": "base",
+      "path": "/assets/players/nhl/filip-forsberg/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-filip-gustavsson",
+      "variant": "base",
+      "path": "/assets/players/nhl/filip-gustavsson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-filip-hronek",
+      "variant": "base",
+      "path": "/assets/players/nhl/filip-hronek/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-frank-nazar",
+      "variant": "base",
+      "path": "/assets/players/nhl/frank-nazar/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-frank-vatrano",
+      "variant": "base",
+      "path": "/assets/players/nhl/frank-vatrano/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-fraser-minten",
+      "variant": "base",
+      "path": "/assets/players/nhl/fraser-minten/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 335,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-frederick-gaudreau",
+      "variant": "base",
+      "path": "/assets/players/nhl/frederick-gaudreau/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-frederik-andersen",
+      "variant": "base",
+      "path": "/assets/players/nhl/frederik-andersen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-gabe-perreault",
+      "variant": "base",
+      "path": "/assets/players/nhl/gabe-perreault/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-gabriel-landeskog",
+      "variant": "base",
+      "path": "/assets/players/nhl/gabriel-landeskog/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-gabriel-vilardi",
+      "variant": "base",
+      "path": "/assets/players/nhl/gabriel-vilardi/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-gage-goncalves",
+      "variant": "base",
+      "path": "/assets/players/nhl/gage-goncalves/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-garnet-hathaway",
+      "variant": "base",
+      "path": "/assets/players/nhl/garnet-hathaway/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-gustav-forsling",
+      "variant": "base",
+      "path": "/assets/players/nhl/gustav-forsling/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-hampus-lindholm",
+      "variant": "base",
+      "path": "/assets/players/nhl/hampus-lindholm/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-haydn-fleury",
+      "variant": "base",
+      "path": "/assets/players/nhl/haydn-fleury/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-henri-jokiharju",
+      "variant": "base",
+      "path": "/assets/players/nhl/henri-jokiharju/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ian-cole",
+      "variant": "base",
+      "path": "/assets/players/nhl/ian-cole/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ian-moore",
+      "variant": "base",
+      "path": "/assets/players/nhl/ian-moore/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-igor-shesterkin",
+      "variant": "base",
+      "path": "/assets/players/nhl/igor-shesterkin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ilya-lyubushkin",
+      "variant": "base",
+      "path": "/assets/players/nhl/ilya-lyubushkin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ilya-mikheyev",
+      "variant": "base",
+      "path": "/assets/players/nhl/ilya-mikheyev/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ilya-sorokin",
+      "variant": "base",
+      "path": "/assets/players/nhl/ilya-sorokin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-isak-rosen",
+      "variant": "base",
+      "path": "/assets/players/nhl/isak-rosen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ivan-barbashev",
+      "variant": "base",
+      "path": "/assets/players/nhl/ivan-barbashev/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ivan-demidov",
+      "variant": "base",
+      "path": "/assets/players/nhl/ivan-demidov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ivan-provorov",
+      "variant": "base",
+      "path": "/assets/players/nhl/ivan-provorov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-j-j-moser",
+      "variant": "base",
+      "path": "/assets/players/nhl/j-j-moser/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-j-t-compher",
+      "variant": "base",
+      "path": "/assets/players/nhl/j-t-compher/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-j-t-miller",
+      "variant": "base",
+      "path": "/assets/players/nhl/j-t-miller/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jaccob-slavin",
+      "variant": "base",
+      "path": "/assets/players/nhl/jaccob-slavin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jack-drury",
+      "variant": "base",
+      "path": "/assets/players/nhl/jack-drury/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jack-eichel",
+      "variant": "base",
+      "path": "/assets/players/nhl/jack-eichel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jack-hughes",
+      "variant": "base",
+      "path": "/assets/players/nhl/jack-hughes/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jack-quinn",
+      "variant": "base",
+      "path": "/assets/players/nhl/jack-quinn/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jack-roslovic",
+      "variant": "base",
+      "path": "/assets/players/nhl/jack-roslovic/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jackson-blake",
+      "variant": "base",
+      "path": "/assets/players/nhl/jackson-blake/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jackson-lacombe",
+      "variant": "base",
+      "path": "/assets/players/nhl/jackson-lacombe/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jacob-bryson",
+      "variant": "base",
+      "path": "/assets/players/nhl/jacob-bryson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jacob-fowler",
+      "variant": "base",
+      "path": "/assets/players/nhl/jacob-fowler/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jacob-markstrom",
+      "variant": "base",
+      "path": "/assets/players/nhl/jacob-markstrom/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jacob-trouba",
+      "variant": "base",
+      "path": "/assets/players/nhl/jacob-trouba/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jaden-schwartz",
+      "variant": "base",
+      "path": "/assets/players/nhl/jaden-schwartz/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jake-allen",
+      "variant": "base",
+      "path": "/assets/players/nhl/jake-allen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jake-debrusk",
+      "variant": "base",
+      "path": "/assets/players/nhl/jake-debrusk/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jake-evans",
+      "variant": "base",
+      "path": "/assets/players/nhl/jake-evans/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jake-guentzel",
+      "variant": "base",
+      "path": "/assets/players/nhl/jake-guentzel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jake-mccabe",
+      "variant": "base",
+      "path": "/assets/players/nhl/jake-mccabe/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jake-middleton",
+      "variant": "base",
+      "path": "/assets/players/nhl/jake-middleton/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jake-neighbours",
+      "variant": "base",
+      "path": "/assets/players/nhl/jake-neighbours/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jake-oettinger",
+      "variant": "base",
+      "path": "/assets/players/nhl/jake-oettinger/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jake-sanderson",
+      "variant": "base",
+      "path": "/assets/players/nhl/jake-sanderson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jake-walman",
+      "variant": "base",
+      "path": "/assets/players/nhl/jake-walman/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jakob-chychrun",
+      "variant": "base",
+      "path": "/assets/players/nhl/jakob-chychrun/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jakub-dobes",
+      "variant": "base",
+      "path": "/assets/players/nhl/jakub-dobes/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jalen-chatfield",
+      "variant": "base",
+      "path": "/assets/players/nhl/jalen-chatfield/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jamie-benn",
+      "variant": "base",
+      "path": "/assets/players/nhl/jamie-benn/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jamie-drysdale",
+      "variant": "base",
+      "path": "/assets/players/nhl/jamie-drysdale/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jamie-oleksiak",
+      "variant": "base",
+      "path": "/assets/players/nhl/jamie-oleksiak/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jared-mccann",
+      "variant": "base",
+      "path": "/assets/players/nhl/jared-mccann/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jared-spurgeon",
+      "variant": "base",
+      "path": "/assets/players/nhl/jared-spurgeon/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jason-dickinson",
+      "variant": "base",
+      "path": "/assets/players/nhl/jason-dickinson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jason-robertson",
+      "variant": "base",
+      "path": "/assets/players/nhl/jason-robertson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jason-zucker",
+      "variant": "base",
+      "path": "/assets/players/nhl/jason-zucker/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jaxson-stauber",
+      "variant": "base",
+      "path": "/assets/players/nhl/jaxson-stauber/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jayden-struble",
+      "variant": "base",
+      "path": "/assets/players/nhl/jayden-struble/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jean-gabriel-pageau",
+      "variant": "base",
+      "path": "/assets/players/nhl/jean-gabriel-pageau/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jeffrey-viel",
+      "variant": "base",
+      "path": "/assets/players/nhl/jeffrey-viel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jeremy-lauzon",
+      "variant": "base",
+      "path": "/assets/players/nhl/jeremy-lauzon/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jeremy-swayman",
+      "variant": "base",
+      "path": "/assets/players/nhl/jeremy-swayman/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jesper-bratt",
+      "variant": "base",
+      "path": "/assets/players/nhl/jesper-bratt/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jesper-wallstedt",
+      "variant": "base",
+      "path": "/assets/players/nhl/jesper-wallstedt/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jet-greaves",
+      "variant": "base",
+      "path": "/assets/players/nhl/jet-greaves/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jimmy-snuggerud",
+      "variant": "base",
+      "path": "/assets/players/nhl/jimmy-snuggerud/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jj-peterka",
+      "variant": "base",
+      "path": "/assets/players/nhl/jj-peterka/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-joel-edmundson",
+      "variant": "base",
+      "path": "/assets/players/nhl/joel-edmundson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-joel-eriksson-ek",
+      "variant": "base",
+      "path": "/assets/players/nhl/joel-eriksson-ek/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-joel-farabee",
+      "variant": "base",
+      "path": "/assets/players/nhl/joel-farabee/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-joel-hofer",
+      "variant": "base",
+      "path": "/assets/players/nhl/joel-hofer/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-joey-daccord",
+      "variant": "base",
+      "path": "/assets/players/nhl/joey-daccord/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-john-carlson",
+      "variant": "base",
+      "path": "/assets/players/nhl/john-carlson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-john-gibson",
+      "variant": "base",
+      "path": "/assets/players/nhl/john-gibson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-john-marino",
+      "variant": "base",
+      "path": "/assets/players/nhl/john-marino/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-john-tavares",
+      "variant": "base",
+      "path": "/assets/players/nhl/john-tavares/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-johnathan-kovacevic",
+      "variant": "base",
+      "path": "/assets/players/nhl/johnathan-kovacevic/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jonas-brodin",
+      "variant": "base",
+      "path": "/assets/players/nhl/jonas-brodin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jonas-siegenthaler",
+      "variant": "base",
+      "path": "/assets/players/nhl/jonas-siegenthaler/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jonatan-berggren",
+      "variant": "base",
+      "path": "/assets/players/nhl/jonatan-berggren/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jonathan-huberdeau",
+      "variant": "base",
+      "path": "/assets/players/nhl/jonathan-huberdeau/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jonathan-marchessault",
+      "variant": "base",
+      "path": "/assets/players/nhl/jonathan-marchessault/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-joonas-korpisalo",
+      "variant": "base",
+      "path": "/assets/players/nhl/joonas-korpisalo/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jordan-binnington",
+      "variant": "base",
+      "path": "/assets/players/nhl/jordan-binnington/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jordan-eberle",
+      "variant": "base",
+      "path": "/assets/players/nhl/jordan-eberle/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jordan-kyrou",
+      "variant": "base",
+      "path": "/assets/players/nhl/jordan-kyrou/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jordan-martinook",
+      "variant": "base",
+      "path": "/assets/players/nhl/jordan-martinook/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jordan-spence",
+      "variant": "base",
+      "path": "/assets/players/nhl/jordan-spence/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-jordan-staal",
+      "variant": "base",
+      "path": "/assets/players/nhl/jordan-staal/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-joseph-woll",
+      "variant": "base",
+      "path": "/assets/players/nhl/joseph-woll/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-josh-anderson",
+      "variant": "base",
+      "path": "/assets/players/nhl/josh-anderson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-josh-doan",
+      "variant": "base",
+      "path": "/assets/players/nhl/josh-doan/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-josh-manson",
+      "variant": "base",
+      "path": "/assets/players/nhl/josh-manson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-josh-morrissey",
+      "variant": "base",
+      "path": "/assets/players/nhl/josh-morrissey/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-josh-norris",
+      "variant": "base",
+      "path": "/assets/players/nhl/josh-norris/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-juraj-slafkovsky",
+      "variant": "base",
+      "path": "/assets/players/nhl/juraj-slafkovsky/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-justin-brazeau",
+      "variant": "base",
+      "path": "/assets/players/nhl/justin-brazeau/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-justin-faulk",
+      "variant": "base",
+      "path": "/assets/players/nhl/justin-faulk/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-justin-hryckowian",
+      "variant": "base",
+      "path": "/assets/players/nhl/justin-hryckowian/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-justin-sourdif",
+      "variant": "base",
+      "path": "/assets/players/nhl/justin-sourdif/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-justus-annunen",
+      "variant": "base",
+      "path": "/assets/players/nhl/justus-annunen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-juuse-saros",
+      "variant": "base",
+      "path": "/assets/players/nhl/juuse-saros/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-k-andre-miller",
+      "variant": "base",
+      "path": "/assets/players/nhl/k-andre-miller/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kaapo-kakko",
+      "variant": "base",
+      "path": "/assets/players/nhl/kaapo-kakko/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kaedan-korczak",
+      "variant": "base",
+      "path": "/assets/players/nhl/kaedan-korczak/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kaiden-guhle",
+      "variant": "base",
+      "path": "/assets/players/nhl/kaiden-guhle/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kailer-yamamoto",
+      "variant": "base",
+      "path": "/assets/players/nhl/kailer-yamamoto/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-karel-vejmelka",
+      "variant": "base",
+      "path": "/assets/players/nhl/karel-vejmelka/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kasperi-kapanen",
+      "variant": "base",
+      "path": "/assets/players/nhl/kasperi-kapanen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-keegan-kolesar",
+      "variant": "base",
+      "path": "/assets/players/nhl/keegan-kolesar/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kevin-bahl",
+      "variant": "base",
+      "path": "/assets/players/nhl/kevin-bahl/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kevin-fiala",
+      "variant": "base",
+      "path": "/assets/players/nhl/kevin-fiala/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kevin-lankinen",
+      "variant": "base",
+      "path": "/assets/players/nhl/kevin-lankinen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kiefer-sherwood",
+      "variant": "base",
+      "path": "/assets/players/nhl/kiefer-sherwood/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kirill-kaprizov",
+      "variant": "base",
+      "path": "/assets/players/nhl/kirill-kaprizov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kirill-marchenko",
+      "variant": "base",
+      "path": "/assets/players/nhl/kirill-marchenko/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kris-letang",
+      "variant": "base",
+      "path": "/assets/players/nhl/kris-letang/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kyle-connor",
+      "variant": "base",
+      "path": "/assets/players/nhl/kyle-connor/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-kyle-palmieri",
+      "variant": "base",
+      "path": "/assets/players/nhl/kyle-palmieri/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-lane-hutson",
+      "variant": "base",
+      "path": "/assets/players/nhl/lane-hutson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-lawson-crouse",
+      "variant": "base",
+      "path": "/assets/players/nhl/lawson-crouse/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-leo-carlsson",
+      "variant": "base",
+      "path": "/assets/players/nhl/leo-carlsson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-leon-draisaitl",
+      "variant": "base",
+      "path": "/assets/players/nhl/leon-draisaitl/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-liam-ohgren",
+      "variant": "base",
+      "path": "/assets/players/nhl/liam-ohgren/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-lian-bichsel",
+      "variant": "base",
+      "path": "/assets/players/nhl/lian-bichsel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-linus-karlsson",
+      "variant": "base",
+      "path": "/assets/players/nhl/linus-karlsson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-linus-ullmark",
+      "variant": "base",
+      "path": "/assets/players/nhl/linus-ullmark/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-logan-cooley",
+      "variant": "base",
+      "path": "/assets/players/nhl/logan-cooley/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-logan-mailloux",
+      "variant": "base",
+      "path": "/assets/players/nhl/logan-mailloux/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-logan-o-connor",
+      "variant": "base",
+      "path": "/assets/players/nhl/logan-o-connor/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-logan-stankoven",
+      "variant": "base",
+      "path": "/assets/players/nhl/logan-stankoven/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-logan-thompson",
+      "variant": "base",
+      "path": "/assets/players/nhl/logan-thompson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-louis-crevier",
+      "variant": "base",
+      "path": "/assets/players/nhl/louis-crevier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-lucas-raymond",
+      "variant": "base",
+      "path": "/assets/players/nhl/lucas-raymond/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-lukas-dostal",
+      "variant": "base",
+      "path": "/assets/players/nhl/lukas-dostal/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-luke-evangelista",
+      "variant": "base",
+      "path": "/assets/players/nhl/luke-evangelista/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-luke-hughes",
+      "variant": "base",
+      "path": "/assets/players/nhl/luke-hughes/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-luke-schenn",
+      "variant": "base",
+      "path": "/assets/players/nhl/luke-schenn/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mackenzie-blackwood",
+      "variant": "base",
+      "path": "/assets/players/nhl/mackenzie-blackwood/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mackenzie-weegar",
+      "variant": "base",
+      "path": "/assets/players/nhl/mackenzie-weegar/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mackie-samoskevich",
+      "variant": "base",
+      "path": "/assets/players/nhl/mackie-samoskevich/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-macklin-celebrini",
+      "variant": "base",
+      "path": "/assets/players/nhl/macklin-celebrini/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-maksim-shabanov",
+      "variant": "base",
+      "path": "/assets/players/nhl/maksim-shabanov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-marat-khusnutdinov",
+      "variant": "base",
+      "path": "/assets/players/nhl/marat-khusnutdinov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-marco-kasper",
+      "variant": "base",
+      "path": "/assets/players/nhl/marco-kasper/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-marco-rossi",
+      "variant": "base",
+      "path": "/assets/players/nhl/marco-rossi/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-marcus-pettersson",
+      "variant": "base",
+      "path": "/assets/players/nhl/marcus-pettersson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mario-ferraro",
+      "variant": "base",
+      "path": "/assets/players/nhl/mario-ferraro/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mark-jankowski",
+      "variant": "base",
+      "path": "/assets/players/nhl/mark-jankowski/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mark-scheifele",
+      "variant": "base",
+      "path": "/assets/players/nhl/mark-scheifele/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mark-stone",
+      "variant": "base",
+      "path": "/assets/players/nhl/mark-stone/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-martin-fehervary",
+      "variant": "base",
+      "path": "/assets/players/nhl/martin-fehervary/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-martin-necas",
+      "variant": "base",
+      "path": "/assets/players/nhl/martin-necas/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mason-appleton",
+      "variant": "base",
+      "path": "/assets/players/nhl/mason-appleton/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mason-lohrei",
+      "variant": "base",
+      "path": "/assets/players/nhl/mason-lohrei/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mason-marchment",
+      "variant": "base",
+      "path": "/assets/players/nhl/mason-marchment/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mason-mctavish",
+      "variant": "base",
+      "path": "/assets/players/nhl/mason-mctavish/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mathew-barzal",
+      "variant": "base",
+      "path": "/assets/players/nhl/mathew-barzal/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mathieu-olivier",
+      "variant": "base",
+      "path": "/assets/players/nhl/mathieu-olivier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matias-maccelli",
+      "variant": "base",
+      "path": "/assets/players/nhl/matias-maccelli/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mats-zuccarello",
+      "variant": "base",
+      "path": "/assets/players/nhl/mats-zuccarello/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matt-boldy",
+      "variant": "base",
+      "path": "/assets/players/nhl/matt-boldy/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matt-coronato",
+      "variant": "base",
+      "path": "/assets/players/nhl/matt-coronato/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matt-duchene",
+      "variant": "base",
+      "path": "/assets/players/nhl/matt-duchene/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matt-roy",
+      "variant": "base",
+      "path": "/assets/players/nhl/matt-roy/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matt-savoie",
+      "variant": "base",
+      "path": "/assets/players/nhl/matt-savoie/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matthew-kessel",
+      "variant": "base",
+      "path": "/assets/players/nhl/matthew-kessel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matthew-knies",
+      "variant": "base",
+      "path": "/assets/players/nhl/matthew-knies/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matthew-robertson",
+      "variant": "base",
+      "path": "/assets/players/nhl/matthew-robertson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matthew-schaefer",
+      "variant": "base",
+      "path": "/assets/players/nhl/matthew-schaefer/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matthew-tkachuk",
+      "variant": "base",
+      "path": "/assets/players/nhl/matthew-tkachuk/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matthew-wood",
+      "variant": "base",
+      "path": "/assets/players/nhl/matthew-wood/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mattias-ekholm",
+      "variant": "base",
+      "path": "/assets/players/nhl/mattias-ekholm/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mattias-samuelsson",
+      "variant": "base",
+      "path": "/assets/players/nhl/mattias-samuelsson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matty-beniers",
+      "variant": "base",
+      "path": "/assets/players/nhl/matty-beniers/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matvei-gridin",
+      "variant": "base",
+      "path": "/assets/players/nhl/matvei-gridin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-matvei-michkov",
+      "variant": "base",
+      "path": "/assets/players/nhl/matvei-michkov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mavrik-bourque",
+      "variant": "base",
+      "path": "/assets/players/nhl/mavrik-bourque/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-max-domi",
+      "variant": "base",
+      "path": "/assets/players/nhl/max-domi/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-max-jones",
+      "variant": "base",
+      "path": "/assets/players/nhl/max-jones/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-max-sasson",
+      "variant": "base",
+      "path": "/assets/players/nhl/max-sasson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-michael-amadio",
+      "variant": "base",
+      "path": "/assets/players/nhl/michael-amadio/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-michael-carcone",
+      "variant": "base",
+      "path": "/assets/players/nhl/michael-carcone/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-michael-dipietro",
+      "variant": "base",
+      "path": "/assets/players/nhl/michael-dipietro/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-michael-eyssimont",
+      "variant": "base",
+      "path": "/assets/players/nhl/michael-eyssimont/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-michael-kesselring",
+      "variant": "base",
+      "path": "/assets/players/nhl/michael-kesselring/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-michael-misa",
+      "variant": "base",
+      "path": "/assets/players/nhl/michael-misa/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mika-zibanejad",
+      "variant": "base",
+      "path": "/assets/players/nhl/mika-zibanejad/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mikael-backlund",
+      "variant": "base",
+      "path": "/assets/players/nhl/mikael-backlund/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mikael-granlund",
+      "variant": "base",
+      "path": "/assets/players/nhl/mikael-granlund/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mike-matheson",
+      "variant": "base",
+      "path": "/assets/players/nhl/mike-matheson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mikey-anderson",
+      "variant": "base",
+      "path": "/assets/players/nhl/mikey-anderson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mikhail-sergachev",
+      "variant": "base",
+      "path": "/assets/players/nhl/mikhail-sergachev/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mikko-rantanen",
+      "variant": "base",
+      "path": "/assets/players/nhl/mikko-rantanen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-miles-wood",
+      "variant": "base",
+      "path": "/assets/players/nhl/miles-wood/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-miro-heiskanen",
+      "variant": "base",
+      "path": "/assets/players/nhl/miro-heiskanen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-mitch-marner",
+      "variant": "base",
+      "path": "/assets/players/nhl/mitch-marner/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-morgan-barron",
+      "variant": "base",
+      "path": "/assets/players/nhl/morgan-barron/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-morgan-frost",
+      "variant": "base",
+      "path": "/assets/players/nhl/morgan-frost/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-morgan-geekie",
+      "variant": "base",
+      "path": "/assets/players/nhl/morgan-geekie/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-morgan-rielly",
+      "variant": "base",
+      "path": "/assets/players/nhl/morgan-rielly/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-moritz-seider",
+      "variant": "base",
+      "path": "/assets/players/nhl/moritz-seider/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nate-schmidt",
+      "variant": "base",
+      "path": "/assets/players/nhl/nate-schmidt/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nathan-mackinnon",
+      "variant": "base",
+      "path": "/assets/players/nhl/nathan-mackinnon/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nazem-kadri",
+      "variant": "base",
+      "path": "/assets/players/nhl/nazem-kadri/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-neal-pionk",
+      "variant": "base",
+      "path": "/assets/players/nhl/neal-pionk/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nic-dowd",
+      "variant": "base",
+      "path": "/assets/players/nhl/nic-dowd/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nicholas-robertson",
+      "variant": "base",
+      "path": "/assets/players/nhl/nicholas-robertson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nick-bjugstad",
+      "variant": "base",
+      "path": "/assets/players/nhl/nick-bjugstad/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nick-desimone",
+      "variant": "base",
+      "path": "/assets/players/nhl/nick-desimone/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nick-foligno",
+      "variant": "base",
+      "path": "/assets/players/nhl/nick-foligno/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nick-jensen",
+      "variant": "base",
+      "path": "/assets/players/nhl/nick-jensen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nick-lardis",
+      "variant": "base",
+      "path": "/assets/players/nhl/nick-lardis/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nick-paul",
+      "variant": "base",
+      "path": "/assets/players/nhl/nick-paul/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nick-perbix",
+      "variant": "base",
+      "path": "/assets/players/nhl/nick-perbix/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nick-schmaltz",
+      "variant": "base",
+      "path": "/assets/players/nhl/nick-schmaltz/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nick-seeler",
+      "variant": "base",
+      "path": "/assets/players/nhl/nick-seeler/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nick-suzuki",
+      "variant": "base",
+      "path": "/assets/players/nhl/nick-suzuki/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nico-hischier",
+      "variant": "base",
+      "path": "/assets/players/nhl/nico-hischier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nicolas-hague",
+      "variant": "base",
+      "path": "/assets/players/nhl/nicolas-hague/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nicolas-roy",
+      "variant": "base",
+      "path": "/assets/players/nhl/nicolas-roy/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nikita-kucherov",
+      "variant": "base",
+      "path": "/assets/players/nhl/nikita-kucherov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nikita-zadorov",
+      "variant": "base",
+      "path": "/assets/players/nhl/nikita-zadorov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-niko-mikkola",
+      "variant": "base",
+      "path": "/assets/players/nhl/niko-mikkola/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nikolaj-ehlers",
+      "variant": "base",
+      "path": "/assets/players/nhl/nikolaj-ehlers/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nikolas-matinpalo",
+      "variant": "base",
+      "path": "/assets/players/nhl/nikolas-matinpalo/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nils-hoglander",
+      "variant": "base",
+      "path": "/assets/players/nhl/nils-hoglander/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nils-lundkvist",
+      "variant": "base",
+      "path": "/assets/players/nhl/nils-lundkvist/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-nino-niederreiter",
+      "variant": "base",
+      "path": "/assets/players/nhl/nino-niederreiter/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-noah-cates",
+      "variant": "base",
+      "path": "/assets/players/nhl/noah-cates/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-noah-dobson",
+      "variant": "base",
+      "path": "/assets/players/nhl/noah-dobson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-noah-hanifin",
+      "variant": "base",
+      "path": "/assets/players/nhl/noah-hanifin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-noah-laba",
+      "variant": "base",
+      "path": "/assets/players/nhl/noah-laba/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-noah-ostlund",
+      "variant": "base",
+      "path": "/assets/players/nhl/noah-ostlund/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-noel-acciari",
+      "variant": "base",
+      "path": "/assets/players/nhl/noel-acciari/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-olen-zellweger",
+      "variant": "base",
+      "path": "/assets/players/nhl/olen-zellweger/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-oliver-bjorkstrand",
+      "variant": "base",
+      "path": "/assets/players/nhl/oliver-bjorkstrand/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-oliver-ekman-larsson",
+      "variant": "base",
+      "path": "/assets/players/nhl/oliver-ekman-larsson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-oliver-kapanen",
+      "variant": "base",
+      "path": "/assets/players/nhl/oliver-kapanen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-oliver-moore",
+      "variant": "base",
+      "path": "/assets/players/nhl/oliver-moore/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-olli-maatta",
+      "variant": "base",
+      "path": "/assets/players/nhl/olli-maatta/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-owen-power",
+      "variant": "base",
+      "path": "/assets/players/nhl/owen-power/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-owen-tippett",
+      "variant": "base",
+      "path": "/assets/players/nhl/owen-tippett/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-parker-kelly",
+      "variant": "base",
+      "path": "/assets/players/nhl/parker-kelly/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-parker-wotherspoon",
+      "variant": "base",
+      "path": "/assets/players/nhl/parker-wotherspoon/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-pavel-buchnevich",
+      "variant": "base",
+      "path": "/assets/players/nhl/pavel-buchnevich/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-pavel-dorofeyev",
+      "variant": "base",
+      "path": "/assets/players/nhl/pavel-dorofeyev/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-pavel-mintyukov",
+      "variant": "base",
+      "path": "/assets/players/nhl/pavel-mintyukov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-pavel-zacha",
+      "variant": "base",
+      "path": "/assets/players/nhl/pavel-zacha/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-peyton-krebs",
+      "variant": "base",
+      "path": "/assets/players/nhl/peyton-krebs/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-philip-broberg",
+      "variant": "base",
+      "path": "/assets/players/nhl/philip-broberg/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-philipp-grubauer",
+      "variant": "base",
+      "path": "/assets/players/nhl/philipp-grubauer/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-pius-suter",
+      "variant": "base",
+      "path": "/assets/players/nhl/pius-suter/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-pontus-holmberg",
+      "variant": "base",
+      "path": "/assets/players/nhl/pontus-holmberg/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-pyotr-kochetkov",
+      "variant": "base",
+      "path": "/assets/players/nhl/pyotr-kochetkov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-quinn-hughes",
+      "variant": "base",
+      "path": "/assets/players/nhl/quinn-hughes/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-quinton-byfield",
+      "variant": "base",
+      "path": "/assets/players/nhl/quinton-byfield/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-radko-gudas",
+      "variant": "base",
+      "path": "/assets/players/nhl/radko-gudas/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-rasmus-andersson",
+      "variant": "base",
+      "path": "/assets/players/nhl/rasmus-andersson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-rasmus-dahlin",
+      "variant": "base",
+      "path": "/assets/players/nhl/rasmus-dahlin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-rasmus-ristolainen",
+      "variant": "base",
+      "path": "/assets/players/nhl/rasmus-ristolainen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-rasmus-sandin",
+      "variant": "base",
+      "path": "/assets/players/nhl/rasmus-sandin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-rickard-rakell",
+      "variant": "base",
+      "path": "/assets/players/nhl/rickard-rakell/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ridly-greig",
+      "variant": "base",
+      "path": "/assets/players/nhl/ridly-greig/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-robert-thomas",
+      "variant": "base",
+      "path": "/assets/players/nhl/robert-thomas/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-roman-josi",
+      "variant": "base",
+      "path": "/assets/players/nhl/roman-josi/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-roope-hintz",
+      "variant": "base",
+      "path": "/assets/players/nhl/roope-hintz/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ross-colton",
+      "variant": "base",
+      "path": "/assets/players/nhl/ross-colton/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-donato",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-donato/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-greene",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-greene/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-hartman",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-hartman/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-leonard",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-leonard/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-lindgren",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-lindgren/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-mcdonagh",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-mcdonagh/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-mcleod",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-mcleod/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-nugent-hopkins",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-nugent-hopkins/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-o-reilly",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-o-reilly/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-poehling",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-poehling/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-pulock",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-pulock/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-shea",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-shea/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryan-strome",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryan-strome/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ryker-evans",
+      "variant": "base",
+      "path": "/assets/players/nhl/ryker-evans/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sam-bennett",
+      "variant": "base",
+      "path": "/assets/players/nhl/sam-bennett/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sam-dickinson",
+      "variant": "base",
+      "path": "/assets/players/nhl/sam-dickinson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sam-malinski",
+      "variant": "base",
+      "path": "/assets/players/nhl/sam-malinski/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sam-reinhart",
+      "variant": "base",
+      "path": "/assets/players/nhl/sam-reinhart/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sam-rinzel",
+      "variant": "base",
+      "path": "/assets/players/nhl/sam-rinzel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sam-steel",
+      "variant": "base",
+      "path": "/assets/players/nhl/sam-steel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-samuel-ersson",
+      "variant": "base",
+      "path": "/assets/players/nhl/samuel-ersson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-samuel-girard",
+      "variant": "base",
+      "path": "/assets/players/nhl/samuel-girard/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-scott-laughton",
+      "variant": "base",
+      "path": "/assets/players/nhl/scott-laughton/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-scott-mayfield",
+      "variant": "base",
+      "path": "/assets/players/nhl/scott-mayfield/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-scott-wedgewood",
+      "variant": "base",
+      "path": "/assets/players/nhl/scott-wedgewood/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sean-couturier",
+      "variant": "base",
+      "path": "/assets/players/nhl/sean-couturier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sean-durzi",
+      "variant": "base",
+      "path": "/assets/players/nhl/sean-durzi/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sean-monahan",
+      "variant": "base",
+      "path": "/assets/players/nhl/sean-monahan/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sean-walker",
+      "variant": "base",
+      "path": "/assets/players/nhl/sean-walker/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sebastian-aho",
+      "variant": "base",
+      "path": "/assets/players/nhl/sebastian-aho/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sergei-bobrovsky",
+      "variant": "base",
+      "path": "/assets/players/nhl/sergei-bobrovsky/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sergei-murashov",
+      "variant": "base",
+      "path": "/assets/players/nhl/sergei-murashov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-seth-jarvis",
+      "variant": "base",
+      "path": "/assets/players/nhl/seth-jarvis/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-seth-jones",
+      "variant": "base",
+      "path": "/assets/players/nhl/seth-jones/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-shakir-mukhamadullin",
+      "variant": "base",
+      "path": "/assets/players/nhl/shakir-mukhamadullin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-shane-pinto",
+      "variant": "base",
+      "path": "/assets/players/nhl/shane-pinto/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-shane-wright",
+      "variant": "base",
+      "path": "/assets/players/nhl/shane-wright/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-shayne-gostisbehere",
+      "variant": "base",
+      "path": "/assets/players/nhl/shayne-gostisbehere/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-shea-theodore",
+      "variant": "base",
+      "path": "/assets/players/nhl/shea-theodore/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-sidney-crosby",
+      "variant": "base",
+      "path": "/assets/players/nhl/sidney-crosby/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-simon-benoit",
+      "variant": "base",
+      "path": "/assets/players/nhl/simon-benoit/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-simon-edvinsson",
+      "variant": "base",
+      "path": "/assets/players/nhl/simon-edvinsson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-simon-holmstrom",
+      "variant": "base",
+      "path": "/assets/players/nhl/simon-holmstrom/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-simon-nemec",
+      "variant": "base",
+      "path": "/assets/players/nhl/simon-nemec/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-spencer-knight",
+      "variant": "base",
+      "path": "/assets/players/nhl/spencer-knight/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-steven-stamkos",
+      "variant": "base",
+      "path": "/assets/players/nhl/steven-stamkos/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-stuart-skinner",
+      "variant": "base",
+      "path": "/assets/players/nhl/stuart-skinner/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tage-thompson",
+      "variant": "base",
+      "path": "/assets/players/nhl/tage-thompson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tanner-jeannot",
+      "variant": "base",
+      "path": "/assets/players/nhl/tanner-jeannot/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-taylor-hall",
+      "variant": "base",
+      "path": "/assets/players/nhl/taylor-hall/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-taylor-raddysh",
+      "variant": "base",
+      "path": "/assets/players/nhl/taylor-raddysh/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-teddy-blueger",
+      "variant": "base",
+      "path": "/assets/players/nhl/teddy-blueger/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-teuvo-teravainen",
+      "variant": "base",
+      "path": "/assets/players/nhl/teuvo-teravainen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-thatcher-demko",
+      "variant": "base",
+      "path": "/assets/players/nhl/thatcher-demko/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-thomas-chabot",
+      "variant": "base",
+      "path": "/assets/players/nhl/thomas-chabot/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-thomas-harley",
+      "variant": "base",
+      "path": "/assets/players/nhl/thomas-harley/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tim-stutzle",
+      "variant": "base",
+      "path": "/assets/players/nhl/tim-stutzle/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-timo-meier",
+      "variant": "base",
+      "path": "/assets/players/nhl/timo-meier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-timothy-liljegren",
+      "variant": "base",
+      "path": "/assets/players/nhl/timothy-liljegren/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tom-willander",
+      "variant": "base",
+      "path": "/assets/players/nhl/tom-willander/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tom-wilson",
+      "variant": "base",
+      "path": "/assets/players/nhl/tom-wilson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tomas-hertl",
+      "variant": "base",
+      "path": "/assets/players/nhl/tomas-hertl/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tommy-novak",
+      "variant": "base",
+      "path": "/assets/players/nhl/tommy-novak/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tony-deangelo",
+      "variant": "base",
+      "path": "/assets/players/nhl/tony-deangelo/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-travis-konecny",
+      "variant": "base",
+      "path": "/assets/players/nhl/travis-konecny/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-travis-mitchell",
+      "variant": "base",
+      "path": "/assets/players/nhl/travis-mitchell/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-travis-sanheim",
+      "variant": "base",
+      "path": "/assets/players/nhl/travis-sanheim/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-trevor-connelly",
+      "variant": "base",
+      "path": "/assets/players/nhl/trevor-connelly/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-trevor-moore",
+      "variant": "base",
+      "path": "/assets/players/nhl/trevor-moore/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-trevor-van-riemsdyk",
+      "variant": "base",
+      "path": "/assets/players/nhl/trevor-van-riemsdyk/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-trevor-zegras",
+      "variant": "base",
+      "path": "/assets/players/nhl/trevor-zegras/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tristan-jarry",
+      "variant": "base",
+      "path": "/assets/players/nhl/tristan-jarry/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-troy-stecher",
+      "variant": "base",
+      "path": "/assets/players/nhl/troy-stecher/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-troy-terry",
+      "variant": "base",
+      "path": "/assets/players/nhl/troy-terry/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ty-dellandrea",
+      "variant": "base",
+      "path": "/assets/players/nhl/ty-dellandrea/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tye-kartye",
+      "variant": "base",
+      "path": "/assets/players/nhl/tye-kartye/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tyler-bertuzzi",
+      "variant": "base",
+      "path": "/assets/players/nhl/tyler-bertuzzi/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tyler-kleven",
+      "variant": "base",
+      "path": "/assets/players/nhl/tyler-kleven/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tyler-myers",
+      "variant": "base",
+      "path": "/assets/players/nhl/tyler-myers/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tyler-seguin",
+      "variant": "base",
+      "path": "/assets/players/nhl/tyler-seguin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tyler-toffoli",
+      "variant": "base",
+      "path": "/assets/players/nhl/tyler-toffoli/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tyler-tucker",
+      "variant": "base",
+      "path": "/assets/players/nhl/tyler-tucker/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-tyson-foerster",
+      "variant": "base",
+      "path": "/assets/players/nhl/tyson-foerster/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-ukko-pekka-luukkonen",
+      "variant": "base",
+      "path": "/assets/players/nhl/ukko-pekka-luukkonen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-uvis-balinskis",
+      "variant": "base",
+      "path": "/assets/players/nhl/uvis-balinskis/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-valeri-nichushkin",
+      "variant": "base",
+      "path": "/assets/players/nhl/valeri-nichushkin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-vasily-podkolzin",
+      "variant": "base",
+      "path": "/assets/players/nhl/vasily-podkolzin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-victor-hedman",
+      "variant": "base",
+      "path": "/assets/players/nhl/victor-hedman/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-victor-olofsson",
+      "variant": "base",
+      "path": "/assets/players/nhl/victor-olofsson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-viktor-arvidsson",
+      "variant": "base",
+      "path": "/assets/players/nhl/viktor-arvidsson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 335
+    },
+    {
+      "playerId": "nhl-ville-husso",
+      "variant": "base",
+      "path": "/assets/players/nhl/ville-husso/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-vince-dunn",
+      "variant": "base",
+      "path": "/assets/players/nhl/vince-dunn/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-vincent-desharnais",
+      "variant": "base",
+      "path": "/assets/players/nhl/vincent-desharnais/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-vincent-trocheck",
+      "variant": "base",
+      "path": "/assets/players/nhl/vincent-trocheck/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-vitek-vanecek",
+      "variant": "base",
+      "path": "/assets/players/nhl/vitek-vanecek/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-vladislav-gavrikov",
+      "variant": "base",
+      "path": "/assets/players/nhl/vladislav-gavrikov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-vladislav-namestnikov",
+      "variant": "base",
+      "path": "/assets/players/nhl/vladislav-namestnikov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-will-borgen",
+      "variant": "base",
+      "path": "/assets/players/nhl/will-borgen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-will-cuylle",
+      "variant": "base",
+      "path": "/assets/players/nhl/will-cuylle/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-will-smith",
+      "variant": "base",
+      "path": "/assets/players/nhl/will-smith/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-william-eklund",
+      "variant": "base",
+      "path": "/assets/players/nhl/william-eklund/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-william-nylander",
+      "variant": "base",
+      "path": "/assets/players/nhl/william-nylander/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-wyatt-johnston",
+      "variant": "base",
+      "path": "/assets/players/nhl/wyatt-johnston/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-wyatt-kaiser",
+      "variant": "base",
+      "path": "/assets/players/nhl/wyatt-kaiser/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-yakov-trenin",
+      "variant": "base",
+      "path": "/assets/players/nhl/yakov-trenin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-yan-kuznetsov",
+      "variant": "base",
+      "path": "/assets/players/nhl/yan-kuznetsov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-yanni-gourde",
+      "variant": "base",
+      "path": "/assets/players/nhl/yanni-gourde/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-yaroslav-askarov",
+      "variant": "base",
+      "path": "/assets/players/nhl/yaroslav-askarov/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-yegor-sharangovich",
+      "variant": "base",
+      "path": "/assets/players/nhl/yegor-sharangovich/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-zach-benson",
+      "variant": "base",
+      "path": "/assets/players/nhl/zach-benson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-zach-bogosian",
+      "variant": "base",
+      "path": "/assets/players/nhl/zach-bogosian/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-zach-hyman",
+      "variant": "base",
+      "path": "/assets/players/nhl/zach-hyman/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-zach-werenski",
+      "variant": "base",
+      "path": "/assets/players/nhl/zach-werenski/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-zach-whitecloud",
+      "variant": "base",
+      "path": "/assets/players/nhl/zach-whitecloud/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-zachary-bolduc",
+      "variant": "base",
+      "path": "/assets/players/nhl/zachary-bolduc/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-zayne-parekh",
+      "variant": "base",
+      "path": "/assets/players/nhl/zayne-parekh/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "nhl-zeev-buium",
+      "variant": "base",
+      "path": "/assets/players/nhl/zeev-buium/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 336,
+      "height": 336
+    },
+    {
+      "playerId": "pwhl-abbey-levy",
+      "variant": "base",
+      "path": "/assets/players/pwhl/abbey-levy/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-abby-boreen",
+      "variant": "base",
+      "path": "/assets/players/pwhl/abby-boreen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-abby-hustler",
+      "variant": "base",
+      "path": "/assets/players/pwhl/abby-hustler/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-abby-roque",
+      "variant": "base",
+      "path": "/assets/players/pwhl/abby-roque/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-aerin-frankel",
+      "variant": "base",
+      "path": "/assets/players/pwhl/aerin-frankel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-alex-carpenter",
+      "variant": "base",
+      "path": "/assets/players/pwhl/alex-carpenter/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-alexa-vasko",
+      "variant": "base",
+      "path": "/assets/players/pwhl/alexa-vasko/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-alexandra-labelle",
+      "variant": "base",
+      "path": "/assets/players/pwhl/alexandra-labelle/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-alina-muller",
+      "variant": "base",
+      "path": "/assets/players/pwhl/alina-muller/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-allie-munroe",
+      "variant": "base",
+      "path": "/assets/players/pwhl/allie-munroe/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-allyson-simpson",
+      "variant": "base",
+      "path": "/assets/players/pwhl/allyson-simpson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-amanda-boulier",
+      "variant": "base",
+      "path": "/assets/players/pwhl/amanda-boulier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-amanda-thiele",
+      "variant": "base",
+      "path": "/assets/players/pwhl/amanda-thiele/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-aneta-tejralova",
+      "variant": "base",
+      "path": "/assets/players/pwhl/aneta-tejralova/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-ann-renee-desbiens",
+      "variant": "base",
+      "path": "/assets/players/pwhl/ann-renee-desbiens/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-anna-bargman",
+      "variant": "base",
+      "path": "/assets/players/pwhl/anna-bargman/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-anna-kjellbin",
+      "variant": "base",
+      "path": "/assets/players/pwhl/anna-kjellbin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-anna-segedi",
+      "variant": "base",
+      "path": "/assets/players/pwhl/anna-segedi/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-anna-wilgren",
+      "variant": "base",
+      "path": "/assets/players/pwhl/anna-wilgren/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-anne-cherkowski",
+      "variant": "base",
+      "path": "/assets/players/pwhl/anne-cherkowski/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-ashton-bell",
+      "variant": "base",
+      "path": "/assets/players/pwhl/ashton-bell/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-brianne-jenner",
+      "variant": "base",
+      "path": "/assets/players/pwhl/brianne-jenner/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-britta-curl-salemme",
+      "variant": "base",
+      "path": "/assets/players/pwhl/britta-curl-salemme/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-brooke-becker",
+      "variant": "base",
+      "path": "/assets/players/pwhl/brooke-becker/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-brooke-bryant",
+      "variant": "base",
+      "path": "/assets/players/pwhl/brooke-bryant/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-brooke-hobson",
+      "variant": "base",
+      "path": "/assets/players/pwhl/brooke-hobson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-brooke-mcquigge",
+      "variant": "base",
+      "path": "/assets/players/pwhl/brooke-mcquigge/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-callie-shanahan",
+      "variant": "base",
+      "path": "/assets/players/pwhl/callie-shanahan/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-carly-jackson",
+      "variant": "base",
+      "path": "/assets/players/pwhl/carly-jackson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-catherine-dubois",
+      "variant": "base",
+      "path": "/assets/players/pwhl/catherine-dubois/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-cayla-barnes",
+      "variant": "base",
+      "path": "/assets/players/pwhl/cayla-barnes/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-clair-degeorge",
+      "variant": "base",
+      "path": "/assets/players/pwhl/clair-degeorge/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-claire-butorac",
+      "variant": "base",
+      "path": "/assets/players/pwhl/claire-butorac/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-claire-dalton",
+      "variant": "base",
+      "path": "/assets/players/pwhl/claire-dalton/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-claire-thompson",
+      "variant": "base",
+      "path": "/assets/players/pwhl/claire-thompson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-corinne-schroeder",
+      "variant": "base",
+      "path": "/assets/players/pwhl/corinne-schroeder/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-daniela-pejsova",
+      "variant": "base",
+      "path": "/assets/players/pwhl/daniela-pejsova/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-danielle-serdachny",
+      "variant": "base",
+      "path": "/assets/players/pwhl/danielle-serdachny/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-dara-greig",
+      "variant": "base",
+      "path": "/assets/players/pwhl/dara-greig/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-darcie-lappan",
+      "variant": "base",
+      "path": "/assets/players/pwhl/darcie-lappan/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-daryl-watts",
+      "variant": "base",
+      "path": "/assets/players/pwhl/daryl-watts/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-dayle-ross",
+      "variant": "base",
+      "path": "/assets/players/pwhl/dayle-ross/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-denisa-krizova",
+      "variant": "base",
+      "path": "/assets/players/pwhl/denisa-krizova/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-dominika-laskova",
+      "variant": "base",
+      "path": "/assets/players/pwhl/dominika-laskova/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-dominique-petrie",
+      "variant": "base",
+      "path": "/assets/players/pwhl/dominique-petrie/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-elaine-chuli",
+      "variant": "base",
+      "path": "/assets/players/pwhl/elaine-chuli/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-elizabeth-giguere",
+      "variant": "base",
+      "path": "/assets/players/pwhl/elizabeth-giguere/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-ella-huber",
+      "variant": "base",
+      "path": "/assets/players/pwhl/ella-huber/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-ella-shelton",
+      "variant": "base",
+      "path": "/assets/players/pwhl/ella-shelton/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-elle-hartje",
+      "variant": "base",
+      "path": "/assets/players/pwhl/elle-hartje/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-emerance-maschmeyer",
+      "variant": "base",
+      "path": "/assets/players/pwhl/emerance-maschmeyer/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-emily-brown",
+      "variant": "base",
+      "path": "/assets/players/pwhl/emily-brown/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-emily-clark",
+      "variant": "base",
+      "path": "/assets/players/pwhl/emily-clark/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-emma-gentry",
+      "variant": "base",
+      "path": "/assets/players/pwhl/emma-gentry/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-emma-greco",
+      "variant": "base",
+      "path": "/assets/players/pwhl/emma-greco/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-emma-maltais",
+      "variant": "base",
+      "path": "/assets/players/pwhl/emma-maltais/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-emma-woods",
+      "variant": "base",
+      "path": "/assets/players/pwhl/emma-woods/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-emmy-fecteau",
+      "variant": "base",
+      "path": "/assets/players/pwhl/emmy-fecteau/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-erin-ambrose",
+      "variant": "base",
+      "path": "/assets/players/pwhl/erin-ambrose/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-fanuza-kadirova",
+      "variant": "base",
+      "path": "/assets/players/pwhl/fanuza-kadirova/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-gabbie-hughes",
+      "variant": "base",
+      "path": "/assets/players/pwhl/gabbie-hughes/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-gabby-rosenthal",
+      "variant": "base",
+      "path": "/assets/players/pwhl/gabby-rosenthal/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-gabrielle-david",
+      "variant": "base",
+      "path": "/assets/players/pwhl/gabrielle-david/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-grace-zumwinkle",
+      "variant": "base",
+      "path": "/assets/players/pwhl/grace-zumwinkle/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-gwyneth-philips",
+      "variant": "base",
+      "path": "/assets/players/pwhl/gwyneth-philips/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-hadley-hartmetz",
+      "variant": "base",
+      "path": "/assets/players/pwhl/hadley-hartmetz/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-haley-winn",
+      "variant": "base",
+      "path": "/assets/players/pwhl/haley-winn/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-hannah-bilka",
+      "variant": "base",
+      "path": "/assets/players/pwhl/hannah-bilka/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-hannah-miller",
+      "variant": "base",
+      "path": "/assets/players/pwhl/hannah-miller/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-hannah-murphy",
+      "variant": "base",
+      "path": "/assets/players/pwhl/hannah-murphy/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-hayley-scamurra",
+      "variant": "base",
+      "path": "/assets/players/pwhl/hayley-scamurra/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-hilary-knight",
+      "variant": "base",
+      "path": "/assets/players/pwhl/hilary-knight/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-izzy-daniel",
+      "variant": "base",
+      "path": "/assets/players/pwhl/izzy-daniel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jada-habisch",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jada-habisch/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jade-downie-landry",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jade-downie-landry/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jaime-bourbonnais",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jaime-bourbonnais/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jamie-lee-rattray",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jamie-lee-rattray/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jenn-gardiner",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jenn-gardiner/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jenna-buglioni",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jenna-buglioni/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jesse-compher",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jesse-compher/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jessica-digirolamo",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jessica-digirolamo/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jessica-kondas",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jessica-kondas/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jessie-eldridge",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jessie-eldridge/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jessie-mcpherson",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jessie-mcpherson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jill-saulnier",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jill-saulnier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-jocelyne-larocque",
+      "variant": "base",
+      "path": "/assets/players/pwhl/jocelyne-larocque/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-julia-gosling",
+      "variant": "base",
+      "path": "/assets/players/pwhl/julia-gosling/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kaitlin-willoughby",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kaitlin-willoughby/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kali-flanagan",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kali-flanagan/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-katerina-mrazova",
+      "variant": "base",
+      "path": "/assets/players/pwhl/katerina-mrazova/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kathryn-reilly",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kathryn-reilly/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kati-tabin",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kati-tabin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-katie-chan",
+      "variant": "base",
+      "path": "/assets/players/pwhl/katie-chan/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-katy-knoll",
+      "variant": "base",
+      "path": "/assets/players/pwhl/katy-knoll/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kayla-vespa",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kayla-vespa/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kayle-osborne",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kayle-osborne/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kelly-pannek",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kelly-pannek/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kendall-cooper",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kendall-cooper/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kendall-coyne-schofield",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kendall-coyne-schofield/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-klara-hymlarova",
+      "variant": "base",
+      "path": "/assets/players/pwhl/klara-hymlarova/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kristen-campbell",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kristen-campbell/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kristin-della-rovere",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kristin-della-rovere/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kristin-o-neill",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kristin-o-neill/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-kristyna-kaltounkova",
+      "variant": "base",
+      "path": "/assets/players/pwhl/kristyna-kaltounkova/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-laura-kluge",
+      "variant": "base",
+      "path": "/assets/players/pwhl/laura-kluge/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-laura-stacey",
+      "variant": "base",
+      "path": "/assets/players/pwhl/laura-stacey/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-lauren-bernard",
+      "variant": "base",
+      "path": "/assets/players/pwhl/lauren-bernard/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-lauren-messier",
+      "variant": "base",
+      "path": "/assets/players/pwhl/lauren-messier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-lee-stecklein",
+      "variant": "base",
+      "path": "/assets/players/pwhl/lee-stecklein/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-lexie-adzija",
+      "variant": "base",
+      "path": "/assets/players/pwhl/lexie-adzija/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-lily-delianedis",
+      "variant": "base",
+      "path": "/assets/players/pwhl/lily-delianedis/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-lina-ljungblom",
+      "variant": "base",
+      "path": "/assets/players/pwhl/lina-ljungblom/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-liz-schepers",
+      "variant": "base",
+      "path": "/assets/players/pwhl/liz-schepers/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-loren-gabel",
+      "variant": "base",
+      "path": "/assets/players/pwhl/loren-gabel/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-lyndie-lobdell",
+      "variant": "base",
+      "path": "/assets/players/pwhl/lyndie-lobdell/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-maddi-wheeler",
+      "variant": "base",
+      "path": "/assets/players/pwhl/maddi-wheeler/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-maddie-rooney",
+      "variant": "base",
+      "path": "/assets/players/pwhl/maddie-rooney/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-madison-bizal",
+      "variant": "base",
+      "path": "/assets/players/pwhl/madison-bizal/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-mae-batherson",
+      "variant": "base",
+      "path": "/assets/players/pwhl/mae-batherson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-maggie-connors",
+      "variant": "base",
+      "path": "/assets/players/pwhl/maggie-connors/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-maggie-flaherty",
+      "variant": "base",
+      "path": "/assets/players/pwhl/maggie-flaherty/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-maja-nylen-persson",
+      "variant": "base",
+      "path": "/assets/players/pwhl/maja-nylen-persson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-mannon-mcmahon",
+      "variant": "base",
+      "path": "/assets/players/pwhl/mannon-mcmahon/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-mariah-keopple",
+      "variant": "base",
+      "path": "/assets/players/pwhl/mariah-keopple/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-marie-philip-poulin",
+      "variant": "base",
+      "path": "/assets/players/pwhl/marie-philip-poulin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-marie-philip-poulin",
+      "variant": "signature",
+      "path": "/assets/players/pwhl/marie-philip-poulin/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 1080
+    },
+    {
+      "playerId": "pwhl-marlene-boissonnault",
+      "variant": "base",
+      "path": "/assets/players/pwhl/marlene-boissonnault/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-maureen-murphy",
+      "variant": "base",
+      "path": "/assets/players/pwhl/maureen-murphy/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-megan-carter",
+      "variant": "base",
+      "path": "/assets/players/pwhl/megan-carter/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-megan-keller",
+      "variant": "base",
+      "path": "/assets/players/pwhl/megan-keller/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-megan-warrener",
+      "variant": "base",
+      "path": "/assets/players/pwhl/megan-warrener/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-mellissa-channell-watkins",
+      "variant": "base",
+      "path": "/assets/players/pwhl/mellissa-channell-watkins/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-mia-biotti",
+      "variant": "base",
+      "path": "/assets/players/pwhl/mia-biotti/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-micah-zandee-hart",
+      "variant": "base",
+      "path": "/assets/players/pwhl/micah-zandee-hart/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-michela-cava",
+      "variant": "base",
+      "path": "/assets/players/pwhl/michela-cava/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-mikyla-grant-mentis",
+      "variant": "base",
+      "path": "/assets/players/pwhl/mikyla-grant-mentis/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-nadia-mattivi",
+      "variant": "base",
+      "path": "/assets/players/pwhl/nadia-mattivi/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 269,
+      "height": 336
+    },
+    {
+      "playerId": "pwhl-natalie-buchbinder",
+      "variant": "base",
+      "path": "/assets/players/pwhl/natalie-buchbinder/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-natalie-mlynkova",
+      "variant": "base",
+      "path": "/assets/players/pwhl/natalie-mlynkova/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-natalie-snodgrass",
+      "variant": "base",
+      "path": "/assets/players/pwhl/natalie-snodgrass/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-natalie-spooner",
+      "variant": "base",
+      "path": "/assets/players/pwhl/natalie-spooner/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-nicole-gosling",
+      "variant": "base",
+      "path": "/assets/players/pwhl/nicole-gosling/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-nicole-hensley",
+      "variant": "base",
+      "path": "/assets/players/pwhl/nicole-hensley/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-nicole-vallario",
+      "variant": "base",
+      "path": "/assets/players/pwhl/nicole-vallario/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-nina-jobst-smith",
+      "variant": "base",
+      "path": "/assets/players/pwhl/nina-jobst-smith/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-noemi-neubauerova",
+      "variant": "base",
+      "path": "/assets/players/pwhl/noemi-neubauerova/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-olivia-mobley",
+      "variant": "base",
+      "path": "/assets/players/pwhl/olivia-mobley/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-olivia-wallin",
+      "variant": "base",
+      "path": "/assets/players/pwhl/olivia-wallin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-paetyn-levis",
+      "variant": "base",
+      "path": "/assets/players/pwhl/paetyn-levis/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-peyton-anderson",
+      "variant": "base",
+      "path": "/assets/players/pwhl/peyton-anderson/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-peyton-hemp",
+      "variant": "base",
+      "path": "/assets/players/pwhl/peyton-hemp/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-raygan-kirk",
+      "variant": "base",
+      "path": "/assets/players/pwhl/raygan-kirk/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-rebecca-leslie",
+      "variant": "base",
+      "path": "/assets/players/pwhl/rebecca-leslie/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-renata-fast",
+      "variant": "base",
+      "path": "/assets/players/pwhl/renata-fast/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-riley-brengman",
+      "variant": "base",
+      "path": "/assets/players/pwhl/riley-brengman/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-ronja-savolainen",
+      "variant": "base",
+      "path": "/assets/players/pwhl/ronja-savolainen/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-rory-guilday",
+      "variant": "base",
+      "path": "/assets/players/pwhl/rory-guilday/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-rylind-mackinnon",
+      "variant": "base",
+      "path": "/assets/players/pwhl/rylind-mackinnon/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-samantha-cogan",
+      "variant": "base",
+      "path": "/assets/players/pwhl/samantha-cogan/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-sanni-ahola",
+      "variant": "base",
+      "path": "/assets/players/pwhl/sanni-ahola/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-sarah-fillier",
+      "variant": "base",
+      "path": "/assets/players/pwhl/sarah-fillier/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-sarah-nurse",
+      "variant": "base",
+      "path": "/assets/players/pwhl/sarah-nurse/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-shay-maloney",
+      "variant": "base",
+      "path": "/assets/players/pwhl/shay-maloney/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-shiann-darkangelo",
+      "variant": "base",
+      "path": "/assets/players/pwhl/shiann-darkangelo/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-sidney-morin",
+      "variant": "base",
+      "path": "/assets/players/pwhl/sidney-morin/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-sophie-jaques",
+      "variant": "base",
+      "path": "/assets/players/pwhl/sophie-jaques/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-sophie-shirley",
+      "variant": "base",
+      "path": "/assets/players/pwhl/sophie-shirley/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-stephanie-markowski",
+      "variant": "base",
+      "path": "/assets/players/pwhl/stephanie-markowski/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-susanna-tapani",
+      "variant": "base",
+      "path": "/assets/players/pwhl/susanna-tapani/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-sydney-bard",
+      "variant": "base",
+      "path": "/assets/players/pwhl/sydney-bard/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-sydney-langseth",
+      "variant": "base",
+      "path": "/assets/players/pwhl/sydney-langseth/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-tamara-giaquinto",
+      "variant": "base",
+      "path": "/assets/players/pwhl/tamara-giaquinto/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-taylor-girard",
+      "variant": "base",
+      "path": "/assets/players/pwhl/taylor-girard/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-taylor-heise",
+      "variant": "base",
+      "path": "/assets/players/pwhl/taylor-heise/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-taylor-house",
+      "variant": "base",
+      "path": "/assets/players/pwhl/taylor-house/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-tereza-vanisova",
+      "variant": "base",
+      "path": "/assets/players/pwhl/tereza-vanisova/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-theresa-schafzahl",
+      "variant": "base",
+      "path": "/assets/players/pwhl/theresa-schafzahl/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-vita-poniatovskaia",
+      "variant": "base",
+      "path": "/assets/players/pwhl/vita-poniatovskaia/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    },
+    {
+      "playerId": "pwhl-zoe-boyd",
+      "variant": "base",
+      "path": "/assets/players/pwhl/zoe-boyd/base.webp",
+      "mediaType": "image/webp",
+      "presentation": "headshot",
+      "width": 240,
+      "height": 240
+    }
+  ]
+}

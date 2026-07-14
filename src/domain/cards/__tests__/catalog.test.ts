@@ -32,6 +32,25 @@ describe('card catalog', () => {
     );
   });
 
+  it('reports duplicate and invalid CardVersion image references', () => {
+    const catalog = createTestCatalog();
+    const first = catalog.cards[0];
+    const second = catalog.cards[1];
+    const invalid = {
+      ...catalog,
+      cards: [
+        { ...first, imageReference: '../../outside.png' },
+        { ...second, imageReference: '../../outside.png' },
+        ...catalog.cards.slice(2),
+      ],
+    } as CardCatalog;
+    const issues = validateCatalog(invalid).issues;
+    expect(issues).toEqual(expect.arrayContaining([
+      expect.objectContaining({ code: 'duplicate-card-image-reference' }),
+      expect.objectContaining({ code: 'invalid-image-reference' }),
+    ]));
+  });
+
   it('reports invalid player references and role mismatches', () => {
     const catalog = createTestCatalog();
     const skater = catalog.cards.find(({ role }) => role === 'skater');
