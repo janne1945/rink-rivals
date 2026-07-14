@@ -1,7 +1,7 @@
 import type { CardVersion } from '../cards/types';
 import { resolveLineup } from '../lineups/validation';
 import type { ResolvedLineupCard } from '../lineups/types';
-import { randomBetween } from './rng';
+import { randomIndex } from './rng';
 import {
   DEFAULT_SITUATION_DECK,
   selectBattleSituations,
@@ -15,18 +15,11 @@ import {
   type BattleState,
   type BattleViewState,
   type BattleViewer,
-  type CardRoundScore,
   type CreateBattleInput,
   type RoundWinner,
 } from './types';
 
-const MAX_SCORE_VARIANCE = 2.5;
-
-function roundToHundredths(value: number): number {
-  return Math.round((value + Number.EPSILON) * 100) / 100;
-}
-
-export function calculateBaseScore(card: CardVersion, situation: BattleSituation): number {
+export function calculateCategoryValue(card: CardVersion, situation: BattleSituation): number {
   if (card.role !== situation.role) {
     throw new BattleRuleError(
       'card-not-eligible',
@@ -35,23 +28,11 @@ export function calculateBaseScore(card: CardVersion, situation: BattleSituation
   }
 
   if (card.role === 'skater' && situation.role === 'skater') {
-    return roundToHundredths(
-      Object.entries(situation.weights).reduce(
-        (total, [attribute, weight]) =>
-          total + card.attributes[attribute as keyof typeof card.attributes] * (weight ?? 0),
-        0,
-      ),
-    );
+    return card.attributes[situation.attribute];
   }
 
   if (card.role === 'goalie' && situation.role === 'goalie') {
-    return roundToHundredths(
-      Object.entries(situation.weights).reduce(
-        (total, [attribute, weight]) =>
-          total + card.attributes[attribute as keyof typeof card.attributes] * (weight ?? 0),
-        0,
-      ),
-    );
+    return card.attributes[situation.attribute];
   }
 
   throw new BattleRuleError('card-not-eligible', `Card ${card.id} is not eligible.`);
@@ -164,28 +145,25 @@ function selectedCard(state: BattleState, side: BattleSide): ResolvedLineupCard 
   return lineupCard;
 }
 
-function calculateRoundScore(
-  state: BattleState,
-  side: BattleSide,
-  lineupCard: ResolvedLineupCard,
+export function compareQuartettCards(
+  playerCard: CardVersion,
+  opponentCard: CardVersion,
   situation: BattleSituation,
-): CardRoundScore {
-  const base = calculateBaseScore(lineupCard.card, situation);
-  const variance = roundToHundredths(
-    randomBetween(
-      `${state.seed}:round:${state.roundIndex}:${side}:${lineupCard.card.id}`,
-      -MAX_SCORE_VARIANCE,
-      MAX_SCORE_VARIANCE,
-    ),
-  );
-  return { base, variance, total: roundToHundredths(base + variance) };
-}
-
-function winnerForScores(player: CardRoundScore, opponent: CardRoundScore): RoundWinner {
-  if (player.total === opponent.total) {
-    return 'tie';
+  seed: string | number,
+  roundIndex: number,
+): { winner: Exclude<RoundWinner, 'tie'>; tieBreaker: import('./types').RoundTieBreaker } {
+  const playerValue = calculateCategoryValue(playerCard, situation);
+  const opponentValue = calculateCategoryValue(opponentCard, situation);
+  if (playerValue !== opponentValue) {
+    return { winner: playerValue > opponentValue ? 'player' : 'opponent', tieBreaker: 'category' };
   }
-  return player.total > opponent.total ? 'player' : 'opponent';
+  if (playerCard.overall !== opponentCard.overall) {
+    return { winner: playerCard.overall > opponentCard.overall ? 'player' : 'opponent', tieBreaker: 'overall' };
+  }
+  return {
+    winner: randomIndex(`${seed}:round:${roundIndex}:tie`, 2) === 0 ? 'player' : 'opponent',
+    tieBreaker: 'match-seed',
+  };
 }
 
 function matchWinner(roundWins: BattleState['roundWins']): RoundWinner {
@@ -206,9 +184,15 @@ export function revealRound(state: BattleState): BattleState {
   const situation = state.situations[state.roundIndex];
   const playerCard = selectedCard(state, 'player');
   const opponentCard = selectedCard(state, 'opponent');
-  const playerScore = calculateRoundScore(state, 'player', playerCard, situation);
-  const opponentScore = calculateRoundScore(state, 'opponent', opponentCard, situation);
-  const winner = winnerForScores(playerScore, opponentScore);
+  const playerScore = { value: calculateCategoryValue(playerCard.card, situation), overall: playerCard.card.overall };
+  const opponentScore = { value: calculateCategoryValue(opponentCard.card, situation), overall: opponentCard.card.overall };
+  const { winner, tieBreaker } = compareQuartettCards(
+    playerCard.card,
+    opponentCard.card,
+    situation,
+    state.seed,
+    state.roundIndex,
+  );
   const roundWins = {
     player: state.roundWins.player + (winner === 'player' ? 1 : 0),
     opponent: state.roundWins.opponent + (winner === 'opponent' ? 1 : 0),
@@ -221,6 +205,7 @@ export function revealRound(state: BattleState): BattleState {
     playerScore,
     opponentScore,
     winner,
+    tieBreaker,
   };
   const results = [...state.results, result];
   const complete = results.length === BATTLE_ROUND_COUNT;

@@ -126,4 +126,3 @@ The AI cannot reuse cards and never sees or changes the player's selection.
 - Rebuild only the match presentation and its tests. Auth, ownership, economy,
   prices, rewards, event rotation, objectives, player identity, card counts,
   catalog values, lineup modes, and settlement amounts remain unchanged.
-

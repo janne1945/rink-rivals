@@ -28,12 +28,12 @@ interface BattleSituationBase {
 
 export interface SkaterBattleSituation extends BattleSituationBase {
   readonly role: 'skater';
-  readonly weights: Readonly<Partial<Record<keyof SkaterAttributes, number>>>;
+  readonly attribute: keyof SkaterAttributes;
 }
 
 export interface GoalieBattleSituation extends BattleSituationBase {
   readonly role: 'goalie';
-  readonly weights: Readonly<Partial<Record<keyof GoalieAttributes, number>>>;
+  readonly attribute: keyof GoalieAttributes;
 }
 
 export type BattleSituation = SkaterBattleSituation | GoalieBattleSituation;
@@ -59,10 +59,11 @@ export interface SideRoundWins {
 }
 
 export interface CardRoundScore {
-  readonly base: number;
-  readonly variance: number;
-  readonly total: number;
+  readonly value: number;
+  readonly overall: number;
 }
+
+export type RoundTieBreaker = 'category' | 'overall' | 'match-seed';
 
 export interface BattleRoundResult {
   readonly roundNumber: number;
@@ -72,6 +73,7 @@ export interface BattleRoundResult {
   readonly playerScore: CardRoundScore;
   readonly opponentScore: CardRoundScore;
   readonly winner: RoundWinner;
+  readonly tieBreaker: RoundTieBreaker;
 }
 
 export interface BattleState {

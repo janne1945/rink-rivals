@@ -86,6 +86,7 @@ export function GameApp({ account, actions }: {
   const [matchSettlementError, setMatchSettlementError] = useState("");
   const [matchSettling, setMatchSettling] = useState(false);
   const [roundPlaying, setRoundPlaying] = useState(false);
+  const [reviewingRound, setReviewingRound] = useState(false);
   const [roundError, setRoundError] = useState("");
   const [monotonicClock, setMonotonicClock] = useState(() => performance.now());
   const [choiceSubmitting, setChoiceSubmitting] = useState(false);
@@ -199,6 +200,7 @@ export function GameApp({ account, actions }: {
       setMatchProgressionMessage("");
       setMatchSettlementError("");
       setRoundError("");
+      setReviewingRound(false);
       navigate("/match");
       if (nextBattle.phase === "complete") void settleCompletedBattle(ticket.clientMatchId);
     } catch (error) {
@@ -210,7 +212,7 @@ export function GameApp({ account, actions }: {
   }
 
   function chooseCard(cardId: string) {
-    if (!battle || battle.phase !== "selecting") return;
+    if (!battle || battle.phase !== "selecting" || reviewingRound) return;
     const playerSelected = selectCard(battle, "player", cardId);
     setRoundError("");
     setBattle({ ...playerSelected, phase: "awaiting-reveal" });
@@ -255,6 +257,7 @@ export function GameApp({ account, actions }: {
       const nextBattle = applyAuthoritativeRound(battle, result);
       roundRequestIds.current.delete(battle.roundIndex);
       setBattle(nextBattle);
+      setReviewingRound(nextBattle.phase !== "complete");
       if (nextBattle.phase === "complete") void settleCompletedBattle();
     } catch (error) {
       setRoundError(error instanceof Error ? error.message : "The round could not be played.");
@@ -328,7 +331,7 @@ export function GameApp({ account, actions }: {
         <Route path="/play" element={<PlayScreen lineups={lineups} activeLineupIds={activeLineupIds} collectionScore={cloudCollectionScore} preferredDifficulty={preferredDifficulty} starting={matchStarting} startError={matchStartError} onDifficultyChange={(difficulty) => void selectDifficulty(difficulty)} onStart={startMatch} />} />
         <Route path="/market" element={<MarketScreen catalog={gameCatalog} collection={cloudCollection} credits={account.profile.credits} market={account.market} onBuy={(offerId, clientRequestId) => actions.purchaseCard({ offerId, clientRequestId })} />} />
         <Route path="/objectives" element={<ObjectiveScreen dailyObjectives={progressionModels.dailyObjectives} dailyPeriodLabel={progressionModels.dailyPeriodLabel} weeklyObjective={progressionModels.weeklyObjective} weeklyPeriodLabel={progressionModels.weeklyPeriodLabel} rivalrySteps={progressionModels.rivalrySteps} rewardChoice={progressionModels.rewardChoice} statusMessage={goalsStatus || undefined} onChooseRivalryCard={(cardId) => void chooseRivalryCard(cardId)} />} />
-        <Route path="/match" element={battle && safeBattle ? <MatchScreen battle={safeBattle} eligibleCardIds={getEligibleCards(battle, "player").map(({ card }) => card.id)} rewardGranted={rewardGranted} settling={matchSettling} settlementError={matchSettlementError} progressionMessage={matchProgressionMessage} roundPlaying={roundPlaying} roundError={roundError} onSelect={chooseCard} onReveal={() => void reveal()} onRetrySettlement={() => void settleCompletedBattle()} onFinish={() => navigate("/")} /> : <Navigate to="/play" replace />} />
+        <Route path="/match" element={battle && safeBattle ? <MatchScreen battle={safeBattle} eligibleCardIds={reviewingRound ? [] : getEligibleCards(battle, "player").map(({ card }) => card.id)} rewardGranted={rewardGranted} settling={matchSettling} settlementError={matchSettlementError} progressionMessage={matchProgressionMessage} roundPlaying={roundPlaying} reviewingRound={reviewingRound} roundError={roundError} onSelect={chooseCard} onReveal={() => void reveal()} onContinue={() => setReviewingRound(false)} onRetrySettlement={() => void settleCompletedBattle()} onPlayAgain={() => navigate("/play")} onFinish={() => navigate("/")} /> : <Navigate to="/play" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppShell>

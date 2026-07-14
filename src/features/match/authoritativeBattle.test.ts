@@ -26,8 +26,8 @@ function serverRound(state: BattleState, winner: PlayMatchRoundResult["winner"] 
   const player = state.lineups.player.cards.find(({ card }) => card.id === state.pendingSelections.player)!;
   const opponent = getEligibleCards(state, "opponent")[0];
   const situation = state.situations[state.roundIndex];
-  const playerScore = { base: 123.45, variance: -23.45, total: 100 };
-  const opponentScore = { base: 67.89, variance: 33.11, total: 101 };
+  const playerScore = { value: 90, overall: 86 };
+  const opponentScore = { value: 91, overall: 84 };
   return {
     status: "played",
     clientMatchId: "server-match",
@@ -35,11 +35,12 @@ function serverRound(state: BattleState, winner: PlayMatchRoundResult["winner"] 
     situationId: situation.id,
     playerCardId: player.card.id,
     playerSlot: player.slot,
-    playerScore: playerScore.total,
+    playerScore: playerScore.value,
     opponentCardId: opponent.card.id,
     opponentSlot: opponent.slot,
-    opponentScore: opponentScore.total,
+    opponentScore: opponentScore.value,
     winner,
+    tieBreaker: "category",
     transcript: { situation, player: playerScore, opponent: opponentScore },
   };
 }
@@ -52,11 +53,11 @@ describe("applyAuthoritativeRound", () => {
 
     expect(next.results[0]).toMatchObject({
       winner: "opponent",
-      playerScore: { base: 123.45, variance: -23.45, total: 100 },
-      opponentScore: { base: 67.89, variance: 33.11, total: 101 },
+      playerScore: { value: 90, overall: 86 },
+      opponentScore: { value: 91, overall: 84 },
     });
     expect(next.roundWins).toEqual({ player: 0, opponent: 1 });
-    expect(next.results[0].playerScore.total).toBe(response.playerScore);
+    expect(next.results[0].playerScore.value).toBe(response.playerScore);
   });
 
   it("rejects mismatched round, situation, player selection, and transcript totals", () => {

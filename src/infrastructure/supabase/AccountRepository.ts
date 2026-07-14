@@ -168,6 +168,7 @@ export interface PlayMatchRoundResult {
   readonly opponentSlot: LineupSlot;
   readonly opponentScore: number;
   readonly winner: RoundWinner;
+  readonly tieBreaker: import("../../domain/battle").RoundTieBreaker;
   readonly transcript: {
     readonly situation: BattleSituation;
     readonly player: CardRoundScore;
@@ -280,11 +281,18 @@ function lineupSlotRecord(value: unknown, label: string): Readonly<Record<Lineup
 function scoreField(value: unknown, label: string): CardRoundScore {
   const score = record(value, label);
   return {
-    base: numberField(score.base, `${label} base`),
-    variance: numberField(score.variance, `${label} variance`),
-    total: numberField(score.total, `${label} total`),
+    value: nonNegativeIntegerField(score.value, `${label} value`),
+    overall: nonNegativeIntegerField(score.overall, `${label} overall`),
   };
 }
+
+const legacyQuartettCategories: Readonly<Record<string, Readonly<{ id: string; name: string; description: string; attribute: string }>>> = {
+  "transition-rush": { id: "skater-speed", name: "Speed", description: "Higher Speed wins this round.", attribute: "speed" },
+  "cycle-pressure": { id: "skater-shooting", name: "Shooting", description: "Higher Shooting wins this round.", attribute: "shooting" },
+  "blue-line-command": { id: "skater-defense", name: "Defense", description: "Higher Defense wins this round.", attribute: "defense" },
+  "late-game-shift": { id: "skater-clutch", name: "Clutch", description: "Higher Clutch wins this round.", attribute: "clutch" },
+  "crease-under-fire": { id: "goalie-reflexes", name: "Reflexes", description: "Higher Reflexes wins this round.", attribute: "reflexes" },
+};
 
 function situationField(value: unknown): BattleSituation {
   const situation = record(value, "battle situation");
@@ -292,15 +300,18 @@ function situationField(value: unknown): BattleSituation {
   if (role !== "skater" && role !== "goalie") throw new Error("Supabase returned an invalid battle situation role.");
   if (!Array.isArray(situation.eligible_slots)) throw new Error("Supabase returned invalid eligible battle slots.");
   const eligibleSlots = situation.eligible_slots.map((slot) => lineupSlotField(slot, "eligible battle slot"));
-  const rawWeights = record(situation.weights, "battle situation weights");
-  const weights = Object.fromEntries(Object.entries(rawWeights).map(([key, weight]) => [key, numberField(weight, `battle weight ${key}`)]));
+  const rawId = textField(situation.id, "battle situation id");
+  const legacy = legacyQuartettCategories[rawId];
+  const id = legacy?.id ?? rawId;
+  const attribute = typeof situation.attribute === "string" ? situation.attribute : legacy?.attribute;
+  if (!attribute) throw new Error("Supabase returned a battle round without a visible category attribute.");
   return {
-    id: textField(situation.id, "battle situation id"),
-    name: textField(situation.name, "battle situation name"),
-    description: typeof situation.description === "string" ? situation.description : "",
+    id,
+    name: legacy?.name ?? textField(situation.name, "battle situation name"),
+    description: legacy?.description ?? (typeof situation.description === "string" ? situation.description : ""),
     role,
     eligibleSlots,
-    weights,
+    attribute,
   } as BattleSituation;
 }
 
@@ -310,14 +321,19 @@ function matchRoundField(value: unknown): PlayMatchRoundResult {
   if (status !== "played" && status !== "already-played") throw new Error("Supabase returned an invalid match round status.");
   const winner = payload.winner;
   if (winner !== "player" && winner !== "opponent" && winner !== "tie") throw new Error("Supabase returned an invalid round winner.");
+  const transcript = record(payload.transcript, "match round transcript");
+  const tieBreaker = payload.tie_breaker ?? transcript.tie_breaker;
+  if (tieBreaker !== "category" && tieBreaker !== "overall" && tieBreaker !== "match-seed") {
+    throw new Error("Supabase returned an invalid round tie-breaker.");
+  }
   const roundIndex = numberField(payload.round_index, "round index");
   if (!Number.isInteger(roundIndex) || roundIndex < 0 || roundIndex > 4) throw new Error("Supabase returned an invalid round index.");
-  const transcript = record(payload.transcript, "match round transcript");
   return {
     status,
     clientMatchId: textField(payload.client_match_id, "round client match id"),
     roundIndex,
-    situationId: textField(payload.situation_id, "round situation id"),
+    situationId: legacyQuartettCategories[textField(payload.situation_id, "round situation id")]?.id
+      ?? textField(payload.situation_id, "round situation id"),
     playerCardId: textField(payload.player_card_id, "round player card id"),
     playerSlot: lineupSlotField(payload.player_slot, "round player slot"),
     playerScore: numberField(payload.player_score, "round player score"),
@@ -325,6 +341,7 @@ function matchRoundField(value: unknown): PlayMatchRoundResult {
     opponentSlot: lineupSlotField(payload.opponent_slot, "round opponent slot"),
     opponentScore: numberField(payload.opponent_score, "round opponent score"),
     winner,
+    tieBreaker,
     transcript: {
       situation: situationField(transcript.situation),
       player: scoreField(transcript.player, "player round score"),

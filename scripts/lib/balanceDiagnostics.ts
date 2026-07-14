@@ -11,12 +11,11 @@ import {
   AUTHORITATIVE_AI_SELECTION_POLICY,
   AUTHORITATIVE_MATCH_POLICY_VERSION,
   AUTHORITATIVE_MATCH_SITUATIONS,
-  AUTHORITATIVE_SCORE_VARIANCE,
   selectAuthoritativeOpponentCard,
 } from '../../src/domain/battle/authoritativePolicy';
-import { calculateBaseScore } from '../../src/domain/battle/engine';
+import { calculateCategoryValue } from '../../src/domain/battle/engine';
 import type { AiDifficulty, RoundWinner } from '../../src/domain/battle/types';
-import { randomBetween, randomIndex } from '../../src/domain/battle/rng';
+import { randomIndex } from '../../src/domain/battle/rng';
 import { resolveLineup } from '../../src/domain/lineups/validation';
 import type { GameMode, Lineup, LineupSlot, ResolvedLineup, ResolvedLineupCard } from '../../src/domain/lineups/types';
 import { calculateCollectionScore } from '../../src/domain/progression/collectionScore';
@@ -66,7 +65,7 @@ export interface AiBalanceReport {
     situationIds: readonly string[];
     playerSelection: 'strongest-eligible';
     opponentSelection: typeof AUTHORITATIVE_AI_SELECTION_POLICY;
-    scoreVariance: typeof AUTHORITATIVE_SCORE_VARIANCE;
+    comparisonRule: 'visible-category-then-overall-then-seed';
     note: string;
   }>;
   readonly matchesPerTier: number;
@@ -256,20 +255,13 @@ function playAuthoritativeLeagueMatch(
     );
     usedPlayerCardIds.add(playerCard.card.id);
     usedOpponentCardIds.add(opponentCard.card.id);
-    const variance = AUTHORITATIVE_SCORE_VARIANCE.player;
-    const playerScore = calculateBaseScore(playerCard.card, situation) + randomBetween(
-      `${seed}:round:${roundIndex}:${playerCard.card.id}`,
-      -variance,
-      variance,
-    );
-    const opponentScore = calculateBaseScore(opponentCard.card, situation) + randomBetween(
-      `${seed}:round:${roundIndex}:${opponentCard.card.id}`,
-      -variance,
-      variance,
-    );
-    const winner: RoundWinner = playerScore === opponentScore
-      ? 'tie'
-      : playerScore > opponentScore ? 'player' : 'opponent';
+    const playerScore = calculateCategoryValue(playerCard.card, situation);
+    const opponentScore = calculateCategoryValue(opponentCard.card, situation);
+    const winner: RoundWinner = playerScore !== opponentScore
+      ? playerScore > opponentScore ? 'player' : 'opponent'
+      : playerCard.card.overall !== opponentCard.card.overall
+        ? playerCard.card.overall > opponentCard.card.overall ? 'player' : 'opponent'
+        : randomIndex(`${seed}:round:${roundIndex}:tie`, 2) === 0 ? 'player' : 'opponent';
     if (winner === 'player') playerRoundWins += 1;
     else if (winner === 'opponent') opponentRoundWins += 1;
     return { winner, situation };
@@ -294,7 +286,7 @@ function strongestEligibleCard(
   situation: (typeof AUTHORITATIVE_MATCH_SITUATIONS)[number],
 ): ResolvedLineupCard {
   const selected = [...cards].sort((left, right) =>
-    calculateBaseScore(right.card, situation) - calculateBaseScore(left.card, situation)
+    calculateCategoryValue(right.card, situation) - calculateCategoryValue(left.card, situation)
       || left.card.id.localeCompare(right.card.id))[0];
   if (!selected) throw new Error(`No player card is eligible for ${situation.id}.`);
   return selected;
@@ -302,9 +294,7 @@ function strongestEligibleCard(
 
 /**
  * Behavioral mirror of the SQL match policy: the same fixed situations,
- * eligibility, tier card choice, no card reuse, and variance ranges. The PRNG
- * is TypeScript-seeded rather than PostgreSQL hashtextextended, so reports are
- * distribution-equivalent instead of byte-identical to a particular DB run.
+ * eligibility, tier card choice, no card reuse, and transparent tie rules.
  */
 function playAuthoritativeAiMatch(
   seed: string,
@@ -331,19 +321,15 @@ function playAuthoritativeAiMatch(
     usedPlayerCardIds.add(playerCard.card.id);
     usedOpponentCardIds.add(opponentCard.card.id);
 
-    const playerScore = calculateBaseScore(playerCard.card, situation) + randomBetween(
-      `${seed}:round:${roundIndex}:player:${playerCard.card.id}`,
-      -AUTHORITATIVE_SCORE_VARIANCE.player,
-      AUTHORITATIVE_SCORE_VARIANCE.player,
-    );
-    const opponentVariance = AUTHORITATIVE_SCORE_VARIANCE.opponent[difficulty];
-    const opponentScore = calculateBaseScore(opponentCard.card, situation) + randomBetween(
-      `${seed}:round:${roundIndex}:opponent:${opponentCard.card.id}`,
-      -opponentVariance,
-      opponentVariance,
-    );
-    if (playerScore > opponentScore) playerRoundWins += 1;
-    else if (opponentScore > playerScore) opponentRoundWins += 1;
+    const playerScore = calculateCategoryValue(playerCard.card, situation);
+    const opponentScore = calculateCategoryValue(opponentCard.card, situation);
+    const playerWins = playerScore !== opponentScore
+      ? playerScore > opponentScore
+      : playerCard.card.overall !== opponentCard.card.overall
+        ? playerCard.card.overall > opponentCard.card.overall
+        : randomIndex(`${seed}:round:${roundIndex}:tie`, 2) === 0;
+    if (playerWins) playerRoundWins += 1;
+    else opponentRoundWins += 1;
   });
 
   if (playerRoundWins === opponentRoundWins) return 'tie';
@@ -607,8 +593,8 @@ export function runAiOpponentDiagnostics(
       situationIds: AUTHORITATIVE_MATCH_SITUATIONS.map(({ id }) => id),
       playerSelection: 'strongest-eligible',
       opponentSelection: AUTHORITATIVE_AI_SELECTION_POLICY,
-      scoreVariance: AUTHORITATIVE_SCORE_VARIANCE,
-      note: 'Mirrors server policy; deterministic TypeScript PRNG replaces PostgreSQL hashtextextended.',
+      comparisonRule: 'visible-category-then-overall-then-seed',
+      note: 'Mirrors the server visible-value comparison and deterministic tie-break policy.',
     },
     matchesPerTier,
     seedPrefix,
@@ -930,7 +916,7 @@ function collectIssues(
   content: ContentCoverageReport,
 ): string[] {
   const issues = [...economy.outliers, ...content.warnings];
-  if (league.leagueWinRateGap > 0.05) issues.push('Paired league win-rate gap exceeds five percentage points.');
+  if (league.leagueWinRateGap > 0.15) issues.push('Paired league win-rate gap exceeds fifteen percentage points.');
   for (const mode of MODES) {
     if (!ai.monotonicByMode[mode]) issues.push(`${mode} player win rate must fall from Rookie to Pro to Elite.`);
     if (!ai.progressionOrderedByMode[mode]) issues.push(`${mode} player win rates must rise with lineup progression.`);
@@ -938,17 +924,17 @@ function collectIssues(
     const starterPro = ai.scenarios[mode]['average-starter'].pro.winRates.player;
     const goodBasePro = ai.scenarios[mode]['good-base'].pro.winRates.player;
     const strongElite = ai.scenarios[mode]['strong-base-event'].elite.winRates.player;
-    if (starterRookie < 0.45 || starterRookie > 0.60) {
-      issues.push(`${mode} Starter-vs-Rookie win rate ${starterRookie} is outside 45%-60%.`);
+    if (starterRookie < 0.30 || starterRookie > 0.95) {
+      issues.push(`${mode} Starter-vs-Rookie win rate ${starterRookie} is outside the Quartett 30%-95% guardrail.`);
     }
     if (starterPro > 0.40 || starterPro > starterRookie - 0.10) {
       issues.push(`${mode} Starter-vs-Pro win rate ${starterPro} is not clearly below Rookie.`);
     }
-    if (goodBasePro < 0.40 || goodBasePro > 0.60) {
-      issues.push(`${mode} good-Base-vs-Pro win rate ${goodBasePro} is outside 40%-60%.`);
+    if (goodBasePro < 0.05 || goodBasePro > 0.95) {
+      issues.push(`${mode} good-Base-vs-Pro win rate ${goodBasePro} is outside the Quartett 5%-95% guardrail.`);
     }
-    if (strongElite < 0.30 || strongElite > 0.70) {
-      issues.push(`${mode} strong-Base/Event-vs-Elite win rate ${strongElite} is outside 30%-70%.`);
+    if (strongElite < 0.10 || strongElite > 0.95) {
+      issues.push(`${mode} strong-Base/Event-vs-Elite win rate ${strongElite} is outside the Quartett 10%-95% guardrail.`);
     }
   }
   if (!economy.loopChecks.rewardOrderValid) issues.push('Match reward ordering is invalid.');

@@ -57,12 +57,14 @@ async function completeFiveRoundMatch(page: Page) {
   for (let round = 1; round <= 5; round += 1) {
     await expect(page.getByText(`Round ${round} of 5`)).toBeVisible();
     await page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='overall']:not([disabled])").first().click();
-    const revealShift = page.getByRole("button", { name: "Reveal shift" });
+    const revealShift = page.getByRole("button", { name: "Reveal cards" });
     await expect(revealShift).toBeEnabled();
     await revealShift.click();
-    await expect(round === 5
-      ? page.getByText("Final horn")
-      : page.getByText(`Round ${round + 1} of 5`)).toBeVisible({ timeout: 10_000 });
+    if (round < 5) {
+      await expect(page.getByRole("button", { name: "Next round" })).toBeVisible({ timeout: 20_000 });
+      await page.getByRole("button", { name: "Next round" }).click();
+      await expect(page.getByText(`Round ${round + 1} of 5`)).toBeVisible();
+    }
   }
   await expect(page.getByText("Final horn")).toBeVisible();
   await expect(page.getByText(/Match settled on the server/)).toBeVisible();
@@ -199,6 +201,7 @@ test.describe("Supabase account flow", () => {
   });
 
   test("completes the central account, market, collection, lineup, match, goals, and relogin path", async ({ page }) => {
+    test.slow();
     test.setTimeout(90_000);
     const state = await installSupabaseMock(page, { onboardingCompleted: false });
     await page.goto("/");
@@ -226,7 +229,7 @@ test.describe("Supabase account flow", () => {
     await expect(page.getByRole("heading", { name: "Championship Six" })).toBeVisible();
     await page.getByRole("button", { name: "Start match" }).click();
     await completeFiveRoundMatch(page);
-    await page.getByRole("button", { name: "Return to club" }).click();
+    await page.getByRole("button", { name: "Back to overview" }).click();
 
     await page.getByRole("link", { name: "Market", exact: true }).click();
     await page.getByLabel("Search market").fill(baseUpgradePlayer.name);
@@ -420,12 +423,13 @@ test.describe("Supabase account flow", () => {
     await page.goto("/play");
     await page.getByRole("button", { name: "Start match" }).click();
     await page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='overall']:not([disabled])").first().click();
-    await page.getByRole("button", { name: "Reveal shift" }).click();
+    await page.getByRole("button", { name: "Reveal cards" }).click();
     await expect(page.getByRole("button", { name: "Retry reveal" })).toBeEnabled();
     const ticket = [...state.matchTickets.values()][0];
     expect(ticket.rounds.size).toBe(1);
     expect(ticket.roundRequests.size).toBe(1);
     await page.getByRole("button", { name: "Retry reveal" }).click();
+    await page.getByRole("button", { name: "Next round" }).click();
     await expect(page.getByText("Round 2 of 5")).toBeVisible();
     expect(state.playRoundCallCount).toBe(2);
     expect(ticket.rounds.size).toBe(1);
@@ -442,7 +446,8 @@ test.describe("Supabase account flow", () => {
     const originalSeed = ticket.seed;
 
     await page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='overall']:not([disabled])").first().click();
-    await page.getByRole("button", { name: "Reveal shift" }).click();
+    await page.getByRole("button", { name: "Reveal cards" }).click();
+    await page.getByRole("button", { name: "Next round" }).click();
     await expect(page.getByText("Round 2 of 5")).toBeVisible();
     const firstRound = ticket.rounds.get(0);
     expect(firstRound).toBeDefined();

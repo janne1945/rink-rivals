@@ -101,11 +101,11 @@ const catalogPlayers = new Map(gameCatalog.players.map((player) => [player.id, p
 const lineupSlotOrder: readonly LineupSlot[] = ["LW", "C", "RW", "LD", "RD", "G"];
 
 const serverSituations = [
-  { id: "transition-rush", name: "Transition Rush", description: "Attack with pace and finish off the rush.", role: "skater", eligible_slots: ["LW", "C", "RW"], weights: { speed: 0.3, shooting: 0.3, puckControl: 0.2, hockeyIq: 0.1, clutch: 0.1 } },
-  { id: "cycle-pressure", name: "Cycle Pressure", description: "Hold possession and create through sustained pressure.", role: "skater", eligible_slots: ["LW", "C", "RW"], weights: { passing: 0.25, puckControl: 0.3, physicality: 0.15, hockeyIq: 0.2, clutch: 0.1 } },
-  { id: "blue-line-command", name: "Blue Line Command", description: "Control the point with a complete defender.", role: "skater", eligible_slots: ["LD", "RD"], weights: { defense: 0.3, passing: 0.2, shooting: 0.15, physicality: 0.15, hockeyIq: 0.2 } },
-  { id: "late-game-shift", name: "Late Game Shift", description: "Make the decisive play under late-game pressure.", role: "skater", eligible_slots: ["LW", "C", "RW", "LD", "RD"], weights: { clutch: 0.3, hockeyIq: 0.25, speed: 0.15, puckControl: 0.15, defense: 0.15 } },
-  { id: "crease-under-fire", name: "Crease Under Fire", description: "Own the crease during a final barrage.", role: "goalie", eligible_slots: ["G"], weights: { reflexes: 0.2, positioning: 0.2, glove: 0.1, blocker: 0.1, reboundControl: 0.15, consistency: 0.15, clutch: 0.1 } },
+  { id: "skater-speed", name: "Speed", description: "Higher Speed wins this round.", role: "skater", eligible_slots: ["LW", "C", "RW"], attribute: "speed" },
+  { id: "skater-shooting", name: "Shooting", description: "Higher Shooting wins this round.", role: "skater", eligible_slots: ["LW", "C", "RW"], attribute: "shooting" },
+  { id: "skater-defense", name: "Defense", description: "Higher Defense wins this round.", role: "skater", eligible_slots: ["LD", "RD"], attribute: "defense" },
+  { id: "skater-clutch", name: "Clutch", description: "Higher Clutch wins this round.", role: "skater", eligible_slots: ["LW", "C", "RW", "LD", "RD"], attribute: "clutch" },
+  { id: "goalie-reflexes", name: "Reflexes", description: "Higher Reflexes wins this round.", role: "goalie", eligible_slots: ["G"], attribute: "reflexes" },
 ] as const;
 
 type MockLineup = {
@@ -153,10 +153,12 @@ type MockRoundReceipt = {
   opponentSlot: LineupSlot;
   opponentScore: number;
   winner: "player" | "opponent" | "tie";
+  tieBreaker: "category" | "overall" | "match-seed";
   transcript: {
     situation: (typeof serverSituations)[number];
-    player: { base: number; variance: number; total: number };
-    opponent: { base: number; variance: number; total: number };
+    player: { value: number; overall: number };
+    opponent: { value: number; overall: number };
+    tie_breaker: "category" | "overall" | "match-seed";
   };
 };
 
@@ -384,19 +386,17 @@ function currentOffers(
   return [...baseOffers, ...eventOffers];
 }
 
-function deterministicVariance(key: string): number {
+function deterministicIndex(key: string, length: number): number {
   let hash = 0;
   for (const character of key) hash = Math.imul(hash ^ character.charCodeAt(0), 16_777_619);
-  return Math.round((((Math.abs(hash) % 501) - 250) / 100) * 100) / 100;
+  return Math.abs(hash) % length;
 }
 
-function scoreCard(cardId: string, weights: Readonly<Record<string, number>>, varianceKey: string) {
+function scoreCard(cardId: string, attribute: string) {
   const card = gameCatalog.cards.find((candidate) => candidate.id === cardId);
   if (!card) throw new Error(`Unknown mock card ${cardId}.`);
   const attributes = card.attributes as unknown as Record<string, number>;
-  const base = Math.round(Object.entries(weights).reduce((total, [attribute, weight]) => total + (attributes[attribute] ?? 0) * weight, 0) * 100) / 100;
-  const variance = deterministicVariance(varianceKey);
-  return { base, variance, total: Math.round((base + variance) * 100) / 100 };
+  return { value: attributes[attribute] ?? 0, overall: card.overall };
 }
 
 function roundResponse(status: "played" | "already-played", ticket: MatchTicket, round: MockRoundReceipt) {
@@ -412,6 +412,7 @@ function roundResponse(status: "played" | "already-played", ticket: MatchTicket,
     opponent_slot: round.opponentSlot,
     opponent_score: round.opponentScore,
     winner: round.winner,
+    tie_breaker: round.tieBreaker,
     transcript: round.transcript,
   };
 }
@@ -729,35 +730,44 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
         return databaseError(route, "Rounds must be played in order.");
       }
       const situation = serverSituations[body.round_index];
-      const usedPlayerSlots = new Set([...ticket.rounds.values()].map((round) => round.playerSlot));
+      const usedPlayerCards = new Set([...ticket.rounds.values()].map((round) => round.playerCardId));
       const playerEntry = Object.entries(ticket.playerSlots).find(([slot, cardId]) =>
-        cardId === body.player_card_id && situation.eligible_slots.includes(slot as never) && !usedPlayerSlots.has(slot as LineupSlot));
+        cardId === body.player_card_id && situation.eligible_slots.includes(slot as never) && !usedPlayerCards.has(cardId));
       if (!playerEntry) return databaseError(route, "Player card is missing, already used, or ineligible for this situation.");
-      const usedOpponentSlots = new Set([...ticket.rounds.values()].map((round) => round.opponentSlot));
+      const usedOpponentCards = new Set([...ticket.rounds.values()].map((round) => round.opponentCardId));
       const opponentCandidates = Object.entries(ticket.opponentSlots)
-        .filter(([slot]) => situation.eligible_slots.includes(slot as never) && !usedOpponentSlots.has(slot as LineupSlot))
-        .map(([slot, cardId]) => ({ slot: slot as LineupSlot, cardId, score: scoreCard(cardId, situation.weights, `${ticket.seed}:${body.round_index}:opponent:${cardId}`) }));
-      opponentCandidates.sort((left, right) => ticket.difficulty === "rookie"
-        ? left.score.base - right.score.base
-        : ticket.difficulty === "elite"
-          ? right.score.base - left.score.base
-          : left.cardId.localeCompare(right.cardId));
-      const opponent = opponentCandidates[0];
+        .filter(([slot, cardId]) => situation.eligible_slots.includes(slot as never) && !usedOpponentCards.has(cardId))
+        .map(([slot, cardId]) => ({ slot: slot as LineupSlot, cardId, score: scoreCard(cardId, situation.attribute) }))
+        .sort((left, right) => left.score.value - right.score.value || left.score.overall - right.score.overall || left.cardId.localeCompare(right.cardId));
+      const pool = ticket.difficulty === "elite"
+        ? opponentCandidates.slice(-1)
+        : ticket.difficulty === "rookie"
+          ? opponentCandidates.slice(0, Math.max(1, Math.ceil(opponentCandidates.length / 2)))
+          : opponentCandidates.slice(Math.floor(opponentCandidates.length / 2));
+      const opponent = ticket.difficulty === "elite" ? pool[0] : pool[deterministicIndex(`${ticket.seed}:${body.round_index}:${ticket.difficulty}`, pool.length)];
       if (!opponent) return databaseError(route, "Server opponent has no eligible card for this situation.");
-      const playerScore = scoreCard(body.player_card_id, situation.weights, `${ticket.seed}:${body.round_index}:player:${body.player_card_id}`);
-      const winner = playerScore.total === opponent.score.total ? "tie" : playerScore.total > opponent.score.total ? "player" : "opponent";
+      const playerScore = scoreCard(body.player_card_id, situation.attribute);
+      const tieBreaker = playerScore.value !== opponent.score.value
+        ? "category"
+        : playerScore.overall !== opponent.score.overall ? "overall" : "match-seed";
+      const winner = playerScore.value !== opponent.score.value
+        ? playerScore.value > opponent.score.value ? "player" : "opponent"
+        : playerScore.overall !== opponent.score.overall
+          ? playerScore.overall > opponent.score.overall ? "player" : "opponent"
+          : deterministicIndex(`${ticket.seed}:round:${body.round_index}:tie`, 2) === 0 ? "player" : "opponent";
       const receipt: MockRoundReceipt = {
         clientRequestId: body.client_request_id,
         roundIndex: body.round_index,
         situationId: situation.id,
         playerCardId: body.player_card_id,
         playerSlot: playerEntry[0] as LineupSlot,
-        playerScore: playerScore.total,
+        playerScore: playerScore.value,
         opponentCardId: opponent.cardId,
         opponentSlot: opponent.slot,
-        opponentScore: opponent.score.total,
+        opponentScore: opponent.score.value,
         winner,
-        transcript: { situation, player: playerScore, opponent: opponent.score },
+        tieBreaker,
+        transcript: { situation, player: playerScore, opponent: opponent.score, tie_breaker: tieBreaker },
       };
       ticket.rounds.set(body.round_index, receipt);
       ticket.roundRequests.set(body.client_request_id, receipt);

@@ -326,6 +326,38 @@
   white-space: nowrap;
 }
 
+.highlightedStat {
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  z-index: 5;
+  display: grid;
+  min-width: 64px;
+  justify-items: center;
+  padding: 6px 10px 7px;
+  border: 1px solid rgb(255 223 132 / 78%);
+  border-radius: 12px;
+  color: #09131f;
+  background: linear-gradient(135deg, #fff1b7, #e5b94f);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 34%);
+  line-height: 1;
+  transform: translateX(-50%);
+}
+
+.highlightedStat small {
+  font-size: 0.5rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.highlightedStat strong {
+  margin-top: 2px;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 4vw, 2rem);
+  font-weight: 950;
+}
+
 @media (max-width: 430px) {
   .card {
     padding: 9px;

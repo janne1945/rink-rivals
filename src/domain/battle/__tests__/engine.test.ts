@@ -7,7 +7,8 @@ import {
   selectAuthoritativeOpponentCard,
 } from '../authoritativePolicy';
 import {
-  calculateBaseScore,
+  calculateCategoryValue,
+  compareQuartettCards,
   createBattle,
   getBattleView,
   getEligibleCards,
@@ -133,15 +134,15 @@ describe('battle engine', () => {
     const repeatedPro = selectAuthoritativeOpponentCard(eligible, situation, 'pro', state.seed);
     const elite = selectAuthoritativeOpponentCard(eligible, situation, 'elite', state.seed);
 
-    expect(AUTHORITATIVE_MATCH_POLICY_VERSION).toBe('server-authority-v1');
+    expect(AUTHORITATIVE_MATCH_POLICY_VERSION).toBe('quartett-v2');
     expect(state.situations.map(({ id }) => id)).toEqual([
-      'transition-rush', 'cycle-pressure', 'blue-line-command', 'late-game-shift', 'crease-under-fire',
+      'skater-speed', 'skater-shooting', 'skater-defense', 'skater-clutch', 'goalie-reflexes',
     ]);
     expect(pro).toBe(repeatedPro);
-    expect(calculateBaseScore(rookie.card, situation))
-      .toBeLessThanOrEqual(calculateBaseScore(pro.card, situation));
-    expect(calculateBaseScore(pro.card, situation))
-      .toBeLessThanOrEqual(calculateBaseScore(elite.card, situation));
+    expect(calculateCategoryValue(rookie.card, situation))
+      .toBeLessThanOrEqual(calculateCategoryValue(pro.card, situation));
+    expect(calculateCategoryValue(pro.card, situation))
+      .toBeLessThanOrEqual(calculateCategoryValue(elite.card, situation));
   });
 
   it('is deterministic for the same seed and command choices', () => {
@@ -153,6 +154,36 @@ describe('battle engine', () => {
     expect(second.winner).toBe(first.winner);
   });
 
+  it('uses only the visible category, then visible OVR, then the deterministic seed', () => {
+    const state = createState('tie-policy');
+    const situation = state.situations.find(({ role }) => role === 'skater')!;
+    const player = getEligibleCards(state, 'player')[0].card;
+    const opponent = getEligibleCards(state, 'opponent')[0].card;
+    const playerValue = calculateCategoryValue(player, situation);
+    const categoryWin = compareQuartettCards(
+      player,
+      { ...opponent, attributes: { ...opponent.attributes, [situation.attribute]: playerValue - 1 } } as typeof opponent,
+      situation,
+      state.seed,
+      0,
+    );
+    expect(categoryWin).toEqual({ winner: 'player', tieBreaker: 'category' });
+
+    const categoryTieOpponent = {
+      ...opponent,
+      overall: player.overall - 1,
+      attributes: { ...opponent.attributes, [situation.attribute]: playerValue },
+    } as typeof opponent;
+    expect(compareQuartettCards(player, categoryTieOpponent, situation, state.seed, 0))
+      .toEqual({ winner: 'player', tieBreaker: 'overall' });
+
+    const exactTieOpponent = { ...categoryTieOpponent, overall: player.overall } as typeof opponent;
+    const first = compareQuartettCards(player, exactTieOpponent, situation, state.seed, 0);
+    const repeated = compareQuartettCards(player, exactTieOpponent, situation, state.seed, 0);
+    expect(first.tieBreaker).toBe('match-seed');
+    expect(repeated).toEqual(first);
+  });
+
   it('completes after five reveals and consumes five distinct cards per side', () => {
     const state = playMatch();
 
@@ -162,8 +193,10 @@ describe('battle engine', () => {
     expect(new Set(state.usedCardIds.opponent)).toHaveLength(5);
     expect(state.winner).toBeDefined();
     for (const result of state.results) {
-      expect(Math.abs(result.playerScore.variance)).toBeLessThanOrEqual(2.5);
-      expect(Math.abs(result.opponentScore.variance)).toBeLessThanOrEqual(2.5);
+      expect(result.playerScore.value).toBe(calculateCategoryValue(result.playerCard.card, result.situation));
+      expect(result.opponentScore.value).toBe(calculateCategoryValue(result.opponentCard.card, result.situation));
+      expect(Number.isInteger(result.playerScore.value)).toBe(true);
+      expect(result.tieBreaker).toMatch(/category|overall|match-seed/);
     }
   });
 

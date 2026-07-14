@@ -1,4 +1,3 @@
-import type { GoalieAttributes, SkaterAttributes } from '../cards/types';
 import { LINEUP_SLOTS } from '../lineups/types';
 import { shuffleSeeded } from './rng';
 import {
@@ -11,69 +10,89 @@ const SKATER_SLOTS = LINEUP_SLOTS.filter((slot) => slot !== 'G');
 
 export const DEFAULT_SITUATION_DECK: readonly BattleSituation[] = [
   {
-    id: 'breakaway',
-    name: 'Breakaway',
-    description: 'Create separation and finish one-on-one.',
+    id: 'skater-speed',
+    name: 'Speed',
+    description: 'Higher Speed wins this round.',
     role: 'skater',
-    eligibleSlots: SKATER_SLOTS,
-    weights: { speed: 0.25, shooting: 0.35, puckControl: 0.25, clutch: 0.15 },
+    eligibleSlots: ['LW', 'C', 'RW'],
+    attribute: 'speed',
   },
   {
-    id: 'defensive-zone',
-    name: 'Defensive Zone',
-    description: 'Read the play and shut down a dangerous shift.',
+    id: 'skater-shooting',
+    name: 'Shooting',
+    description: 'Higher Shooting wins this round.',
     role: 'skater',
-    eligibleSlots: SKATER_SLOTS,
-    weights: { defense: 0.4, hockeyIq: 0.25, physicality: 0.2, speed: 0.15 },
+    eligibleSlots: ['LW', 'C', 'RW'],
+    attribute: 'shooting',
   },
   {
-    id: 'power-play',
-    name: 'Power Play',
-    description: 'Move the puck and create a high-quality chance.',
+    id: 'skater-playmaking',
+    name: 'Playmaking',
+    description: 'Higher Passing wins this round.',
     role: 'skater',
     eligibleSlots: SKATER_SLOTS,
-    weights: { passing: 0.3, puckControl: 0.25, shooting: 0.25, hockeyIq: 0.2 },
+    attribute: 'passing',
   },
   {
-    id: 'forecheck-battle',
-    name: 'Forecheck Battle',
-    description: 'Win possession below the goal line.',
+    id: 'skater-defense',
+    name: 'Defense',
+    description: 'Higher Defense wins this round.',
+    role: 'skater',
+    eligibleSlots: ['LD', 'RD'],
+    attribute: 'defense',
+  },
+  {
+    id: 'skater-clutch',
+    name: 'Clutch',
+    description: 'Higher Clutch wins this round.',
     role: 'skater',
     eligibleSlots: SKATER_SLOTS,
-    weights: { physicality: 0.35, speed: 0.2, puckControl: 0.2, hockeyIq: 0.25 },
+    attribute: 'clutch',
   },
   {
-    id: 'clutch-shift',
-    name: 'Clutch Shift',
-    description: 'Deliver when the game is on the line.',
-    role: 'skater',
-    eligibleSlots: SKATER_SLOTS,
-    weights: { clutch: 0.4, hockeyIq: 0.25, shooting: 0.2, defense: 0.15 },
-  },
-  {
-    id: 'overtime',
-    name: 'Overtime',
-    description: 'Turn open ice into the deciding play.',
-    role: 'skater',
-    eligibleSlots: SKATER_SLOTS,
-    weights: { clutch: 0.3, speed: 0.25, puckControl: 0.25, hockeyIq: 0.2 },
-  },
-  {
-    id: 'goalie-showdown',
-    name: 'Goalie Showdown',
-    description: 'Make the save that changes the match.',
+    id: 'goalie-positioning',
+    name: 'Positioning',
+    description: 'Higher Positioning wins this round.',
     role: 'goalie',
     eligibleSlots: ['G'],
-    weights: { reflexes: 0.25, positioning: 0.25, consistency: 0.2, clutch: 0.3 },
+    attribute: 'positioning',
+  },
+  {
+    id: 'goalie-reflexes',
+    name: 'Reflexes',
+    description: 'Higher Reflexes wins this round.',
+    role: 'goalie',
+    eligibleSlots: ['G'],
+    attribute: 'reflexes',
+  },
+  {
+    id: 'goalie-rebound-control',
+    name: 'Rebound Control',
+    description: 'Higher Rebound Control wins this round.',
+    role: 'goalie',
+    eligibleSlots: ['G'],
+    attribute: 'reboundControl',
+  },
+  {
+    id: 'goalie-puck-handling',
+    name: 'Puck Handling',
+    description: 'Higher Puck Handling wins this round.',
+    role: 'goalie',
+    eligibleSlots: ['G'],
+    attribute: 'puckHandling',
+  },
+  {
+    id: 'goalie-clutch',
+    name: 'Clutch',
+    description: 'Higher Clutch wins this round.',
+    role: 'goalie',
+    eligibleSlots: ['G'],
+    attribute: 'clutch',
   },
 ];
 
-function weightSum(situation: BattleSituation): number {
-  return Object.values(situation.weights).reduce((sum, weight) => sum + (weight ?? 0), 0);
-}
-
-function hasKnownWeightKeys(situation: BattleSituation): boolean {
-  const skaterKeys = new Set<keyof SkaterAttributes>([
+function hasKnownAttribute(situation: BattleSituation): boolean {
+  const skaterKeys = new Set([
     'speed',
     'shooting',
     'passing',
@@ -83,7 +102,7 @@ function hasKnownWeightKeys(situation: BattleSituation): boolean {
     'hockeyIq',
     'clutch',
   ]);
-  const goalieKeys = new Set<keyof GoalieAttributes>([
+  const goalieKeys = new Set([
     'reflexes',
     'positioning',
     'glove',
@@ -93,8 +112,8 @@ function hasKnownWeightKeys(situation: BattleSituation): boolean {
     'consistency',
     'clutch',
   ]);
-  const allowed = new Set<string>(situation.role === 'skater' ? skaterKeys : goalieKeys);
-  return Object.keys(situation.weights).every((key) => allowed.has(key));
+  const allowed: ReadonlySet<string> = situation.role === 'skater' ? skaterKeys : goalieKeys;
+  return allowed.has(situation.attribute);
 }
 
 export function validateSituationDeck(deck: readonly BattleSituation[]): void {
@@ -116,17 +135,12 @@ export function validateSituationDeck(deck: readonly BattleSituation[]): void {
       situation.eligibleSlots.every((slot) =>
         situation.role === 'goalie' ? slot === 'G' : slot !== 'G',
       );
-    const weightsAreValid =
-      hasKnownWeightKeys(situation) &&
-      Object.values(situation.weights).every(
-        (weight) => typeof weight === 'number' && Number.isFinite(weight) && weight > 0,
-      ) &&
-      Math.abs(weightSum(situation) - 1) < 0.000_001;
+    const categoryIsValid = hasKnownAttribute(situation);
 
-    if (!slotsAreValid || !weightsAreValid) {
+    if (!slotsAreValid || !categoryIsValid) {
       throw new BattleRuleError(
         'invalid-situation-deck',
-        `Situation ${situation.id} has invalid slots or attribute weights.`,
+        `Category ${situation.id} has invalid slots or a missing visible attribute.`,
       );
     }
 

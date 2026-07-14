@@ -16,6 +16,7 @@ type HockeyCardProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children">
   status?: string;
   marketStatus?: string;
   eager?: boolean;
+  highlightedStat?: Readonly<{ label: string; value: number }>;
 };
 
 const presentationClasses = {
@@ -34,7 +35,7 @@ function displayLabel(value: string): string {
     .join(" ");
 }
 
-function HockeyCardView({ card, player, selected, used, compact, status, marketStatus, eager = false, className = "", disabled, onClick, ...props }: HockeyCardProps) {
+function HockeyCardView({ card, player, selected, used, compact, status, marketStatus, highlightedStat, eager = false, className = "", disabled, onClick, ...props }: HockeyCardProps) {
   const cardTypeLabel = displayLabel(card.cardType);
   const setLabel = displayLabel(card.setId);
   const cardImage = resolveCardImage(card, player);
@@ -79,6 +80,7 @@ function HockeyCardView({ card, player, selected, used, compact, status, marketS
     player.league,
     status,
     marketStatus,
+    highlightedStat ? `${highlightedStat.label} ${highlightedStat.value}` : undefined,
   ].filter(Boolean).join(", ");
   const content = (
     <>
@@ -126,13 +128,19 @@ function HockeyCardView({ card, player, selected, used, compact, status, marketS
             <span className={styles.name}>{player.name}</span>
             <span className={styles.team}>{player.team}{player.nationality ? ` · ${player.nationality}` : ""}</span>
           </span>
-          {status || marketStatus ? (
-            <span className={styles.status}>
-              {status ? <span>{status}</span> : null}
-              {marketStatus ? <small>{marketStatus}</small> : null}
-            </span>
-          ) : null}
         </>
+      ) : null}
+      {highlightedStat ? (
+        <span className={styles.highlightedStat} data-highlighted-stat={highlightedStat.label}>
+          <small>{highlightedStat.label}</small>
+          <strong>{highlightedStat.value}</strong>
+        </span>
+      ) : null}
+      {(status || marketStatus) && (!showsEmbeddedMetadata || highlightedStat) ? (
+        <span className={styles.status}>
+          {status ? <span>{status}</span> : null}
+          {marketStatus ? <small>{marketStatus}</small> : null}
+        </span>
       ) : null}
     </>
   );

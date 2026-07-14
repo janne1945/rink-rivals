@@ -22,29 +22,30 @@ const lineup = {
 };
 
 const situations = [
-  { id: "transition-rush", name: "Transition Rush", description: "Attack with pace.", role: "skater", eligible_slots: ["LW", "C", "RW"], weights: { speed: 1 } },
-  { id: "cycle-pressure", name: "Cycle Pressure", description: "Hold possession.", role: "skater", eligible_slots: ["LW", "C", "RW"], weights: { passing: 1 } },
-  { id: "blue-line-command", name: "Blue Line Command", description: "Control the point.", role: "skater", eligible_slots: ["LD", "RD"], weights: { defense: 1 } },
-  { id: "late-game-shift", name: "Late Game Shift", description: "Make the play.", role: "skater", eligible_slots: ["LW", "C", "RW", "LD", "RD"], weights: { clutch: 1 } },
-  { id: "crease-under-fire", name: "Crease Under Fire", description: "Own the crease.", role: "goalie", eligible_slots: ["G"], weights: { reflexes: 1 } },
+  { id: "skater-speed", name: "Speed", description: "Higher Speed wins this round.", role: "skater", eligible_slots: ["LW", "C", "RW"], attribute: "speed" },
+  { id: "skater-shooting", name: "Shooting", description: "Higher Shooting wins this round.", role: "skater", eligible_slots: ["LW", "C", "RW"], attribute: "shooting" },
+  { id: "skater-defense", name: "Defense", description: "Higher Defense wins this round.", role: "skater", eligible_slots: ["LD", "RD"], attribute: "defense" },
+  { id: "skater-clutch", name: "Clutch", description: "Higher Clutch wins this round.", role: "skater", eligible_slots: ["LW", "C", "RW", "LD", "RD"], attribute: "clutch" },
+  { id: "goalie-reflexes", name: "Reflexes", description: "Higher Reflexes wins this round.", role: "goalie", eligible_slots: ["G"], attribute: "reflexes" },
 ];
 
 const roundPayload = {
   status: "played",
   client_match_id: "match-1",
   round_index: 0,
-  situation_id: "transition-rush",
+  situation_id: "skater-speed",
   player_card_id: "lw",
   player_slot: "LW",
-  player_score: 91.2,
+  player_score: 90,
   opponent_card_id: "opp-lw",
   opponent_slot: "LW",
-  opponent_score: 89.1,
+  opponent_score: 89,
   winner: "player",
+  tie_breaker: "category",
   transcript: {
     situation: situations[0],
-    player: { base: 90, variance: 1.2, total: 91.2 },
-    opponent: { base: 89, variance: 0.1, total: 89.1 },
+    player: { value: 90, overall: 86 },
+    opponent: { value: 89, overall: 85 },
   },
 };
 
@@ -149,7 +150,7 @@ describe("SupabaseAccountRepository RPC mapping", () => {
     await expect(repository.activateLineup("lineup-1")).resolves.toMatchObject({ status: "activated", lineup: { isActive: true } });
     await expect(repository.claimRivalryReward({ clientRequestId: "reward-request", cardId: "reward-card" })).resolves.toMatchObject({ status: "claimed", quantity: 1 });
     await expect(repository.startMatch({ clientMatchId: "match-1", mode: "nhl-circuit", difficulty: "rookie" })).resolves.toMatchObject({ seed: "seed-1", opponentId: "rookie-rival", lineup: { id: "lineup-1", slots: lineup.slots }, rounds: [{ roundIndex: 0, status: "already-played" }] });
-    await expect(repository.playMatchRound({ clientMatchId: "match-1", roundIndex: 0, playerCardId: "lw", clientRequestId: "round-request" })).resolves.toMatchObject({ winner: "player", transcript: { player: { total: 91.2 } } });
+    await expect(repository.playMatchRound({ clientMatchId: "match-1", roundIndex: 0, playerCardId: "lw", clientRequestId: "round-request" })).resolves.toMatchObject({ winner: "player", tieBreaker: "category", transcript: { player: { value: 90 } } });
     await expect(repository.settleMatch({ clientMatchId: "match-1" })).resolves.toMatchObject({ status: "settled", rewardCredits: 345 });
 
     expect(rpc).toHaveBeenCalledWith("save_lineup", {

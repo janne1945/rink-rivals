@@ -66,6 +66,15 @@ describe("HockeyCard artwork", () => {
     expect(image).toHaveAttribute("fetchpriority", "high");
   });
 
+  it("emphasizes an explicitly supplied match category in sighted and accessible output", () => {
+    const { card, player } = catalogEntry("nhl-connor-mcdavid-base");
+    render(<HockeyCard card={card} player={player} highlightedStat={{ label: "Speed", value: card.role === "skater" ? card.attributes.speed : 0 }} />);
+
+    const article = screen.getByRole("article", { name: /Speed \d+/i });
+    expect(article).toHaveAccessibleName(expect.stringContaining("Speed"));
+    expect(document.querySelector("[data-highlighted-stat='Speed'] strong")).toHaveTextContent(String(card.role === "skater" ? card.attributes.speed : 0));
+  });
+
   it("shows provided Signature Series art without duplicating its embedded metadata", () => {
     const { card, player } = catalogEntry("nhl-connor-mcdavid-signature-series");
     render(<HockeyCard card={card} player={player} status="Owned ×1" marketStatus="Event Shop" />);

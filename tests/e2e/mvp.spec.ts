@@ -104,14 +104,15 @@ test.describe("Rink Rivals MVP", () => {
       await expect(availableCard).toBeEnabled();
       await availableCard.click();
       await expect(page.getByText("Card locked in")).toBeVisible();
-      await page.getByRole("button", { name: "Reveal shift" }).click();
+      await page.getByRole("button", { name: "Reveal cards" }).click();
+      if (round < 5) await page.getByRole("button", { name: "Next round" }).click();
     }
 
     await expect(page.getByText("Final horn")).toBeVisible();
     await expect(page.getByText(/Match settled on the server/)).toBeVisible();
     const finalCredits = await page.getByLabel(/credits/i).innerText();
     expect(finalCredits).not.toContain("1,000");
-    await page.getByRole("button", { name: "Return to club" }).click();
+    await page.getByRole("button", { name: "Back to overview" }).click();
     await expect(page).toHaveURL("/");
     await page.reload();
     await expect(page.getByLabel(/credits/i)).toContainText(finalCredits.trim());
@@ -125,6 +126,35 @@ test.describe("Rink Rivals MVP", () => {
     await expect(dropGoal.getByText("Claimed", { exact: true })).toBeVisible();
   });
 
+  test("communicates the Quartett category, visible values, timeline, and concealed reveal", async ({ page }) => {
+    await page.goto("/play");
+    await page.getByRole("button", { name: "Start match" }).click();
+
+    await expect(page.getByRole("heading", { name: "Speed", exact: true })).toBeVisible();
+    await expect(page.getByText("Higher Speed wins this round.")).toBeVisible();
+    await expect(page.getByText(/On a tie: higher OVR/)).toBeVisible();
+    await expect(page.getByRole("list", { name: "Round timeline" }).getByRole("listitem")).toHaveCount(5);
+    await expect(page.getByText("Ineligible for Speed", { exact: true }).first()).toBeVisible();
+
+    const firstEligible = page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='Eligible']:not([disabled])").first();
+    await firstEligible.focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("heading", { name: "Rival card concealed" })).toBeVisible();
+    await expect(page.getByLabel("Rival card hidden")).toBeVisible();
+    await page.getByRole("button", { name: "Reveal cards" }).click();
+
+    const result = page.getByRole("region", { name: "Round 1 result" });
+    await expect(result).toBeVisible();
+    await expect(result.locator("p:not([role='status'])").filter({ hasText: /Higher Speed wins|higher OVR wins|server match seed/i })).toBeVisible();
+    const values = await result.locator("[data-highlighted-stat='Speed'] strong").allTextContents();
+    expect(values).toHaveLength(2);
+    expect(values.every((value) => /^\d+$/.test(value.trim()))).toBe(true);
+    await expect(page.getByRole("listitem", { name: /Round 1: Speed/ })).toBeVisible();
+    await page.getByRole("button", { name: "Next round" }).click();
+    await expect(page.getByRole("region", { name: "Player hand" }).locator("button[disabled][aria-label*='Used']")).toHaveCount(1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+  });
+
   test("keeps the completed match retryable when server settlement fails", async ({ page }) => {
     await page.unrouteAll({ behavior: "wait" });
     await installSupabaseMock(page, { authenticated: true, onboardingCompleted: true, settlementError: true });
@@ -132,11 +162,12 @@ test.describe("Rink Rivals MVP", () => {
     await page.getByRole("button", { name: "Start match" }).click();
     for (let round = 1; round <= 5; round += 1) {
       await page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='overall']:not([disabled])").first().click();
-      await page.getByRole("button", { name: "Reveal shift" }).click();
+      await page.getByRole("button", { name: "Reveal cards" }).click();
+      if (round < 5) await page.getByRole("button", { name: "Next round" }).click();
     }
     await expect(page.getByText("Match settlement temporarily unavailable")).toBeVisible();
     await expect(page.getByRole("button", { name: "Retry settlement" })).toBeEnabled();
-    await expect(page.getByRole("button", { name: "Return to club" })).toBeDisabled();
+    await expect(page.getByRole("button", { name: "Back to overview" })).toBeDisabled();
   });
 
   test("opens the Goals hub with three dailies, the weekly tour, and Rivalry Road", async ({ page }) => {
@@ -262,8 +293,9 @@ test.describe("Rink Rivals MVP", () => {
 
   test("honors reduced motion without horizontal overflow", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/objectives");
-    await expect(page.getByRole("heading", { name: "Goals hub" })).toBeVisible();
+    await page.goto("/play");
+    await page.getByRole("button", { name: "Start match" }).click();
+    await expect(page.getByRole("heading", { name: "Speed", exact: true })).toBeVisible();
     expect(await page.evaluate(() => {
       if (!matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
       return document.getAnimations().every((animation) => {

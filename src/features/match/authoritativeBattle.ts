@@ -27,7 +27,7 @@ export function applyAuthoritativeRound(state: BattleState, round: PlayMatchRoun
   const playerCard = state.lineups.player.cards.find(({ card, slot }) => card.id === round.playerCardId && slot === round.playerSlot);
   const opponentCard = state.lineups.opponent.cards.find(({ card, slot }) => card.id === round.opponentCardId && slot === round.opponentSlot);
   if (!playerCard || !opponentCard) throw new Error("The server returned a card outside the match snapshots.");
-  if (round.transcript.player.total !== round.playerScore || round.transcript.opponent.total !== round.opponentScore) {
+  if (round.transcript.player.value !== round.playerScore || round.transcript.opponent.value !== round.opponentScore) {
     throw new Error("The server returned an inconsistent round transcript.");
   }
 
@@ -43,6 +43,7 @@ export function applyAuthoritativeRound(state: BattleState, round: PlayMatchRoun
     playerScore: round.transcript.player,
     opponentScore: round.transcript.opponent,
     winner: round.winner,
+    tieBreaker: round.tieBreaker,
   }];
   const complete = results.length === BATTLE_ROUND_COUNT;
   return {

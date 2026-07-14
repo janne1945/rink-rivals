@@ -23,7 +23,7 @@ function signatureEntry() {
 
 describe("MarketScreen full-card offers", () => {
   beforeEach(() => {
-    localStorage.clear();
+    window.sessionStorage.clear();
   });
 
   it("keeps spotlight, ownership, price, and action below unobstructed artwork", () => {

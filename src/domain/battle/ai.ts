@@ -1,5 +1,5 @@
 import type { ResolvedLineupCard } from '../lineups/types';
-import { calculateBaseScore, getEligibleCards, selectCard } from './engine';
+import { calculateCategoryValue, getEligibleCards, selectCard } from './engine';
 import { randomIndex } from './rng';
 import {
   BattleRuleError,
@@ -27,9 +27,9 @@ function opportunityCost(state: BattleState, candidate: ResolvedLineupCard): num
         ({ card, slot }) =>
           card.role === situation.role && situation.eligibleSlots.includes(slot),
       )
-      .map(({ card }) => calculateBaseScore(card, situation));
+      .map(({ card }) => calculateCategoryValue(card, situation));
     const bestAlternative = alternativeScores.length > 0 ? Math.max(...alternativeScores) : 0;
-    return cost + Math.max(0, calculateBaseScore(candidate.card, situation) - bestAlternative);
+    return cost + Math.max(0, calculateCategoryValue(candidate.card, situation) - bestAlternative);
   }, 0);
 }
 
@@ -44,8 +44,8 @@ export function chooseAiCard(
 
   const situation = state.situations[state.roundIndex];
   const ranked = [...eligible].sort((left, right) => {
-    const leftUtility = calculateBaseScore(left.card, situation) - opportunityCost(state, left);
-    const rightUtility = calculateBaseScore(right.card, situation) - opportunityCost(state, right);
+    const leftUtility = calculateCategoryValue(left.card, situation) - opportunityCost(state, left);
+    const rightUtility = calculateCategoryValue(right.card, situation) - opportunityCost(state, right);
     return rightUtility - leftUtility || left.card.id.localeCompare(right.card.id);
   });
 
