@@ -6,7 +6,7 @@ import {
   createCatalogFilterState,
   matchesCatalogFilters,
 } from "../../components/catalogFilterModel";
-import { HOCKEY_POSITIONS, type ContentCatalog } from "../../domain/cards";
+import { cardEligiblePositions, HOCKEY_POSITIONS, type ContentCatalog } from "../../domain/cards";
 import type { OwnedCard } from "../../domain/economy";
 import type {
   AccountMarketOffer,
@@ -109,7 +109,7 @@ export function MarketScreen({ catalog, collection, credits, market, onBuy }: Ma
       searchText: [player.name, team.name, team.abbreviation, player.nationality ?? "", card.setId, card.cardType].join(" "),
       league: player.league,
       teamId: card.teamId,
-      positions: player.eligiblePositions,
+      positions: cardEligiblePositions(card, player),
       cardType: card.cardType,
       setId: card.setId,
       overall: card.overall,
@@ -216,16 +216,23 @@ export function MarketScreen({ catalog, collection, credits, market, onBuy }: Ma
           const ended = offer.source === "event_shop" && eventEnded;
           return (
             <article className={`${styles.shopCard} ${offer.placement === "spotlight" ? styles.shopCardSpotlight : ""}`} key={offer.id}>
-              {offer.placement === "spotlight" ? <span className={styles.spotlightBadge}>Spotlight</span> : null}
               <HockeyCard
                 card={card}
                 player={player}
                 status={owned ? `Owned ×${owned.quantity}` : "Not owned"}
                 marketStatus={tab === "base" ? "Base Market" : "Event Shop"}
               />
-              <div className={styles.offerMeta}>
-                <span>{owned ? `Owned ×${owned.quantity}` : "Not owned"}</span>
-                {offer.regularPrice > offer.price ? <span><s>{offer.regularPrice.toLocaleString("en-US")}</s> CR</span> : <span>{card.overall} OVR</span>}
+              <div className={styles.offerDetails}>
+                <div className={styles.offerBadgeRow}>
+                  {offer.placement === "spotlight" ? <span className={styles.spotlightBadge}>Spotlight</span> : null}
+                </div>
+                <div className={styles.offerMeta}>
+                  <span>{owned ? `Owned ×${owned.quantity}` : "Not owned"}</span>
+                  <span className={styles.offerPrice}>
+                    {offer.regularPrice > offer.price ? <s>{offer.regularPrice.toLocaleString("en-US")} CR</s> : null}
+                    <strong>{offer.price.toLocaleString("en-US")} CR</strong>
+                  </span>
+                </div>
               </div>
               <button
                 type="button"

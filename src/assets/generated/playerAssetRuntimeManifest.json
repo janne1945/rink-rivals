@@ -2313,6 +2313,15 @@
       "height": 336
     },
     {
+      "playerId": "nhl-jeremy-swayman",
+      "variant": "signature",
+      "path": "/assets/players/nhl/jeremy-swayman/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 960
+    },
+    {
       "playerId": "nhl-jesper-bratt",
       "variant": "base",
       "path": "/assets/players/nhl/jesper-bratt/base.webp",
@@ -4093,6 +4102,15 @@
       "presentation": "headshot",
       "width": 336,
       "height": 336
+    },
+    {
+      "playerId": "nhl-rasmus-dahlin",
+      "variant": "signature",
+      "path": "/assets/players/nhl/rasmus-dahlin/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 999
     },
     {
       "playerId": "nhl-rasmus-ristolainen",
@@ -6390,6 +6408,15 @@
       "height": 240
     },
     {
+      "playerId": "pwhl-megan-keller",
+      "variant": "signature",
+      "path": "/assets/players/pwhl/megan-keller/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 1080
+    },
+    {
       "playerId": "pwhl-megan-warrener",
       "variant": "base",
       "path": "/assets/players/pwhl/megan-warrener/base.webp",
@@ -6588,6 +6615,15 @@
       "height": 240
     },
     {
+      "playerId": "pwhl-raygan-kirk",
+      "variant": "signature",
+      "path": "/assets/players/pwhl/raygan-kirk/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 1080
+    },
+    {
       "playerId": "pwhl-rebecca-leslie",
       "variant": "base",
       "path": "/assets/players/pwhl/rebecca-leslie/base.webp",
@@ -6712,6 +6748,15 @@
       "presentation": "headshot",
       "width": 240,
       "height": 240
+    },
+    {
+      "playerId": "pwhl-sophie-jaques",
+      "variant": "signature",
+      "path": "/assets/players/pwhl/sophie-jaques/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 1080
     },
     {
       "playerId": "pwhl-sophie-shirley",

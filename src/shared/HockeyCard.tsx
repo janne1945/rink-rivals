@@ -1,5 +1,5 @@
-import { memo, type ButtonHTMLAttributes, type SyntheticEvent } from "react";
-import type { CardVersion, Player } from "../domain/cards";
+import { memo, useState, type ButtonHTMLAttributes, type SyntheticEvent } from "react";
+import { cardPrimaryPosition, type CardVersion, type Player } from "../domain/cards";
 import {
   playerAssetManifest,
   resolveCardImage,
@@ -26,33 +26,6 @@ const presentationClasses = {
 
 const neutralFallback = playerAssetManifest().fallback;
 
-function handleImageError(event: SyntheticEvent<HTMLImageElement>): void {
-  const image = event.currentTarget;
-  if (image.dataset.assetFallbackApplied === "true") {
-    image.hidden = true;
-    return;
-  }
-
-  image.dataset.assetFallbackApplied = "true";
-  image.dataset.assetPresentation = neutralFallback.presentation;
-  image.dataset.assetResolution = "placeholder";
-  image.dataset.assetResolvedVariant = "placeholder";
-  image.setAttribute("src", neutralFallback.path);
-  image.setAttribute("width", String(neutralFallback.width));
-  image.setAttribute("height", String(neutralFallback.height));
-  image.classList.remove(...Object.values(presentationClasses));
-  image.classList.add(presentationClasses.placeholder);
-
-  const artwork = image.parentElement;
-  if (artwork) {
-    artwork.dataset.assetPresentation = neutralFallback.presentation;
-    artwork.dataset.assetResolution = "placeholder";
-    artwork.dataset.assetResolvedVariant = "placeholder";
-    artwork.classList.remove(...Object.values(presentationClasses));
-    artwork.classList.add(presentationClasses.placeholder);
-  }
-}
-
 function displayLabel(value: string): string {
   return value
     .split("-")
@@ -65,16 +38,33 @@ function HockeyCardView({ card, player, selected, used, compact, status, marketS
   const cardTypeLabel = displayLabel(card.cardType);
   const setLabel = displayLabel(card.setId);
   const cardImage = resolveCardImage(card, player);
+  const primaryPosition = cardPrimaryPosition(card, player);
   const imageKey = `${card.id}:${cardImage.src}`;
-  const presentationClass = presentationClasses[cardImage.presentation];
-  const fallbackApplied = cardImage.resolution === "placeholder";
+  const [failedImageKey, setFailedImageKey] = useState<string | null>(null);
+  const fallbackApplied = cardImage.resolution === "placeholder" || failedImageKey === imageKey;
+  const activePresentation = fallbackApplied ? neutralFallback.presentation : cardImage.presentation;
+  const activeResolution = fallbackApplied ? "placeholder" : cardImage.resolution;
+  const activeResolvedVariant = fallbackApplied ? "placeholder" : cardImage.resolvedVariant;
+  const activeSrc = fallbackApplied ? neutralFallback.path : cardImage.src;
+  const activeWidth = fallbackApplied ? neutralFallback.width : cardImage.width;
+  const activeHeight = fallbackApplied ? neutralFallback.height : cardImage.height;
+  const showsEmbeddedMetadata = activePresentation === "full-card";
+  const presentationClass = presentationClasses[activePresentation];
+  const handleImageError = (event: SyntheticEvent<HTMLImageElement>): void => {
+    if (fallbackApplied) {
+      event.currentTarget.hidden = true;
+      return;
+    }
+    setFailedImageKey(imageKey);
+  };
   const classes = [
     styles.card,
     onClick ? styles.interactive : "",
     selected ? styles.selected : "",
     used ? styles.used : "",
     compact ? styles.compact : "",
-    status || marketStatus ? styles.hasStatus : "",
+    showsEmbeddedMetadata ? styles.fullArtwork : "",
+    !showsEmbeddedMetadata && (status || marketStatus) ? styles.hasStatus : "",
     disabled ? styles.disabled : "",
     className,
   ].filter(Boolean).join(" ");
@@ -85,7 +75,7 @@ function HockeyCardView({ card, player, selected, used, compact, status, marketS
     `${cardTypeLabel} card`,
     `${setLabel} set`,
     player.team,
-    player.primaryPosition,
+    primaryPosition,
     player.league,
     status,
     marketStatus,
@@ -96,49 +86,53 @@ function HockeyCardView({ card, player, selected, used, compact, status, marketS
         key={imageKey}
         className={`${styles.artwork} ${presentationClass}`}
         aria-hidden="true"
-        data-asset-presentation={cardImage.presentation}
-        data-asset-resolution={cardImage.resolution}
-        data-asset-resolved-variant={cardImage.resolvedVariant}
+        data-asset-presentation={activePresentation}
+        data-asset-resolution={activeResolution}
+        data-asset-resolved-variant={activeResolvedVariant}
       >
         <img
           key={imageKey}
           className={`${styles.image} ${presentationClass}`}
-          src={cardImage.src}
+          src={activeSrc}
           alt=""
           aria-hidden="true"
-          width={cardImage.width}
-          height={cardImage.height}
+          width={activeWidth}
+          height={activeHeight}
           loading={eager ? "eager" : "lazy"}
           decoding="async"
           fetchPriority={eager ? "high" : "auto"}
           onError={handleImageError}
           data-card-image={card.id}
           data-player-id={player.id}
-          data-asset-presentation={cardImage.presentation}
-          data-asset-resolution={cardImage.resolution}
+          data-asset-presentation={activePresentation}
+          data-asset-resolution={activeResolution}
           data-asset-requested-variant={cardImage.requestedVariant}
-          data-asset-resolved-variant={cardImage.resolvedVariant}
+          data-asset-resolved-variant={activeResolvedVariant}
           data-asset-fallback-applied={fallbackApplied ? "true" : "false"}
         />
       </span>
-      <span className={styles.topline}>
-        <span className={styles.overall}>{card.overall}<small>OVR</small></span>
-        <span className={styles.league}>{player.league}</span>
-      </span>
-      <span className={styles.position}>{player.primaryPosition}</span>
-      <span className={styles.content}>
-        <span className={styles.cardMeta}>
-          <span className={styles.cardType}>{cardTypeLabel}</span>
-          <span className={styles.set}>{setLabel}</span>
-        </span>
-        <span className={styles.name}>{player.name}</span>
-        <span className={styles.team}>{player.team}{player.nationality ? ` · ${player.nationality}` : ""}</span>
-      </span>
-      {status || marketStatus ? (
-        <span className={styles.status}>
-          {status ? <span>{status}</span> : null}
-          {marketStatus ? <small>{marketStatus}</small> : null}
-        </span>
+      {!showsEmbeddedMetadata ? (
+        <>
+          <span className={styles.topline}>
+            <span className={styles.overall}>{card.overall}<small>OVR</small></span>
+            <span className={styles.league}>{player.league}</span>
+          </span>
+          <span className={styles.position}>{primaryPosition}</span>
+          <span className={styles.content}>
+            <span className={styles.cardMeta}>
+              <span className={styles.cardType}>{cardTypeLabel}</span>
+              <span className={styles.set}>{setLabel}</span>
+            </span>
+            <span className={styles.name}>{player.name}</span>
+            <span className={styles.team}>{player.team}{player.nationality ? ` · ${player.nationality}` : ""}</span>
+          </span>
+          {status || marketStatus ? (
+            <span className={styles.status}>
+              {status ? <span>{status}</span> : null}
+              {marketStatus ? <small>{marketStatus}</small> : null}
+            </span>
+          ) : null}
+        </>
       ) : null}
     </>
   );
@@ -151,6 +145,7 @@ function HockeyCardView({ card, player, selected, used, compact, status, marketS
         disabled={disabled}
         aria-pressed={selected}
         aria-label={accessibleName}
+        data-card-presentation={activePresentation}
         onClick={onClick}
         {...props}
       >
@@ -159,7 +154,7 @@ function HockeyCardView({ card, player, selected, used, compact, status, marketS
     );
   }
 
-  return <article className={classes} aria-label={accessibleName}>{content}</article>;
+  return <article className={classes} aria-label={accessibleName} data-card-presentation={activePresentation}>{content}</article>;
 }
 
 export const HockeyCard = memo(HockeyCardView);

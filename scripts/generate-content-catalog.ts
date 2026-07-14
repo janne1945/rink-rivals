@@ -32,6 +32,11 @@ import {
   type RatingCandidate,
   type RatingOverride,
 } from './lib/ratingModel';
+import {
+  parseSignatureArtwork,
+  signatureArtworkAttributes,
+  type SignatureArtwork,
+} from './lib/signatureArtwork';
 import { createStableIdResolver, type StableIdResolver } from './lib/stableIdRegistry';
 
 const SNAPSHOT_PATH = resolve('data/content/official-content-snapshot.json');
@@ -202,6 +207,18 @@ const LEGACY_REWARD_IDS = [
 const APPROVED_SIGNATURE_ASSET_PLAYER_IDS = new Set(signatureAssetSources.sources
   .filter(({ status }) => status === 'integrated')
   .map(({ playerId }) => playerId));
+const SIGNATURE_ARTWORK_BY_PLAYER_ID = new Map<string, SignatureArtwork>(signatureAssetSources.sources
+  .filter(({ status }) => status === 'integrated')
+  .map((source) => [source.playerId, parseSignatureArtwork(source.artwork)]));
+const ARCHIVED_SIGNATURE_CARD_ID = 'pwhl-hilary-knight-signature-series';
+const ARCHIVED_SIGNATURE_AVAILABLE_TO = '2026-07-13T00:00:00.000Z';
+const SIGNATURE_PLAYER_REPLACEMENTS = new Map<string, string>([
+  ['nhl-drake-batherson', 'nhl-jeremy-swayman'],
+  ['nhl-dylan-larkin', 'nhl-rasmus-dahlin'],
+  ['nhl-evgeni-malkin', 'pwhl-megan-keller'],
+  ['nhl-mark-stone', 'pwhl-raygan-kirk'],
+  ['pwhl-erin-ambrose', 'pwhl-sophie-jaques'],
+]);
 
 function eventSeeds(eventId: string, playerIds: readonly string[]): EventSeed[] {
   return playerIds.map((playerId) => ({ eventId, playerId }));
@@ -692,29 +709,45 @@ function createEventCard(
   candidate: SourceCandidate,
 ): CardVersion {
   const tier = eventTier(eventId);
-  const overall = eventOverall(base.overall, `${eventId}:${player.id}`);
-  const approvedAsset = eventId === 'signature-series'
+  const signatureArtwork = eventId === 'signature-series'
+    ? SIGNATURE_ARTWORK_BY_PLAYER_ID.get(player.id)
+    : undefined;
+  const overall = signatureArtwork?.overall
+    ?? eventOverall(base.overall, `${eventId}:${player.id}`);
+  const approvedAsset = signatureArtwork !== undefined
     && APPROVED_SIGNATURE_ASSET_PLAYER_IDS.has(player.id);
+  const cardId = `${player.id}-${eventId}`;
   const common = {
-    id: `${player.id}-${eventId}`, playerId: player.id, teamId: base.teamId, setId: eventId,
+    id: cardId, playerId: player.id, teamId: base.teamId, setId: eventId,
     cardType: 'event' as const, cardTier: tier, overall,
     abilities: [`${eventId.replace(/-/g, ' ')} specialist`], price: priceForCard('event', overall),
-    marketAvailability: 'event-shop' as const, availableFrom: EVENT_FROM, availableTo: EVENT_TO,
+    marketAvailability: 'event-shop' as const, availableFrom: EVENT_FROM,
+    availableTo: cardId === ARCHIVED_SIGNATURE_CARD_ID ? ARCHIVED_SIGNATURE_AVAILABLE_TO : EVENT_TO,
     isPermanent: false,
-    imageReference: createCardImageReference(player.id, 'event', `${player.id}-${eventId}`),
+    imageReference: createCardImageReference(player.id, 'event', cardId),
     visualMetadata: {
       treatment: approvedAsset ? 'approved-local-asset' as const : 'neutral-placeholder' as const,
       accent: tier === 'signature' ? '#d4af37' : tier === 'elite' ? '#7d5fff' : '#3ba3ec',
       frame: tier,
+      ...(signatureArtwork ? {
+        artworkPosition: signatureArtwork.position,
+        artworkOverall: signatureArtwork.overall,
+        artworkAttributes: signatureArtwork.displayedRatings,
+      } : {}),
     },
   };
   const rating = ratingCandidate(candidate);
-  const attributes = applyEventAttributeProfile(
-    base.attributes,
-    buildAttributes(rating, overall, eventId),
-    eventId,
-    rating.role,
-  );
+  if (signatureArtwork && signatureArtwork.role !== rating.role) {
+    throw new Error(`Signature artwork role for ${player.id} does not match its PlayerIdentity.`);
+  }
+  const attributes = signatureArtwork
+    ? signatureArtworkAttributes(signatureArtwork)
+    : applyEventAttributeProfile(
+      base.attributes,
+      buildAttributes(rating, overall, eventId),
+      eventId,
+      rating.role,
+    );
   return rating.role === 'goalie'
     ? { ...common, role: 'goalie', attributes: attributes as GoalieAttributes }
     : { ...common, role: 'skater', attributes: attributes as SkaterAttributes };
@@ -751,7 +784,22 @@ function createEventCards(
       if (attempt > ranked.length * EVENT_IDS.length) throw new Error(`Could not create Event coverage for ${team.name}.`);
     }
   }
-  return seeds.map((seed) => {
+  const finalSeeds = seeds.map((seed) => seed.eventId === 'signature-series'
+    ? { ...seed, playerId: SIGNATURE_PLAYER_REPLACEMENTS.get(seed.playerId) ?? seed.playerId }
+    : seed);
+  const signaturePlayerIds = finalSeeds
+    .filter(({ eventId }) => eventId === 'signature-series')
+    .map(({ playerId }) => playerId);
+  const expectedSignaturePlayerIds = new Set([
+    ...APPROVED_SIGNATURE_ASSET_PLAYER_IDS,
+    ARCHIVED_SIGNATURE_CARD_ID.replace(/-signature-series$/, ''),
+  ]);
+  if (signaturePlayerIds.length !== 10
+    || new Set(signaturePlayerIds).size !== signaturePlayerIds.length
+    || signaturePlayerIds.some((playerId) => !expectedSignaturePlayerIds.has(playerId))) {
+    throw new Error(`Signature replacement contract produced unexpected identities: ${signaturePlayerIds.sort().join(', ')}`);
+  }
+  return finalSeeds.map((seed) => {
     const player = playerById.get(seed.playerId) as PlayerIdentity;
     return createEventCard(
       seed.eventId,

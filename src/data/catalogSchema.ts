@@ -143,6 +143,9 @@ const commonCardSchema = z.object({
     treatment: z.enum(['neutral-placeholder', 'approved-local-asset']),
     accent: z.string().regex(/^#[0-9a-f]{6}$/i),
     frame: cardTierSchema,
+    artworkPosition: lineupSlotSchema.optional(),
+    artworkOverall: ratingSchema.optional(),
+    artworkAttributes: z.record(z.string(), ratingSchema).optional(),
   }),
 });
 
@@ -199,7 +202,16 @@ function validateCardContract(card: z.infer<typeof cardVersionSchema>, context: 
     }
   }
   if (card.cardType === 'event') {
-    if (card.overall < 84 || card.overall > 90) context.addIssue({ code: 'custom', message: 'Launch event overall must be 84-90' });
+    const isArtworkSignature = card.setId === 'signature-series'
+      && card.visualMetadata.treatment === 'approved-local-asset';
+    if (isArtworkSignature ? card.overall < 92 || card.overall > 96 : card.overall < 84 || card.overall > 90) {
+      context.addIssue({
+        code: 'custom',
+        message: isArtworkSignature
+          ? 'Approved Signature artwork overall must be 92-96'
+          : 'Launch event overall must be 84-90',
+      });
+    }
     if (card.cardTier === 'starter' || card.cardTier === 'standard' || card.marketAvailability !== 'event-shop' || card.price <= 0 || card.isPermanent || !hasWindow) {
       context.addIssue({ code: 'custom', message: 'Event cards require a rotating Event Shop window and event tier' });
     }
@@ -212,6 +224,22 @@ function validateCardContract(card: z.infer<typeof cardVersionSchema>, context: 
   }
   if (card.visualMetadata.frame !== card.cardTier) {
     context.addIssue({ code: 'custom', message: 'Visual frame must match cardTier' });
+  }
+  const artworkMetadata = [
+    card.visualMetadata.artworkPosition,
+    card.visualMetadata.artworkOverall,
+    card.visualMetadata.artworkAttributes,
+  ];
+  const hasArtworkMetadata = artworkMetadata.some((value) => value !== undefined);
+  const hasCompleteArtworkMetadata = artworkMetadata.every((value) => value !== undefined);
+  if (hasArtworkMetadata && (!hasCompleteArtworkMetadata
+    || card.cardType !== 'event' || card.setId !== 'signature-series'
+    || card.visualMetadata.treatment !== 'approved-local-asset'
+    || card.visualMetadata.artworkOverall !== card.overall)) {
+    context.addIssue({
+      code: 'custom',
+      message: 'Artwork metadata must be complete, Signature-only, approved, and match the CardVersion OVR',
+    });
   }
 }
 
@@ -308,7 +336,9 @@ export const catalogSchema = z.object({
         });
       }
     }
-    if (card.cardType === 'event') {
+    if (card.cardType === 'event'
+      && !(card.setId === 'signature-series'
+        && card.visualMetadata.treatment === 'approved-local-asset')) {
       const base = baseByPlayer.get(card.playerId);
       if (!base || base.role !== card.role) {
         context.addIssue({ code: 'custom', message: `${card.id} requires a matching Base version` });

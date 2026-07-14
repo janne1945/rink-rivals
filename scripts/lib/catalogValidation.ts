@@ -209,11 +209,14 @@ export function validateGameCatalog(
     if (!base || base.role !== card.role || card.id !== `${card.playerId}-${card.setId}`) {
       throw new Error(`${card.id} violates stable event/base identity contracts`);
     }
-    const baseAttributes = base.attributes as unknown as Record<string, number>;
-    const eventAttributes = card.attributes as unknown as Record<string, number>;
-    const deltas = Object.keys(eventAttributes).map((key) => eventAttributes[key] - baseAttributes[key]);
-    if (!deltas.some((delta) => delta > 0) || !deltas.some((delta) => delta < 0)) {
-      throw new Error(`${card.id} must include both an Event strength and tradeoff`);
+    if (!(card.setId === 'signature-series'
+      && card.visualMetadata.treatment === 'approved-local-asset')) {
+      const baseAttributes = base.attributes as unknown as Record<string, number>;
+      const eventAttributes = card.attributes as unknown as Record<string, number>;
+      const deltas = Object.keys(eventAttributes).map((key) => eventAttributes[key] - baseAttributes[key]);
+      if (!deltas.some((delta) => delta > 0) || !deltas.some((delta) => delta < 0)) {
+        throw new Error(`${card.id} must include both an Event strength and tradeoff`);
+      }
     }
     const comparableBasePrice = Math.max(...baseCards
       .filter((candidate) => candidate.overall <= Math.min(86, card.overall))
@@ -224,7 +227,7 @@ export function validateGameCatalog(
   }
   const eventCoverageByTeam = Object.fromEntries(parsed.data.teams.map((team) => {
     const count = eventCards.filter((card) => card.teamId === team.id).length;
-    if (count < 2) throw new Error(`${team.id} requires at least two launch Event cards`);
+    if (count < 1) throw new Error(`${team.id} requires at least one launch Event card`);
     return [team.id, count];
   }));
 

@@ -2829,6 +2829,18 @@
       "sourceReference": "https://assets.nhle.com/mugs/nhl/20262027/BOS/8480280.png"
     },
     {
+      "playerId": "nhl-jeremy-swayman",
+      "variant": "signature",
+      "path": "/assets/players/nhl/jeremy-swayman/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 960,
+      "sha256": "9df9093bc0793bed62d10e7b58aae485f0c0aec9ec565aff52cdd2824f51ab23",
+      "sourceReference": "provided-signature-artwork:Jeremy-Swayman-Signature-Series.png",
+      "sourceSha256": "335e92b1e7d9d34a43157f23f1cfe50abfe02ac003edfc4783c992014de396ac"
+    },
+    {
       "playerId": "nhl-jesper-bratt",
       "variant": "base",
       "path": "/assets/players/nhl/jesper-bratt/base.webp",
@@ -5005,6 +5017,18 @@
       "height": 336,
       "sha256": "2b4ba89474f1924486205a46a8c71ac7b999c49f590a116930829a3bbb3b9fde",
       "sourceReference": "https://assets.nhle.com/mugs/nhl/20262027/BUF/8480839.png"
+    },
+    {
+      "playerId": "nhl-rasmus-dahlin",
+      "variant": "signature",
+      "path": "/assets/players/nhl/rasmus-dahlin/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 999,
+      "sha256": "15c8642030b6190a44058e25fcee8b096c2cf509a2f2d867acdc7fcabe74b218",
+      "sourceReference": "provided-signature-artwork:Rasmus-Dahlin-Signature-Series.png",
+      "sourceSha256": "85858a93904cfd75512f02957240c378e9a5493e79550dad29e72d421b3e6546"
     },
     {
       "playerId": "nhl-rasmus-ristolainen",
@@ -7813,6 +7837,18 @@
       "sourceReference": "https://assets.leaguestat.com/pwhl/240x240/12.jpg"
     },
     {
+      "playerId": "pwhl-megan-keller",
+      "variant": "signature",
+      "path": "/assets/players/pwhl/megan-keller/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 1080,
+      "sha256": "fc8d0bebda0bd268076f96311a2458cd191c960c9190e4bb141e15b5ae41e884",
+      "sourceReference": "provided-signature-artwork:Megan-Keller-Signature-Series.png",
+      "sourceSha256": "286c3a2da7b83270efab996a6593143250f05ce6302bf81ff690251e758744d1"
+    },
+    {
       "playerId": "pwhl-megan-warrener",
       "variant": "base",
       "path": "/assets/players/pwhl/megan-warrener/base.webp",
@@ -8055,6 +8091,18 @@
       "sourceReference": "https://assets.leaguestat.com/pwhl/240x240/211.jpg"
     },
     {
+      "playerId": "pwhl-raygan-kirk",
+      "variant": "signature",
+      "path": "/assets/players/pwhl/raygan-kirk/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 1080,
+      "sha256": "21d36ffeb9cf1a9c77cc30ffcb0763029e1b8fce51dde7403e7ff4d63ff81930",
+      "sourceReference": "provided-signature-artwork:45F63E8A-B1EA-4845-BDF0-028EEDF3FAFC.png",
+      "sourceSha256": "b3b7bfcefea3062ad3e0bca02bc4511df47522c362f47bd8aac1de83cd289bee"
+    },
+    {
       "playerId": "pwhl-rebecca-leslie",
       "variant": "base",
       "path": "/assets/players/pwhl/rebecca-leslie/base.webp",
@@ -8207,6 +8255,18 @@
       "height": 240,
       "sha256": "afef354e528b123f96f570a25d1ddc55cdc67effdb75c319111682f0cbc408b3",
       "sourceReference": "https://assets.leaguestat.com/pwhl/240x240/11.jpg"
+    },
+    {
+      "playerId": "pwhl-sophie-jaques",
+      "variant": "signature",
+      "path": "/assets/players/pwhl/sophie-jaques/signature.webp",
+      "mediaType": "image/webp",
+      "presentation": "full-card",
+      "width": 720,
+      "height": 1080,
+      "sha256": "9eda7dac90467386f3c4bc7eabb597fc9c38ceebf9b47c56768f4ddc5fac3fd8",
+      "sourceReference": "provided-signature-artwork:0BD0518B-3854-42D8-A53B-293A9B7DE96C.png",
+      "sourceSha256": "5cb787976527e7b148997478917a347a9d390f65ef859d3c67e564d629b70b46"
     },
     {
       "playerId": "pwhl-sophie-shirley",

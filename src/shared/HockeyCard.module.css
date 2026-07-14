@@ -98,26 +98,33 @@
   object-position: center;
 }
 
-/* Provided full-card art includes legacy values. The L-shaped top/side mask
-   covers baked OVR and stat blocks; the footer mask covers baked identity. */
-.artwork.fullCard::before {
-  top: 0;
-  left: 0;
-  width: 39%;
-  height: 82%;
-  background: linear-gradient(145deg, #040a14, #0c1e30);
-  box-shadow: 5px 6px 18px rgb(0 0 0 / 32%);
-  clip-path: polygon(0 0, 100% 0, 100% 38%, 62% 38%, 62% 100%, 0 100%);
+.card.fullArtwork {
+  aspect-ratio: 5 / 7;
+  padding: 0;
+  overflow: visible;
+  border-color: transparent;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  contain: layout style;
 }
 
+.card.fullArtwork::before,
+.card.fullArtwork::after,
+.artwork.fullCard::before,
 .artwork.fullCard::after {
-  inset: auto 0 0;
-  height: 21%;
-  background: linear-gradient(180deg, #07111e, #03070d 30%);
+  content: none;
 }
 
-.hasStatus .artwork.fullCard::after {
-  height: 29%;
+.fullArtwork .artwork.fullCard {
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+}
+
+.artwork.fullCard .image {
+  object-fit: contain;
+  object-position: center;
 }
 
 .interactive {

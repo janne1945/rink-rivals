@@ -5,6 +5,7 @@ import type {
   League,
   Player,
 } from '../../domain/cards/types';
+import { cardEligiblePositions, cardPrimaryPosition } from '../../domain/cards/catalog';
 import { EVENT_IDS, type EventId } from '../../domain/shop/eventCalendar';
 
 export type EventCardManifestEntry = CardVersion & {
@@ -29,8 +30,8 @@ export function buildEventCardManifest(
       ...card,
       eventId: card.setId as EventId,
       league: player.league,
-      position: player.primaryPosition,
-      eligiblePositions: player.eligiblePositions,
+      position: cardPrimaryPosition(card, player),
+      eligiblePositions: cardEligiblePositions(card, player),
     };
   });
 }

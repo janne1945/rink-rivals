@@ -65,17 +65,38 @@ describe('canonical player asset files', () => {
     }
   });
 
-  it('audits every provided Signature source without hiding frozen catalog mismatches', async () => {
+  it('audits all nine integrated Signature artworks and their exact CardVersion values', async () => {
     const auditManifest = await loadPlayerAssetManifest();
     const issues = await validateSignatureSources(gameCatalog, auditManifest);
     expect(issues.filter(({ severity }) => severity === 'error')).toEqual([]);
-    expect(issues.filter(({ code }) => code === 'unmatched-signature-source')).toHaveLength(5);
+    expect(issues.filter(({ code }) => code === 'unmatched-signature-source')).toHaveLength(0);
     expect(issues.filter(({ code }) => code === 'missing-signature-source-original')).toEqual([
       expect.objectContaining({
         path: 'assets/Event Cards/Signature Series/PWHL/MPP-Signature-Series.png',
         severity: 'warning',
       }),
     ]);
+  });
+
+  it('rejects artwork metadata that drifts from the visible OVR or labels', async () => {
+    const auditManifest = await loadPlayerAssetManifest();
+    const corruptedSources = signatureSources.map((source, index) => index === 0
+      ? {
+        ...source,
+        artwork: {
+          ...(source.artwork as object),
+          overall: 94,
+        },
+      }
+      : source);
+    const issues = await validateSignatureSources(gameCatalog, auditManifest, {
+      sources: corruptedSources,
+    });
+    expect(issues).toContainEqual(expect.objectContaining({
+      code: 'invalid-signature-source',
+      path: 'assets/Event Cards/Signature Series/NHL/Cale-Makar-Signature-Series.png',
+      message: expect.stringContaining('does not match its artwork ratings'),
+    }));
   });
 
   it('rejects duplicate player and source-path inventory entries', async () => {
@@ -119,11 +140,11 @@ describe('canonical player asset files', () => {
 
   it('rejects raw PNGs missing from inventory and canonical assets missing an integrated entry', async () => {
     const auditManifest = await loadPlayerAssetManifest();
-    const withoutUnmatchedRaw = signatureSources.filter(
+    const withoutIntegratedRaw = signatureSources.filter(
       ({ playerId }) => playerId !== 'nhl-jeremy-swayman',
     );
     const rawIssues = await validateSignatureSources(gameCatalog, auditManifest, {
-      sources: withoutUnmatchedRaw,
+      sources: withoutIntegratedRaw,
     });
     expect(rawIssues).toContainEqual(expect.objectContaining({
       code: 'uninventoried-signature-source',

@@ -54,6 +54,28 @@ describe('card asset resolver', () => {
       resolvedVariant: 'signature',
       presentation: 'full-card',
     });
+    const currentSignatureCards = gameCatalog.cards.filter((card) =>
+      card.setId === 'signature-series'
+      && Date.parse(card.availableTo ?? '') > Date.parse('2026-07-13T00:00:00.000Z'));
+    expect(currentSignatureCards).toHaveLength(9);
+    expect(currentSignatureCards.map(({ playerId }) => playerId).sort()).toEqual([
+      'nhl-cale-makar',
+      'nhl-connor-mcdavid',
+      'nhl-david-pastrnak',
+      'nhl-jeremy-swayman',
+      'nhl-rasmus-dahlin',
+      'pwhl-marie-philip-poulin',
+      'pwhl-megan-keller',
+      'pwhl-raygan-kirk',
+      'pwhl-sophie-jaques',
+    ]);
+    for (const card of currentSignatureCards) {
+      expect(resolved(card.id)).toMatchObject({
+        resolution: 'direct',
+        resolvedVariant: 'signature',
+        presentation: 'full-card',
+      });
+    }
   });
 
   it('aliases Starter, Reward, and non-Signature Events to one Base headshot', () => {
@@ -78,7 +100,7 @@ describe('card asset resolver', () => {
   });
 
   it('falls back safely when a direct Signature or Base headshot is unavailable', () => {
-    expect(resolved('nhl-drake-batherson-signature-series')).toMatchObject({
+    expect(resolved('pwhl-hilary-knight-signature-series')).toMatchObject({
       resolution: 'base-fallback',
       resolvedVariant: 'base',
     });

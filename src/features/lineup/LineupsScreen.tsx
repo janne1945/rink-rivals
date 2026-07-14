@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import type { CardCatalog } from "../../domain/cards";
+import { cardEligiblePositions, type CardCatalog } from "../../domain/cards";
 import type { OwnedCard } from "../../domain/economy";
 import {
   GAME_MODES,
@@ -61,7 +61,7 @@ export function LineupsScreen({ lineups, activeLineupIds, catalog, collection, o
     return Boolean(
       player
       && collection[card.id]
-      && player.eligiblePositions.includes(slot as never)
+      && cardEligiblePositions(card, player).includes(slot)
       && (!requiredLeague || player.league === requiredLeague),
     );
   }) : [];

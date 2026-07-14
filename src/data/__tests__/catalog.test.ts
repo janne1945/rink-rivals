@@ -31,7 +31,17 @@ describe('generated content foundation catalog', () => {
     expect(report.starterAverageRange).toEqual([72, 72]);
     expect(Math.abs(report.baseOverallAverage.NHL - report.baseOverallAverage.PWHL))
       .toBeLessThanOrEqual(1);
-    expect(Math.min(...Object.values(report.eventCoverageByTeam))).toBeGreaterThanOrEqual(2);
+    expect(Math.min(...Object.values(report.eventCoverageByTeam))).toBeGreaterThanOrEqual(1);
+    expect(Object.entries(report.eventCoverageByTeam)
+      .filter(([, count]) => count === 1)
+      .map(([teamId]) => teamId)
+      .sort()).toEqual([
+      'nhl-detroit-red-wings',
+      'nhl-ottawa-senators',
+      'nhl-pittsburgh-penguins',
+      'nhl-vegas-golden-knights',
+      'pwhl-las-vegas',
+    ]);
   });
 
   it('gives every CardVersion one valid asset reference and a direct or safe fallback image', () => {
@@ -130,8 +140,10 @@ describe('generated content foundation catalog', () => {
         expect(card.overall).toBeLessThanOrEqual(86);
         expect(card.marketAvailability).toBe('base-market');
       } else if (card.cardType === 'event') {
-        expect(card.overall).toBeGreaterThanOrEqual(84);
-        expect(card.overall).toBeLessThanOrEqual(90);
+        const isArtworkSignature = card.setId === 'signature-series'
+          && card.visualMetadata.treatment === 'approved-local-asset';
+        expect(card.overall).toBeGreaterThanOrEqual(isArtworkSignature ? 92 : 84);
+        expect(card.overall).toBeLessThanOrEqual(isArtworkSignature ? 96 : 90);
         expect(card.marketAvailability).toBe('event-shop');
         const comparableBasePrice = Math.max(...gameCatalog.cards
           .filter((candidate) => candidate.cardType === 'base'
@@ -145,7 +157,7 @@ describe('generated content foundation catalog', () => {
     }
   });
 
-  it('generates ten recurring Event sets with a real strength and tradeoff', () => {
+  it('generates ten recurring Event sets with profiled tradeoffs or exact Signature artwork values', () => {
     expect(eventCardManifest).toHaveLength(107);
     const baseByPlayer = new Map(gameCatalog.cards
       .filter((card) => card.cardType === 'base')
@@ -157,6 +169,13 @@ describe('generated content foundation catalog', () => {
       const base = baseByPlayer.get(card.playerId);
       expect(base).toBeDefined();
       expect(card.id).toBe(`${card.playerId}-${card.eventId}`);
+      if (card.eventId === 'signature-series'
+        && card.visualMetadata.treatment === 'approved-local-asset') {
+        expect(card.visualMetadata.artworkOverall).toBe(card.overall);
+        expect(card.visualMetadata.artworkPosition).toBeDefined();
+        expect(Object.keys(card.visualMetadata.artworkAttributes ?? {})).toHaveLength(5);
+        continue;
+      }
       const deltas = Object.entries(card.attributes).map(([key, value]) =>
         value - Number((base?.attributes as unknown as Record<string, number> | undefined)?.[key]));
       expect(deltas.some((delta) => delta > 0)).toBe(true);

@@ -62773,11 +62773,11 @@
       "setId": "signature-series",
       "cardType": "event",
       "cardTier": "signature",
-      "overall": 88,
+      "overall": 95,
       "abilities": [
         "signature series specialist"
       ],
-      "price": 12500,
+      "price": 23000,
       "marketAvailability": "event-shop",
       "availableFrom": "2026-01-01T00:00:00.000Z",
       "availableTo": "9999-12-31T23:59:59.999Z",
@@ -62786,18 +62786,27 @@
       "visualMetadata": {
         "treatment": "approved-local-asset",
         "accent": "#d4af37",
-        "frame": "signature"
+        "frame": "signature",
+        "artworkPosition": "RD",
+        "artworkOverall": 95,
+        "artworkAttributes": {
+          "SPD": 97,
+          "SHT": 92,
+          "PLY": 96,
+          "DEF": 97,
+          "CLT": 95
+        }
       },
       "role": "skater",
       "attributes": {
-        "speed": 88,
-        "shooting": 86,
-        "passing": 95,
-        "puckControl": 92,
-        "defense": 89,
-        "physicality": 84,
-        "hockeyIq": 92,
-        "clutch": 87
+        "speed": 97,
+        "shooting": 92,
+        "passing": 96,
+        "puckControl": 96,
+        "defense": 97,
+        "physicality": 97,
+        "hockeyIq": 96,
+        "clutch": 95
       }
     },
     {
@@ -63011,11 +63020,11 @@
       "setId": "signature-series",
       "cardType": "event",
       "cardTier": "signature",
-      "overall": 89,
+      "overall": 96,
       "abilities": [
         "signature series specialist"
       ],
-      "price": 14000,
+      "price": 24500,
       "marketAvailability": "event-shop",
       "availableFrom": "2026-01-01T00:00:00.000Z",
       "availableTo": "9999-12-31T23:59:59.999Z",
@@ -63024,18 +63033,27 @@
       "visualMetadata": {
         "treatment": "approved-local-asset",
         "accent": "#d4af37",
-        "frame": "signature"
+        "frame": "signature",
+        "artworkPosition": "C",
+        "artworkOverall": 96,
+        "artworkAttributes": {
+          "SPD": 99,
+          "SHT": 95,
+          "PLY": 98,
+          "DEF": 86,
+          "CLT": 97
+        }
       },
       "role": "skater",
       "attributes": {
-        "speed": 90,
-        "shooting": 90,
+        "speed": 99,
+        "shooting": 95,
         "passing": 98,
-        "puckControl": 94,
+        "puckControl": 98,
         "defense": 86,
-        "physicality": 77,
-        "hockeyIq": 95,
-        "clutch": 91
+        "physicality": 86,
+        "hockeyIq": 98,
+        "clutch": 97
       }
     },
     {
@@ -63147,11 +63165,11 @@
       "setId": "signature-series",
       "cardType": "event",
       "cardTier": "signature",
-      "overall": 90,
+      "overall": 94,
       "abilities": [
         "signature series specialist"
       ],
-      "price": 15500,
+      "price": 21500,
       "marketAvailability": "event-shop",
       "availableFrom": "2026-01-01T00:00:00.000Z",
       "availableTo": "9999-12-31T23:59:59.999Z",
@@ -63160,52 +63178,27 @@
       "visualMetadata": {
         "treatment": "approved-local-asset",
         "accent": "#d4af37",
-        "frame": "signature"
+        "frame": "signature",
+        "artworkPosition": "RW",
+        "artworkOverall": 94,
+        "artworkAttributes": {
+          "SPD": 93,
+          "SHT": 95,
+          "PLY": 94,
+          "DEF": 86,
+          "CLT": 92
+        }
       },
       "role": "skater",
       "attributes": {
-        "speed": 92,
-        "shooting": 91,
-        "passing": 96,
-        "puckControl": 97,
-        "defense": 87,
-        "physicality": 80,
+        "speed": 93,
+        "shooting": 95,
+        "passing": 94,
+        "puckControl": 94,
+        "defense": 86,
+        "physicality": 86,
         "hockeyIq": 94,
         "clutch": 92
-      }
-    },
-    {
-      "id": "nhl-drake-batherson-signature-series",
-      "playerId": "nhl-drake-batherson",
-      "teamId": "nhl-ottawa-senators",
-      "setId": "signature-series",
-      "cardType": "event",
-      "cardTier": "signature",
-      "overall": 87,
-      "abilities": [
-        "signature series specialist"
-      ],
-      "price": 11000,
-      "marketAvailability": "event-shop",
-      "availableFrom": "2026-01-01T00:00:00.000Z",
-      "availableTo": "9999-12-31T23:59:59.999Z",
-      "isPermanent": false,
-      "imageReference": "player-asset:nhl-drake-batherson/event/nhl-drake-batherson-signature-series",
-      "visualMetadata": {
-        "treatment": "neutral-placeholder",
-        "accent": "#d4af37",
-        "frame": "signature"
-      },
-      "role": "skater",
-      "attributes": {
-        "speed": 89,
-        "shooting": 94,
-        "passing": 86,
-        "puckControl": 91,
-        "defense": 80,
-        "physicality": 81,
-        "hockeyIq": 90,
-        "clutch": 88
       }
     },
     {
@@ -63311,40 +63304,6 @@
       }
     },
     {
-      "id": "nhl-dylan-larkin-signature-series",
-      "playerId": "nhl-dylan-larkin",
-      "teamId": "nhl-detroit-red-wings",
-      "setId": "signature-series",
-      "cardType": "event",
-      "cardTier": "signature",
-      "overall": 88,
-      "abilities": [
-        "signature series specialist"
-      ],
-      "price": 12500,
-      "marketAvailability": "event-shop",
-      "availableFrom": "2026-01-01T00:00:00.000Z",
-      "availableTo": "9999-12-31T23:59:59.999Z",
-      "isPermanent": false,
-      "imageReference": "player-asset:nhl-dylan-larkin/event/nhl-dylan-larkin-signature-series",
-      "visualMetadata": {
-        "treatment": "neutral-placeholder",
-        "accent": "#d4af37",
-        "frame": "signature"
-      },
-      "role": "skater",
-      "attributes": {
-        "speed": 90,
-        "shooting": 93,
-        "passing": 91,
-        "puckControl": 93,
-        "defense": 87,
-        "physicality": 79,
-        "hockeyIq": 92,
-        "clutch": 92
-      }
-    },
-    {
       "id": "nhl-elias-pettersson-8480012-frozen-frights",
       "playerId": "nhl-elias-pettersson-8480012",
       "teamId": "nhl-vancouver-canucks",
@@ -63444,40 +63403,6 @@
         "physicality": 88,
         "hockeyIq": 95,
         "clutch": 91
-      }
-    },
-    {
-      "id": "nhl-evgeni-malkin-signature-series",
-      "playerId": "nhl-evgeni-malkin",
-      "teamId": "nhl-pittsburgh-penguins",
-      "setId": "signature-series",
-      "cardType": "event",
-      "cardTier": "signature",
-      "overall": 89,
-      "abilities": [
-        "signature series specialist"
-      ],
-      "price": 14000,
-      "marketAvailability": "event-shop",
-      "availableFrom": "2026-01-01T00:00:00.000Z",
-      "availableTo": "9999-12-31T23:59:59.999Z",
-      "isPermanent": false,
-      "imageReference": "player-asset:nhl-evgeni-malkin/event/nhl-evgeni-malkin-signature-series",
-      "visualMetadata": {
-        "treatment": "neutral-placeholder",
-        "accent": "#d4af37",
-        "frame": "signature"
-      },
-      "role": "skater",
-      "attributes": {
-        "speed": 92,
-        "shooting": 89,
-        "passing": 95,
-        "puckControl": 93,
-        "defense": 86,
-        "physicality": 78,
-        "hockeyIq": 95,
-        "clutch": 88
       }
     },
     {
@@ -63682,6 +63607,49 @@
         "physicality": 86,
         "hockeyIq": 86,
         "clutch": 89
+      }
+    },
+    {
+      "id": "nhl-jeremy-swayman-signature-series",
+      "playerId": "nhl-jeremy-swayman",
+      "teamId": "nhl-boston-bruins",
+      "setId": "signature-series",
+      "cardType": "event",
+      "cardTier": "signature",
+      "overall": 92,
+      "abilities": [
+        "signature series specialist"
+      ],
+      "price": 18500,
+      "marketAvailability": "event-shop",
+      "availableFrom": "2026-01-01T00:00:00.000Z",
+      "availableTo": "9999-12-31T23:59:59.999Z",
+      "isPermanent": false,
+      "imageReference": "player-asset:nhl-jeremy-swayman/event/nhl-jeremy-swayman-signature-series",
+      "visualMetadata": {
+        "treatment": "approved-local-asset",
+        "accent": "#d4af37",
+        "frame": "signature",
+        "artworkPosition": "G",
+        "artworkOverall": 92,
+        "artworkAttributes": {
+          "HGH": 93,
+          "LOW": 92,
+          "QCK": 93,
+          "POS": 91,
+          "RBC": 91
+        }
+      },
+      "role": "goalie",
+      "attributes": {
+        "reflexes": 93,
+        "positioning": 91,
+        "glove": 93,
+        "blocker": 92,
+        "reboundControl": 91,
+        "puckHandling": 91,
+        "consistency": 91,
+        "clutch": 91
       }
     },
     {
@@ -64025,40 +63993,6 @@
       }
     },
     {
-      "id": "nhl-mark-stone-signature-series",
-      "playerId": "nhl-mark-stone",
-      "teamId": "nhl-vegas-golden-knights",
-      "setId": "signature-series",
-      "cardType": "event",
-      "cardTier": "signature",
-      "overall": 89,
-      "abilities": [
-        "signature series specialist"
-      ],
-      "price": 14000,
-      "marketAvailability": "event-shop",
-      "availableFrom": "2026-01-01T00:00:00.000Z",
-      "availableTo": "9999-12-31T23:59:59.999Z",
-      "isPermanent": false,
-      "imageReference": "player-asset:nhl-mark-stone/event/nhl-mark-stone-signature-series",
-      "visualMetadata": {
-        "treatment": "neutral-placeholder",
-        "accent": "#d4af37",
-        "frame": "signature"
-      },
-      "role": "skater",
-      "attributes": {
-        "speed": 95,
-        "shooting": 89,
-        "passing": 93,
-        "puckControl": 95,
-        "defense": 86,
-        "physicality": 79,
-        "hockeyIq": 93,
-        "clutch": 91
-      }
-    },
-    {
       "id": "nhl-matt-coronato-rising-stars",
       "playerId": "nhl-matt-coronato",
       "teamId": "nhl-calgary-flames",
@@ -64396,6 +64330,49 @@
         "physicality": 87,
         "hockeyIq": 93,
         "clutch": 88
+      }
+    },
+    {
+      "id": "nhl-rasmus-dahlin-signature-series",
+      "playerId": "nhl-rasmus-dahlin",
+      "teamId": "nhl-buffalo-sabres",
+      "setId": "signature-series",
+      "cardType": "event",
+      "cardTier": "signature",
+      "overall": 93,
+      "abilities": [
+        "signature series specialist"
+      ],
+      "price": 20000,
+      "marketAvailability": "event-shop",
+      "availableFrom": "2026-01-01T00:00:00.000Z",
+      "availableTo": "9999-12-31T23:59:59.999Z",
+      "isPermanent": false,
+      "imageReference": "player-asset:nhl-rasmus-dahlin/event/nhl-rasmus-dahlin-signature-series",
+      "visualMetadata": {
+        "treatment": "approved-local-asset",
+        "accent": "#d4af37",
+        "frame": "signature",
+        "artworkPosition": "RD",
+        "artworkOverall": 93,
+        "artworkAttributes": {
+          "SPD": 92,
+          "SHT": 91,
+          "PLY": 93,
+          "DEF": 94,
+          "CLT": 93
+        }
+      },
+      "role": "skater",
+      "attributes": {
+        "speed": 92,
+        "shooting": 91,
+        "passing": 93,
+        "puckControl": 93,
+        "defense": 94,
+        "physicality": 94,
+        "hockeyIq": 93,
+        "clutch": 93
       }
     },
     {
@@ -65283,40 +65260,6 @@
       }
     },
     {
-      "id": "pwhl-erin-ambrose-signature-series",
-      "playerId": "pwhl-erin-ambrose",
-      "teamId": "pwhl-las-vegas",
-      "setId": "signature-series",
-      "cardType": "event",
-      "cardTier": "signature",
-      "overall": 84,
-      "abilities": [
-        "signature series specialist"
-      ],
-      "price": 6500,
-      "marketAvailability": "event-shop",
-      "availableFrom": "2026-01-01T00:00:00.000Z",
-      "availableTo": "9999-12-31T23:59:59.999Z",
-      "isPermanent": false,
-      "imageReference": "player-asset:pwhl-erin-ambrose/event/pwhl-erin-ambrose-signature-series",
-      "visualMetadata": {
-        "treatment": "neutral-placeholder",
-        "accent": "#d4af37",
-        "frame": "signature"
-      },
-      "role": "skater",
-      "attributes": {
-        "speed": 84,
-        "shooting": 77,
-        "passing": 86,
-        "puckControl": 85,
-        "defense": 90,
-        "physicality": 84,
-        "hockeyIq": 90,
-        "clutch": 86
-      }
-    },
-    {
       "id": "pwhl-gwyneth-philips-record-breakers",
       "playerId": "pwhl-gwyneth-philips",
       "teamId": "pwhl-ottawa-charge",
@@ -65398,7 +65341,7 @@
       "price": 11000,
       "marketAvailability": "event-shop",
       "availableFrom": "2026-01-01T00:00:00.000Z",
-      "availableTo": "9999-12-31T23:59:59.999Z",
+      "availableTo": "2026-07-13T00:00:00.000Z",
       "isPermanent": false,
       "imageReference": "player-asset:pwhl-hilary-knight/event/pwhl-hilary-knight-signature-series",
       "visualMetadata": {
@@ -65561,11 +65504,11 @@
       "setId": "signature-series",
       "cardType": "event",
       "cardTier": "signature",
-      "overall": 89,
+      "overall": 96,
       "abilities": [
         "signature series specialist"
       ],
-      "price": 14000,
+      "price": 24500,
       "marketAvailability": "event-shop",
       "availableFrom": "2026-01-01T00:00:00.000Z",
       "availableTo": "9999-12-31T23:59:59.999Z",
@@ -65574,18 +65517,27 @@
       "visualMetadata": {
         "treatment": "approved-local-asset",
         "accent": "#d4af37",
-        "frame": "signature"
+        "frame": "signature",
+        "artworkPosition": "C",
+        "artworkOverall": 96,
+        "artworkAttributes": {
+          "SPD": 94,
+          "SHT": 93,
+          "PLY": 96,
+          "DEF": 92,
+          "CLT": 95
+        }
       },
       "role": "skater",
       "attributes": {
-        "speed": 87,
-        "shooting": 95,
-        "passing": 90,
-        "puckControl": 90,
-        "defense": 91,
-        "physicality": 89,
-        "hockeyIq": 89,
-        "clutch": 89
+        "speed": 94,
+        "shooting": 93,
+        "passing": 96,
+        "puckControl": 96,
+        "defense": 92,
+        "physicality": 92,
+        "hockeyIq": 96,
+        "clutch": 95
       }
     },
     {
@@ -65620,6 +65572,49 @@
         "physicality": 88,
         "hockeyIq": 90,
         "clutch": 87
+      }
+    },
+    {
+      "id": "pwhl-megan-keller-signature-series",
+      "playerId": "pwhl-megan-keller",
+      "teamId": "pwhl-boston-fleet",
+      "setId": "signature-series",
+      "cardType": "event",
+      "cardTier": "signature",
+      "overall": 94,
+      "abilities": [
+        "signature series specialist"
+      ],
+      "price": 21500,
+      "marketAvailability": "event-shop",
+      "availableFrom": "2026-01-01T00:00:00.000Z",
+      "availableTo": "9999-12-31T23:59:59.999Z",
+      "isPermanent": false,
+      "imageReference": "player-asset:pwhl-megan-keller/event/pwhl-megan-keller-signature-series",
+      "visualMetadata": {
+        "treatment": "approved-local-asset",
+        "accent": "#d4af37",
+        "frame": "signature",
+        "artworkPosition": "RD",
+        "artworkOverall": 94,
+        "artworkAttributes": {
+          "SPD": 92,
+          "SHT": 88,
+          "PLY": 91,
+          "DEF": 95,
+          "CLT": 93
+        }
+      },
+      "role": "skater",
+      "attributes": {
+        "speed": 92,
+        "shooting": 88,
+        "passing": 91,
+        "puckControl": 91,
+        "defense": 95,
+        "physicality": 95,
+        "hockeyIq": 91,
+        "clutch": 93
       }
     },
     {
@@ -65688,6 +65683,49 @@
         "physicality": 80,
         "hockeyIq": 87,
         "clutch": 85
+      }
+    },
+    {
+      "id": "pwhl-raygan-kirk-signature-series",
+      "playerId": "pwhl-raygan-kirk",
+      "teamId": "pwhl-toronto-sceptres",
+      "setId": "signature-series",
+      "cardType": "event",
+      "cardTier": "signature",
+      "overall": 92,
+      "abilities": [
+        "signature series specialist"
+      ],
+      "price": 18500,
+      "marketAvailability": "event-shop",
+      "availableFrom": "2026-01-01T00:00:00.000Z",
+      "availableTo": "9999-12-31T23:59:59.999Z",
+      "isPermanent": false,
+      "imageReference": "player-asset:pwhl-raygan-kirk/event/pwhl-raygan-kirk-signature-series",
+      "visualMetadata": {
+        "treatment": "approved-local-asset",
+        "accent": "#d4af37",
+        "frame": "signature",
+        "artworkPosition": "G",
+        "artworkOverall": 92,
+        "artworkAttributes": {
+          "HGH": 91,
+          "LOW": 92,
+          "QCK": 92,
+          "POS": 93,
+          "RBC": 90
+        }
+      },
+      "role": "goalie",
+      "attributes": {
+        "reflexes": 92,
+        "positioning": 93,
+        "glove": 91,
+        "blocker": 92,
+        "reboundControl": 90,
+        "puckHandling": 90,
+        "consistency": 93,
+        "clutch": 93
       }
     },
     {
@@ -65858,6 +65896,49 @@
         "physicality": 81,
         "hockeyIq": 88,
         "clutch": 91
+      }
+    },
+    {
+      "id": "pwhl-sophie-jaques-signature-series",
+      "playerId": "pwhl-sophie-jaques",
+      "teamId": "pwhl-vancouver-goldeneyes",
+      "setId": "signature-series",
+      "cardType": "event",
+      "cardTier": "signature",
+      "overall": 93,
+      "abilities": [
+        "signature series specialist"
+      ],
+      "price": 20000,
+      "marketAvailability": "event-shop",
+      "availableFrom": "2026-01-01T00:00:00.000Z",
+      "availableTo": "9999-12-31T23:59:59.999Z",
+      "isPermanent": false,
+      "imageReference": "player-asset:pwhl-sophie-jaques/event/pwhl-sophie-jaques-signature-series",
+      "visualMetadata": {
+        "treatment": "approved-local-asset",
+        "accent": "#d4af37",
+        "frame": "signature",
+        "artworkPosition": "RD",
+        "artworkOverall": 93,
+        "artworkAttributes": {
+          "SPD": 91,
+          "SHT": 87,
+          "PLY": 93,
+          "DEF": 94,
+          "CLT": 92
+        }
+      },
+      "role": "skater",
+      "attributes": {
+        "speed": 91,
+        "shooting": 87,
+        "passing": 93,
+        "puckControl": 93,
+        "defense": 94,
+        "physicality": 94,
+        "hockeyIq": 93,
+        "clutch": 92
       }
     },
     {

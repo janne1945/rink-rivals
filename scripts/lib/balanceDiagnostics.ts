@@ -887,16 +887,22 @@ export function runContentCoverageDiagnostics(catalog: CardCatalog): ContentCove
   }));
   const teamsWithStarter = teamIds.filter((teamId) => cardsByTeam[teamId].starter === 6).length;
   const teamsWithBase = teamIds.filter((teamId) => cardsByTeam[teamId].base >= 18).length;
-  const teamsWithEvent = teamIds.filter((teamId) => cardsByTeam[teamId].event >= 2).length;
+  const teamsWithEvent = teamIds.filter((teamId) => cardsByTeam[teamId].event >= 1).length;
   const warnings: string[] = [];
   for (const teamId of teamIds) {
     if (cardsByTeam[teamId].starter !== 6) warnings.push(`${teamId} must have exactly six Starter cards.`);
     if (cardsByTeam[teamId].base !== 18) warnings.push(`${teamId} must have exactly 18 Base cards.`);
-    if (cardsByTeam[teamId].event < 2) warnings.push(`${teamId} must have at least two Event cards.`);
+    if (cardsByTeam[teamId].event < 1) warnings.push(`${teamId} must have at least one Event card.`);
     if (byTeam[teamId] < 71 || byTeam[teamId] > 73) warnings.push(`${teamId} Starter average ${byTeam[teamId]} is outside 71-73.`);
   }
   if (baseCards.some(({ overall }) => overall < 68 || overall > 86)) warnings.push('Base cards must remain in the 68-86 range.');
-  if (eventCards.some(({ overall }) => overall < 84 || overall > 90)) warnings.push('Early Event cards must remain in the 84-90 range.');
+  if (eventCards.some((card) => {
+    const isArtworkSignature = card.setId === 'signature-series'
+      && card.visualMetadata.treatment === 'approved-local-asset';
+    return isArtworkSignature
+      ? card.overall < 92 || card.overall > 96
+      : card.overall < 84 || card.overall > 90;
+  })) warnings.push('Event cards must remain in their approved generic or Signature artwork OVR range.');
   for (const [position, count] of Object.entries(cardsByPrimaryPosition)) {
     if (count === 0) warnings.push(`No cards cover primary position ${position}.`);
   }

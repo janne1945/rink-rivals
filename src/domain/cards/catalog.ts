@@ -2,11 +2,31 @@ import type {
   CardCatalog,
   CardVersion,
   GoalieAttributes,
+  HockeyPosition,
   Player,
   ResolvedCard,
   SkaterAttributes,
 } from './types';
 import { expectedCardImageReference } from './assets';
+
+export function cardPrimaryPosition(card: CardVersion, player: Player): HockeyPosition {
+  return card.setId === 'signature-series'
+    && card.visualMetadata.treatment === 'approved-local-asset'
+    && card.visualMetadata.artworkPosition
+    ? card.visualMetadata.artworkPosition
+    : player.primaryPosition;
+}
+
+export function cardEligiblePositions(
+  card: CardVersion,
+  player: Player,
+): readonly HockeyPosition[] {
+  return card.setId === 'signature-series'
+    && card.visualMetadata.treatment === 'approved-local-asset'
+    && card.visualMetadata.artworkPosition
+    ? [card.visualMetadata.artworkPosition]
+    : player.eligiblePositions;
+}
 
 export type CatalogIssueCode =
   | 'duplicate-player-id'

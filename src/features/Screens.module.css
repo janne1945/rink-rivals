@@ -929,22 +929,23 @@
   position: relative;
   display: grid;
   min-width: 0;
+  grid-template-rows: auto minmax(48px, auto) 48px;
+  align-content: start;
   gap: 10px;
+  isolation: isolate;
 }
 
 .shopCardSpotlight {
-  padding: 8px;
-  border: 1px solid var(--gold-400);
-  border-radius: 20px;
   background: rgb(246 217 139 / 5%);
-  box-shadow: 0 14px 40px rgb(220 184 92 / 12%);
+  box-shadow:
+    0 0 0 1px var(--gold-400),
+    0 14px 40px rgb(220 184 92 / 12%);
 }
 
 .spotlightBadge {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 2;
+  display: inline-flex;
+  min-height: 22px;
+  align-items: center;
   padding: 5px 8px;
   border-radius: 999px;
   color: var(--ink-950);
@@ -955,27 +956,65 @@
   text-transform: uppercase;
 }
 
-.offerMeta {
+.offerDetails {
+  display: grid;
+  min-width: 0;
+  grid-template-rows: 24px minmax(24px, auto);
+  gap: 4px;
+}
+
+.offerBadgeRow {
   display: flex;
   min-width: 0;
+  min-height: 24px;
   align-items: center;
-  justify-content: space-between;
+}
+
+.offerMeta {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
   gap: 8px;
   color: var(--muted);
   font-size: 0.65rem;
 }
 
-.offerMeta s {
+.offerMeta > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.offerPrice {
+  display: grid;
+  min-width: 0;
+  justify-items: end;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.offerPrice strong {
+  color: var(--gold-300);
+  font-size: 0.68rem;
+}
+
+.offerPrice s {
   color: var(--danger);
+  font-size: 0.54rem;
 }
 
 .shopAction {
+  height: 48px;
   min-height: 44px;
+  padding: 6px 8px;
   border: 1px solid var(--line-strong);
   border-radius: 12px;
   color: var(--gold-300);
   background: rgb(246 217 139 / 7%);
   font-weight: 900;
+  line-height: 1.15;
   cursor: pointer;
 }
 

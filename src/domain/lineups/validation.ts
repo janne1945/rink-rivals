@@ -1,4 +1,4 @@
-import { indexCatalog } from '../cards/catalog';
+import { cardEligiblePositions, indexCatalog } from '../cards/catalog';
 import type { CardCatalog } from '../cards/types';
 import {
   LINEUP_SLOTS,
@@ -98,7 +98,7 @@ export function validateLineup(lineup: Lineup, catalog: CardCatalog): LineupVali
       continue;
     }
 
-    if (!player.eligiblePositions.some((position) => position === slot)) {
+    if (!cardEligiblePositions(card, player).some((position) => position === slot)) {
       issues.push({
         code: 'invalid-position',
         slot,

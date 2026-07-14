@@ -22,7 +22,7 @@ pnpm catalog:validate
 pnpm assets:sync
 pnpm assets:validate
 
-# Project the same validated catalog into the additive Supabase migration.
+# Verify the reviewed catalog correction against its applied Supabase migration.
 pnpm catalog:sql:write
 pnpm catalog:sql:check
 
@@ -44,6 +44,12 @@ only the audit record contains hashes and source provenance. The importer never
 changes player IDs, CardVersions, ratings, prices, or progression. See
 [`docs/asset-pipeline.md`](../docs/asset-pipeline.md) for the fallback contract
 and audited Signature source mismatches.
+
+`generate-supabase-catalog.ts` verifies the generated Signature sections against
+their applied migration. `catalog:sql:write` is intentionally a no-op while the
+projection matches. The content foundation, asset integration, and Signature
+correction migrations are SHA-256-locked and must never be regenerated from a
+newer catalog. Any later projection requires a new additive migration.
 
 ## Legacy CSV review-candidate tool
 

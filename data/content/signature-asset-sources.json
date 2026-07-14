@@ -10,7 +10,13 @@
       "sourceRetention": "retained-original",
       "status": "integrated",
       "cardVersionId": "nhl-cale-makar-signature-series",
-      "canonicalPath": "/assets/players/nhl/cale-makar/signature.webp"
+      "canonicalPath": "/assets/players/nhl/cale-makar/signature.webp",
+      "artwork": {
+        "role": "skater",
+        "position": "RD",
+        "overall": 95,
+        "displayedRatings": { "SPD": 97, "SHT": 92, "PLY": 96, "DEF": 97, "CLT": 95 }
+      }
     },
     {
       "playerId": "nhl-connor-mcdavid",
@@ -21,7 +27,13 @@
       "sourceRetention": "retained-original",
       "status": "integrated",
       "cardVersionId": "nhl-connor-mcdavid-signature-series",
-      "canonicalPath": "/assets/players/nhl/connor-mcdavid/signature.webp"
+      "canonicalPath": "/assets/players/nhl/connor-mcdavid/signature.webp",
+      "artwork": {
+        "role": "skater",
+        "position": "C",
+        "overall": 96,
+        "displayedRatings": { "SPD": 99, "SHT": 95, "PLY": 98, "DEF": 86, "CLT": 97 }
+      }
     },
     {
       "playerId": "nhl-david-pastrnak",
@@ -32,7 +44,13 @@
       "sourceRetention": "retained-original",
       "status": "integrated",
       "cardVersionId": "nhl-david-pastrnak-signature-series",
-      "canonicalPath": "/assets/players/nhl/david-pastrnak/signature.webp"
+      "canonicalPath": "/assets/players/nhl/david-pastrnak/signature.webp",
+      "artwork": {
+        "role": "skater",
+        "position": "RW",
+        "overall": 94,
+        "displayedRatings": { "SPD": 93, "SHT": 95, "PLY": 94, "DEF": 86, "CLT": 92 }
+      }
     },
     {
       "playerId": "nhl-jeremy-swayman",
@@ -41,9 +59,15 @@
       "sourceHeight": 1448,
       "sourceSha256": "335e92b1e7d9d34a43157f23f1cfe50abfe02ac003edfc4783c992014de396ac",
       "sourceRetention": "retained-original",
-      "status": "unmatched-card-version",
-      "cardVersionId": null,
-      "canonicalPath": null
+      "status": "integrated",
+      "cardVersionId": "nhl-jeremy-swayman-signature-series",
+      "canonicalPath": "/assets/players/nhl/jeremy-swayman/signature.webp",
+      "artwork": {
+        "role": "goalie",
+        "position": "G",
+        "overall": 92,
+        "displayedRatings": { "HGH": 93, "LOW": 92, "QCK": 93, "POS": 91, "RBC": 91 }
+      }
     },
     {
       "playerId": "nhl-rasmus-dahlin",
@@ -52,9 +76,15 @@
       "sourceHeight": 1477,
       "sourceSha256": "85858a93904cfd75512f02957240c378e9a5493e79550dad29e72d421b3e6546",
       "sourceRetention": "retained-original",
-      "status": "unmatched-card-version",
-      "cardVersionId": null,
-      "canonicalPath": null
+      "status": "integrated",
+      "cardVersionId": "nhl-rasmus-dahlin-signature-series",
+      "canonicalPath": "/assets/players/nhl/rasmus-dahlin/signature.webp",
+      "artwork": {
+        "role": "skater",
+        "position": "RD",
+        "overall": 93,
+        "displayedRatings": { "SPD": 92, "SHT": 91, "PLY": 93, "DEF": 94, "CLT": 93 }
+      }
     },
     {
       "playerId": "pwhl-marie-philip-poulin",
@@ -65,7 +95,13 @@
       "sourceRetention": "canonical-derivative-only",
       "status": "integrated",
       "cardVersionId": "pwhl-marie-philip-poulin-signature-series",
-      "canonicalPath": "/assets/players/pwhl/marie-philip-poulin/signature.webp"
+      "canonicalPath": "/assets/players/pwhl/marie-philip-poulin/signature.webp",
+      "artwork": {
+        "role": "skater",
+        "position": "C",
+        "overall": 96,
+        "displayedRatings": { "SPD": 94, "SHT": 93, "PLY": 96, "DEF": 92, "CLT": 95 }
+      }
     },
     {
       "playerId": "pwhl-megan-keller",
@@ -74,9 +110,15 @@
       "sourceHeight": 1536,
       "sourceSha256": "286c3a2da7b83270efab996a6593143250f05ce6302bf81ff690251e758744d1",
       "sourceRetention": "retained-original",
-      "status": "unmatched-card-version",
-      "cardVersionId": null,
-      "canonicalPath": null
+      "status": "integrated",
+      "cardVersionId": "pwhl-megan-keller-signature-series",
+      "canonicalPath": "/assets/players/pwhl/megan-keller/signature.webp",
+      "artwork": {
+        "role": "skater",
+        "position": "RD",
+        "overall": 94,
+        "displayedRatings": { "SPD": 92, "SHT": 88, "PLY": 91, "DEF": 95, "CLT": 93 }
+      }
     },
     {
       "playerId": "pwhl-raygan-kirk",
@@ -85,9 +127,15 @@
       "sourceHeight": 1536,
       "sourceSha256": "b3b7bfcefea3062ad3e0bca02bc4511df47522c362f47bd8aac1de83cd289bee",
       "sourceRetention": "retained-original",
-      "status": "unmatched-card-version",
-      "cardVersionId": null,
-      "canonicalPath": null
+      "status": "integrated",
+      "cardVersionId": "pwhl-raygan-kirk-signature-series",
+      "canonicalPath": "/assets/players/pwhl/raygan-kirk/signature.webp",
+      "artwork": {
+        "role": "goalie",
+        "position": "G",
+        "overall": 92,
+        "displayedRatings": { "HGH": 91, "LOW": 92, "QCK": 92, "POS": 93, "RBC": 90 }
+      }
     },
     {
       "playerId": "pwhl-sophie-jaques",
@@ -96,9 +144,15 @@
       "sourceHeight": 1536,
       "sourceSha256": "5cb787976527e7b148997478917a347a9d390f65ef859d3c67e564d629b70b46",
       "sourceRetention": "retained-original",
-      "status": "unmatched-card-version",
-      "cardVersionId": null,
-      "canonicalPath": null
+      "status": "integrated",
+      "cardVersionId": "pwhl-sophie-jaques-signature-series",
+      "canonicalPath": "/assets/players/pwhl/sophie-jaques/signature.webp",
+      "artwork": {
+        "role": "skater",
+        "position": "RD",
+        "overall": 93,
+        "displayedRatings": { "SPD": 91, "SHT": 87, "PLY": 93, "DEF": 94, "CLT": 92 }
+      }
     }
   ]
 }

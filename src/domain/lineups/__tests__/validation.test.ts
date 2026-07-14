@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { createTestCatalog, createTestLineup } from '../../battle/__tests__/fixtures';
+import { cardEligiblePositions } from '../../cards/catalog';
 import { resolveLineup, validateLineup } from '../validation';
 
 describe('lineup validation', () => {
@@ -60,6 +61,69 @@ describe('lineup validation', () => {
 
     expect(result.valid).toBe(false);
     expect(result.issues.filter(({ code }) => code === 'invalid-position')).toHaveLength(2);
+  });
+
+  it('uses an approved Signature artwork position for that CardVersion only', () => {
+    const catalog = createTestCatalog();
+    const cards = catalog.cards.map((card) => {
+      if (card.id === 'nhl-alpha-lw-card') {
+        return {
+          ...card,
+          setId: 'signature-series',
+          visualMetadata: {
+            ...card.visualMetadata,
+            treatment: 'approved-local-asset' as const,
+            artworkPosition: 'C' as const,
+          },
+        };
+      }
+      if (card.id === 'nhl-alpha-c-card') {
+        return {
+          ...card,
+          setId: 'signature-series',
+          visualMetadata: {
+            ...card.visualMetadata,
+            treatment: 'approved-local-asset' as const,
+            artworkPosition: 'LW' as const,
+          },
+        };
+      }
+      return card;
+    });
+    const lineup = createTestLineup('nhl-alpha', 'nhl-circuit');
+    const swapped = {
+      ...lineup,
+      slots: { ...lineup.slots, LW: lineup.slots.C, C: lineup.slots.LW },
+    };
+
+    expect(validateLineup(swapped, { ...catalog, cards }).valid).toBe(true);
+    expect(validateLineup(lineup, { ...catalog, cards }).issues).toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: 'invalid-position', slot: 'LW' })]),
+    );
+  });
+
+  it('does not widen an artwork position to the PlayerIdentity position set', () => {
+    const catalog = createTestCatalog();
+    const sourcePlayer = catalog.players.find(({ id }) => id === 'nhl-alpha-c-player');
+    if (!sourcePlayer || sourcePlayer.role !== 'skater') {
+      throw new Error('Expected the fixture center to be a skater.');
+    }
+    const player = {
+      ...sourcePlayer,
+      eligiblePositions: ['C', 'RW'] as const,
+    };
+    const card = {
+      ...catalog.cards.find(({ id }) => id === 'nhl-alpha-c-card')!,
+      setId: 'signature-series',
+      visualMetadata: {
+        treatment: 'approved-local-asset' as const,
+        accent: '#d4af37',
+        frame: 'signature' as const,
+        artworkPosition: 'C' as const,
+      },
+    };
+
+    expect(cardEligiblePositions(card, player)).toEqual(['C']);
   });
 
   it('rejects duplicate card assignments and unknown card IDs', () => {

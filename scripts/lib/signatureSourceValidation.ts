@@ -8,9 +8,17 @@ import sharp from 'sharp';
 import signatureSourcesJson from '../../data/content/signature-asset-sources.json';
 import type { PlayerAssetManifest } from '../../src/domain/cards/assets';
 import type { CardCatalog } from '../../src/domain/cards/types';
+import { priceForCard } from './ratingModel';
+import {
+  parseSignatureArtwork,
+  signatureArtworkAttributes,
+  type SignatureArtwork,
+} from './signatureArtwork';
 
 const REPOSITORY_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SIGNATURE_SOURCE_ROOT_PATH = 'assets/Event Cards/Signature Series';
+const ARCHIVED_SIGNATURE_CARD_ID = 'pwhl-hilary-knight-signature-series';
+const ARCHIVED_SIGNATURE_AVAILABLE_TO = '2026-07-13T00:00:00.000Z';
 
 export interface SignatureSourceEntry {
   readonly playerId: string;
@@ -22,6 +30,7 @@ export interface SignatureSourceEntry {
   readonly status: 'integrated' | 'unmatched-card-version';
   readonly cardVersionId: string | null;
   readonly canonicalPath: string | null;
+  readonly artwork: unknown;
 }
 
 export interface SignatureSourceValidationOptions {
@@ -104,6 +113,28 @@ function duplicateIssue(
   };
 }
 
+function recordsMatch(
+  left: Readonly<Record<string, number>> | undefined,
+  right: Readonly<Record<string, number>>,
+): boolean {
+  if (!left) return false;
+  const rightEntries = Object.entries(right);
+  return Object.keys(left).length === rightEntries.length
+    && rightEntries.every(([key, value]) => left[key] === value);
+}
+
+function signatureArtworkIssue(
+  source: SignatureSourceEntry,
+  message: string,
+): SignatureSourceIssue {
+  return {
+    severity: 'error',
+    code: 'invalid-signature-source',
+    path: source.sourcePath,
+    message,
+  };
+}
+
 async function auditRetainedOriginal(
   source: SignatureSourceEntry,
   sourceFile: string,
@@ -161,6 +192,15 @@ export async function validateSignatureSources(
   const integratedPlayerIds = new Set<string>();
 
   for (const source of sources) {
+    let artwork: SignatureArtwork | undefined;
+    try {
+      artwork = parseSignatureArtwork(source.artwork);
+    } catch (error) {
+      issues.push(signatureArtworkIssue(
+        source,
+        `Signature source ${source.playerId} has invalid artwork ratings: ${error instanceof Error ? error.message : String(error)}`,
+      ));
+    }
     if (playerIds.has(source.playerId)) {
       issues.push(duplicateIssue(source.sourcePath, 'playerId', source.playerId));
     }
@@ -267,16 +307,33 @@ export async function validateSignatureSources(
       integratedPlayerIds.add(source.playerId);
       const expectedPath = expectedCanonicalPath(source.playerId);
       const expectedSourceReference = `provided-signature-artwork:${basename(source.sourcePath)}`;
+      const player = catalog.players.find((candidate) => candidate.id === source.playerId);
+      const expectedAttributes = artwork
+        ? signatureArtworkAttributes(artwork) as unknown as Readonly<Record<string, number>>
+        : undefined;
       if (!matchingCard || !signatureAsset
         || source.canonicalPath !== expectedPath
         || signatureAsset.path !== source.canonicalPath
         || signatureAsset.sourceReference !== expectedSourceReference
-        || signatureAsset.sourceSha256 !== source.sourceSha256) {
+        || signatureAsset.sourceSha256 !== source.sourceSha256
+        || !artwork || player?.role !== artwork.role
+        || matchingCard.role !== artwork.role
+        || matchingCard.overall !== artwork.overall
+        || matchingCard.price !== priceForCard('event', artwork.overall)
+        || matchingCard.visualMetadata.treatment !== 'approved-local-asset'
+        || matchingCard.visualMetadata.artworkPosition !== artwork.position
+        || matchingCard.visualMetadata.artworkOverall !== artwork.overall
+        || !recordsMatch(matchingCard.visualMetadata.artworkAttributes, artwork.displayedRatings)
+        || !expectedAttributes
+        || !recordsMatch(
+          matchingCard.attributes as unknown as Readonly<Record<string, number>>,
+          expectedAttributes,
+        )) {
         issues.push({
           severity: 'error',
           code: 'invalid-signature-source',
           path: source.sourcePath,
-          message: `Integrated Signature source ${source.playerId} does not match its CardVersion, identity, and canonical manifest entry.`,
+          message: `Integrated Signature source ${source.playerId} does not match its artwork ratings, CardVersion, identity, and canonical manifest entry.`,
         });
       }
       continue;
@@ -308,6 +365,27 @@ export async function validateSignatureSources(
         message: `${source.playerId} has provided Signature source art but no frozen Signature CardVersion.`,
       });
     }
+  }
+
+  const signatureCards = catalog.cards.filter((card) =>
+    card.cardType === 'event' && card.setId === 'signature-series');
+  const integratedCardIds = new Set(sources
+    .filter(({ status }) => status === 'integrated')
+    .flatMap(({ cardVersionId }) => cardVersionId ? [cardVersionId] : []));
+  const archivedCards = signatureCards.filter(({ id }) => !integratedCardIds.has(id));
+  const archivedCard = archivedCards[0];
+  if (integratedCardIds.size !== 9 || signatureCards.length !== 10
+    || archivedCards.length !== 1
+    || archivedCard?.id !== ARCHIVED_SIGNATURE_CARD_ID
+    || archivedCard.availableTo !== ARCHIVED_SIGNATURE_AVAILABLE_TO
+    || archivedCard.marketAvailability !== 'event-shop'
+    || archivedCard.visualMetadata.treatment !== 'neutral-placeholder') {
+    issues.push({
+      severity: 'error',
+      code: 'invalid-signature-source',
+      path: 'signature-series',
+      message: 'Signature Series must contain nine integrated artwork CardVersions and one time-expired Hilary Knight archive CardVersion.',
+    });
   }
 
   for (const asset of manifest.assets.filter(({ variant }) => variant === 'signature')) {

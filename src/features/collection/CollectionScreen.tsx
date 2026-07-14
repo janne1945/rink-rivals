@@ -7,6 +7,7 @@ import {
 } from "../../components/catalogFilterModel";
 import {
   CARD_TYPES,
+  cardEligiblePositions,
   HOCKEY_POSITIONS,
   type ContentCatalog,
 } from "../../domain/cards";
@@ -40,7 +41,7 @@ export function CollectionScreen({ catalog, collection }: CollectionScreenProps)
       searchText: [player.name, team.name, team.abbreviation, player.nationality ?? "", card.setId, card.cardType].join(" "),
       league: player.league,
       teamId: card.teamId,
-      positions: player.eligiblePositions,
+      positions: cardEligiblePositions(card, player),
       cardType: card.cardType,
       setId: card.setId,
       overall: card.overall,

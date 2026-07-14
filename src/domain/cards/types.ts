@@ -118,6 +118,10 @@ export interface CardVisualMetadata {
   readonly treatment: 'neutral-placeholder' | 'approved-local-asset';
   readonly accent: string;
   readonly frame: CardTier;
+  /** Values printed into an approved full-card image and authoritative for that CardVersion. */
+  readonly artworkPosition?: HockeyPosition;
+  readonly artworkOverall?: number;
+  readonly artworkAttributes?: Readonly<Record<string, number>>;
 }
 
 interface CardVersionBase {

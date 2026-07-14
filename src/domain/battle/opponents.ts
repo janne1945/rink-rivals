@@ -55,7 +55,7 @@ export const AI_OPPONENTS: readonly AiOpponentDefinition[] = [
     LD: 'nhl-brandon-montour-base', RD: 'nhl-dougie-hamilton-base', G: 'nhl-darcy-kuemper-base',
   }),
   opponent('nhl-elite-summit-club', 'Summit Club', 'Top-end NHL talent that protects premium cards for premium moments.', 'nhl-circuit', 'elite', 3, { nickname: 'The Peak', playStyle: 'Elite transition skill and disciplined opportunity management.' }, {
-    LW: 'nhl-brady-tkachuk-frozen-frights', C: 'nhl-dylan-larkin-signature-series', RW: 'nhl-seth-jarvis-playoff-heroes',
+    LW: 'nhl-brady-tkachuk-frozen-frights', C: 'nhl-connor-bedard-rising-stars', RW: 'nhl-seth-jarvis-playoff-heroes',
     LD: 'nhl-adam-fox-franchise-icons', RD: 'nhl-cale-makar-signature-series', G: 'nhl-igor-shesterkin-frozen-frights',
   }),
   opponent('pwhl-rookie-lake-lights', 'Lake Lights', 'An energetic PWHL rival that attacks early and leaves openings late.', 'pwhl-circuit', 'rookie', 1, { nickname: 'The Sparks', playStyle: 'High energy with exploratory card choices.' }, {
@@ -79,7 +79,7 @@ export const AI_OPPONENTS: readonly AiOpponentDefinition[] = [
     LD: 'pwhl-erin-ambrose-base', RD: 'nhl-dougie-hamilton-base', G: 'pwhl-kristen-campbell-base',
   }),
   opponent('open-elite-northern-alliance', 'Northern Alliance', 'A mixed fantasy lineup assembled from the strongest complementary profiles.', 'open-ice', 'elite', 3, { nickname: 'The Alliance', playStyle: 'Elite complementary roles and near-optimal card timing.' }, {
-    LW: 'pwhl-alex-carpenter-franchise-icons', C: 'nhl-dylan-larkin-signature-series', RW: 'pwhl-sarah-fillier-franchise-icons',
+    LW: 'pwhl-alex-carpenter-franchise-icons', C: 'nhl-connor-bedard-rising-stars', RW: 'pwhl-sarah-fillier-franchise-icons',
     LD: 'nhl-adam-fox-franchise-icons', RD: 'pwhl-sophie-jaques-winter-classic', G: 'nhl-igor-shesterkin-frozen-frights',
   }),
 ];
