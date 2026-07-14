@@ -52,10 +52,7 @@ begin
   where catalog.card_type = 'event'
     and catalog.market_availability = 'event-shop'
     and candidate.at_time < catalog.available_to
-    and events.rotation_order = (((
-      floor(extract(epoch from (weeks.starts_utc - timestamp '2026-01-05 00:00:00')) / 604800)::bigint
-      % 10
-    ) + 10) % 10)::integer
+    and events.rotation_order = public.resolve_event_rotation_slot(candidate.at_time)
   order by candidate.at_time, catalog.card_id
   limit 1;
 

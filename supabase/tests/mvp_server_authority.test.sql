@@ -19,25 +19,26 @@ select is(
   'all six still-referenced legacy cards remain explicitly classified'
 );
 select is((select count(*)::integer from public.event_definitions), 10, 'all ten recurring events are configured');
+select is((select count(*)::integer from public.event_definitions where is_active), 10, 'all ten recurring events remain active');
 select is((select count(*)::integer from public.ai_opponents), 9, 'all mode and difficulty opponents are configured');
 select is(
-  (select count(*)::integer from public.current_market_offers('2026-07-06 12:00:00+00') where source = 'event_shop'),
+  (select count(*)::integer from public.current_market_offers('2026-07-14 12:00:00+00') where source = 'event_shop'),
   6,
-  'the active Playoff Heroes rotation exposes the configured six-card offer window'
+  'the launch Signature Series rotation exposes the configured six-card offer window'
 );
 select is(
   (
     select array_agg(card_id order by card_id)
-    from public.current_market_offers('2026-07-06 12:00:00+00')
+    from public.current_market_offers('2026-07-14 12:00:00+00')
     where source = 'event_shop'
   ),
   array[
-    'nhl-connor-mcdavid-playoff-heroes',
-    'nhl-mikko-rantanen-playoff-heroes',
-    'nhl-robert-thomas-playoff-heroes',
-    'nhl-seth-jarvis-playoff-heroes',
-    'pwhl-marie-philip-poulin-playoff-heroes',
-    'pwhl-rebecca-leslie-playoff-heroes'
+    'nhl-cale-makar-signature-series',
+    'nhl-connor-mcdavid-signature-series',
+    'nhl-drake-batherson-signature-series',
+    'nhl-dylan-larkin-signature-series',
+    'nhl-evgeni-malkin-signature-series',
+    'pwhl-erin-ambrose-signature-series'
   ]::text[],
   'the six-card event offer window is deterministic for a fixed server time'
 );
@@ -47,8 +48,11 @@ select ok(
       select
         events.id as event_id,
         (
-          timestamp '2026-01-05 12:00:00' +
-          (events.rotation_order + occurrences.occurrence_number * 10) * interval '7 days'
+          timestamp '2026-07-13 12:00:00' +
+          (
+            (((events.rotation_order - 1) % 10 + 10) % 10) +
+              occurrences.occurrence_number * 10
+          ) * interval '7 days'
         ) at time zone 'UTC' as at_time
       from public.event_definitions events
       cross join generate_series(0, 11) occurrences(occurrence_number)
@@ -75,13 +79,13 @@ select ok(
   'every active event card appears across recurring six-offer windows'
 );
 select is(
-  (select count(*)::integer from public.current_market_offers('2026-07-06 12:00:00+00') where placement = 'spotlight'),
+  (select count(*)::integer from public.current_market_offers('2026-07-14 12:00:00+00') where placement = 'spotlight'),
   1,
   'exactly one active event card receives the deterministic spotlight discount'
 );
 select ok(
   (select bool_and(price = greatest(1, round(regular_price * 0.85)::integer))
-   from public.current_market_offers('2026-07-06 12:00:00+00') where placement = 'spotlight'),
+   from public.current_market_offers('2026-07-14 12:00:00+00') where placement = 'spotlight'),
   'spotlight price is calculated by the server at 15 percent off'
 );
 

@@ -313,7 +313,7 @@ test.describe("Supabase account flow", () => {
     await installSupabaseMock(page, { authenticated: true, state });
     await page.goto("/market");
     await page.getByRole("button", { name: "Event Shop", pressed: false }).click();
-    await expect(page.getByRole("heading", { name: "Franchise Icons" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Signature Series" })).toBeVisible();
     state.eventOfferEndsAt = "2026-07-14T11:59:59.000Z";
     const eventOffers = page.getByRole("button", { name: /^Buy .+ for .+ Credits$/ });
     await expect(eventOffers).toHaveCount(6);
@@ -325,7 +325,7 @@ test.describe("Supabase account flow", () => {
     const pwhlOfferCount = await eventOffers.count();
     expect(pwhlOfferCount).toBeGreaterThan(0);
     expect(nhlOfferCount + pwhlOfferCount).toBe(6);
-    await expect(page.getByRole("heading", { name: "Franchise Icons" })).toBeVisible({ timeout: 9_000 });
+    await expect(page.getByRole("heading", { name: "Signature Series" })).toBeVisible({ timeout: 9_000 });
     await expect(eventOffers).toHaveCount(0, { timeout: 9_000 });
   });
 

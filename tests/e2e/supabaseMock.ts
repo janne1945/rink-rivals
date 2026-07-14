@@ -1,4 +1,5 @@
 import type { Page, Route } from "@playwright/test";
+import { createHash } from "node:crypto";
 
 import { selectAiOpponent, type AiDifficulty } from "../../src/domain/battle";
 import { validateLineup, type GameMode, type LineupSlot } from "../../src/domain/lineups";
@@ -7,7 +8,13 @@ import {
   getUtcWeekKey,
   RIVALRY_REWARD_CARD_IDS,
 } from "../../src/domain/progression";
-import { resolveEventCalendarRotation } from "../../src/domain/shop";
+import {
+  EVENT_CALENDAR,
+  EVENT_CALENDAR_ANCHOR,
+  getEventCalendarWeekIndex,
+  type EventCalendarRotation,
+  type MarketCard,
+} from "../../src/domain/shop";
 import { gameCatalog } from "./gameCatalogFixture";
 
 const projectRef = "zsyoxpirfxajkruqeqam";
@@ -15,9 +22,78 @@ const userId = "11111111-1111-4111-8111-111111111111";
 const starterLineupId = "33333333-3333-4333-8333-333333333333";
 const mockNow = "2026-07-14T12:00:00.000Z";
 const mockDate = new Date(mockNow);
+const weekInMs = 7 * 86_400_000;
+const signatureLaunchAnchor = Date.parse("2026-07-13T00:00:00.000Z");
 const mockDailyPeriodKey = getUtcDayKey(mockDate);
 const mockWeeklyPeriodKey = getUtcWeekKey(mockDate);
-const mockEventRotation = resolveEventCalendarRotation(gameCatalog.cards, new Date(mockNow));
+
+function positiveModulo(value: number, divisor: number): number {
+  return ((value % divisor) + divisor) % divisor;
+}
+
+/** Mirrors the server slot phase while retaining its existing offer cadence. */
+function resolveServerEventRotation(
+  cards: readonly MarketCard[],
+  at: Date,
+): EventCalendarRotation {
+  const timestamp = at.getTime();
+  if (!Number.isFinite(timestamp)) throw new TypeError("Supabase mock market date must be valid.");
+  const launchWeekIndex = Math.floor((timestamp - signatureLaunchAnchor) / weekInMs);
+  const event = EVENT_CALENDAR[positiveModulo(launchWeekIndex + 1, EVENT_CALENDAR.length)];
+  if (!event) throw new Error("Supabase mock could not resolve the active event.");
+  const marketWeekIndex = getEventCalendarWeekIndex(at);
+  const eventOccurrenceIndex = Math.floor(marketWeekIndex / event.rotation.recurrenceWeeks);
+  const eligibleCards = cards
+    .filter((card) => card.cardType === "event"
+      && card.marketAvailability === "event-shop"
+      && !card.isPermanent
+      && card.setId === event.id
+      && (card.availableFrom === undefined || Date.parse(card.availableFrom) <= timestamp)
+      && (card.availableTo === undefined || timestamp < Date.parse(card.availableTo)))
+    .sort((left, right) => {
+      const leftHash = createHash("md5").update(`rink-rivals:${event.id}:v1:${left.id}`).digest("hex");
+      const rightHash = createHash("md5").update(`rink-rivals:${event.id}:v1:${right.id}`).digest("hex");
+      return leftHash.localeCompare(rightHash) || left.id.localeCompare(right.id);
+    });
+  const offerCount = Math.min(event.rotation.offerCount, eligibleCards.length);
+  const selectionStart = eligibleCards.length === 0
+    ? 0
+    : positiveModulo(eventOccurrenceIndex * event.rotation.offerCount, eligibleCards.length);
+  const selectedCards = eligibleCards
+    .map((card, deckIndex) => ({
+      card,
+      selectionIndex: positiveModulo(deckIndex - selectionStart, eligibleCards.length),
+    }))
+    .filter(({ selectionIndex }) => selectionIndex < offerCount)
+    .sort((left, right) => left.selectionIndex - right.selectionIndex);
+  const spotlightOfferNumber = offerCount === 0
+    ? -1
+    : positiveModulo(marketWeekIndex, offerCount) + 1;
+  const startsAt = Date.parse(EVENT_CALENDAR_ANCHOR) + marketWeekIndex * weekInMs;
+  const rotationKey = `${event.id}:7d:${marketWeekIndex}`;
+  const shop = {
+    kind: "event_shop" as const,
+    eventSetId: event.id,
+    rotationKey,
+    startsAt: new Date(startsAt).toISOString(),
+    endsAt: new Date(startsAt + weekInMs).toISOString(),
+    offers: selectedCards.map(({ card, selectionIndex }) => {
+      const isSpotlight = selectionIndex + 1 === spotlightOfferNumber;
+      return {
+        id: `event-shop:${rotationKey}:${card.id}`,
+        cardId: card.id,
+        regularPrice: card.price,
+        price: isSpotlight ? Math.max(1, Math.round(card.price * 0.85)) : card.price,
+        placement: isSpotlight ? "spotlight" as const : "standard" as const,
+        source: "event_shop" as const,
+        currency: "credits" as const,
+      };
+    }),
+  };
+  return { event, weekIndex: marketWeekIndex, shop };
+}
+
+const mockEventRotation = resolveServerEventRotation(gameCatalog.cards, mockDate);
 const defaultStarterTeamId = gameCatalog.teams.find((team) => team.name === "Edmonton Oilers")?.id
   ?? gameCatalog.starterSquads[0]?.teamId
   ?? "";
@@ -391,7 +467,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
   const marketDate = new Date(marketNow);
   if (!Number.isFinite(marketDate.getTime())) throw new TypeError("Supabase mock marketNow must be a valid timestamp.");
   const marketEventRotation = options.marketNow
-    ? resolveEventCalendarRotation(gameCatalog.cards, marketDate)
+    ? resolveServerEventRotation(gameCatalog.cards, marketDate)
     : mockEventRotation;
   if (options.marketNow && !options.state) state.eventEndsAt = marketEventRotation.shop.endsAt;
   let dropClaimResponseOnce = options.claimResponseLossOnce ?? false;

@@ -196,7 +196,7 @@ test.describe("card asset integration", () => {
     const imageNetworkIssues = trackImageNetworkIssues(page);
     await installSupabaseMock(page, {
       authenticated: true,
-      marketNow: "2026-01-12T12:00:00.000Z",
+      marketNow: "2026-07-14T12:00:00.000Z",
     });
 
     await page.goto("/market");
