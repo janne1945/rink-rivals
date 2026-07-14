@@ -10,7 +10,8 @@ The project is a non-commercial prototype. It uses neutral team treatment and
 replaceable placeholder artwork; no official league, team, or player imagery is
 required at runtime.
 
-Live MVP: <https://rink-rivals.vercel.app>
+Published MVP: <https://rink-rivals.vercel.app>. The published site can lag the
+current checkout; this content-foundation change is not deployed automatically.
 
 ## Stack and architecture
 
@@ -47,7 +48,11 @@ cp .env.example .env
 
 Only `VITE_SUPABASE_URL` and a Supabase publishable key belong in the browser
 environment. Never place a secret key or `service_role` key in a `VITE_`
-variable.
+variable. `pnpm env:check` validates the deploy-time values without printing
+them. Vercel runs that gate through `pnpm build:deployment`; a missing or unsafe
+value stops the deployment build. A normal local `pnpm build` remains possible
+without credentials so the runtime configuration fallback can be tested: the
+app renders a visible diagnostic instead of a blank screen.
 
 ## Local development
 
@@ -76,10 +81,14 @@ Migration and security details are documented in
 
 ```sh
 pnpm build                 # TypeScript project check and production bundle
+pnpm env:check             # fail unless safe public Supabase values are present
+pnpm build:deployment      # environment gate followed by the production build
 pnpm test                  # Vitest unit, component, and adapter tests
 pnpm supabase:test         # pgTAP database/RLS/RPC suite (requires local Supabase)
 pnpm exec supabase test db --linked # same pgTAP suite on the linked project
 pnpm test:e2e              # Playwright on phone, landscape, tablet, and desktop
+pnpm test:e2e:production   # gated production build plus Playwright
+pnpm catalog:generate:check # generated catalog matches the approved snapshot
 pnpm catalog:validate      # catalog/schema/lineup/event validation
 pnpm catalog:sql:check     # generated SQL projection matches TypeScript data
 pnpm balance               # league, opponent, economy, and progression diagnostics
@@ -92,10 +101,18 @@ the actual Postgres functions and RLS policies.
 ## Catalog workflow
 
 The application never scrapes or downloads sports statistics at runtime.
-Development imports are manual, review-gated, and cannot overwrite the approved
-catalog directly. See [`scripts/README.md`](scripts/README.md) for the CSV
-format, overrides, validation rules, generated SQL projection, and balance
-workflow.
+The checked-in snapshot dated 2026-07-14 covers 32 NHL and 12 PWHL teams. The
+generated launch catalog contains 792 usable player identities (18 per team),
+two inactive legacy-retained identities, 264 Starter cards, 792 Base cards,
+107 Event cards, and 15 Reward cards. NHL and PWHL are normalized separately;
+all current teams have a six-card starter squad and at least two Event cards.
+
+Development imports are manual and review-gated. They cannot alter runtime data
+or the database by themselves. See [`scripts/README.md`](scripts/README.md) for
+the official snapshot workflow, deterministic generation, audited overrides,
+validation rules, generated SQL projection, and balance workflow. Source
+provenance, reviewed secondary-position evidence, and the 371 manual-review records are documented in
+[`docs/content-data-sources.md`](docs/content-data-sources.md).
 
 ## MVP data authority
 
@@ -117,5 +134,5 @@ currency, packs as a primary acquisition path, and full multi-line rosters.
 Those systems must not bypass the shared battle rules or server-owned economy
 when added later.
 
-See [`MVP_STATUS.md`](MVP_STATUS.md) for the verified completion state and
-remaining boundaries of the current checkout.
+See [`MVP_STATUS.md`](MVP_STATUS.md) for the verification evidence, checks that
+remain blocked in this environment, and release boundaries of this checkout.

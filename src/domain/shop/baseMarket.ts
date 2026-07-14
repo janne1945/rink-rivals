@@ -8,7 +8,10 @@ function assertValidPrice(card: MarketCard): void {
 
 /** Creates the permanent direct-purchase inventory from catalog projections. */
 export function createBaseMarket(cards: readonly MarketCard[]): BaseMarket {
-  const permanentCards = cards.filter((card) => card.isPermanent);
+  const permanentCards = cards.filter((card) =>
+    card.cardType === "base"
+      && card.marketAvailability === "base-market"
+      && card.isPermanent);
   const ids = new Set<string>();
 
   for (const card of permanentCards) {

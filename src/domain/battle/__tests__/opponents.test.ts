@@ -22,6 +22,20 @@ describe('curated AI opponents', () => {
     }
   });
 
+  it('uses six distinct active-roster identities and the intended progression card type', () => {
+    const cards = new Map(gameCatalog.cards.map((card) => [card.id, card]));
+    const players = new Map(gameCatalog.players.map((player) => [player.id, player]));
+    for (const opponent of AI_OPPONENTS) {
+      const lineupCards = Object.values(opponent.lineup.slots).map((cardId) => cards.get(cardId));
+      const lineupPlayers = lineupCards.map((card) => card ? players.get(card.playerId) : undefined);
+      expect(new Set(lineupCards.map((card) => card?.id)).size).toBe(6);
+      expect(new Set(lineupPlayers.map((player) => player?.id)).size).toBe(6);
+      expect(lineupCards.every((card) => card?.cardType === (opponent.difficulty === 'elite' ? 'event' : 'base'))).toBe(true);
+      expect(lineupPlayers.every((player) =>
+        player?.active === true && player.sourceMetadata.sourceRosterStatus === 'active-roster')).toBe(true);
+    }
+  });
+
   it('keeps circuit leagues pure and makes every Open Ice rival mixed', () => {
     const players = new Map(gameCatalog.players.map((player) => [player.id, player]));
     const cards = new Map(gameCatalog.cards.map((card) => [card.id, card]));

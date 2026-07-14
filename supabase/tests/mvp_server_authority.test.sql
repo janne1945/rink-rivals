@@ -8,13 +8,71 @@ select has_table('public', 'event_definitions', 'event definitions exist');
 select has_table('public', 'purchase_receipts', 'immutable purchase receipts exist');
 select has_table('public', 'reward_receipts', 'immutable reward receipts exist');
 select has_table('public', 'ai_opponents', 'curated server opponents exist');
-select is((select count(*)::integer from public.card_catalog), 106, 'all 106 catalog cards are projected server-side');
+select is(
+  (select count(*)::integer from public.card_catalog),
+  1178,
+  'all 1178 catalog cards are projected server-side'
+);
+select is(
+  (select count(*)::integer from public.card_catalog where legacy_retained),
+  6,
+  'all six still-referenced legacy cards remain explicitly classified'
+);
 select is((select count(*)::integer from public.event_definitions), 10, 'all ten recurring events are configured');
 select is((select count(*)::integer from public.ai_opponents), 9, 'all mode and difficulty opponents are configured');
 select is(
   (select count(*)::integer from public.current_market_offers('2026-07-06 12:00:00+00') where source = 'event_shop'),
   6,
-  'an active event exposes all six event cards'
+  'the active Playoff Heroes rotation exposes the configured six-card offer window'
+);
+select is(
+  (
+    select array_agg(card_id order by card_id)
+    from public.current_market_offers('2026-07-06 12:00:00+00')
+    where source = 'event_shop'
+  ),
+  array[
+    'nhl-connor-mcdavid-playoff-heroes',
+    'nhl-mikko-rantanen-playoff-heroes',
+    'nhl-robert-thomas-playoff-heroes',
+    'nhl-seth-jarvis-playoff-heroes',
+    'pwhl-marie-philip-poulin-playoff-heroes',
+    'pwhl-rebecca-leslie-playoff-heroes'
+  ]::text[],
+  'the six-card event offer window is deterministic for a fixed server time'
+);
+select ok(
+  not exists (
+    with event_times as (
+      select
+        events.id as event_id,
+        (
+          timestamp '2026-01-05 12:00:00' +
+          (events.rotation_order + occurrences.occurrence_number * 10) * interval '7 days'
+        ) at time zone 'UTC' as at_time
+      from public.event_definitions events
+      cross join generate_series(0, 11) occurrences(occurrence_number)
+      where events.is_active
+    ), offered as (
+      select event_times.event_id, count(distinct offers.card_id)::integer as offered_count
+      from event_times
+      cross join lateral public.current_market_offers(event_times.at_time) offers
+      where offers.source = 'event_shop' and offers.event_id = event_times.event_id
+      group by event_times.event_id
+    ), pools as (
+      select catalog.set_id as event_id, count(*)::integer as pool_count
+      from public.card_catalog catalog
+      where catalog.card_type = 'event'
+        and catalog.market_availability = 'event-shop'
+        and catalog.is_active
+      group by catalog.set_id
+    )
+    select 1
+    from pools
+    left join offered using (event_id)
+    where coalesce(offered.offered_count, 0) <> pools.pool_count
+  ),
+  'every active event card appears across recurring six-offer windows'
 );
 select is(
   (select count(*)::integer from public.current_market_offers('2026-07-06 12:00:00+00') where placement = 'spotlight'),
@@ -89,35 +147,80 @@ set local role authenticated;
 set local request.jwt.claim.sub = '77777777-7777-4777-8777-777777777777';
 set local request.jwt.claim.role = 'authenticated';
 select lives_ok(
-  $$select public.claim_starter_team('edmonton-oilers')$$,
+  $$select public.claim_starter_team('nhl-edmonton-oilers')$$,
   'starter team prepares owned cards and an active NHL lineup'
 );
 
+reset role;
+do $$
+declare
+  base_offer record;
+  different_offer_id text;
+  expensive_offer_id text;
+begin
+  select offers.offer_id, offers.card_id, offers.price
+    into base_offer
+  from public.current_market_offers(clock_timestamp()) offers
+  where offers.source = 'base_market'
+  order by offers.price, offers.card_id
+  limit 1;
+
+  select offers.offer_id into different_offer_id
+  from public.current_market_offers(clock_timestamp()) offers
+  where offers.source = 'base_market' and offers.card_id <> base_offer.card_id
+  order by offers.card_id
+  limit 1;
+
+  select offers.offer_id into expensive_offer_id
+  from public.current_market_offers(clock_timestamp()) offers
+  where offers.source = 'base_market' and offers.price > 1000 - base_offer.price
+  order by offers.price desc, offers.card_id
+  limit 1;
+
+  perform set_config('test.base_offer', base_offer.offer_id, true);
+  perform set_config('test.base_card', base_offer.card_id, true);
+  perform set_config('test.base_price', base_offer.price::text, true);
+  perform set_config('test.different_base_offer', different_offer_id, true);
+  perform set_config('test.expensive_base_offer', expensive_offer_id, true);
+end;
+$$;
+set local role authenticated;
+set local request.jwt.claim.sub = '77777777-7777-4777-8777-777777777777';
+set local request.jwt.claim.role = 'authenticated';
+
 select is(
-  public.purchase_card('base-purchase-once', 'base-market:nhl-rasmus-dahlin-base') ->> 'status',
+  public.purchase_card('base-purchase-once', current_setting('test.base_offer')) ->> 'status',
   'purchased',
   'a server-priced permanent card purchase succeeds'
 );
-select is((select credits from public.profiles where id = auth.uid()), 300, 'base purchase debits the authoritative 700 Credit price');
 select is(
-  (select quantity from public.user_cards where user_id = auth.uid() and card_id = 'nhl-rasmus-dahlin-base'),
-  2,
-  'purchasing an owned card increments quantity'
+  (select credits from public.profiles where id = auth.uid()),
+  1000 - current_setting('test.base_price')::integer,
+  'base purchase debits the authoritative catalog price'
 );
 select is(
-  public.purchase_card('base-purchase-once', 'base-market:nhl-rasmus-dahlin-base') ->> 'status',
+  (select quantity from public.user_cards where user_id = auth.uid() and card_id = current_setting('test.base_card')),
+  1,
+  'purchasing an unowned base card grants one copy'
+);
+select is(
+  public.purchase_card('base-purchase-once', current_setting('test.base_offer')) ->> 'status',
   'already-processed',
   'identical purchase retry returns its immutable receipt'
 );
-select is((select credits from public.profiles where id = auth.uid()), 300, 'purchase retry does not debit twice');
+select is(
+  (select credits from public.profiles where id = auth.uid()),
+  1000 - current_setting('test.base_price')::integer,
+  'purchase retry does not debit twice'
+);
 select is((select count(*)::integer from public.purchase_receipts where user_id = auth.uid()), 1, 'purchase retry creates one receipt');
 select throws_ok(
-  $$select public.purchase_card('base-purchase-once', 'base-market:nhl-artemi-panarin-base')$$,
+  $$select public.purchase_card('base-purchase-once', current_setting('test.different_base_offer'))$$,
   '22023', 'Purchase request id was already used for a different offer.',
   'purchase request id cannot be reused for a different offer'
 );
 select throws_ok(
-  $$select public.purchase_card('cannot-afford', 'base-market:nhl-connor-mcdavid-base')$$,
+  $$select public.purchase_card('cannot-afford', current_setting('test.expensive_base_offer'))$$,
   'P0001', 'Not enough Credits.',
   'purchase with insufficient Credits is rejected atomically'
 );
@@ -129,7 +232,7 @@ select throws_ok(
 );
 
 reset role;
-update public.profiles set credits = 5000 where id = '77777777-7777-4777-8777-777777777777';
+update public.profiles set credits = 20000 where id = '77777777-7777-4777-8777-777777777777';
 do $$
 begin
   perform set_config(
@@ -153,12 +256,51 @@ select is(
   'event purchase receipt records its server-side source'
 );
 
+reset role;
+do $$
+begin
+  perform set_config(
+    'test.nhl_lineup',
+    (
+      select jsonb_object_agg(slots.slot, slots.card_id order by slots.slot)::text
+      from public.lineup_slots slots
+      where slots.lineup_id = (
+        select profiles.starter_lineup_id
+        from public.profiles profiles
+        where profiles.id = '77777777-7777-4777-8777-777777777777'
+      )
+    ),
+    true
+  );
+  perform set_config(
+    'test.unowned_nhl_lw',
+    (
+      select catalog.card_id
+      from public.card_catalog catalog
+      left join public.user_cards owned
+        on owned.user_id = '77777777-7777-4777-8777-777777777777'
+       and owned.card_id = catalog.card_id
+      where catalog.league = 'NHL'
+        and catalog.is_active
+        and 'LW' = any(catalog.eligible_positions)
+        and owned.card_id is null
+      order by catalog.card_id
+      limit 1
+    ),
+    true
+  );
+end;
+$$;
+set local role authenticated;
+set local request.jwt.claim.sub = '77777777-7777-4777-8777-777777777777';
+set local request.jwt.claim.role = 'authenticated';
+
 select lives_ok(
   $$select public.save_lineup(
     null::uuid,
     'Validated NHL Six',
     'nhl-circuit',
-    '{"LW":"nhl-brady-tkachuk-base","C":"nhl-connor-mcdavid-base","RW":"nhl-mikko-rantanen-base","LD":"nhl-rasmus-dahlin-base","RD":"nhl-evan-bouchard-base","G":"nhl-igor-shesterkin-base"}'::jsonb
+    current_setting('test.nhl_lineup')::jsonb
   )$$,
   'a complete owned lineup is saved'
 );
@@ -167,7 +309,7 @@ select is(
     '99999999-9999-4999-8999-999999999999'::uuid,
     'Idempotent Create',
     'nhl-circuit',
-    '{"LW":"nhl-brady-tkachuk-base","C":"nhl-connor-mcdavid-base","RW":"nhl-mikko-rantanen-base","LD":"nhl-rasmus-dahlin-base","RD":"nhl-evan-bouchard-base","G":"nhl-igor-shesterkin-base"}'::jsonb
+    current_setting('test.nhl_lineup')::jsonb
   ) -> 'lineup' ->> 'id',
   '99999999-9999-4999-8999-999999999999',
   'a supplied client lineup id creates that exact row'
@@ -177,7 +319,7 @@ select is(
     '99999999-9999-4999-8999-999999999999'::uuid,
     'Idempotent Create Retry',
     'nhl-circuit',
-    '{"LW":"nhl-brady-tkachuk-base","C":"nhl-connor-mcdavid-base","RW":"nhl-mikko-rantanen-base","LD":"nhl-rasmus-dahlin-base","RD":"nhl-evan-bouchard-base","G":"nhl-igor-shesterkin-base"}'::jsonb
+    current_setting('test.nhl_lineup')::jsonb
   ) -> 'lineup' ->> 'id',
   '99999999-9999-4999-8999-999999999999',
   'retrying the supplied lineup id updates and returns the same row'
@@ -208,7 +350,7 @@ $$;
 select throws_ok(
   $$select public.save_lineup(
     null::uuid, 'Wrong League', 'pwhl-circuit',
-    '{"LW":"nhl-brady-tkachuk-base","C":"nhl-connor-mcdavid-base","RW":"nhl-mikko-rantanen-base","LD":"nhl-rasmus-dahlin-base","RD":"nhl-evan-bouchard-base","G":"nhl-igor-shesterkin-base"}'::jsonb
+    current_setting('test.nhl_lineup')::jsonb
   )$$,
   '22023', 'A card does not match the lineup league.',
   'lineup with the wrong league is rejected'
@@ -216,7 +358,7 @@ select throws_ok(
 select throws_ok(
   $$select public.save_lineup(
     null::uuid, 'Missing Goalie', 'nhl-circuit',
-    '{"LW":"nhl-brady-tkachuk-base","C":"nhl-connor-mcdavid-base","RW":"nhl-mikko-rantanen-base","LD":"nhl-rasmus-dahlin-base","RD":"nhl-evan-bouchard-base"}'::jsonb
+    current_setting('test.nhl_lineup')::jsonb - 'G'
   )$$,
   '22023', 'A lineup must contain exactly LW, C, RW, LD, RD, and G.',
   'lineup with a missing slot is rejected'
@@ -224,7 +366,11 @@ select throws_ok(
 select throws_ok(
   $$select public.save_lineup(
     null::uuid, 'Unowned Card', 'nhl-circuit',
-    '{"LW":"nhl-kirill-kaprizov-base","C":"nhl-connor-mcdavid-base","RW":"nhl-mikko-rantanen-base","LD":"nhl-rasmus-dahlin-base","RD":"nhl-evan-bouchard-base","G":"nhl-igor-shesterkin-base"}'::jsonb
+    jsonb_set(
+      current_setting('test.nhl_lineup')::jsonb,
+      '{LW}',
+      to_jsonb(current_setting('test.unowned_nhl_lw'))
+    )
   )$$,
   '42501', 'Lineup contains a card quantity the user does not own.',
   'lineup with an unowned card is rejected'
@@ -232,7 +378,11 @@ select throws_ok(
 select throws_ok(
   $$select public.save_lineup(
     null::uuid, 'Duplicate Card', 'nhl-circuit',
-    '{"LW":"nhl-brady-tkachuk-base","C":"nhl-connor-mcdavid-base","RW":"nhl-connor-mcdavid-base","LD":"nhl-rasmus-dahlin-base","RD":"nhl-evan-bouchard-base","G":"nhl-igor-shesterkin-base"}'::jsonb
+    jsonb_set(
+      current_setting('test.nhl_lineup')::jsonb,
+      '{RW}',
+      current_setting('test.nhl_lineup')::jsonb -> 'C'
+    )
   )$$,
   '22023', 'The same card version cannot fill multiple lineup slots.',
   'lineup cannot reuse one card version'
@@ -297,7 +447,7 @@ select throws_ok(
     current_setting('test.user_one_lineup_id')::uuid,
     'Foreign Rewrite',
     'nhl-circuit',
-    '{"LW":"nhl-brady-tkachuk-base","C":"nhl-connor-mcdavid-base","RW":"nhl-mikko-rantanen-base","LD":"nhl-rasmus-dahlin-base","RD":"nhl-evan-bouchard-base","G":"nhl-igor-shesterkin-base"}'::jsonb
+    current_setting('test.nhl_lineup')::jsonb
   )$$,
   '42501', 'Lineup id belongs to another user.',
   'a supplied lineup id owned by another user is rejected explicitly'

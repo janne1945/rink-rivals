@@ -2,13 +2,13 @@ import { createHash } from "node:crypto";
 import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-type ExpectedMigration = {
+type ImmutableMigration = {
   version: string;
   name: string;
   sha256: string;
 };
 
-const expectedMigrations: readonly ExpectedMigration[] = [
+const immutableBaselines: readonly ImmutableMigration[] = [
   {
     version: "20260713030446",
     name: "account_and_starter_team",
@@ -51,6 +51,13 @@ const expectedMigrations: readonly ExpectedMigration[] = [
   },
 ];
 
+const requiredAdditiveMigrations = [
+  {
+    version: "20260713223330",
+    name: "content_foundation",
+  },
+] as const;
+
 const knownDuplicateBodyGroups = new Set([
   [
     "20260713035355_fix_settle_match_parameter_resolution.sql",
@@ -67,19 +74,31 @@ const migrationPattern = /^(\d{14})_([a-z0-9_]+)\.sql$/;
 const actualFiles = readdirSync(migrationsDirectory)
   .filter((fileName) => fileName.endsWith(".sql"))
   .sort();
-const expectedFiles = expectedMigrations.map(
+const immutableFiles = immutableBaselines.map(
+  ({ version, name }) => `${version}_${name}.sql`,
+);
+const requiredAdditiveFiles = requiredAdditiveMigrations.map(
   ({ version, name }) => `${version}_${name}.sql`,
 );
 const errors: string[] = [];
 
-if (actualFiles.join("\n") !== expectedFiles.join("\n")) {
+if (
+  actualFiles.slice(0, immutableFiles.length).join("\n") !==
+  immutableFiles.join("\n")
+) {
   errors.push(
     [
-      "Migration version/name order differs from the reconciled history.",
-      `Expected:\n  ${expectedFiles.join("\n  ")}`,
-      `Actual:\n  ${actualFiles.join("\n  ")}`,
+      "The immutable reconciled migration baseline has version/name drift.",
+      `Expected baseline:\n  ${immutableFiles.join("\n  ")}`,
+      `Actual prefix:\n  ${actualFiles.slice(0, immutableFiles.length).join("\n  ")}`,
     ].join("\n"),
   );
+}
+
+for (const requiredFile of requiredAdditiveFiles) {
+  if (!actualFiles.includes(requiredFile)) {
+    errors.push(`Required additive migration is missing: ${requiredFile}`);
+  }
 }
 
 const versions = new Map<string, string[]>();
@@ -103,12 +122,25 @@ for (const fileName of actualFiles) {
   filesWithBody.push(fileName);
   filesByHash.set(hash, filesWithBody);
 
-  const expected = expectedMigrations.find(
+  const expected = immutableBaselines.find(
     (migration) => `${migration.version}_${migration.name}.sql` === fileName,
   );
   if (expected && hash !== expected.sha256) {
     errors.push(
       `SQL body drift for ${fileName}: expected ${expected.sha256}, got ${hash}`,
+    );
+  }
+}
+
+const lastImmutableVersion = immutableBaselines.at(-1)?.version;
+for (const fileName of actualFiles.slice(immutableFiles.length)) {
+  const match = migrationPattern.exec(fileName);
+  if (!match || !lastImmutableVersion) {
+    continue;
+  }
+  if (match[1] <= lastImmutableVersion) {
+    errors.push(
+      `Additive migration ${fileName} must sort after immutable baseline version ${lastImmutableVersion}.`,
     );
   }
 }
@@ -137,6 +169,6 @@ if (errors.length > 0) {
   process.exitCode = 1;
 } else {
   console.log(
-    `Migration history check passed for ${expectedMigrations.length} reconciled migrations.`,
+    `Migration history check passed: ${immutableBaselines.length} immutable baselines and ${actualFiles.length - immutableBaselines.length} additive migrations.`,
   );
 }

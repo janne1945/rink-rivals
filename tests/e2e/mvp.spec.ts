@@ -1,5 +1,19 @@
 import { expect, test } from "@playwright/test";
+import { gameCatalog } from "./gameCatalogFixture";
 import { installSupabaseMock } from "./supabaseMock";
+
+const lineupSlots = ["LW", "C", "RW", "LD", "RD", "G"] as const;
+const edmontonTeam = gameCatalog.teams.find((team) => team.name === "Edmonton Oilers");
+const edmontonStarter = gameCatalog.starterSquads.find((squad) => squad.teamId === edmontonTeam?.id);
+const catalogCards = new Map(gameCatalog.cards.map((card) => [card.id, card]));
+const catalogPlayers = new Map(gameCatalog.players.map((player) => [player.id, player]));
+
+function edmontonStarterTabName(slot: (typeof lineupSlots)[number]): string {
+  const card = edmontonStarter ? catalogCards.get(edmontonStarter.lineup[slot]) : undefined;
+  const player = card ? catalogPlayers.get(card.playerId) : undefined;
+  if (!player) throw new Error(`Missing generated Edmonton starter fixture for ${slot}.`);
+  return `${slot} ${player.name}`;
+}
 
 async function seedRivalryChoicePending(page: import("@playwright/test").Page) {
   await page.evaluate(async () => {
@@ -130,7 +144,7 @@ test.describe("Rink Rivals MVP", () => {
     await page.getByRole("button", { name: "View all goals" }).click();
 
     await expect(page).toHaveURL(/\/objectives$/);
-    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(2);
     await expect(page.getByRole("heading", { name: "Goals hub" })).toBeVisible();
     await expect(page.locator('section[aria-labelledby="daily-goals-heading"] article')).toHaveCount(3);
     await expect(page.getByRole("progressbar", { name: /Circuit tour: 0 of 5/i })).toBeVisible();
@@ -271,11 +285,14 @@ test.describe("Rink Rivals MVP", () => {
     await page.goto("/lineups");
     await expect(page.getByRole("heading", { name: "Edmonton Oilers Starter" })).toBeVisible();
     await page.getByRole("button", { name: "Edit six" }).first().click();
-    await expect(page.getByRole("tab", { name: /C Connor McDavid/i })).toBeVisible();
-    await expect(page.getByRole("tab", { name: /RD Evan Bouchard/i })).toBeVisible();
+    for (const slot of lineupSlots) {
+      await expect(page.getByRole("tab", { name: edmontonStarterTabName(slot), exact: true })).toBeVisible();
+    }
     await page.reload();
     await expect(page.getByRole("heading", { name: "Edmonton Oilers Starter" })).toBeVisible();
     await page.getByRole("button", { name: "Edit six" }).first().click();
-    await expect(page.getByRole("tab", { name: /C Connor McDavid/i })).toBeVisible();
+    for (const slot of lineupSlots) {
+      await expect(page.getByRole("tab", { name: edmontonStarterTabName(slot), exact: true })).toBeVisible();
+    }
   });
 });

@@ -24,6 +24,21 @@ VITE_SUPABASE_PUBLISHABLE_KEY=
 Never put a secret key, database password, or `service_role` key in a `VITE_`
 variable. `.env` and its local variants are ignored by Git.
 
+Before a Preview or Production web build, run:
+
+```sh
+pnpm env:check
+pnpm build:deployment
+```
+
+The gate accepts a Supabase `sb_publishable_` key or a legacy JWT whose embedded
+role is `anon`. It rejects missing values, the checked-in placeholders,
+insecure remote URLs, `sb_secret_` keys, `service_role` credentials, and
+arbitrary password-like values without printing the credential. `vercel.json`
+uses the gated build command. The normal local build deliberately remains
+available without credentials so the runtime fallback can be verified; an
+invalid configuration renders a visible error page instead of a blank shell.
+
 ## Local database
 
 A Docker-compatible container runtime is required by the Supabase CLI:
@@ -61,6 +76,55 @@ pgTAP suite remain required before treating the checked-in chain as a proven
 fresh-install history. Do not rename or edit an applied migration again; add a
 new migration for every future schema change.
 
+## Content Foundation migration
+
+`20260713223330_content_foundation.sql` was created with
+`pnpm exec supabase migration new content_foundation`. It is an additive
+projection of the validated TypeScript content catalog: team identities,
+player identities, card versions, event definitions, AI opponents, and starter
+squads are generated into marked SQL sections and drift-checked by
+`pnpm catalog:sql:check`. The eight reconciled baseline bodies remain immutable.
+The current projection contains 44 active teams, 794 player identities (792
+active plus two explicitly retained inactive identities), 1,178 card versions,
+and 44 six-card starter squads. Persisted source URLs are non-secret provenance
+only; transient upstream access parameters are removed before generation.
+
+The migration never truncates or deletes `card_catalog`, `user_cards`, lineup,
+purchase, reward, match-ticket, round, match, or progression data. Stable card
+IDs are upserted with the rebalanced definition. An older card omitted from the
+new projection is retained only when its player identity is known; it receives
+explicit `legacy-retained` provenance and is removed from the market when it no
+longer meets the new Base/Event contract. The only targeted delete replaces the
+superseded internal six-row Oilers starter configuration, not account-owned
+data.
+
+New accounts receive six team-specific Starter cards, one active circuit
+lineup, 1,000 Credits, and one immutable `starter_grant_receipts` row in a
+single account-locked transaction. A same-team retry returns that receipt's
+original lineup and cannot grant Credits again. Existing claimed accounts lack
+trustworthy per-card starter provenance, so the migration snapshots their
+ownership, Credits, starter lineup, and open tickets in
+`starter_migration_audits` with `manual-review` state. It does not remove cards,
+change Credits, replace lineups, or auto-migrate those accounts; a different
+team claim is refused until a separately reviewed migration path exists.
+
+Market membership is explicit: Starter and Reward cards never produce offers,
+Base cards are permanent positive-price offers, and Event cards require both
+the active event rotation and their UTC availability window. The internal
+resolver deterministically selects six cards from the active set, rotates that
+window across recurrences, and applies exactly one server-priced Spotlight.
+Apply this
+migration only after a fresh local reset, pgTAP, generated-projection check,
+linked dry run, backup/recovery confirmation, and manual review of the legacy
+audit report. No hosted apply is part of the local implementation step.
+
+Because none of those database execution steps was available in the content
+foundation checkout, `src/infrastructure/supabase/database.types.ts` still
+describes the currently applied pre-foundation schema. Do not hand-edit the
+generated contract or present speculative types as database evidence. Run
+`pnpm supabase:types` after the first verified reset or non-production apply,
+review the generated diff, and commit it with the matching release contract.
+
 For a linked non-production project, review the generated diff before applying
 it:
 
@@ -79,16 +143,18 @@ it preserves existing profiles, ownership, lineups, matches, and progression.
 - `profiles`: display name, Credits, onboarding, collection-match count
 - `user_cards`: owned quantities
 - `lineups` and `lineup_slots`: separate NHL, PWHL, and Open Ice sixes
-- `card_catalog`, `event_definitions`: server-side price and availability data
+- `teams`, `players`, `card_catalog`, `event_definitions`: server-side content identities, prices, and availability
+- `starter_grant_receipts`, `starter_migration_audits`: immutable new grants and preserved legacy review state
 - `purchase_receipts`, `reward_receipts`: immutable idempotency records
 - `ai_opponents`, `match_tickets`, `match_rounds`: server-owned match input and transcript
 - `matches`, `match_rewards`: immutable settlement and reward receipt
 - `objective_progress`, `rivalry_road_progress`: UTC progression periods
 
 The TypeScript catalog remains the presentation and pure-simulation dataset.
-The checked-in migration contains a generated projection of the same card IDs,
-attributes, prices, positions, leagues, and event sets. Catalog validation must
-pass before that projection is changed.
+The latest additive migration contains a generated projection of the same
+teams, player identities, starter squads, card IDs, attributes, prices,
+positions, leagues, and event sets. Catalog validation must pass before that
+projection is changed.
 
 ## Mutation RPCs
 
@@ -128,9 +194,10 @@ lineup save.
 ## RLS and grants
 
 RLS is enabled on all account and server tables. Authenticated users can select
-only their own account rows. Internal catalog and opponent tables are not
-directly exposed to browser roles; their required projections are returned by
-RPCs.
+only their own account rows. `teams` and `players` are explicit authenticated,
+read-only identity projections. `card_catalog`, event availability, prices,
+market offers, and opponents remain internal; browser-facing economy data is
+returned by RPCs and server prices are never accepted from the client.
 
 Browser roles have no direct `INSERT`, `UPDATE`, or `DELETE` grant on Credits,
 ownership, lineups, tickets, rounds, rewards, or progression. Profile updates
@@ -159,7 +226,7 @@ Database and web changes form one contract and should be released together:
 8. Re-run Supabase security and performance advisors.
 
 The completion release uses a second additive migration,
-`20260713201000_index_mvp_foreign_keys.sql`, for the covering indexes reported
+`20260713200520_index_mvp_foreign_keys.sql`, for the covering indexes reported
 by the performance advisor. Fresh indexes can remain in the advisor's
 "unused" informational list until representative hosted traffic exercises
 them.

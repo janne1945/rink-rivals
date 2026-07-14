@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 
 import type {
@@ -20,9 +20,13 @@ import type {
   StartMatchResult,
 } from "../../infrastructure/supabase";
 import { AuthScreen } from "./AuthScreen";
-import { StarterTeamScreen } from "./StarterTeamScreen";
 import type { AccountSnapshot } from "./types";
 import styles from "./AccountFlow.module.css";
+
+const StarterTeamScreen = lazy(async () => {
+  const module = await import("./StarterTeamScreen");
+  return { default: module.StarterTeamScreen };
+});
 
 interface AccountGateProps {
   readonly auth: AuthService;
@@ -150,8 +154,18 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     const market = state.account.market;
     const serverTime = Date.parse(market.serverTime);
     const eventEnd = market.currentEvent ? Date.parse(market.currentEvent.endsAt) : Number.NaN;
-    const remaining = Number.isFinite(serverTime) && Number.isFinite(eventEnd) ? eventEnd - serverTime : 60_000;
-    const refreshDelay = market.currentEvent ? Math.max(1_000, remaining + 500) : 60_000;
+    const offerEnds = market.offers
+      .flatMap((offer) => offer.endsAt === null ? [] : [Date.parse(offer.endsAt)])
+      .filter((endsAt) => Number.isFinite(endsAt) && (!Number.isFinite(serverTime) || endsAt > serverTime));
+    const nextBoundary = [eventEnd, ...offerEnds]
+      .filter((endsAt) => Number.isFinite(endsAt) && (!Number.isFinite(serverTime) || endsAt > serverTime))
+      .sort((left, right) => left - right)[0];
+    const boundaryDelay = Number.isFinite(serverTime) && nextBoundary !== undefined
+      ? nextBoundary - serverTime + 500
+      : 60_000;
+    // A one-minute ceiling also discovers offers whose individual window opens
+    // after the previous snapshot, without treating the browser clock as authoritative.
+    const refreshDelay = Math.max(1_000, Math.min(60_000, boundaryDelay));
     const refreshMarket = async () => {
       try {
         const refreshed = await repository.loadMarketState();
@@ -216,13 +230,13 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     }
   }
 
-  async function claimStarterTeam() {
+  async function claimStarterTeam(selectedTeamId: string) {
     if (state.status !== "onboarding") return;
     if (!beginAction()) return;
     const version = loadVersion.current;
     setActionError("");
     try {
-      await repository.claimStarterTeam("edmonton-oilers");
+      await repository.claimStarterTeam(selectedTeamId);
       if (version !== loadVersion.current) return;
       const profile = await repository.loadProfile();
       if (version !== loadVersion.current) return;
@@ -281,7 +295,11 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     return <AuthScreen busy={actionBusy} errorMessage={actionError} successMessage={actionSuccess} onLogin={login} onRegister={register} />;
   }
   if (state.status === "onboarding") {
-    return <StarterTeamScreen busy={actionBusy} errorMessage={actionError} displayName={state.account.profile.displayName} onClaim={claimStarterTeam} onLogout={logout} />;
+    return (
+      <Suspense fallback={<AccountLoading label="Preparing starter clubs…" />}>
+        <StarterTeamScreen busy={actionBusy} errorMessage={actionError} displayName={state.account.profile.displayName} onClaim={claimStarterTeam} onLogout={logout} />
+      </Suspense>
+    );
   }
   if (state.status === "error") {
     return (

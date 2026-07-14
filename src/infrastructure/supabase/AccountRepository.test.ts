@@ -69,6 +69,8 @@ describe("SupabaseAccountRepository RPC mapping", () => {
           price: 1_700,
           event_id: "signature-series",
           placement: "spotlight",
+          starts_at: "2026-07-10T00:00:00.000Z",
+          ends_at: "2026-07-17T00:00:00.000Z",
           owned_quantity: 2,
         }],
       },
@@ -77,7 +79,15 @@ describe("SupabaseAccountRepository RPC mapping", () => {
     await expect(repository.loadMarketState()).resolves.toMatchObject({
       serverTime: "2026-07-13T12:00:00.000Z",
       currentEvent: { id: "signature-series", visualMetadata: { accent: "gold" } },
-      offers: [{ id: "event:signature:card-1", price: 1_700, regularPrice: 2_000, placement: "spotlight", ownedQuantity: 2 }],
+      offers: [{
+        id: "event:signature:card-1",
+        price: 1_700,
+        regularPrice: 2_000,
+        placement: "spotlight",
+        startsAt: "2026-07-10T00:00:00.000Z",
+        endsAt: "2026-07-17T00:00:00.000Z",
+        ownedQuantity: 2,
+      }],
     });
     expect(rpc).toHaveBeenCalledWith("get_market_state", undefined);
   });
@@ -192,6 +202,29 @@ describe("SupabaseAccountRepository RPC mapping", () => {
       offers: [{ ...market.offers[0], source: "base_market", placement: "mystery" }],
     } }).repository;
     await expect(invalidPlacement.loadMarketState()).rejects.toThrow(/offer placement/i);
+  });
+
+  it("rejects an event offer without a valid server window", async () => {
+    const { repository } = repositoryWithRpc({
+      get_market_state: {
+        server_time: "2026-07-13T12:00:00.000Z",
+        current_event: null,
+        offers: [{
+          offer_id: "event:invalid-window",
+          card_id: "card",
+          source: "event_shop",
+          regular_price: 2_000,
+          price: 1_700,
+          event_id: "signature-series",
+          placement: "standard",
+          starts_at: "2026-07-17T00:00:00.000Z",
+          ends_at: "2026-07-10T00:00:00.000Z",
+          owned_quantity: 0,
+        }],
+      },
+    });
+
+    await expect(repository.loadMarketState()).rejects.toThrow(/offer window/i);
   });
 
   it("rejects malformed resumed rounds and settlement numbers", async () => {

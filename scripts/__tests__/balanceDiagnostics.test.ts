@@ -14,12 +14,16 @@ describe('balance diagnostics', () => {
     expect(first.wins.NHL + first.wins.PWHL + first.wins.tie).toBe(first.matches);
     expect(first.averageBaseOverall.NHL).toBeGreaterThan(0);
     expect(first.averageBaseOverall.PWHL).toBeGreaterThan(0);
-    expect(Object.keys(first.situationResults)).toContain('goalie-showdown');
+    expect(Object.keys(first.situationResults).sort()).toEqual([
+      'transition-rush', 'cycle-pressure', 'blue-line-command', 'late-game-shift', 'crease-under-fire',
+    ].sort());
     expect(first.ai.simulationPolicy.version).toBe('server-authority-v1');
     expect(first.ai.simulationPolicy.situationIds).toEqual([
       'transition-rush', 'cycle-pressure', 'blue-line-command', 'late-game-shift', 'crease-under-fire',
     ]);
+    expect(first.ai.scenarios['open-ice']['average-starter'].rookie.matches).toBe(20);
     expect(first.economy.prices.typicalEvent).toBeGreaterThan(first.economy.prices.typicalBase);
+    expect(first.content.coverage.teams).toBe(44);
   });
 
   it('passes a mass simulation with ordered AI tiers and plausible economy loops', () => {
@@ -28,9 +32,22 @@ describe('balance diagnostics', () => {
     expect(() => assertBalanceReport(report)).not.toThrow();
     expect(report.leagueWinRateGap).toBeLessThanOrEqual(0.05);
     expect(Object.values(report.ai.monotonicByMode).every(Boolean)).toBe(true);
-    expect(report.ai.totalMatches).toBe(9_000);
+    expect(Object.values(report.ai.progressionOrderedByMode).every(Boolean)).toBe(true);
+    expect(report.ai.totalMatches).toBe(36_000);
+    for (const mode of ['nhl-circuit', 'pwhl-circuit', 'open-ice'] as const) {
+      const scenarios = report.ai.scenarios[mode];
+      expect(scenarios['average-starter'].rookie.winRates.player).toBeGreaterThanOrEqual(0.45);
+      expect(scenarios['average-starter'].rookie.winRates.player).toBeLessThanOrEqual(0.60);
+      expect(scenarios['average-starter'].pro.winRates.player).toBeLessThanOrEqual(0.40);
+      expect(scenarios['good-base'].pro.winRates.player).toBeGreaterThanOrEqual(0.40);
+      expect(scenarios['good-base'].pro.winRates.player).toBeLessThanOrEqual(0.60);
+      expect(scenarios['strong-base-event'].elite.winRates.player).toBeGreaterThanOrEqual(0.30);
+      expect(scenarios['strong-base-event'].elite.winRates.player).toBeLessThanOrEqual(0.70);
+    }
     expect(report.economy.loopChecks.rewardOrderValid).toBe(true);
     expect(report.economy.loopChecks.pricesExceedSingleMatchRewards).toBe(true);
+    expect(report.economy.loopChecks.eventPricesExceedComparableBase).toBe(true);
+    expect(report.economy.loopChecks.priceCurveMonotonic).toBe(true);
     expect(report.economy.loopChecks.objectivesArePeriodBounded).toBe(true);
     expect(report.economy.loopChecks.positiveLossRewardsRequireAuthoritativeMatches).toBe(true);
     expect(report.economy.loopChecks.settlementReplayRewardStable).toBe(true);
@@ -45,6 +62,15 @@ describe('balance diagnostics', () => {
       objectiveDefinitions: 4,
       rivalrySteps: 3,
     });
+    expect(report.content.starterOverall).toMatchObject({ average: 72, minimum: 68, maximum: 76 });
+    expect(report.content.coverage).toMatchObject({
+      teams: 44,
+      teamsWithStarter: 44,
+      teamsWithBase: 44,
+      teamsWithEvent: 44,
+    });
+    expect(Object.values(report.content.cardsByPrimaryPosition).every((count) => count > 0)).toBe(true);
+    expect(Object.keys(report.content.coverage.events)).toHaveLength(10);
     expect(report.issues).toEqual([]);
   });
 

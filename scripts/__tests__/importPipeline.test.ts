@@ -71,8 +71,28 @@ describe('stats import pipeline', () => {
     });
     expect(candidate.report.approvalStatus).toBe('REQUIRES_MANUAL_REVIEW');
     expect(candidate.catalog.players).toHaveLength(2);
+    expect(candidate.catalog.metadata.snapshotDate).toBe('2026-07-13');
+    expect(candidate.catalog.players.every(({ sourceMetadata }) =>
+      sourceMetadata.snapshotDate === '2026-07-13')).toBe(true);
+    expect(candidate.catalog.teams.every(({ sourceMetadata }) =>
+      sourceMetadata.snapshotDate === '2026-07-13')).toBe(true);
     expect(candidate.catalog.cards.find(({ playerId }) => playerId === 'nhl-alpha')?.overall)
       .toBeGreaterThan(candidate.catalog.cards.find(({ playerId }) => playerId === 'nhl-beta')?.overall ?? 99);
+  });
+
+  it('accepts an explicit reviewed snapshot date and rejects impossible dates', () => {
+    const candidate = buildImportCandidate(rows(), {
+      seasons,
+      generatedAt: '2030-03-04T12:30:00.000Z',
+      snapshotDate: '2030-03-01',
+    });
+    expect(candidate.catalog.metadata.snapshotDate).toBe('2030-03-01');
+
+    expect(() => buildImportCandidate(rows(), {
+      seasons,
+      generatedAt: '2030-03-04T12:30:00.000Z',
+      snapshotDate: '2030-02-30',
+    })).toThrow(/Snapshot date/);
   });
 
   it('renormalizes missing-season weights and preserves an audit trail for overrides', () => {
@@ -87,7 +107,7 @@ describe('stats import pipeline', () => {
       playerId: 'nhl-alpha',
       attribute: 'overall',
       sourceValue: sourceValue ?? 0,
-      replacementValue: Math.min(99, (sourceValue ?? 98) + 1),
+      replacementValue: Math.min(86, (sourceValue ?? 85) + 1),
       reason: 'Verified correction for a missing source statistic.',
     };
     const candidate = buildImportCandidate(reducedRows, { seasons, overrides: [override] });

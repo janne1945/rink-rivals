@@ -815,6 +815,35 @@
   text-align: center;
 }
 
+.loadMoreRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.loadMoreRow p {
+  margin: 0;
+}
+
+.loadMoreRow button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--gold-300);
+  background: rgb(246 217 139 / 7%);
+  font: inherit;
+  font-weight: 900;
+}
+
+.loadMoreRow button:focus-visible {
+  outline: 3px solid rgb(246 217 139 / 20%);
+  outline-offset: 3px;
+}
+
 .marketTabs {
   display: flex;
   gap: 6px;
@@ -877,7 +906,7 @@
 }
 
 .marketTabs button {
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 15px;
   border-radius: 999px;
   color: var(--muted);

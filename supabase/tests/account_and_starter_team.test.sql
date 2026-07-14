@@ -34,11 +34,11 @@ set local request.jwt.claim.sub = '11111111-1111-4111-8111-111111111111';
 set local request.jwt.claim.role = 'authenticated';
 
 select lives_ok(
-  $$select public.claim_starter_team('edmonton-oilers')$$,
+  $$select public.claim_starter_team('nhl-edmonton-oilers')$$,
   'first starter claim succeeds'
 );
 select lives_ok(
-  $$select public.claim_starter_team('edmonton-oilers')$$,
+  $$select public.claim_starter_team('nhl-edmonton-oilers')$$,
   'identical starter claim retry succeeds idempotently'
 );
 select is((select credits from public.profiles where id = auth.uid()), 1000, 'claim awards 1000 credits');

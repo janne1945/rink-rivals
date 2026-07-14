@@ -11,6 +11,10 @@ import { parseCatalog, type Catalog } from '../../src/data/catalogSchema';
 import type { CsvRecord } from './csv';
 
 const numericField = z.coerce.number().finite().nonnegative();
+const snapshotDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value) => {
+  const midnight = `${value}T00:00:00.000Z`;
+  return !Number.isNaN(Date.parse(midnight)) && new Date(midnight).toISOString() === midnight;
+}, 'Snapshot date must be a real UTC calendar date');
 
 export const statRowSchema = z
   .object({
@@ -104,6 +108,7 @@ export interface ImportOptions {
   readonly seasons: readonly [string, string, string];
   readonly overrides?: readonly RatingOverride[];
   readonly generatedAt?: string;
+  readonly snapshotDate?: string;
 }
 
 export interface ImportReport {
@@ -122,6 +127,11 @@ export interface ImportCandidate {
 }
 
 type MetricMap = Readonly<Record<string, number>>;
+
+function stableSlug(value: string): string {
+  return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
 
 const proxyDefinitions = {
   speed: 'weighted points/game and shots/game proxy; official box scores do not directly measure skating speed',
@@ -300,6 +310,8 @@ export function buildImportCandidate(
   if (new Set(options.seasons).size !== 3) {
     throw new Error('Exactly three distinct seasons are required');
   }
+  const generatedAt = z.string().datetime().parse(options.generatedAt ?? new Date().toISOString());
+  const snapshotDate = snapshotDateSchema.parse(options.snapshotDate ?? generatedAt.slice(0, 10));
 
   const seasonWeights = { [oldest]: 0.1, [middle]: 0.3, [newest]: 0.6 };
   const unknownSeasons = [...new Set(inputRows.map((row) => row.season))].filter(
@@ -350,19 +362,35 @@ export function buildImportCandidate(
     );
 
     const attributeValues = Object.values(attributes);
-    const overall = Math.round(
+    const rawOverall = Math.round(
       attributeValues.reduce((sum, value) => sum + value, 0) / attributeValues.length,
     );
+    const overall = Math.min(86, Math.max(68, Math.round(68 + ((rawOverall - 70) / 29) * 18)));
+    const currentTeamId = `${identity.league.toLowerCase()}-${stableSlug(identity.team)}`;
 
     const commonPlayer = {
       id: playerId,
       name: identity.name,
       league: identity.league,
+      currentTeamId,
       team: identity.team,
       nationality: identity.nationality.toUpperCase(),
       archetype: playerArchetype(identity),
       handedness: identity.handedness,
       imageReference: `placeholder:player/${playerId}`,
+      active: true as const,
+      sourceMetadata: {
+        provider: 'manual-import' as const,
+        sourceIds: [playerId],
+        sourceUrls: [`https://example.invalid/import/${playerId}`],
+        snapshotDate,
+        rosterSeason: options.seasons[2],
+        statsSeason: options.seasons[2],
+        sourceRosterStatus: 'active-roster' as const,
+        positionSource: 'official-exact' as const,
+        requiresManualReview: true,
+        manualReviewReasons: ['Offline import candidate requires official-source verification.'],
+      },
     } as const;
 
     if (identity.role === 'goalie') {
@@ -375,14 +403,19 @@ export function buildImportCandidate(
       cards.push({
         id: `${playerId}-base`,
         playerId,
+        teamId: currentTeamId,
         setId: 'base-import-candidate',
         cardType: 'base',
+        cardTier: 'standard',
         role: 'goalie',
         overall,
         attributes: attributes as unknown as GoalieAttributes,
         abilities: [],
         price: 450 + Math.max(0, overall - 70) * 75,
+        marketAvailability: 'base-market',
         isPermanent: true,
+        imageReference: `placeholder:card/${playerId}-base`,
+        visualMetadata: { treatment: 'neutral-placeholder', accent: '#667788', frame: 'standard' },
       });
     } else {
       const position = identity.position as SkaterPosition;
@@ -395,14 +428,19 @@ export function buildImportCandidate(
       cards.push({
         id: `${playerId}-base`,
         playerId,
+        teamId: currentTeamId,
         setId: 'base-import-candidate',
         cardType: 'base',
+        cardTier: 'standard',
         role: 'skater',
         overall,
         attributes: attributes as unknown as SkaterAttributes,
         abilities: [],
         price: 450 + Math.max(0, overall - 70) * 75,
+        marketAvailability: 'base-market',
         isPermanent: true,
+        imageReference: `placeholder:card/${playerId}-base`,
+        visualMetadata: { treatment: 'neutral-placeholder', accent: '#667788', frame: 'standard' },
       });
     }
 
@@ -422,16 +460,32 @@ export function buildImportCandidate(
   }
 
   const appliedOverrides = applyOverrides(cards, options.overrides ?? []);
+  const teams = [...new Map(inputRows.map((row) => {
+    const id = `${row.league.toLowerCase()}-${stableSlug(row.team)}`;
+    return [id, {
+      id, name: row.team, abbreviation: stableSlug(row.team).slice(0, 3).toUpperCase(),
+      league: row.league, active: true as const,
+      visualMetadata: { treatment: 'neutral-unlicensed' as const, primaryColor: '#556677', secondaryColor: '#8899aa', abbreviation: stableSlug(row.team).slice(0, 3).toUpperCase() },
+      sourceMetadata: {
+        provider: row.league === 'NHL' ? 'nhl-api' as const : 'pwhl-hockeytech' as const,
+        sourceId: id, sourceUrl: `https://example.invalid/team/${id}`,
+        snapshotDate, rosterSeason: options.seasons[2],
+      },
+    }];
+  })).values()];
   const catalog = parseCatalog({
     metadata: {
       catalogId: 'rink-rivals-import-candidate',
-      generatedAt: options.generatedAt ?? new Date().toISOString(),
+      generatedAt,
+      snapshotDate,
       sourceWindow: [...options.seasons],
       disclaimer: 'Unofficial import candidate using fantasy proxies. Manual review is mandatory before replacing the approved catalog.',
       requiresManualApproval: true,
     },
+    teams,
     players,
     cards,
+    starterSquads: [],
   });
 
   return {

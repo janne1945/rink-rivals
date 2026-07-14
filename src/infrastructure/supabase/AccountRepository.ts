@@ -66,6 +66,8 @@ export interface AccountMarketOffer {
   readonly price: number;
   readonly eventId: string | null;
   readonly placement: "standard" | "spotlight";
+  readonly startsAt: string | null;
+  readonly endsAt: string | null;
   readonly ownedQuantity: number;
 }
 
@@ -466,6 +468,17 @@ export class SupabaseAccountRepository implements AccountRepository {
         if (offer.placement !== "standard" && offer.placement !== "spotlight") {
           throw new Error("Supabase returned an invalid market offer placement.");
         }
+        const startsAt = typeof offer.starts_at === "string" ? offer.starts_at : null;
+        const endsAt = typeof offer.ends_at === "string" ? offer.ends_at : null;
+        if (offer.source === "event_shop" && (
+          startsAt === null
+          || endsAt === null
+          || !Number.isFinite(Date.parse(startsAt))
+          || !Number.isFinite(Date.parse(endsAt))
+          || Date.parse(startsAt) >= Date.parse(endsAt)
+        )) {
+          throw new Error("Supabase returned an invalid event offer window.");
+        }
         return {
           id: textField(offer.offer_id, "offer id"),
           cardId: textField(offer.card_id, "offer card id"),
@@ -474,6 +487,8 @@ export class SupabaseAccountRepository implements AccountRepository {
           price: numberField(offer.price, "offer price"),
           eventId: typeof offer.event_id === "string" ? offer.event_id : null,
           placement: offer.placement,
+          startsAt,
+          endsAt,
           ownedQuantity: numberField(offer.owned_quantity ?? 0, "owned quantity"),
         };
       }),

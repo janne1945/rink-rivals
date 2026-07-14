@@ -11,12 +11,16 @@ import {
 import type { EventShopConfig, MarketCard } from ".";
 
 const cards: MarketCard[] = [
-  { id: "base-b", price: 300, setId: "base", isPermanent: true },
-  { id: "base-a", price: 200, setId: "base", isPermanent: true },
+  { id: "base-b", price: 300, setId: "base", cardType: "base", marketAvailability: "base-market", isPermanent: true },
+  { id: "base-a", price: 200, setId: "base", cardType: "base", marketAvailability: "base-market", isPermanent: true },
+  { id: "starter-permanent", price: 0, setId: "starter", cardType: "starter", marketAvailability: "unavailable", isPermanent: true },
+  { id: "reward-permanent", price: 0, setId: "reward", cardType: "reward", marketAvailability: "reward-only", isPermanent: true },
   ...Array.from({ length: 8 }, (_, index) => ({
     id: `event-${index + 1}`,
     price: 1_000 + index * 100,
     setId: "winter",
+    cardType: "event" as const,
+    marketAvailability: "event-shop" as const,
     isPermanent: false,
   })),
 ];
@@ -36,6 +40,13 @@ describe("createBaseMarket", () => {
       "base-a",
       "base-b",
     ]);
+  });
+
+  it("uses explicit market availability and excludes permanent Starter and Reward cards", () => {
+    const market = createBaseMarket(cards);
+    expect(market.offers.map((offer) => offer.cardId)).not.toContain("starter-permanent");
+    expect(market.offers.map((offer) => offer.cardId)).not.toContain("reward-permanent");
+    expect(market.offers.every((offer) => offer.cardId.startsWith("base-"))).toBe(true);
   });
 });
 
@@ -129,6 +140,8 @@ describe("recurring Event Calendar", () => {
       id: `frozen-${index}`,
       price: 2_000 + index * 50,
       setId: "frozen-frights",
+      cardType: "event",
+      marketAvailability: "event-shop",
       isPermanent: false,
       availableFrom: "2026-01-01T00:00:00.000Z",
       availableTo: index === 6 ? "2026-01-05T00:00:00.000Z" : "2030-01-01T00:00:00.000Z",
@@ -142,5 +155,48 @@ describe("recurring Event Calendar", () => {
     const spotlight = rotation.shop.offers.filter(({ placement }) => placement === "spotlight");
     expect(spotlight).toHaveLength(1);
     expect(spotlight[0].price).toBeLessThan(spotlight[0].regularPrice);
+  });
+
+  it("offers every card in every event pool across recurring calendar appearances", () => {
+    const anchor = Date.parse("2026-01-05T12:00:00.000Z");
+    const week = 7 * 86_400_000;
+    const calendarCards: MarketCard[] = EVENT_CALENDAR.flatMap((event) =>
+      Array.from({ length: 12 }, (_, index) => ({
+        id: `${event.id}-${index}`,
+        price: 2_000 + index * 50,
+        setId: event.id,
+        cardType: "event" as const,
+        marketAvailability: "event-shop" as const,
+        isPermanent: false,
+        availableFrom: "2026-01-01T00:00:00.000Z",
+        availableTo: "2035-01-01T00:00:00.000Z",
+      })),
+    );
+
+    EVENT_CALENDAR.forEach((event, eventIndex) => {
+      const offered = new Set<string>();
+      for (let occurrence = 0; occurrence < 2; occurrence += 1) {
+        const at = new Date(anchor + (eventIndex + occurrence * EVENT_CALENDAR.length) * week);
+        const rotation = resolveEventCalendarRotation(calendarCards, at);
+        expect(rotation.event.id).toBe(event.id);
+        rotation.shop.offers.forEach((offer) => offered.add(offer.cardId));
+      }
+      expect(offered).toEqual(new Set(Array.from({ length: 12 }, (_, index) => `${event.id}-${index}`)));
+    });
+  });
+
+  it("excludes Base, Starter, and Reward cards even if their set and window match", () => {
+    const impostors: MarketCard[] = ["base", "starter", "reward"].map((cardType) => ({
+      id: `impostor-${cardType}`,
+      price: 1_000,
+      setId: "frozen-frights",
+      cardType: cardType as "base" | "starter" | "reward",
+      marketAvailability: cardType === "base" ? "base-market" : cardType === "reward" ? "reward-only" : "unavailable",
+      isPermanent: cardType !== "event",
+      availableFrom: "2026-01-01T00:00:00.000Z",
+      availableTo: "2030-01-01T00:00:00.000Z",
+    }));
+    const rotation = resolveEventCalendarRotation(impostors, new Date("2026-01-05T12:00:00.000Z"));
+    expect(rotation.shop.offers).toHaveLength(0);
   });
 });

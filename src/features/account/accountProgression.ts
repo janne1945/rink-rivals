@@ -1,5 +1,7 @@
 import {
   createInitialProgressionState,
+  getUtcDayKey,
+  getUtcWeekKey,
   RIVALRY_REWARD_CARD_IDS,
   RIVALRY_ROAD_STEP_IDS,
   type ProgressionState,
@@ -11,10 +13,8 @@ import type { AccountSnapshot } from "./types";
 
 export function progressionFromAccount(account: AccountSnapshot, now: Date): ProgressionState {
   const initial = createInitialProgressionState(now);
-  const dayKey = now.toISOString().slice(0, 10);
-  const utcMonday = new Date(now);
-  utcMonday.setUTCDate(utcMonday.getUTCDate() - ((utcMonday.getUTCDay() + 6) % 7));
-  const weekKey = utcMonday.toISOString().slice(0, 10);
+  const dayKey = getUtcDayKey(now);
+  const weekKey = getUtcWeekKey(now);
   const rows = account.objectives;
   const daily = initial.daily.objectives.map((progress) => {
     const row = rows.find((item) => item.periodKey === dayKey && item.objectiveId === progress.objectiveId);

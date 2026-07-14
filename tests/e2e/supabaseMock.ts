@@ -2,24 +2,27 @@ import type { Page, Route } from "@playwright/test";
 
 import { selectAiOpponent, type AiDifficulty } from "../../src/domain/battle";
 import { validateLineup, type GameMode, type LineupSlot } from "../../src/domain/lineups";
-import { RIVALRY_REWARD_CARD_IDS } from "../../src/domain/progression";
+import {
+  getUtcDayKey,
+  getUtcWeekKey,
+  RIVALRY_REWARD_CARD_IDS,
+} from "../../src/domain/progression";
 import { resolveEventCalendarRotation } from "../../src/domain/shop";
-import { gameCatalog } from "../../src/data/generated/gameCatalog";
+import { gameCatalog } from "./gameCatalogFixture";
 
 const projectRef = "zsyoxpirfxajkruqeqam";
 const userId = "11111111-1111-4111-8111-111111111111";
 const starterLineupId = "33333333-3333-4333-8333-333333333333";
-const mockNow = "2026-07-13T12:00:00.000Z";
+const mockNow = "2026-07-14T12:00:00.000Z";
+const mockDate = new Date(mockNow);
+const mockDailyPeriodKey = getUtcDayKey(mockDate);
+const mockWeeklyPeriodKey = getUtcWeekKey(mockDate);
 const mockEventRotation = resolveEventCalendarRotation(gameCatalog.cards, new Date(mockNow));
-
-const starterCards = [
-  ["LW", "nhl-brady-tkachuk-base"],
-  ["C", "nhl-connor-mcdavid-base"],
-  ["RW", "nhl-mikko-rantanen-base"],
-  ["LD", "nhl-rasmus-dahlin-base"],
-  ["RD", "nhl-evan-bouchard-base"],
-  ["G", "nhl-igor-shesterkin-base"],
-] as const;
+const defaultStarterTeamId = gameCatalog.teams.find((team) => team.name === "Edmonton Oilers")?.id
+  ?? gameCatalog.starterSquads[0]?.teamId
+  ?? "";
+const catalogPlayers = new Map(gameCatalog.players.map((player) => [player.id, player]));
+const lineupSlotOrder: readonly LineupSlot[] = ["LW", "C", "RW", "LD", "RD", "G"];
 
 const serverSituations = [
   { id: "transition-rush", name: "Transition Rush", description: "Attack with pace and finish off the rush.", role: "skater", eligible_slots: ["LW", "C", "RW"], weights: { speed: 0.3, shooting: 0.3, puckControl: 0.2, hockeyIq: 0.1, clutch: 0.1 } },
@@ -85,6 +88,8 @@ export interface SupabaseMockOptions {
   readonly authenticated?: boolean;
   readonly onboardingCompleted?: boolean;
   readonly duplicateClaim?: boolean;
+  readonly claimResponseLossOnce?: boolean;
+  readonly selectedTeamId?: string;
   readonly loginError?: boolean;
   readonly profileError?: boolean;
   readonly purchaseError?: boolean;
@@ -100,6 +105,7 @@ export interface SupabaseMockOptions {
 
 export interface SupabaseMockState {
   onboardingCompleted: boolean;
+  selectedTeamId: string | null;
   credits: number;
   completedMatches: number;
   cards: Map<string, { quantity: number; acquiredAt: string }>;
@@ -111,35 +117,70 @@ export interface SupabaseMockState {
   objectives: Array<Record<string, unknown>>;
   rivalryRoad: { user_id: string; current_step_index: number; completed_step_ids: string[]; status: string; selected_card_id: string | null; updated_at: string };
   eventEndsAt: string;
+  eventOfferEndsAt: string | null;
   purchaseCallCount: number;
   lineupSaveCallCount: number;
   startMatchCallCount: number;
   playRoundCallCount: number;
   settleMatchCallCount: number;
+  starterClaimCallCount: number;
 }
 
-function starterLineup(): MockLineup {
+function starterLineup(teamId: string): MockLineup {
+  const team = gameCatalog.teams.find((candidate) => candidate.id === teamId);
+  const starter = gameCatalog.starterSquads.find((candidate) => candidate.teamId === teamId);
+  if (!team || !starter) throw new Error(`Missing mock starter data for ${teamId}.`);
   return {
     id: starterLineupId,
-    name: "Edmonton Oilers Starter",
-    mode: "nhl-circuit",
+    name: `${team.name} Starter`,
+    mode: team.league === "NHL" ? "nhl-circuit" : "pwhl-circuit",
     isActive: true,
-    slots: Object.fromEntries(starterCards) as Record<LineupSlot, string>,
+    slots: { ...starter.lineup },
     createdAt: mockNow,
     updatedAt: mockNow,
   };
 }
 
-function provisionStarter(state: SupabaseMockState): void {
-  for (const [, cardId] of starterCards) {
-    state.cards.set(cardId, { quantity: 1, acquiredAt: mockNow });
+function provisionStarter(state: SupabaseMockState, teamId: string): void {
+  const starter = gameCatalog.starterSquads.find((candidate) => candidate.teamId === teamId);
+  if (!starter) throw new Error(`Missing mock starter data for ${teamId}.`);
+  for (const cardId of starter.cards) {
+    if (!state.cards.has(cardId)) state.cards.set(cardId, { quantity: 1, acquiredAt: mockNow });
   }
-  state.lineups.set(starterLineupId, starterLineup());
+  state.selectedTeamId = teamId;
+  state.lineups.set(starterLineupId, starterLineup(teamId));
 }
 
-export function createSupabaseMockState(onboardingCompleted = true): SupabaseMockState {
+function mockOpponentSlots(mode: GameMode, difficulty: AiDifficulty): Record<LineupSlot, string> {
+  const requiredLeague = mode === "nhl-circuit" ? "NHL" : mode === "pwhl-circuit" ? "PWHL" : null;
+  const usedCards = new Set<string>();
+  return Object.fromEntries(lineupSlotOrder.map((slot) => {
+    const candidates = gameCatalog.cards
+      .filter((card) => {
+        const player = catalogPlayers.get(card.playerId);
+        return card.cardType === "base"
+          && card.marketAvailability === "base-market"
+          && player?.eligiblePositions.includes(slot as never)
+          && (!requiredLeague || player.league === requiredLeague)
+          && !usedCards.has(card.id);
+      })
+      .sort((left, right) => left.overall - right.overall || left.id.localeCompare(right.id));
+    const index = difficulty === "rookie"
+      ? Math.floor(candidates.length * 0.25)
+      : difficulty === "pro"
+        ? Math.floor(candidates.length * 0.55)
+        : Math.floor(candidates.length * 0.85);
+    const card = candidates[Math.min(index, candidates.length - 1)];
+    if (!card) throw new Error(`Missing mock opponent ${slot} for ${mode}.`);
+    usedCards.add(card.id);
+    return [slot, card.id];
+  })) as Record<LineupSlot, string>;
+}
+
+export function createSupabaseMockState(onboardingCompleted = true, selectedTeamId = defaultStarterTeamId): SupabaseMockState {
   const state: SupabaseMockState = {
     onboardingCompleted,
+    selectedTeamId: onboardingCompleted ? selectedTeamId : null,
     credits: onboardingCompleted ? 1000 : 0,
     completedMatches: 0,
     cards: new Map(),
@@ -151,13 +192,15 @@ export function createSupabaseMockState(onboardingCompleted = true): SupabaseMoc
     objectives: [],
     rivalryRoad: { user_id: userId, current_step_index: 0, completed_step_ids: [], status: "in-progress", selected_card_id: null, updated_at: mockNow },
     eventEndsAt: mockEventRotation.shop.endsAt,
+    eventOfferEndsAt: null,
     purchaseCallCount: 0,
     lineupSaveCallCount: 0,
     startMatchCallCount: 0,
     playRoundCallCount: 0,
     settleMatchCallCount: 0,
+    starterClaimCallCount: 0,
   };
-  if (onboardingCompleted) provisionStarter(state);
+  if (onboardingCompleted) provisionStarter(state, selectedTeamId);
   return state;
 }
 
@@ -230,7 +273,7 @@ function queryValue(url: URL, field: string, operator: "eq" | "in"): string | nu
 
 function currentOffers(state: SupabaseMockState) {
   const baseOffers = gameCatalog.cards
-    .filter((card) => card.isPermanent)
+    .filter((card) => card.cardType === "base" && card.marketAvailability === "base-market")
     .map((card) => ({
       offer_id: `base-market:${card.id}`,
       card_id: card.id,
@@ -239,6 +282,8 @@ function currentOffers(state: SupabaseMockState) {
       price: card.price,
       event_id: null,
       placement: "standard",
+      starts_at: null,
+      ends_at: null,
       owned_quantity: state.cards.get(card.id)?.quantity ?? 0,
     }));
   if (Date.parse(state.eventEndsAt) <= Date.parse(mockNow)) return baseOffers;
@@ -250,6 +295,8 @@ function currentOffers(state: SupabaseMockState) {
     price: offer.price,
     event_id: mockEventRotation.event.id,
     placement: offer.placement,
+    starts_at: mockEventRotation.shop.startsAt,
+    ends_at: state.eventOfferEndsAt ?? state.eventEndsAt,
     owned_quantity: state.cards.get(offer.cardId)?.quantity ?? 0,
   }));
   return [...baseOffers, ...eventOffers];
@@ -318,9 +365,9 @@ function completeSettlement(
   state.completedMatches += 1;
   state.credits += rewardCredits;
   state.objectives = [
-    { user_id: userId, objective_id: "daily-match-complete", period_key: "2026-07-13", current: 1, target: 1, completed_modes: [], completed_at: mockNow, reward_credits: 75, updated_at: mockNow },
-    ...(body.match_outcome === "win" ? [{ user_id: userId, objective_id: "daily-match-win", period_key: "2026-07-13", current: 1, target: 1, completed_modes: [], completed_at: mockNow, reward_credits: 100, updated_at: mockNow }] : []),
-    { user_id: userId, objective_id: "weekly-circuit-tour", period_key: "2026-07-13", current: 1, target: 5, completed_modes: [body.match_mode], completed_at: null, reward_credits: 350, updated_at: mockNow },
+    { user_id: userId, objective_id: "daily-match-complete", period_key: mockDailyPeriodKey, current: 1, target: 1, completed_modes: [], completed_at: mockNow, reward_credits: 75, updated_at: mockNow },
+    ...(body.match_outcome === "win" ? [{ user_id: userId, objective_id: "daily-match-win", period_key: mockDailyPeriodKey, current: 1, target: 1, completed_modes: [], completed_at: mockNow, reward_credits: 100, updated_at: mockNow }] : []),
+    { user_id: userId, objective_id: "weekly-circuit-tour", period_key: mockWeeklyPeriodKey, current: 1, target: 5, completed_modes: [body.match_mode], completed_at: null, reward_credits: 350, updated_at: mockNow },
   ];
   if (body.match_mode === "nhl-circuit") {
     state.rivalryRoad = { ...state.rivalryRoad, current_step_index: 1, completed_step_ids: ["nhl-circuit-complete"], updated_at: mockNow };
@@ -333,7 +380,8 @@ function completeSettlement(
 }
 
 export async function installSupabaseMock(page: Page, options: SupabaseMockOptions = {}): Promise<SupabaseMockState> {
-  const state = options.state ?? createSupabaseMockState(options.onboardingCompleted ?? true);
+  const state = options.state ?? createSupabaseMockState(options.onboardingCompleted ?? true, options.selectedTeamId ?? defaultStarterTeamId);
+  let dropClaimResponseOnce = options.claimResponseLossOnce ?? false;
   let dropRoundResponseOnce = options.roundResponseLossOnce ?? false;
   if (options.authenticated) {
     await page.addInitScript(({ key, value }) => localStorage.setItem(key, value), {
@@ -359,7 +407,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       return json(route, {
         id: userId,
         display_name: "Alex",
-        favorite_team_id: state.onboardingCompleted ? "edmonton-oilers" : null,
+        favorite_team_id: state.selectedTeamId,
         credits: state.credits,
         completed_matches: state.completedMatches,
         onboarding_completed: state.onboardingCompleted,
@@ -403,10 +451,23 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
     if (url.pathname === "/rest/v1/rivalry_road_progress") return json(route, state.completedMatches > 0 ? state.rivalryRoad : null);
 
     if (url.pathname === "/rest/v1/rpc/claim_starter_team") {
+      state.starterClaimCallCount += 1;
       if (options.duplicateClaim) return databaseError(route, "Starter team has already been claimed.");
+      const body = request.postDataJSON() as { selected_team_id: string };
+      if (state.onboardingCompleted) {
+        if (state.selectedTeamId !== body.selected_team_id) {
+          return databaseError(route, "A different starter team has already been claimed.");
+        }
+        return json(route, starterLineupId);
+      }
       state.onboardingCompleted = true;
       state.credits = 1000;
-      provisionStarter(state);
+      provisionStarter(state, body.selected_team_id);
+      if (dropClaimResponseOnce) {
+        dropClaimResponseOnce = false;
+        await route.abort("failed");
+        return;
+      }
       return json(route, starterLineupId);
     }
     if (url.pathname === "/rest/v1/rpc/get_market_state") {
@@ -540,6 +601,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       }
       const seed = `mock-seed:${clientMatchId}`;
       const opponent = selectAiOpponent(mode, difficulty, seed);
+      const opponentSlots = mockOpponentSlots(mode, difficulty);
       const activeLineup = [...state.lineups.values()].find((lineup) => lineup.mode === mode && lineup.isActive);
       if (!activeLineup) return databaseError(route, "An active lineup is required for this mode.");
       const ticket: MatchTicket = {
@@ -552,7 +614,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
         playerLineupId: activeLineup.id,
         playerLineupName: activeLineup.name,
         playerSlots: { ...activeLineup.slots },
-        opponentSlots: { ...opponent.lineup.slots },
+        opponentSlots,
         rounds: new Map(),
         roundRequests: new Map(),
         status: "open",

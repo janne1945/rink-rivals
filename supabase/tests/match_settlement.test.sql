@@ -40,7 +40,7 @@ set local request.jwt.claim.sub = '55555555-5555-4555-8555-555555555555';
 set local request.jwt.claim.role = 'authenticated';
 
 select lives_ok(
-  $$select public.claim_starter_team('edmonton-oilers')$$,
+  $$select public.claim_starter_team('nhl-edmonton-oilers')$$,
   'starter claim prepares an active, valid lineup'
 );
 select throws_ok(
@@ -73,11 +73,21 @@ select throws_ok(
 );
 
 select lives_ok(
-  $$select public.play_match_round('match-once', 0, 'nhl-brady-tkachuk-base', 'round-0')$$,
+  $$select public.play_match_round(
+    'match-once', 0,
+    (select card_id from public.lineup_slots
+      where lineup_id = (select starter_lineup_id from public.profiles where id = auth.uid()) and slot = 'LW'),
+    'round-0'
+  )$$,
   'first forward round succeeds'
 );
 select lives_ok(
-  $$select public.play_match_round('match-once', 0, 'nhl-brady-tkachuk-base', 'round-0')$$,
+  $$select public.play_match_round(
+    'match-once', 0,
+    (select card_id from public.lineup_slots
+      where lineup_id = (select starter_lineup_id from public.profiles where id = auth.uid()) and slot = 'LW'),
+    'round-0'
+  )$$,
   'identical round request is idempotent'
 );
 select is(
@@ -97,29 +107,59 @@ select throws_ok(
   'an open ticket blocks a mode or difficulty reroll'
 );
 select throws_ok(
-  $$select public.play_match_round('match-once', 0, 'nhl-connor-mcdavid-base', 'round-0')$$,
+  $$select public.play_match_round(
+    'match-once', 0,
+    (select card_id from public.lineup_slots
+      where lineup_id = (select starter_lineup_id from public.profiles where id = auth.uid()) and slot = 'C'),
+    'round-0'
+  )$$,
   '22023', 'Round request id was already used for different round data.',
   'round request id cannot be reused with changed data'
 );
 select throws_ok(
-  $$select public.play_match_round('match-once', 2, 'nhl-rasmus-dahlin-base', 'round-out-of-order')$$,
+  $$select public.play_match_round(
+    'match-once', 2,
+    (select card_id from public.lineup_slots
+      where lineup_id = (select starter_lineup_id from public.profiles where id = auth.uid()) and slot = 'LD'),
+    'round-out-of-order'
+  )$$,
   '22023', 'Rounds must be played in order.',
   'rounds cannot be skipped'
 );
 select lives_ok(
-  $$select public.play_match_round('match-once', 1, 'nhl-connor-mcdavid-base', 'round-1')$$,
+  $$select public.play_match_round(
+    'match-once', 1,
+    (select card_id from public.lineup_slots
+      where lineup_id = (select starter_lineup_id from public.profiles where id = auth.uid()) and slot = 'C'),
+    'round-1'
+  )$$,
   'second forward round succeeds'
 );
 select lives_ok(
-  $$select public.play_match_round('match-once', 2, 'nhl-rasmus-dahlin-base', 'round-2')$$,
+  $$select public.play_match_round(
+    'match-once', 2,
+    (select card_id from public.lineup_slots
+      where lineup_id = (select starter_lineup_id from public.profiles where id = auth.uid()) and slot = 'LD'),
+    'round-2'
+  )$$,
   'defense round succeeds'
 );
 select lives_ok(
-  $$select public.play_match_round('match-once', 3, 'nhl-mikko-rantanen-base', 'round-3')$$,
+  $$select public.play_match_round(
+    'match-once', 3,
+    (select card_id from public.lineup_slots
+      where lineup_id = (select starter_lineup_id from public.profiles where id = auth.uid()) and slot = 'RW'),
+    'round-3'
+  )$$,
   'open skater round succeeds'
 );
 select lives_ok(
-  $$select public.play_match_round('match-once', 4, 'nhl-igor-shesterkin-base', 'round-4')$$,
+  $$select public.play_match_round(
+    'match-once', 4,
+    (select card_id from public.lineup_slots
+      where lineup_id = (select starter_lineup_id from public.profiles where id = auth.uid()) and slot = 'G'),
+    'round-4'
+  )$$,
   'goalie round succeeds'
 );
 select lives_ok(

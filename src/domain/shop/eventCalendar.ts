@@ -131,12 +131,14 @@ export function resolveEventCalendarRotation(
 ): EventCalendarRotation {
   const weekIndex = getEventCalendarWeekIndex(at);
   const event = getActiveEvent(at);
+  const eventOccurrenceIndex = Math.floor(weekIndex / event.rotation.recurrenceWeeks);
   const shop = createEventShopRotation(
     {
       seed: event.rotation.seed,
       eventSetId: event.id,
       periodDays: event.rotation.durationWeeks * 7,
       periodAnchor: EVENT_CALENDAR_ANCHOR,
+      deckRotationIndex: eventOccurrenceIndex,
       offerCount: event.rotation.offerCount,
       spotlightDiscountPercent: event.rotation.spotlightDiscountPercent,
     },

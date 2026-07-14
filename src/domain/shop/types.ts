@@ -1,10 +1,13 @@
 import type { CardId, CardOffer } from "../economy";
+import type { CardType, MarketAvailability } from "../cards/types";
 
 /** Minimal catalog projection required by the shop domain. */
 export interface MarketCard {
   id: CardId;
   price: number;
   setId: string;
+  cardType: CardType;
+  marketAvailability: MarketAvailability;
   isPermanent: boolean;
   availableFrom?: string;
   availableTo?: string;
@@ -21,6 +24,8 @@ export interface EventShopConfig {
   periodDays: number;
   /** Optional UTC ISO anchor used to align recurring periods, for example to Monday. */
   periodAnchor?: string;
+  /** Optional occurrence counter used to advance a recurring event's deck independently of calendar gaps. */
+  deckRotationIndex?: number;
   offerCount: number;
   spotlightDiscountPercent: number;
 }

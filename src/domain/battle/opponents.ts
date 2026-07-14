@@ -47,40 +47,40 @@ function opponent(
 /** Curated, reproducible rivals. Card strength and decision quality both rise by tier. */
 export const AI_OPPONENTS: readonly AiOpponentDefinition[] = [
   opponent('nhl-rookie-north-stars', 'North Stars', 'A direct NHL rival learning when to hold its best card.', 'nhl-circuit', 'rookie', 1, { nickname: 'The Learners', playStyle: 'Straight-line pressure with generous card timing.' }, {
-    LW: 'nhl-brady-tkachuk-base', C: 'nhl-auston-matthews-base', RW: 'nhl-mikko-rantanen-base',
-    LD: 'nhl-rasmus-dahlin-base', RD: 'nhl-evan-bouchard-base', G: 'nhl-andrei-vasilevskiy-base',
+    LW: 'nhl-j-t-compher-base', C: 'nhl-dakota-joshua-base', RW: 'nhl-dalibor-dvorsky-base',
+    LD: 'nhl-alexandre-carrier-base', RD: 'nhl-colton-parayko-base', G: 'nhl-elvis-merzlikins-base',
   }),
   opponent('nhl-pro-harbor-six', 'Harbor Six', 'A composed NHL group with a strong answer in every situation.', 'nhl-circuit', 'pro', 2, { nickname: 'The Navigators', playStyle: 'Balanced possession and deliberate situational choices.' }, {
-    LW: 'nhl-artemi-panarin-base', C: 'nhl-nathan-mackinnon-base', RW: 'nhl-david-pastrnak-base',
-    LD: 'nhl-josh-morrissey-base', RD: 'nhl-adam-fox-base', G: 'nhl-igor-shesterkin-base',
+    LW: 'nhl-jamie-benn-base', C: 'nhl-boone-jenner-base', RW: 'nhl-connor-brown-base',
+    LD: 'nhl-brandon-montour-base', RD: 'nhl-dougie-hamilton-base', G: 'nhl-darcy-kuemper-base',
   }),
   opponent('nhl-elite-summit-club', 'Summit Club', 'Top-end NHL talent that protects premium cards for premium moments.', 'nhl-circuit', 'elite', 3, { nickname: 'The Peak', playStyle: 'Elite transition skill and disciplined opportunity management.' }, {
-    LW: 'nhl-kirill-kaprizov-base', C: 'nhl-connor-mcdavid-base', RW: 'nhl-nikita-kucherov-base',
-    LD: 'nhl-quinn-hughes-base', RD: 'nhl-cale-makar-base', G: 'nhl-andrei-vasilevskiy-base',
+    LW: 'nhl-brady-tkachuk-frozen-frights', C: 'nhl-dylan-larkin-signature-series', RW: 'nhl-seth-jarvis-playoff-heroes',
+    LD: 'nhl-adam-fox-franchise-icons', RD: 'nhl-cale-makar-signature-series', G: 'nhl-igor-shesterkin-frozen-frights',
   }),
   opponent('pwhl-rookie-lake-lights', 'Lake Lights', 'An energetic PWHL rival that attacks early and leaves openings late.', 'pwhl-circuit', 'rookie', 1, { nickname: 'The Sparks', playStyle: 'High energy with exploratory card choices.' }, {
-    LW: 'pwhl-emma-maltais-base', C: 'pwhl-alex-carpenter-base', RW: 'pwhl-daryl-watts-base',
-    LD: 'pwhl-ella-shelton-base', RD: 'pwhl-sophie-jaques-base', G: 'pwhl-kristen-campbell-base',
+    LW: 'pwhl-brooke-bryant-base', C: 'pwhl-clair-degeorge-base', RW: 'pwhl-taylor-house-base',
+    LD: 'pwhl-madison-bizal-base', RD: 'pwhl-jessica-kondas-base', G: 'pwhl-marlene-boissonnault-base',
   }),
   opponent('pwhl-pro-metro-six', 'Metro Six', 'A mobile PWHL lineup built to control the middle rounds.', 'pwhl-circuit', 'pro', 2, { nickname: 'The Conductors', playStyle: 'Structured puck movement with selective aggression.' }, {
-    LW: 'pwhl-sarah-nurse-base', C: 'pwhl-taylor-heise-base', RW: 'pwhl-hilary-knight-base',
-    LD: 'pwhl-megan-keller-base', RD: 'pwhl-renata-fast-base', G: 'pwhl-aerin-frankel-base',
+    LW: 'pwhl-natalie-mlynkova-base', C: 'pwhl-liz-schepers-base', RW: 'pwhl-sophie-shirley-base',
+    LD: 'pwhl-erin-ambrose-base', RD: 'pwhl-jocelyne-larocque-base', G: 'pwhl-kristen-campbell-base',
   }),
   opponent('pwhl-elite-crown-line', 'Crown Line', 'Complete PWHL stars with very few weak situational matchups.', 'pwhl-circuit', 'elite', 3, { nickname: 'The Standard', playStyle: 'Patient elite execution backed by championship poise.' }, {
-    LW: 'pwhl-kendall-coyne-schofield-base', C: 'pwhl-marie-philip-poulin-base', RW: 'pwhl-natalie-spooner-base',
-    LD: 'pwhl-claire-thompson-base', RD: 'pwhl-erin-ambrose-base', G: 'pwhl-ann-renee-desbiens-base',
+    LW: 'pwhl-alex-carpenter-franchise-icons', C: 'pwhl-kristyna-kaltounkova-rising-stars', RW: 'pwhl-sarah-fillier-franchise-icons',
+    LD: 'pwhl-megan-keller-franchise-icons', RD: 'pwhl-sophie-jaques-winter-classic', G: 'pwhl-gwyneth-philips-record-breakers',
   }),
   opponent('open-rookie-cross-ice', 'Cross Ice Club', 'A mixed six experimenting with combinations from both leagues.', 'open-ice', 'rookie', 1, { nickname: 'The Mixers', playStyle: 'Unpredictable but forgiving cross-league combinations.' }, {
-    LW: 'pwhl-emma-maltais-base', C: 'nhl-auston-matthews-base', RW: 'pwhl-daryl-watts-base',
-    LD: 'nhl-rasmus-dahlin-base', RD: 'pwhl-sophie-jaques-base', G: 'nhl-andrei-vasilevskiy-base',
+    LW: 'pwhl-brooke-bryant-base', C: 'nhl-dakota-joshua-base', RW: 'pwhl-lauren-messier-base',
+    LD: 'nhl-alexandre-carrier-base', RD: 'pwhl-jessica-kondas-base', G: 'nhl-elvis-merzlikins-base',
   }),
   opponent('open-pro-confluence', 'Confluence', 'A deliberately balanced mixed lineup with answers across the deck.', 'open-ice', 'pro', 2, { nickname: 'The Current', playStyle: 'Cross-league possession and measured card conservation.' }, {
-    LW: 'nhl-artemi-panarin-base', C: 'pwhl-taylor-heise-base', RW: 'nhl-david-pastrnak-base',
-    LD: 'pwhl-megan-keller-base', RD: 'nhl-adam-fox-base', G: 'pwhl-aerin-frankel-base',
+    LW: 'nhl-jamie-benn-base', C: 'pwhl-liz-schepers-base', RW: 'nhl-connor-brown-base',
+    LD: 'pwhl-erin-ambrose-base', RD: 'nhl-dougie-hamilton-base', G: 'pwhl-kristen-campbell-base',
   }),
   opponent('open-elite-northern-alliance', 'Northern Alliance', 'A mixed fantasy lineup assembled from the strongest complementary profiles.', 'open-ice', 'elite', 3, { nickname: 'The Alliance', playStyle: 'Elite complementary roles and near-optimal card timing.' }, {
-    LW: 'pwhl-kendall-coyne-schofield-base', C: 'nhl-connor-mcdavid-base', RW: 'pwhl-natalie-spooner-base',
-    LD: 'nhl-quinn-hughes-base', RD: 'pwhl-erin-ambrose-base', G: 'nhl-connor-hellebuyck-base',
+    LW: 'pwhl-alex-carpenter-franchise-icons', C: 'nhl-dylan-larkin-signature-series', RW: 'pwhl-sarah-fillier-franchise-icons',
+    LD: 'nhl-adam-fox-franchise-icons', RD: 'pwhl-sophie-jaques-winter-classic', G: 'nhl-igor-shesterkin-frozen-frights',
   }),
 ];
 
@@ -124,11 +124,30 @@ export function validateAiOpponentDefinitions(
   opponents: readonly AiOpponentDefinition[] = AI_OPPONENTS,
 ): void {
   const ids = new Set<string>();
+  const cardsById = new Map(catalog.cards.map((card) => [card.id, card]));
+  const playersById = new Map(catalog.players.map((player) => [player.id, player]));
   for (const definition of opponents) {
     if (ids.has(definition.id)) throw new TypeError(`Duplicate AI opponent id: ${definition.id}.`);
     ids.add(definition.id);
     if (definition.lineup.mode !== definition.mode || !validateLineup(definition.lineup, catalog).valid) {
       throw new TypeError(`AI opponent ${definition.id} has an invalid lineup.`);
+    }
+    const usedPlayerIds = new Set<string>();
+    for (const cardId of Object.values(definition.lineup.slots)) {
+      const card = cardsById.get(cardId);
+      const player = card ? playersById.get(card.playerId) : undefined;
+      if (!card || !player) throw new TypeError(`AI opponent ${definition.id} references missing content.`);
+      const expectedCardType = definition.difficulty === 'elite' ? 'event' : 'base';
+      if (card.cardType !== expectedCardType) {
+        throw new TypeError(`AI opponent ${definition.id} must use ${expectedCardType} cards at ${definition.difficulty}.`);
+      }
+      if (!player.active || player.sourceMetadata.sourceRosterStatus !== 'active-roster') {
+        throw new TypeError(`AI opponent ${definition.id} uses inactive or non-roster player ${player.id}.`);
+      }
+      if (usedPlayerIds.has(player.id)) {
+        throw new TypeError(`AI opponent ${definition.id} uses player ${player.id} more than once.`);
+      }
+      usedPlayerIds.add(player.id);
     }
   }
   for (const mode of ['nhl-circuit', 'pwhl-circuit', 'open-ice'] as const) {

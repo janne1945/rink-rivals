@@ -1,6 +1,13 @@
+import { loadEnv } from "vite";
+
 import { validateClientEnvironment } from "../src/infrastructure/supabase/environment";
 
-const result = validateClientEnvironment(process.env);
+const mode = process.env.NODE_ENV === "development" ? "development" : "production";
+const environment = {
+  ...loadEnv(mode, process.cwd(), "VITE_"),
+  ...process.env,
+};
+const result = validateClientEnvironment(environment);
 if (!result.valid) {
   console.error(result.message);
   process.exitCode = 1;

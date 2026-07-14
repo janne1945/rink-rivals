@@ -1,0 +1,34 @@
+[
+  {
+    "league": "NHL",
+    "sourcePlayerId": "8476882",
+    "eligiblePosition": "RW",
+    "sourceUrl": "https://www.nhl.com/news/chicago-blackhawks-pittsburgh-penguins-game-preview-january-29-2026",
+    "reviewedAt": "2026-07-14",
+    "evidence": "NHL.com lists Teuvo Teravainen on the right side of Chicago's projected forward line."
+  },
+  {
+    "league": "NHL",
+    "sourcePlayerId": "8478462",
+    "eligiblePosition": "RW",
+    "sourceUrl": "https://www.nhl.com/news/topic/playoffs/colorado-avalanche-los-angeles-kings-game-4-preview-april-26-2026",
+    "reviewedAt": "2026-07-14",
+    "evidence": "NHL.com identifies Nicolas Roy as the right wing on Colorado's third line."
+  },
+  {
+    "league": "NHL",
+    "sourcePlayerId": "8478414",
+    "eligiblePosition": "LW",
+    "sourceUrl": "https://www.nhl.com/devils/news/devils-unveil-2025-training-camp-roster-blog",
+    "reviewedAt": "2026-07-14",
+    "evidence": "The Devils' official training-camp roster lists Timo Meier as eligible at LW and RW."
+  },
+  {
+    "league": "NHL",
+    "sourcePlayerId": "8483570",
+    "eligiblePosition": "LW",
+    "sourceUrl": "https://www.nhl.com/news/chicago-blackhawks-seattle-kraken-game-preview-april-4-2026",
+    "reviewedAt": "2026-07-14",
+    "evidence": "NHL.com lists Ben Meyers on the left side of Seattle's projected fourth line."
+  }
+]

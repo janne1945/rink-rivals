@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { describe, expect, it, vi } from "vitest";
 
@@ -9,7 +9,11 @@ import type {
   AuthService,
   AuthStateListener,
 } from "../../../infrastructure/supabase";
+import { gameCatalog } from "../../../data/generated/gameCatalog";
 import { AccountGate } from "../AccountGate";
+
+const edmontonTeam = gameCatalog.teams.find((team) => team.name === "Edmonton Oilers")!;
+const edmontonStarter = gameCatalog.starterSquads.find((starter) => starter.teamId === edmontonTeam.id)!;
 
 const session = {
   access_token: "test-token",
@@ -23,7 +27,7 @@ const readyProfile: AccountProfile = {
   id: "user-1",
   displayName: "Alex",
   credits: 1000,
-  selectedTeamId: "edmonton-oilers",
+  selectedTeamId: edmontonTeam.id,
   starterClaimedAt: "2026-07-13T00:00:00.000Z",
   onboardingCompleted: true,
   completedMatches: 0,
@@ -42,14 +46,7 @@ const lineup: AccountLineup = {
   name: "Edmonton Oilers Starter",
   mode: "nhl-circuit",
   isActive: true,
-  slots: {
-    LW: "nhl-brady-tkachuk-base",
-    C: "nhl-connor-mcdavid-base",
-    RW: "nhl-mikko-rantanen-base",
-    LD: "nhl-rasmus-dahlin-base",
-    RD: "nhl-evan-bouchard-base",
-    G: "nhl-igor-shesterkin-base",
-  },
+  slots: edmontonStarter.lineup,
 };
 
 function createAuth(restoredSession: Session | null = null) {
@@ -114,6 +111,11 @@ function deferred<T>() {
   return { promise, resolve };
 }
 
+function selectEdmontonStarter(): void {
+  fireEvent.change(screen.getByLabelText("Search NHL teams"), { target: { value: "Edmonton" } });
+  fireEvent.click(within(screen.getByRole("list", { name: "NHL teams" })).getByRole("button", { name: /Edmonton Oilers/i }));
+}
+
 describe("AccountGate", () => {
   it("registers with email, password, and display name", async () => {
     const { auth } = createAuth();
@@ -162,17 +164,19 @@ describe("AccountGate", () => {
     expect(repository.loadRivalryRoadProgress).toHaveBeenCalledTimes(2);
   });
 
-  it("claims Edmonton and reloads profile, cards, and lineup", async () => {
+  it("claims the selected team id and reloads profile, cards, and lineup", async () => {
     const { auth } = createAuth(session);
     const repository = createRepository(onboardingProfile);
     vi.mocked(repository.loadProfile)
       .mockResolvedValueOnce(onboardingProfile)
       .mockResolvedValueOnce(readyProfile);
     renderGate(auth, repository);
+    await screen.findByRole("heading", { name: "Choose your club" });
+    selectEdmontonStarter();
     const claimButton = await screen.findByRole("button", { name: "Choose Edmonton Oilers" });
     fireEvent.click(claimButton);
     expect(await screen.findByRole("heading", { name: "Main menu" })).toBeVisible();
-    expect(repository.claimStarterTeam).toHaveBeenCalledWith("edmonton-oilers");
+    expect(repository.claimStarterTeam).toHaveBeenCalledWith(edmontonTeam.id);
     expect(repository.loadProfile).toHaveBeenCalledTimes(2);
     expect(repository.loadOwnCards).toHaveBeenCalledOnce();
     expect(repository.loadLineups).toHaveBeenCalledOnce();
@@ -183,6 +187,8 @@ describe("AccountGate", () => {
     const repository = createRepository(onboardingProfile);
     vi.mocked(repository.claimStarterTeam).mockRejectedValue(new Error("Starter team has already been claimed."));
     renderGate(auth, repository);
+    await screen.findByRole("heading", { name: "Choose your club" });
+    selectEdmontonStarter();
     fireEvent.click(await screen.findByRole("button", { name: "Choose Edmonton Oilers" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Starter team has already been claimed.");
     expect(screen.getByRole("button", { name: "Choose Edmonton Oilers" })).toBeEnabled();

@@ -13,8 +13,10 @@
   transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 
-.button:hover:not(:disabled) {
-  transform: translateY(-1px);
+@media (hover: hover) and (pointer: fine) {
+  .button:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
 }
 
 .button:active:not(:disabled) {

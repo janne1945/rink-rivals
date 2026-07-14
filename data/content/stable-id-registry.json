@@ -1,0 +1,6724 @@
+{
+  "metadata": {
+    "schemaVersion": 1,
+    "reviewedAt": "2026-07-14",
+    "rowFormat": "[league, sourceId, stableId, displayNameAliases]",
+    "strategy": "Official source IDs resolve to permanent internal IDs; reviewed display-name aliases may change without renaming stored IDs.",
+    "starterOverallFloorExceptionPlayerIds": [
+      "nhl-michael-dipietro",
+      "nhl-arttu-hyry",
+      "nhl-max-jones",
+      "nhl-garnet-hathaway",
+      "nhl-nils-hoglander",
+      "nhl-brandon-duhaime"
+    ]
+  },
+  "teams": [
+    [
+      "NHL",
+      "1",
+      "nhl-new-jersey-devils",
+      [
+        "New Jersey Devils"
+      ]
+    ],
+    [
+      "NHL",
+      "10",
+      "nhl-toronto-maple-leafs",
+      [
+        "Toronto Maple Leafs"
+      ]
+    ],
+    [
+      "NHL",
+      "12",
+      "nhl-carolina-hurricanes",
+      [
+        "Carolina Hurricanes"
+      ]
+    ],
+    [
+      "NHL",
+      "13",
+      "nhl-florida-panthers",
+      [
+        "Florida Panthers"
+      ]
+    ],
+    [
+      "NHL",
+      "14",
+      "nhl-tampa-bay-lightning",
+      [
+        "Tampa Bay Lightning"
+      ]
+    ],
+    [
+      "NHL",
+      "15",
+      "nhl-washington-capitals",
+      [
+        "Washington Capitals"
+      ]
+    ],
+    [
+      "NHL",
+      "16",
+      "nhl-chicago-blackhawks",
+      [
+        "Chicago Blackhawks"
+      ]
+    ],
+    [
+      "NHL",
+      "17",
+      "nhl-detroit-red-wings",
+      [
+        "Detroit Red Wings"
+      ]
+    ],
+    [
+      "NHL",
+      "18",
+      "nhl-nashville-predators",
+      [
+        "Nashville Predators"
+      ]
+    ],
+    [
+      "NHL",
+      "19",
+      "nhl-st-louis-blues",
+      [
+        "St. Louis Blues"
+      ]
+    ],
+    [
+      "NHL",
+      "2",
+      "nhl-new-york-islanders",
+      [
+        "New York Islanders"
+      ]
+    ],
+    [
+      "NHL",
+      "20",
+      "nhl-calgary-flames",
+      [
+        "Calgary Flames"
+      ]
+    ],
+    [
+      "NHL",
+      "21",
+      "nhl-colorado-avalanche",
+      [
+        "Colorado Avalanche"
+      ]
+    ],
+    [
+      "NHL",
+      "22",
+      "nhl-edmonton-oilers",
+      [
+        "Edmonton Oilers"
+      ]
+    ],
+    [
+      "NHL",
+      "23",
+      "nhl-vancouver-canucks",
+      [
+        "Vancouver Canucks"
+      ]
+    ],
+    [
+      "NHL",
+      "24",
+      "nhl-anaheim-ducks",
+      [
+        "Anaheim Ducks"
+      ]
+    ],
+    [
+      "NHL",
+      "25",
+      "nhl-dallas-stars",
+      [
+        "Dallas Stars"
+      ]
+    ],
+    [
+      "NHL",
+      "26",
+      "nhl-los-angeles-kings",
+      [
+        "Los Angeles Kings"
+      ]
+    ],
+    [
+      "NHL",
+      "28",
+      "nhl-san-jose-sharks",
+      [
+        "San Jose Sharks"
+      ]
+    ],
+    [
+      "NHL",
+      "29",
+      "nhl-columbus-blue-jackets",
+      [
+        "Columbus Blue Jackets"
+      ]
+    ],
+    [
+      "NHL",
+      "3",
+      "nhl-new-york-rangers",
+      [
+        "New York Rangers"
+      ]
+    ],
+    [
+      "NHL",
+      "30",
+      "nhl-minnesota-wild",
+      [
+        "Minnesota Wild"
+      ]
+    ],
+    [
+      "NHL",
+      "4",
+      "nhl-philadelphia-flyers",
+      [
+        "Philadelphia Flyers"
+      ]
+    ],
+    [
+      "NHL",
+      "5",
+      "nhl-pittsburgh-penguins",
+      [
+        "Pittsburgh Penguins"
+      ]
+    ],
+    [
+      "NHL",
+      "52",
+      "nhl-winnipeg-jets",
+      [
+        "Winnipeg Jets"
+      ]
+    ],
+    [
+      "NHL",
+      "54",
+      "nhl-vegas-golden-knights",
+      [
+        "Vegas Golden Knights"
+      ]
+    ],
+    [
+      "NHL",
+      "55",
+      "nhl-seattle-kraken",
+      [
+        "Seattle Kraken"
+      ]
+    ],
+    [
+      "NHL",
+      "6",
+      "nhl-boston-bruins",
+      [
+        "Boston Bruins"
+      ]
+    ],
+    [
+      "NHL",
+      "68",
+      "nhl-utah-mammoth",
+      [
+        "Utah Mammoth"
+      ]
+    ],
+    [
+      "NHL",
+      "7",
+      "nhl-buffalo-sabres",
+      [
+        "Buffalo Sabres"
+      ]
+    ],
+    [
+      "NHL",
+      "8",
+      "nhl-montreal-canadiens",
+      [
+        "Montréal Canadiens"
+      ]
+    ],
+    [
+      "NHL",
+      "9",
+      "nhl-ottawa-senators",
+      [
+        "Ottawa Senators"
+      ]
+    ],
+    [
+      "PWHL",
+      "1",
+      "pwhl-boston-fleet",
+      [
+        "Boston Fleet"
+      ]
+    ],
+    [
+      "PWHL",
+      "10",
+      "pwhl-detroit",
+      [
+        "PWHL Detroit"
+      ]
+    ],
+    [
+      "PWHL",
+      "11",
+      "pwhl-hamilton",
+      [
+        "PWHL Hamilton"
+      ]
+    ],
+    [
+      "PWHL",
+      "12",
+      "pwhl-las-vegas",
+      [
+        "PWHL Las Vegas"
+      ]
+    ],
+    [
+      "PWHL",
+      "13",
+      "pwhl-san-jose",
+      [
+        "PWHL San Jose"
+      ]
+    ],
+    [
+      "PWHL",
+      "2",
+      "pwhl-minnesota-frost",
+      [
+        "Minnesota Frost"
+      ]
+    ],
+    [
+      "PWHL",
+      "3",
+      "pwhl-montreal-victoire",
+      [
+        "Montréal Victoire"
+      ]
+    ],
+    [
+      "PWHL",
+      "4",
+      "pwhl-new-york-sirens",
+      [
+        "New York Sirens"
+      ]
+    ],
+    [
+      "PWHL",
+      "5",
+      "pwhl-ottawa-charge",
+      [
+        "Ottawa Charge"
+      ]
+    ],
+    [
+      "PWHL",
+      "6",
+      "pwhl-toronto-sceptres",
+      [
+        "Toronto Sceptres"
+      ]
+    ],
+    [
+      "PWHL",
+      "8",
+      "pwhl-seattle-torrent",
+      [
+        "Seattle Torrent"
+      ]
+    ],
+    [
+      "PWHL",
+      "9",
+      "pwhl-vancouver-goldeneyes",
+      [
+        "Vancouver Goldeneyes"
+      ]
+    ]
+  ],
+  "players": [
+    [
+      "NHL",
+      "8470613",
+      "nhl-brent-burns",
+      [
+        "Brent Burns"
+      ]
+    ],
+    [
+      "NHL",
+      "8470621",
+      "nhl-corey-perry",
+      [
+        "Corey Perry"
+      ]
+    ],
+    [
+      "NHL",
+      "8471214",
+      "nhl-alex-ovechkin",
+      [
+        "Alex Ovechkin"
+      ]
+    ],
+    [
+      "NHL",
+      "8471215",
+      "nhl-evgeni-malkin",
+      [
+        "Evgeni Malkin"
+      ]
+    ],
+    [
+      "NHL",
+      "8471675",
+      "nhl-sidney-crosby",
+      [
+        "Sidney Crosby"
+      ]
+    ],
+    [
+      "NHL",
+      "8471724",
+      "nhl-kris-letang",
+      [
+        "Kris Letang"
+      ]
+    ],
+    [
+      "NHL",
+      "8473419",
+      "nhl-brad-marchand",
+      [
+        "Brad Marchand"
+      ]
+    ],
+    [
+      "NHL",
+      "8473422",
+      "nhl-nick-foligno",
+      [
+        "Nick Foligno"
+      ]
+    ],
+    [
+      "NHL",
+      "8473512",
+      "nhl-claude-giroux",
+      [
+        "Claude Giroux"
+      ]
+    ],
+    [
+      "NHL",
+      "8473533",
+      "nhl-jordan-staal",
+      [
+        "Jordan Staal"
+      ]
+    ],
+    [
+      "NHL",
+      "8473986",
+      "nhl-alex-killorn",
+      [
+        "Alex Killorn"
+      ]
+    ],
+    [
+      "NHL",
+      "8473994",
+      "nhl-jamie-benn",
+      [
+        "Jamie Benn"
+      ]
+    ],
+    [
+      "NHL",
+      "8474013",
+      "nhl-ian-cole",
+      [
+        "Ian Cole"
+      ]
+    ],
+    [
+      "NHL",
+      "8474150",
+      "nhl-mikael-backlund",
+      [
+        "Mikael Backlund"
+      ]
+    ],
+    [
+      "NHL",
+      "8474151",
+      "nhl-ryan-mcdonagh",
+      [
+        "Ryan McDonagh"
+      ]
+    ],
+    [
+      "NHL",
+      "8474563",
+      "nhl-drew-doughty",
+      [
+        "Drew Doughty"
+      ]
+    ],
+    [
+      "NHL",
+      "8474564",
+      "nhl-steven-stamkos",
+      [
+        "Steven Stamkos"
+      ]
+    ],
+    [
+      "NHL",
+      "8474567",
+      "nhl-zach-bogosian",
+      [
+        "Zach Bogosian"
+      ]
+    ],
+    [
+      "NHL",
+      "8474568",
+      "nhl-luke-schenn",
+      [
+        "Luke Schenn"
+      ]
+    ],
+    [
+      "NHL",
+      "8474574",
+      "nhl-tyler-myers",
+      [
+        "Tyler Myers"
+      ]
+    ],
+    [
+      "NHL",
+      "8474578",
+      "nhl-erik-karlsson",
+      [
+        "Erik Karlsson"
+      ]
+    ],
+    [
+      "NHL",
+      "8474586",
+      "nhl-jordan-eberle",
+      [
+        "Jordan Eberle"
+      ]
+    ],
+    [
+      "NHL",
+      "8474590",
+      "nhl-john-carlson",
+      [
+        "John Carlson"
+      ]
+    ],
+    [
+      "NHL",
+      "8474593",
+      "nhl-jacob-markstrom",
+      [
+        "Jacob Markstrom"
+      ]
+    ],
+    [
+      "NHL",
+      "8474596",
+      "nhl-jake-allen",
+      [
+        "Jake Allen"
+      ]
+    ],
+    [
+      "NHL",
+      "8474600",
+      "nhl-roman-josi",
+      [
+        "Roman Josi"
+      ]
+    ],
+    [
+      "NHL",
+      "8474716",
+      "nhl-jared-spurgeon",
+      [
+        "Jared Spurgeon"
+      ]
+    ],
+    [
+      "NHL",
+      "8475151",
+      "nhl-kyle-palmieri",
+      [
+        "Kyle Palmieri"
+      ]
+    ],
+    [
+      "NHL",
+      "8475158",
+      "nhl-ryan-o-reilly",
+      [
+        "Ryan O'Reilly"
+      ]
+    ],
+    [
+      "NHL",
+      "8475166",
+      "nhl-john-tavares",
+      [
+        "John Tavares"
+      ]
+    ],
+    [
+      "NHL",
+      "8475167",
+      "nhl-victor-hedman",
+      [
+        "Victor Hedman"
+      ]
+    ],
+    [
+      "NHL",
+      "8475168",
+      "nhl-matt-duchene",
+      [
+        "Matt Duchene"
+      ]
+    ],
+    [
+      "NHL",
+      "8475170",
+      "nhl-brayden-schenn",
+      [
+        "Brayden Schenn"
+      ]
+    ],
+    [
+      "NHL",
+      "8475171",
+      "nhl-oliver-ekman-larsson",
+      [
+        "Oliver Ekman-Larsson"
+      ]
+    ],
+    [
+      "NHL",
+      "8475172",
+      "nhl-nazem-kadri",
+      [
+        "Nazem Kadri"
+      ]
+    ],
+    [
+      "NHL",
+      "8475184",
+      "nhl-chris-kreider",
+      [
+        "Chris Kreider"
+      ]
+    ],
+    [
+      "NHL",
+      "8475188",
+      "nhl-brayden-mcnabb",
+      [
+        "Brayden McNabb"
+      ]
+    ],
+    [
+      "NHL",
+      "8475200",
+      "nhl-dmitry-orlov",
+      [
+        "Dmitry Orlov"
+      ]
+    ],
+    [
+      "NHL",
+      "8475208",
+      "nhl-brian-dumoulin",
+      [
+        "Brian Dumoulin"
+      ]
+    ],
+    [
+      "NHL",
+      "8475218",
+      "nhl-mattias-ekholm",
+      [
+        "Mattias Ekholm"
+      ]
+    ],
+    [
+      "NHL",
+      "8475231",
+      "nhl-casey-cizikas",
+      [
+        "Casey Cizikas"
+      ]
+    ],
+    [
+      "NHL",
+      "8475279",
+      "nhl-ben-chiarot",
+      [
+        "Ben Chiarot"
+      ]
+    ],
+    [
+      "NHL",
+      "8475287",
+      "nhl-erik-haula",
+      [
+        "Erik Haula"
+      ]
+    ],
+    [
+      "NHL",
+      "8475311",
+      "nhl-darcy-kuemper",
+      [
+        "Darcy Kuemper"
+      ]
+    ],
+    [
+      "NHL",
+      "8475314",
+      "nhl-anders-lee",
+      [
+        "Anders Lee"
+      ]
+    ],
+    [
+      "NHL",
+      "8475324",
+      "nhl-nick-jensen",
+      [
+        "Nick Jensen"
+      ]
+    ],
+    [
+      "NHL",
+      "8475343",
+      "nhl-nic-dowd",
+      [
+        "Nic Dowd"
+      ]
+    ],
+    [
+      "NHL",
+      "8475455",
+      "nhl-brenden-dillon",
+      [
+        "Brenden Dillon"
+      ]
+    ],
+    [
+      "NHL",
+      "8475462",
+      "nhl-radko-gudas",
+      [
+        "Radko Gudas"
+      ]
+    ],
+    [
+      "NHL",
+      "8475683",
+      "nhl-sergei-bobrovsky",
+      [
+        "Sergei Bobrovsky"
+      ]
+    ],
+    [
+      "NHL",
+      "8475692",
+      "nhl-mats-zuccarello",
+      [
+        "Mats Zuccarello"
+      ]
+    ],
+    [
+      "NHL",
+      "8475722",
+      "nhl-jason-zucker",
+      [
+        "Jason Zucker"
+      ]
+    ],
+    [
+      "NHL",
+      "8475726",
+      "nhl-tyler-toffoli",
+      [
+        "Tyler Toffoli"
+      ]
+    ],
+    [
+      "NHL",
+      "8475745",
+      "nhl-charlie-coyle",
+      [
+        "Charlie Coyle"
+      ]
+    ],
+    [
+      "NHL",
+      "8475753",
+      "nhl-justin-faulk",
+      [
+        "Justin Faulk"
+      ]
+    ],
+    [
+      "NHL",
+      "8475754",
+      "nhl-brock-nelson",
+      [
+        "Brock Nelson"
+      ]
+    ],
+    [
+      "NHL",
+      "8475760",
+      "nhl-nick-bjugstad",
+      [
+        "Nick Bjugstad"
+      ]
+    ],
+    [
+      "NHL",
+      "8475764",
+      "nhl-cam-fowler",
+      [
+        "Cam Fowler"
+      ]
+    ],
+    [
+      "NHL",
+      "8475768",
+      "nhl-jaden-schwartz",
+      [
+        "Jaden Schwartz"
+      ]
+    ],
+    [
+      "NHL",
+      "8475786",
+      "nhl-zach-hyman",
+      [
+        "Zach Hyman"
+      ]
+    ],
+    [
+      "NHL",
+      "8475790",
+      "nhl-erik-gudbranson",
+      [
+        "Erik Gudbranson"
+      ]
+    ],
+    [
+      "NHL",
+      "8475791",
+      "nhl-taylor-hall",
+      [
+        "Taylor Hall"
+      ]
+    ],
+    [
+      "NHL",
+      "8475794",
+      "nhl-tyler-seguin",
+      [
+        "Tyler Seguin"
+      ]
+    ],
+    [
+      "NHL",
+      "8475798",
+      "nhl-mikael-granlund",
+      [
+        "Mikael Granlund"
+      ]
+    ],
+    [
+      "NHL",
+      "8475799",
+      "nhl-nino-niederreiter",
+      [
+        "Nino Niederreiter"
+      ]
+    ],
+    [
+      "NHL",
+      "8475809",
+      "nhl-scott-wedgewood",
+      [
+        "Scott Wedgewood"
+      ]
+    ],
+    [
+      "NHL",
+      "8475810",
+      "nhl-bryan-rust",
+      [
+        "Bryan Rust"
+      ]
+    ],
+    [
+      "NHL",
+      "8475831",
+      "nhl-philipp-grubauer",
+      [
+        "Philipp Grubauer"
+      ]
+    ],
+    [
+      "NHL",
+      "8475848",
+      "nhl-brendan-gallagher",
+      [
+        "Brendan Gallagher"
+      ]
+    ],
+    [
+      "NHL",
+      "8475883",
+      "nhl-frederik-andersen",
+      [
+        "Frederik Andersen"
+      ]
+    ],
+    [
+      "NHL",
+      "8475913",
+      "nhl-mark-stone",
+      [
+        "Mark Stone"
+      ]
+    ],
+    [
+      "NHL",
+      "8476312",
+      "nhl-josh-manson",
+      [
+        "Josh Manson"
+      ]
+    ],
+    [
+      "NHL",
+      "8476331",
+      "nhl-dylan-demelo",
+      [
+        "Dylan DeMelo"
+      ]
+    ],
+    [
+      "NHL",
+      "8476341",
+      "nhl-anton-forsberg",
+      [
+        "Anton Forsberg"
+      ]
+    ],
+    [
+      "NHL",
+      "8476372",
+      "nhl-nick-seeler",
+      [
+        "Nick Seeler"
+      ]
+    ],
+    [
+      "NHL",
+      "8476389",
+      "nhl-vincent-trocheck",
+      [
+        "Vincent Trocheck"
+      ]
+    ],
+    [
+      "NHL",
+      "8476392",
+      "nhl-adam-lowry",
+      [
+        "Adam Lowry"
+      ]
+    ],
+    [
+      "NHL",
+      "8476399",
+      "nhl-blake-coleman",
+      [
+        "Blake Coleman"
+      ]
+    ],
+    [
+      "NHL",
+      "8476412",
+      "nhl-jordan-binnington",
+      [
+        "Jordan Binnington"
+      ]
+    ],
+    [
+      "NHL",
+      "8476419",
+      "nhl-jean-gabriel-pageau",
+      [
+        "Jean-Gabriel Pageau"
+      ]
+    ],
+    [
+      "NHL",
+      "8476429",
+      "nhl-scott-mayfield",
+      [
+        "Scott Mayfield"
+      ]
+    ],
+    [
+      "NHL",
+      "8476432",
+      "nhl-boone-jenner",
+      [
+        "Boone Jenner"
+      ]
+    ],
+    [
+      "NHL",
+      "8476434",
+      "nhl-john-gibson",
+      [
+        "John Gibson"
+      ]
+    ],
+    [
+      "NHL",
+      "8476441",
+      "nhl-joel-edmundson",
+      [
+        "Joel Edmundson"
+      ]
+    ],
+    [
+      "NHL",
+      "8476453",
+      "nhl-nikita-kucherov",
+      [
+        "Nikita Kucherov"
+      ]
+    ],
+    [
+      "NHL",
+      "8476454",
+      "nhl-ryan-nugent-hopkins",
+      [
+        "Ryan Nugent-Hopkins"
+      ]
+    ],
+    [
+      "NHL",
+      "8476455",
+      "nhl-gabriel-landeskog",
+      [
+        "Gabriel Landeskog"
+      ]
+    ],
+    [
+      "NHL",
+      "8476456",
+      "nhl-jonathan-huberdeau",
+      [
+        "Jonathan Huberdeau"
+      ]
+    ],
+    [
+      "NHL",
+      "8476457",
+      "nhl-adam-larsson",
+      [
+        "Adam Larsson"
+      ]
+    ],
+    [
+      "NHL",
+      "8476458",
+      "nhl-ryan-strome",
+      [
+        "Ryan Strome"
+      ]
+    ],
+    [
+      "NHL",
+      "8476459",
+      "nhl-mika-zibanejad",
+      [
+        "Mika Zibanejad"
+      ]
+    ],
+    [
+      "NHL",
+      "8476460",
+      "nhl-mark-scheifele",
+      [
+        "Mark Scheifele"
+      ]
+    ],
+    [
+      "NHL",
+      "8476461",
+      "nhl-sean-couturier",
+      [
+        "Sean Couturier"
+      ]
+    ],
+    [
+      "NHL",
+      "8476462",
+      "nhl-dougie-hamilton",
+      [
+        "Dougie Hamilton"
+      ]
+    ],
+    [
+      "NHL",
+      "8476463",
+      "nhl-jonas-brodin",
+      [
+        "Jonas Brodin"
+      ]
+    ],
+    [
+      "NHL",
+      "8476467",
+      "nhl-jamie-oleksiak",
+      [
+        "Jamie Oleksiak"
+      ]
+    ],
+    [
+      "NHL",
+      "8476468",
+      "nhl-j-t-miller",
+      [
+        "J.T. Miller"
+      ]
+    ],
+    [
+      "NHL",
+      "8476473",
+      "nhl-connor-murphy",
+      [
+        "Connor Murphy"
+      ]
+    ],
+    [
+      "NHL",
+      "8476480",
+      "nhl-vladislav-namestnikov",
+      [
+        "Vladislav Namestnikov"
+      ]
+    ],
+    [
+      "NHL",
+      "8476483",
+      "nhl-rickard-rakell",
+      [
+        "Rickard Rakell"
+      ]
+    ],
+    [
+      "NHL",
+      "8476539",
+      "nhl-jonathan-marchessault",
+      [
+        "Jonathan Marchessault"
+      ]
+    ],
+    [
+      "NHL",
+      "8476826",
+      "nhl-yanni-gourde",
+      [
+        "Yanni Gourde"
+      ]
+    ],
+    [
+      "NHL",
+      "8476853",
+      "nhl-morgan-rielly",
+      [
+        "Morgan Rielly"
+      ]
+    ],
+    [
+      "NHL",
+      "8476854",
+      "nhl-hampus-lindholm",
+      [
+        "Hampus Lindholm"
+      ]
+    ],
+    [
+      "NHL",
+      "8476869",
+      "nhl-brady-skjei",
+      [
+        "Brady Skjei"
+      ]
+    ],
+    [
+      "NHL",
+      "8476872",
+      "nhl-scott-laughton",
+      [
+        "Scott Laughton"
+      ]
+    ],
+    [
+      "NHL",
+      "8476873",
+      "nhl-mark-jankowski",
+      [
+        "Mark Jankowski"
+      ]
+    ],
+    [
+      "NHL",
+      "8476874",
+      "nhl-olli-maatta",
+      [
+        "Olli Maatta"
+      ]
+    ],
+    [
+      "NHL",
+      "8476875",
+      "nhl-mike-matheson",
+      [
+        "Mike Matheson"
+      ]
+    ],
+    [
+      "NHL",
+      "8476879",
+      "nhl-cody-ceci",
+      [
+        "Cody Ceci"
+      ]
+    ],
+    [
+      "NHL",
+      "8476880",
+      "nhl-tom-wilson",
+      [
+        "Tom Wilson"
+      ]
+    ],
+    [
+      "NHL",
+      "8476881",
+      "nhl-tomas-hertl",
+      [
+        "Tomas Hertl"
+      ]
+    ],
+    [
+      "NHL",
+      "8476882",
+      "nhl-teuvo-teravainen",
+      [
+        "Teuvo Teravainen"
+      ]
+    ],
+    [
+      "NHL",
+      "8476883",
+      "nhl-andrei-vasilevskiy",
+      [
+        "Andrei Vasilevskiy"
+      ]
+    ],
+    [
+      "NHL",
+      "8476885",
+      "nhl-jacob-trouba",
+      [
+        "Jacob Trouba"
+      ]
+    ],
+    [
+      "NHL",
+      "8476887",
+      "nhl-filip-forsberg",
+      [
+        "Filip Forsberg"
+      ]
+    ],
+    [
+      "NHL",
+      "8476892",
+      "nhl-colton-parayko",
+      [
+        "Colton Parayko"
+      ]
+    ],
+    [
+      "NHL",
+      "8476902",
+      "nhl-esa-lindell",
+      [
+        "Esa Lindell"
+      ]
+    ],
+    [
+      "NHL",
+      "8476905",
+      "nhl-chandler-stephenson",
+      [
+        "Chandler Stephenson"
+      ]
+    ],
+    [
+      "NHL",
+      "8476906",
+      "nhl-shayne-gostisbehere",
+      [
+        "Shayne Gostisbehere"
+      ]
+    ],
+    [
+      "NHL",
+      "8476914",
+      "nhl-joonas-korpisalo",
+      [
+        "Joonas Korpisalo"
+      ]
+    ],
+    [
+      "NHL",
+      "8476917",
+      "nhl-adam-pelech",
+      [
+        "Adam Pelech"
+      ]
+    ],
+    [
+      "NHL",
+      "8476921",
+      "nhl-jordan-martinook",
+      [
+        "Jordan Martinook"
+      ]
+    ],
+    [
+      "NHL",
+      "8476923",
+      "nhl-damon-severson",
+      [
+        "Damon Severson"
+      ]
+    ],
+    [
+      "NHL",
+      "8476927",
+      "nhl-teddy-blueger",
+      [
+        "Teddy Blueger"
+      ]
+    ],
+    [
+      "NHL",
+      "8476931",
+      "nhl-jake-mccabe",
+      [
+        "Jake McCabe"
+      ]
+    ],
+    [
+      "NHL",
+      "8476932",
+      "nhl-anthony-stolarz",
+      [
+        "Anthony Stolarz"
+      ]
+    ],
+    [
+      "NHL",
+      "8476945",
+      "nhl-connor-hellebuyck",
+      [
+        "Connor Hellebuyck"
+      ]
+    ],
+    [
+      "NHL",
+      "8476958",
+      "nhl-jaccob-slavin",
+      [
+        "Jaccob Slavin"
+      ]
+    ],
+    [
+      "NHL",
+      "8476967",
+      "nhl-brett-kulak",
+      [
+        "Brett Kulak"
+      ]
+    ],
+    [
+      "NHL",
+      "8476981",
+      "nhl-josh-anderson",
+      [
+        "Josh Anderson"
+      ]
+    ],
+    [
+      "NHL",
+      "8476999",
+      "nhl-linus-ullmark",
+      [
+        "Linus Ullmark"
+      ]
+    ],
+    [
+      "NHL",
+      "8477015",
+      "nhl-connor-brown",
+      [
+        "Connor Brown"
+      ]
+    ],
+    [
+      "NHL",
+      "8477220",
+      "nhl-nate-schmidt",
+      [
+        "Nate Schmidt"
+      ]
+    ],
+    [
+      "NHL",
+      "8477346",
+      "nhl-mackenzie-weegar",
+      [
+        "MacKenzie Weegar"
+      ]
+    ],
+    [
+      "NHL",
+      "8477402",
+      "nhl-pavel-buchnevich",
+      [
+        "Pavel Buchnevich"
+      ]
+    ],
+    [
+      "NHL",
+      "8477404",
+      "nhl-jake-guentzel",
+      [
+        "Jake Guentzel"
+      ]
+    ],
+    [
+      "NHL",
+      "8477407",
+      "nhl-anthony-duclair",
+      [
+        "Anthony Duclair"
+      ]
+    ],
+    [
+      "NHL",
+      "8477409",
+      "nhl-carter-verhaeghe",
+      [
+        "Carter Verhaeghe"
+      ]
+    ],
+    [
+      "NHL",
+      "8477416",
+      "nhl-oliver-bjorkstrand",
+      [
+        "Oliver Bjorkstrand"
+      ]
+    ],
+    [
+      "NHL",
+      "8477424",
+      "nhl-juuse-saros",
+      [
+        "Juuse Saros"
+      ]
+    ],
+    [
+      "NHL",
+      "8477425",
+      "nhl-miles-wood",
+      [
+        "Miles Wood"
+      ]
+    ],
+    [
+      "NHL",
+      "8477426",
+      "nhl-nick-paul",
+      [
+        "Nick Paul"
+      ]
+    ],
+    [
+      "NHL",
+      "8477429",
+      "nhl-andrew-copp",
+      [
+        "Andrew Copp"
+      ]
+    ],
+    [
+      "NHL",
+      "8477444",
+      "nhl-andre-burakovsky",
+      [
+        "Andre Burakovsky"
+      ]
+    ],
+    [
+      "NHL",
+      "8477447",
+      "nhl-shea-theodore",
+      [
+        "Shea Theodore"
+      ]
+    ],
+    [
+      "NHL",
+      "8477450",
+      "nhl-jason-dickinson",
+      [
+        "Jason Dickinson"
+      ]
+    ],
+    [
+      "NHL",
+      "8477451",
+      "nhl-ryan-hartman",
+      [
+        "Ryan Hartman"
+      ]
+    ],
+    [
+      "NHL",
+      "8477456",
+      "nhl-j-t-compher",
+      [
+        "J.T. Compher"
+      ]
+    ],
+    [
+      "NHL",
+      "8477465",
+      "nhl-tristan-jarry",
+      [
+        "Tristan Jarry"
+      ]
+    ],
+    [
+      "NHL",
+      "8477476",
+      "nhl-artturi-lehkonen",
+      [
+        "Artturi Lehkonen"
+      ]
+    ],
+    [
+      "NHL",
+      "8477479",
+      "nhl-tyler-bertuzzi",
+      [
+        "Tyler Bertuzzi"
+      ]
+    ],
+    [
+      "NHL",
+      "8477480",
+      "nhl-eric-comrie",
+      [
+        "Eric Comrie"
+      ]
+    ],
+    [
+      "NHL",
+      "8477488",
+      "nhl-brett-pesce",
+      [
+        "Brett Pesce"
+      ]
+    ],
+    [
+      "NHL",
+      "8477492",
+      "nhl-nathan-mackinnon",
+      [
+        "Nathan MacKinnon"
+      ]
+    ],
+    [
+      "NHL",
+      "8477495",
+      "nhl-seth-jones",
+      [
+        "Seth Jones"
+      ]
+    ],
+    [
+      "NHL",
+      "8477496",
+      "nhl-elias-lindholm",
+      [
+        "Elias Lindholm"
+      ]
+    ],
+    [
+      "NHL",
+      "8477497",
+      "nhl-sean-monahan",
+      [
+        "Sean Monahan"
+      ]
+    ],
+    [
+      "NHL",
+      "8477498",
+      "nhl-darnell-nurse",
+      [
+        "Darnell Nurse"
+      ]
+    ],
+    [
+      "NHL",
+      "8477499",
+      "nhl-rasmus-ristolainen",
+      [
+        "Rasmus Ristolainen"
+      ]
+    ],
+    [
+      "NHL",
+      "8477500",
+      "nhl-bo-horvat",
+      [
+        "Bo Horvat"
+      ]
+    ],
+    [
+      "NHL",
+      "8477501",
+      "nhl-valeri-nichushkin",
+      [
+        "Valeri Nichushkin"
+      ]
+    ],
+    [
+      "NHL",
+      "8477503",
+      "nhl-max-domi",
+      [
+        "Max Domi"
+      ]
+    ],
+    [
+      "NHL",
+      "8477504",
+      "nhl-josh-morrissey",
+      [
+        "Josh Morrissey"
+      ]
+    ],
+    [
+      "NHL",
+      "8477505",
+      "nhl-alexander-wennberg",
+      [
+        "Alexander Wennberg"
+      ]
+    ],
+    [
+      "NHL",
+      "8477506",
+      "nhl-ryan-pulock",
+      [
+        "Ryan Pulock"
+      ]
+    ],
+    [
+      "NHL",
+      "8477507",
+      "nhl-nikita-zadorov",
+      [
+        "Nikita Zadorov"
+      ]
+    ],
+    [
+      "NHL",
+      "8477839",
+      "nhl-conor-sheary",
+      [
+        "Conor Sheary"
+      ]
+    ],
+    [
+      "NHL",
+      "8477845",
+      "nhl-trevor-van-riemsdyk",
+      [
+        "Trevor van Riemsdyk"
+      ]
+    ],
+    [
+      "NHL",
+      "8477903",
+      "nhl-garnet-hathaway",
+      [
+        "Garnet Hathaway"
+      ]
+    ],
+    [
+      "NHL",
+      "8477919",
+      "nhl-frederick-gaudreau",
+      [
+        "Frederick Gaudreau"
+      ]
+    ],
+    [
+      "NHL",
+      "8477932",
+      "nhl-aaron-ekblad",
+      [
+        "Aaron Ekblad"
+      ]
+    ],
+    [
+      "NHL",
+      "8477933",
+      "nhl-sam-reinhart",
+      [
+        "Sam Reinhart"
+      ]
+    ],
+    [
+      "NHL",
+      "8477934",
+      "nhl-leon-draisaitl",
+      [
+        "Leon Draisaitl"
+      ]
+    ],
+    [
+      "NHL",
+      "8477935",
+      "nhl-sam-bennett",
+      [
+        "Sam Bennett"
+      ]
+    ],
+    [
+      "NHL",
+      "8477938",
+      "nhl-haydn-fleury",
+      [
+        "Haydn Fleury"
+      ]
+    ],
+    [
+      "NHL",
+      "8477939",
+      "nhl-william-nylander",
+      [
+        "William Nylander"
+      ]
+    ],
+    [
+      "NHL",
+      "8477940",
+      "nhl-nikolaj-ehlers",
+      [
+        "Nikolaj Ehlers"
+      ]
+    ],
+    [
+      "NHL",
+      "8477942",
+      "nhl-kevin-fiala",
+      [
+        "Kevin Fiala"
+      ]
+    ],
+    [
+      "NHL",
+      "8477946",
+      "nhl-dylan-larkin",
+      [
+        "Dylan Larkin"
+      ]
+    ],
+    [
+      "NHL",
+      "8477948",
+      "nhl-travis-sanheim",
+      [
+        "Travis Sanheim"
+      ]
+    ],
+    [
+      "NHL",
+      "8477949",
+      "nhl-alex-tuch",
+      [
+        "Alex Tuch"
+      ]
+    ],
+    [
+      "NHL",
+      "8477950",
+      "nhl-tony-deangelo",
+      [
+        "Tony DeAngelo"
+      ]
+    ],
+    [
+      "NHL",
+      "8477951",
+      "nhl-nick-schmaltz",
+      [
+        "Nick Schmaltz"
+      ]
+    ],
+    [
+      "NHL",
+      "8477953",
+      "nhl-kasperi-kapanen",
+      [
+        "Kasperi Kapanen"
+      ]
+    ],
+    [
+      "NHL",
+      "8477955",
+      "nhl-jared-mccann",
+      [
+        "Jared McCann"
+      ]
+    ],
+    [
+      "NHL",
+      "8477956",
+      "nhl-david-pastrnak",
+      [
+        "David Pastrnak"
+      ]
+    ],
+    [
+      "NHL",
+      "8477960",
+      "nhl-adrian-kempe",
+      [
+        "Adrian Kempe"
+      ]
+    ],
+    [
+      "NHL",
+      "8477964",
+      "nhl-ivan-barbashev",
+      [
+        "Ivan Barbashev"
+      ]
+    ],
+    [
+      "NHL",
+      "8477967",
+      "nhl-thatcher-demko",
+      [
+        "Thatcher Demko"
+      ]
+    ],
+    [
+      "NHL",
+      "8477968",
+      "nhl-alex-nedeljkovic",
+      [
+        "Alex Nedeljkovic"
+      ]
+    ],
+    [
+      "NHL",
+      "8477969",
+      "nhl-marcus-pettersson",
+      [
+        "Marcus Pettersson"
+      ]
+    ],
+    [
+      "NHL",
+      "8477970",
+      "nhl-vitek-vanecek",
+      [
+        "Vitek Vanecek"
+      ]
+    ],
+    [
+      "NHL",
+      "8477986",
+      "nhl-brandon-montour",
+      [
+        "Brandon Montour"
+      ]
+    ],
+    [
+      "NHL",
+      "8477987",
+      "nhl-ryan-donato",
+      [
+        "Ryan Donato"
+      ]
+    ],
+    [
+      "NHL",
+      "8477989",
+      "nhl-christian-dvorak",
+      [
+        "Christian Dvorak"
+      ]
+    ],
+    [
+      "NHL",
+      "8478007",
+      "nhl-elvis-merzlikins",
+      [
+        "Elvis Merzlikins"
+      ]
+    ],
+    [
+      "NHL",
+      "8478009",
+      "nhl-ilya-sorokin",
+      [
+        "Ilya Sorokin"
+      ]
+    ],
+    [
+      "NHL",
+      "8478010",
+      "nhl-brayden-point",
+      [
+        "Brayden Point"
+      ]
+    ],
+    [
+      "NHL",
+      "8478013",
+      "nhl-jake-walman",
+      [
+        "Jake Walman"
+      ]
+    ],
+    [
+      "NHL",
+      "8478020",
+      "nhl-michael-amadio",
+      [
+        "Michael Amadio"
+      ]
+    ],
+    [
+      "NHL",
+      "8478024",
+      "nhl-ville-husso",
+      [
+        "Ville Husso"
+      ]
+    ],
+    [
+      "NHL",
+      "8478038",
+      "nhl-devon-toews",
+      [
+        "Devon Toews"
+      ]
+    ],
+    [
+      "NHL",
+      "8478042",
+      "nhl-viktor-arvidsson",
+      [
+        "Viktor Arvidsson"
+      ]
+    ],
+    [
+      "NHL",
+      "8478048",
+      "nhl-igor-shesterkin",
+      [
+        "Igor Shesterkin"
+      ]
+    ],
+    [
+      "NHL",
+      "8478055",
+      "nhl-gustav-forsling",
+      [
+        "Gustav Forsling"
+      ]
+    ],
+    [
+      "NHL",
+      "8478057",
+      "nhl-dakota-joshua",
+      [
+        "Dakota Joshua"
+      ]
+    ],
+    [
+      "NHL",
+      "8478109",
+      "nhl-victor-olofsson",
+      [
+        "Victor Olofsson"
+      ]
+    ],
+    [
+      "NHL",
+      "8478133",
+      "nhl-jake-evans",
+      [
+        "Jake Evans"
+      ]
+    ],
+    [
+      "NHL",
+      "8478136",
+      "nhl-jake-middleton",
+      [
+        "Jake Middleton"
+      ]
+    ],
+    [
+      "NHL",
+      "8478178",
+      "nhl-darren-raddysh",
+      [
+        "Darren Raddysh"
+      ]
+    ],
+    [
+      "NHL",
+      "8478233",
+      "nhl-andrew-mangiapane",
+      [
+        "Andrew Mangiapane"
+      ]
+    ],
+    [
+      "NHL",
+      "8478366",
+      "nhl-frank-vatrano",
+      [
+        "Frank Vatrano"
+      ]
+    ],
+    [
+      "NHL",
+      "8478396",
+      "nhl-noah-hanifin",
+      [
+        "Noah Hanifin"
+      ]
+    ],
+    [
+      "NHL",
+      "8478397",
+      "nhl-rasmus-andersson",
+      [
+        "Rasmus Andersson"
+      ]
+    ],
+    [
+      "NHL",
+      "8478398",
+      "nhl-kyle-connor",
+      [
+        "Kyle Connor"
+      ]
+    ],
+    [
+      "NHL",
+      "8478399",
+      "nhl-jonas-siegenthaler",
+      [
+        "Jonas Siegenthaler"
+      ]
+    ],
+    [
+      "NHL",
+      "8478401",
+      "nhl-pavel-zacha",
+      [
+        "Pavel Zacha"
+      ]
+    ],
+    [
+      "NHL",
+      "8478402",
+      "nhl-connor-mcdavid",
+      [
+        "Connor McDavid"
+      ]
+    ],
+    [
+      "NHL",
+      "8478403",
+      "nhl-jack-eichel",
+      [
+        "Jack Eichel"
+      ]
+    ],
+    [
+      "NHL",
+      "8478406",
+      "nhl-mackenzie-blackwood",
+      [
+        "Mackenzie Blackwood"
+      ]
+    ],
+    [
+      "NHL",
+      "8478407",
+      "nhl-vince-dunn",
+      [
+        "Vince Dunn"
+      ]
+    ],
+    [
+      "NHL",
+      "8478414",
+      "nhl-timo-meier",
+      [
+        "Timo Meier"
+      ]
+    ],
+    [
+      "NHL",
+      "8478420",
+      "nhl-mikko-rantanen",
+      [
+        "Mikko Rantanen"
+      ]
+    ],
+    [
+      "NHL",
+      "8478421",
+      "nhl-a-j-greer",
+      [
+        "A.J. Greer"
+      ]
+    ],
+    [
+      "NHL",
+      "8478427",
+      "nhl-sebastian-aho",
+      [
+        "Sebastian Aho"
+      ]
+    ],
+    [
+      "NHL",
+      "8478434",
+      "nhl-keegan-kolesar",
+      [
+        "Keegan Kolesar"
+      ]
+    ],
+    [
+      "NHL",
+      "8478435",
+      "nhl-dan-vladar",
+      [
+        "Dan Vladar"
+      ]
+    ],
+    [
+      "NHL",
+      "8478438",
+      "nhl-tommy-novak",
+      [
+        "Tommy Novak"
+      ]
+    ],
+    [
+      "NHL",
+      "8478439",
+      "nhl-travis-konecny",
+      [
+        "Travis Konecny"
+      ]
+    ],
+    [
+      "NHL",
+      "8478440",
+      "nhl-dylan-strome",
+      [
+        "Dylan Strome"
+      ]
+    ],
+    [
+      "NHL",
+      "8478443",
+      "nhl-brandon-carlo",
+      [
+        "Brandon Carlo"
+      ]
+    ],
+    [
+      "NHL",
+      "8478444",
+      "nhl-brock-boeser",
+      [
+        "Brock Boeser"
+      ]
+    ],
+    [
+      "NHL",
+      "8478445",
+      "nhl-mathew-barzal",
+      [
+        "Mathew Barzal"
+      ]
+    ],
+    [
+      "NHL",
+      "8478449",
+      "nhl-roope-hintz",
+      [
+        "Roope Hintz"
+      ]
+    ],
+    [
+      "NHL",
+      "8478450",
+      "nhl-parker-wotherspoon",
+      [
+        "Parker Wotherspoon"
+      ]
+    ],
+    [
+      "NHL",
+      "8478458",
+      "nhl-jack-roslovic",
+      [
+        "Jack Roslovic"
+      ]
+    ],
+    [
+      "NHL",
+      "8478460",
+      "nhl-zach-werenski",
+      [
+        "Zach Werenski"
+      ]
+    ],
+    [
+      "NHL",
+      "8478462",
+      "nhl-nicolas-roy",
+      [
+        "Nicolas Roy"
+      ]
+    ],
+    [
+      "NHL",
+      "8478463",
+      "nhl-anthony-beauvillier",
+      [
+        "Anthony Beauvillier"
+      ]
+    ],
+    [
+      "NHL",
+      "8478468",
+      "nhl-jeremy-lauzon",
+      [
+        "Jeremy Lauzon"
+      ]
+    ],
+    [
+      "NHL",
+      "8478469",
+      "nhl-thomas-chabot",
+      [
+        "Thomas Chabot"
+      ]
+    ],
+    [
+      "NHL",
+      "8478474",
+      "nhl-lawson-crouse",
+      [
+        "Lawson Crouse"
+      ]
+    ],
+    [
+      "NHL",
+      "8478483",
+      "nhl-mitch-marner",
+      [
+        "Mitch Marner"
+      ]
+    ],
+    [
+      "NHL",
+      "8478493",
+      "nhl-joel-eriksson-ek",
+      [
+        "Joel Eriksson Ek"
+      ]
+    ],
+    [
+      "NHL",
+      "8478498",
+      "nhl-jake-debrusk",
+      [
+        "Jake DeBrusk"
+      ]
+    ],
+    [
+      "NHL",
+      "8478499",
+      "nhl-adin-hill",
+      [
+        "Adin Hill"
+      ]
+    ],
+    [
+      "NHL",
+      "8478500",
+      "nhl-ivan-provorov",
+      [
+        "Ivan Provorov"
+      ]
+    ],
+    [
+      "NHL",
+      "8478507",
+      "nhl-john-marino",
+      [
+        "John Marino"
+      ]
+    ],
+    [
+      "NHL",
+      "8478508",
+      "nhl-yakov-trenin",
+      [
+        "Yakov Trenin"
+      ]
+    ],
+    [
+      "NHL",
+      "8478519",
+      "nhl-anthony-cirelli",
+      [
+        "Anthony Cirelli"
+      ]
+    ],
+    [
+      "NHL",
+      "8478542",
+      "nhl-evan-rodrigues",
+      [
+        "Evan Rodrigues"
+      ]
+    ],
+    [
+      "NHL",
+      "8478550",
+      "nhl-artemi-panarin",
+      [
+        "Artemi Panarin"
+      ]
+    ],
+    [
+      "NHL",
+      "8478569",
+      "nhl-noel-acciari",
+      [
+        "Noel Acciari"
+      ]
+    ],
+    [
+      "NHL",
+      "8478840",
+      "nhl-will-borgen",
+      [
+        "Will Borgen"
+      ]
+    ],
+    [
+      "NHL",
+      "8478851",
+      "nhl-alexandre-carrier",
+      [
+        "Alexandre Carrier"
+      ]
+    ],
+    [
+      "NHL",
+      "8478854",
+      "nhl-ryan-shea",
+      [
+        "Ryan Shea"
+      ]
+    ],
+    [
+      "NHL",
+      "8478856",
+      "nhl-conor-garland",
+      [
+        "Conor Garland"
+      ]
+    ],
+    [
+      "NHL",
+      "8478859",
+      "nhl-niko-mikkola",
+      [
+        "Niko Mikkola"
+      ]
+    ],
+    [
+      "NHL",
+      "8478864",
+      "nhl-kirill-kaprizov",
+      [
+        "Kirill Kaprizov"
+      ]
+    ],
+    [
+      "NHL",
+      "8478872",
+      "nhl-karel-vejmelka",
+      [
+        "Karel Vejmelka"
+      ]
+    ],
+    [
+      "NHL",
+      "8478873",
+      "nhl-troy-terry",
+      [
+        "Troy Terry"
+      ]
+    ],
+    [
+      "NHL",
+      "8478874",
+      "nhl-adam-gaudette",
+      [
+        "Adam Gaudette"
+      ]
+    ],
+    [
+      "NHL",
+      "8478882",
+      "nhl-vladislav-gavrikov",
+      [
+        "Vladislav Gavrikov"
+      ]
+    ],
+    [
+      "NHL",
+      "8478891",
+      "nhl-mason-appleton",
+      [
+        "Mason Appleton"
+      ]
+    ],
+    [
+      "NHL",
+      "8478911",
+      "nhl-matt-roy",
+      [
+        "Matt Roy"
+      ]
+    ],
+    [
+      "NHL",
+      "8478916",
+      "nhl-joey-daccord",
+      [
+        "Joey Daccord"
+      ]
+    ],
+    [
+      "NHL",
+      "8478970",
+      "nhl-jalen-chatfield",
+      [
+        "Jalen Chatfield"
+      ]
+    ],
+    [
+      "NHL",
+      "8478975",
+      "nhl-mason-marchment",
+      [
+        "Mason Marchment"
+      ]
+    ],
+    [
+      "NHL",
+      "8479193",
+      "nhl-casey-desmith",
+      [
+        "Casey DeSmith"
+      ]
+    ],
+    [
+      "NHL",
+      "8479292",
+      "nhl-charlie-lindgren",
+      [
+        "Charlie Lindgren"
+      ]
+    ],
+    [
+      "NHL",
+      "8479312",
+      "nhl-alex-lyon",
+      [
+        "Alex Lyon"
+      ]
+    ],
+    [
+      "NHL",
+      "8479314",
+      "nhl-matthew-tkachuk",
+      [
+        "Matthew Tkachuk"
+      ]
+    ],
+    [
+      "NHL",
+      "8479318",
+      "nhl-auston-matthews",
+      [
+        "Auston Matthews"
+      ]
+    ],
+    [
+      "NHL",
+      "8479323",
+      "nhl-adam-fox",
+      [
+        "Adam Fox"
+      ]
+    ],
+    [
+      "NHL",
+      "8479324",
+      "nhl-ryan-lindgren",
+      [
+        "Ryan Lindgren"
+      ]
+    ],
+    [
+      "NHL",
+      "8479325",
+      "nhl-charlie-mcavoy",
+      [
+        "Charlie McAvoy"
+      ]
+    ],
+    [
+      "NHL",
+      "8479337",
+      "nhl-alex-debrincat",
+      [
+        "Alex DeBrincat"
+      ]
+    ],
+    [
+      "NHL",
+      "8479343",
+      "nhl-clayton-keller",
+      [
+        "Clayton Keller"
+      ]
+    ],
+    [
+      "NHL",
+      "8479345",
+      "nhl-jakob-chychrun",
+      [
+        "Jakob Chychrun"
+      ]
+    ],
+    [
+      "NHL",
+      "8479351",
+      "nhl-sam-steel",
+      [
+        "Sam Steel"
+      ]
+    ],
+    [
+      "NHL",
+      "8479353",
+      "nhl-brett-howden",
+      [
+        "Brett Howden"
+      ]
+    ],
+    [
+      "NHL",
+      "8479361",
+      "nhl-joseph-woll",
+      [
+        "Joseph Woll"
+      ]
+    ],
+    [
+      "NHL",
+      "8479368",
+      "nhl-max-jones",
+      [
+        "Max Jones"
+      ]
+    ],
+    [
+      "NHL",
+      "8479369",
+      "nhl-andrew-peeke",
+      [
+        "Andrew Peeke"
+      ]
+    ],
+    [
+      "NHL",
+      "8479371",
+      "nhl-dante-fabbro",
+      [
+        "Dante Fabbro"
+      ]
+    ],
+    [
+      "NHL",
+      "8479385",
+      "nhl-jordan-kyrou",
+      [
+        "Jordan Kyrou"
+      ]
+    ],
+    [
+      "NHL",
+      "8479390",
+      "nhl-taylor-raddysh",
+      [
+        "Taylor Raddysh"
+      ]
+    ],
+    [
+      "NHL",
+      "8479394",
+      "nhl-carter-hart",
+      [
+        "Carter Hart"
+      ]
+    ],
+    [
+      "NHL",
+      "8479398",
+      "nhl-samuel-girard",
+      [
+        "Samuel Girard"
+      ]
+    ],
+    [
+      "NHL",
+      "8479406",
+      "nhl-filip-gustavsson",
+      [
+        "Filip Gustavsson"
+      ]
+    ],
+    [
+      "NHL",
+      "8479407",
+      "nhl-jesper-bratt",
+      [
+        "Jesper Bratt"
+      ]
+    ],
+    [
+      "NHL",
+      "8479410",
+      "nhl-mikhail-sergachev",
+      [
+        "Mikhail Sergachev"
+      ]
+    ],
+    [
+      "NHL",
+      "8479420",
+      "nhl-tage-thompson",
+      [
+        "Tage Thompson"
+      ]
+    ],
+    [
+      "NHL",
+      "8479425",
+      "nhl-filip-hronek",
+      [
+        "Filip Hronek"
+      ]
+    ],
+    [
+      "NHL",
+      "8479442",
+      "nhl-troy-stecher",
+      [
+        "Troy Stecher"
+      ]
+    ],
+    [
+      "NHL",
+      "8479496",
+      "nhl-david-rittich",
+      [
+        "David Rittich"
+      ]
+    ],
+    [
+      "NHL",
+      "8479520",
+      "nhl-brandon-duhaime",
+      [
+        "Brandon Duhaime"
+      ]
+    ],
+    [
+      "NHL",
+      "8479525",
+      "nhl-ross-colton",
+      [
+        "Ross Colton"
+      ]
+    ],
+    [
+      "NHL",
+      "8479542",
+      "nhl-brandon-hagel",
+      [
+        "Brandon Hagel"
+      ]
+    ],
+    [
+      "NHL",
+      "8479576",
+      "nhl-vincent-desharnais",
+      [
+        "Vincent Desharnais"
+      ]
+    ],
+    [
+      "NHL",
+      "8479591",
+      "nhl-michael-eyssimont",
+      [
+        "Michael Eyssimont"
+      ]
+    ],
+    [
+      "NHL",
+      "8479619",
+      "nhl-michael-carcone",
+      [
+        "Michael Carcone"
+      ]
+    ],
+    [
+      "NHL",
+      "8479638",
+      "nhl-justin-brazeau",
+      [
+        "Justin Brazeau"
+      ]
+    ],
+    [
+      "NHL",
+      "8479661",
+      "nhl-tanner-jeannot",
+      [
+        "Tanner Jeannot"
+      ]
+    ],
+    [
+      "NHL",
+      "8479671",
+      "nhl-mathieu-olivier",
+      [
+        "Mathieu Olivier"
+      ]
+    ],
+    [
+      "NHL",
+      "8479675",
+      "nhl-trevor-moore",
+      [
+        "Trevor Moore"
+      ]
+    ],
+    [
+      "NHL",
+      "8479705",
+      "nhl-jeffrey-viel",
+      [
+        "Jeffrey Viel"
+      ]
+    ],
+    [
+      "NHL",
+      "8479973",
+      "nhl-stuart-skinner",
+      [
+        "Stuart Skinner"
+      ]
+    ],
+    [
+      "NHL",
+      "8479977",
+      "nhl-kailer-yamamoto",
+      [
+        "Kailer Yamamoto"
+      ]
+    ],
+    [
+      "NHL",
+      "8479979",
+      "nhl-jake-oettinger",
+      [
+        "Jake Oettinger"
+      ]
+    ],
+    [
+      "NHL",
+      "8479980",
+      "nhl-nicolas-hague",
+      [
+        "Nicolas Hague"
+      ]
+    ],
+    [
+      "NHL",
+      "8479982",
+      "nhl-conor-timmins",
+      [
+        "Conor Timmins"
+      ]
+    ],
+    [
+      "NHL",
+      "8479983",
+      "nhl-mario-ferraro",
+      [
+        "Mario Ferraro"
+      ]
+    ],
+    [
+      "NHL",
+      "8479985",
+      "nhl-cale-fleury",
+      [
+        "Cale Fleury"
+      ]
+    ],
+    [
+      "NHL",
+      "8479987",
+      "nhl-morgan-geekie",
+      [
+        "Morgan Geekie"
+      ]
+    ],
+    [
+      "NHL",
+      "8479996",
+      "nhl-cody-glass",
+      [
+        "Cody Glass"
+      ]
+    ],
+    [
+      "NHL",
+      "8479998",
+      "nhl-mikey-anderson",
+      [
+        "Mikey Anderson"
+      ]
+    ],
+    [
+      "NHL",
+      "8479999",
+      "nhl-casey-mittelstadt",
+      [
+        "Casey Mittelstadt"
+      ]
+    ],
+    [
+      "NHL",
+      "8480002",
+      "nhl-nico-hischier",
+      [
+        "Nico Hischier"
+      ]
+    ],
+    [
+      "NHL",
+      "8480012",
+      "nhl-elias-pettersson-8480012",
+      [
+        "Elias Pettersson"
+      ]
+    ],
+    [
+      "NHL",
+      "8480014",
+      "nhl-gabriel-vilardi",
+      [
+        "Gabriel Vilardi"
+      ]
+    ],
+    [
+      "NHL",
+      "8480015",
+      "nhl-owen-tippett",
+      [
+        "Owen Tippett"
+      ]
+    ],
+    [
+      "NHL",
+      "8480018",
+      "nhl-nick-suzuki",
+      [
+        "Nick Suzuki"
+      ]
+    ],
+    [
+      "NHL",
+      "8480022",
+      "nhl-michael-dipietro",
+      [
+        "Michael DiPietro"
+      ]
+    ],
+    [
+      "NHL",
+      "8480023",
+      "nhl-robert-thomas",
+      [
+        "Robert Thomas"
+      ]
+    ],
+    [
+      "NHL",
+      "8480027",
+      "nhl-jason-robertson",
+      [
+        "Jason Robertson"
+      ]
+    ],
+    [
+      "NHL",
+      "8480028",
+      "nhl-morgan-frost",
+      [
+        "Morgan Frost"
+      ]
+    ],
+    [
+      "NHL",
+      "8480035",
+      "nhl-henri-jokiharju",
+      [
+        "Henri Jokiharju"
+      ]
+    ],
+    [
+      "NHL",
+      "8480036",
+      "nhl-miro-heiskanen",
+      [
+        "Miro Heiskanen"
+      ]
+    ],
+    [
+      "NHL",
+      "8480039",
+      "nhl-martin-necas",
+      [
+        "Martin Necas"
+      ]
+    ],
+    [
+      "NHL",
+      "8480043",
+      "nhl-timothy-liljegren",
+      [
+        "Timothy Liljegren"
+      ]
+    ],
+    [
+      "NHL",
+      "8480045",
+      "nhl-ukko-pekka-luukkonen",
+      [
+        "Ukko-Pekka Luukkonen"
+      ]
+    ],
+    [
+      "NHL",
+      "8480049",
+      "nhl-dylan-samberg",
+      [
+        "Dylan Samberg"
+      ]
+    ],
+    [
+      "NHL",
+      "8480064",
+      "nhl-josh-norris",
+      [
+        "Josh Norris"
+      ]
+    ],
+    [
+      "NHL",
+      "8480068",
+      "nhl-ryan-poehling",
+      [
+        "Ryan Poehling"
+      ]
+    ],
+    [
+      "NHL",
+      "8480069",
+      "nhl-cale-makar",
+      [
+        "Cale Makar"
+      ]
+    ],
+    [
+      "NHL",
+      "8480074",
+      "nhl-alexandre-texier",
+      [
+        "Alexandre Texier"
+      ]
+    ],
+    [
+      "NHL",
+      "8480084",
+      "nhl-nick-desimone",
+      [
+        "Nick DeSimone"
+      ]
+    ],
+    [
+      "NHL",
+      "8480113",
+      "nhl-alex-iafallo",
+      [
+        "Alex Iafallo"
+      ]
+    ],
+    [
+      "NHL",
+      "8480145",
+      "nhl-neal-pionk",
+      [
+        "Neal Pionk"
+      ]
+    ],
+    [
+      "NHL",
+      "8480185",
+      "nhl-eetu-luostarinen",
+      [
+        "Eetu Luostarinen"
+      ]
+    ],
+    [
+      "NHL",
+      "8480188",
+      "nhl-fabian-zetterlund",
+      [
+        "Fabian Zetterlund"
+      ]
+    ],
+    [
+      "NHL",
+      "8480192",
+      "nhl-johnathan-kovacevic",
+      [
+        "Johnathan Kovacevic"
+      ]
+    ],
+    [
+      "NHL",
+      "8480193",
+      "nhl-daniil-tarasov",
+      [
+        "Daniil Tarasov"
+      ]
+    ],
+    [
+      "NHL",
+      "8480196",
+      "nhl-jacob-bryson",
+      [
+        "Jacob Bryson"
+      ]
+    ],
+    [
+      "NHL",
+      "8480208",
+      "nhl-drake-batherson",
+      [
+        "Drake Batherson"
+      ]
+    ],
+    [
+      "NHL",
+      "8480220",
+      "nhl-noah-cates",
+      [
+        "Noah Cates"
+      ]
+    ],
+    [
+      "NHL",
+      "8480246",
+      "nhl-nick-perbix",
+      [
+        "Nick Perbix"
+      ]
+    ],
+    [
+      "NHL",
+      "8480280",
+      "nhl-jeremy-swayman",
+      [
+        "Jeremy Swayman"
+      ]
+    ],
+    [
+      "NHL",
+      "8480289",
+      "nhl-morgan-barron",
+      [
+        "Morgan Barron"
+      ]
+    ],
+    [
+      "NHL",
+      "8480313",
+      "nhl-logan-thompson",
+      [
+        "Logan Thompson"
+      ]
+    ],
+    [
+      "NHL",
+      "8480336",
+      "nhl-sean-walker",
+      [
+        "Sean Walker"
+      ]
+    ],
+    [
+      "NHL",
+      "8480426",
+      "nhl-charle-edouard-d-astous",
+      [
+        "Charle-Edouard D'Astous"
+      ]
+    ],
+    [
+      "NHL",
+      "8480434",
+      "nhl-sean-durzi",
+      [
+        "Sean Durzi"
+      ]
+    ],
+    [
+      "NHL",
+      "8480448",
+      "nhl-parker-kelly",
+      [
+        "Parker Kelly"
+      ]
+    ],
+    [
+      "NHL",
+      "8480459",
+      "nhl-pius-suter",
+      [
+        "Pius Suter"
+      ]
+    ],
+    [
+      "NHL",
+      "8480727",
+      "nhl-zach-whitecloud",
+      [
+        "Zach Whitecloud"
+      ]
+    ],
+    [
+      "NHL",
+      "8480748",
+      "nhl-kiefer-sherwood",
+      [
+        "Kiefer Sherwood"
+      ]
+    ],
+    [
+      "NHL",
+      "8480796",
+      "nhl-martin-fehervary",
+      [
+        "Martin Fehérváry"
+      ]
+    ],
+    [
+      "NHL",
+      "8480797",
+      "nhl-joel-farabee",
+      [
+        "Joel Farabee"
+      ]
+    ],
+    [
+      "NHL",
+      "8480800",
+      "nhl-quinn-hughes",
+      [
+        "Quinn Hughes"
+      ]
+    ],
+    [
+      "NHL",
+      "8480801",
+      "nhl-brady-tkachuk",
+      [
+        "Brady Tkachuk"
+      ]
+    ],
+    [
+      "NHL",
+      "8480802",
+      "nhl-ryan-mcleod",
+      [
+        "Ryan McLeod"
+      ]
+    ],
+    [
+      "NHL",
+      "8480803",
+      "nhl-evan-bouchard",
+      [
+        "Evan Bouchard"
+      ]
+    ],
+    [
+      "NHL",
+      "8480807",
+      "nhl-mattias-samuelsson",
+      [
+        "Mattias Samuelsson"
+      ]
+    ],
+    [
+      "NHL",
+      "8480817",
+      "nhl-k-andre-miller",
+      [
+        "K'Andre Miller"
+      ]
+    ],
+    [
+      "NHL",
+      "8480830",
+      "nhl-andrei-svechnikov",
+      [
+        "Andrei Svechnikov"
+      ]
+    ],
+    [
+      "NHL",
+      "8480835",
+      "nhl-jack-drury",
+      [
+        "Jack Drury"
+      ]
+    ],
+    [
+      "NHL",
+      "8480839",
+      "nhl-rasmus-dahlin",
+      [
+        "Rasmus Dahlin"
+      ]
+    ],
+    [
+      "NHL",
+      "8480843",
+      "nhl-lukas-dostal",
+      [
+        "Lukas Dostal"
+      ]
+    ],
+    [
+      "NHL",
+      "8480848",
+      "nhl-ty-dellandrea",
+      [
+        "Ty Dellandrea"
+      ]
+    ],
+    [
+      "NHL",
+      "8480849",
+      "nhl-barrett-hayton",
+      [
+        "Barrett Hayton"
+      ]
+    ],
+    [
+      "NHL",
+      "8480860",
+      "nhl-kevin-bahl",
+      [
+        "Kevin Bahl"
+      ]
+    ],
+    [
+      "NHL",
+      "8480865",
+      "nhl-noah-dobson",
+      [
+        "Noah Dobson"
+      ]
+    ],
+    [
+      "NHL",
+      "8480873",
+      "nhl-rasmus-sandin",
+      [
+        "Rasmus Sandin"
+      ]
+    ],
+    [
+      "NHL",
+      "8480878",
+      "nhl-nils-lundkvist",
+      [
+        "Nils Lundkvist"
+      ]
+    ],
+    [
+      "NHL",
+      "8480891",
+      "nhl-michael-kesselring",
+      [
+        "Michael Kesselring"
+      ]
+    ],
+    [
+      "NHL",
+      "8480893",
+      "nhl-kirill-marchenko",
+      [
+        "Kirill Marchenko"
+      ]
+    ],
+    [
+      "NHL",
+      "8480947",
+      "nhl-kevin-lankinen",
+      [
+        "Kevin Lankinen"
+      ]
+    ],
+    [
+      "NHL",
+      "8480950",
+      "nhl-ilya-lyubushkin",
+      [
+        "Ilya Lyubushkin"
+      ]
+    ],
+    [
+      "NHL",
+      "8480981",
+      "nhl-joel-hofer",
+      [
+        "Joel Hofer"
+      ]
+    ],
+    [
+      "NHL",
+      "8480995",
+      "nhl-pontus-holmberg",
+      [
+        "Pontus Holmberg"
+      ]
+    ],
+    [
+      "NHL",
+      "8481006",
+      "nhl-tyler-tucker",
+      [
+        "Tyler Tucker"
+      ]
+    ],
+    [
+      "NHL",
+      "8481013",
+      "nhl-jonatan-berggren",
+      [
+        "Jonatan Berggren"
+      ]
+    ],
+    [
+      "NHL",
+      "8481020",
+      "nhl-justus-annunen",
+      [
+        "Justus Annunen"
+      ]
+    ],
+    [
+      "NHL",
+      "8481024",
+      "nhl-linus-karlsson",
+      [
+        "Linus Karlsson"
+      ]
+    ],
+    [
+      "NHL",
+      "8481033",
+      "nhl-akira-schmid",
+      [
+        "Akira Schmid"
+      ]
+    ],
+    [
+      "NHL",
+      "8481035",
+      "nhl-samuel-ersson",
+      [
+        "Samuel Ersson"
+      ]
+    ],
+    [
+      "NHL",
+      "8481068",
+      "nhl-yegor-sharangovich",
+      [
+        "Yegor Sharangovich"
+      ]
+    ],
+    [
+      "NHL",
+      "8481122",
+      "nhl-simon-benoit",
+      [
+        "Simon Benoit"
+      ]
+    ],
+    [
+      "NHL",
+      "8481133",
+      "nhl-cole-reinhardt",
+      [
+        "Cole Reinhardt"
+      ]
+    ],
+    [
+      "NHL",
+      "8481186",
+      "nhl-logan-o-connor",
+      [
+        "Logan O'Connor"
+      ]
+    ],
+    [
+      "NHL",
+      "8481519",
+      "nhl-spencer-knight",
+      [
+        "Spencer Knight"
+      ]
+    ],
+    [
+      "NHL",
+      "8481522",
+      "nhl-peyton-krebs",
+      [
+        "Peyton Krebs"
+      ]
+    ],
+    [
+      "NHL",
+      "8481524",
+      "nhl-bowen-byram",
+      [
+        "Bowen Byram"
+      ]
+    ],
+    [
+      "NHL",
+      "8481525",
+      "nhl-matthew-robertson",
+      [
+        "Matthew Robertson"
+      ]
+    ],
+    [
+      "NHL",
+      "8481527",
+      "nhl-kaedan-korczak",
+      [
+        "Kaedan Korczak"
+      ]
+    ],
+    [
+      "NHL",
+      "8481528",
+      "nhl-dylan-cozens",
+      [
+        "Dylan Cozens"
+      ]
+    ],
+    [
+      "NHL",
+      "8481533",
+      "nhl-trevor-zegras",
+      [
+        "Trevor Zegras"
+      ]
+    ],
+    [
+      "NHL",
+      "8481535",
+      "nhl-nils-hoglander",
+      [
+        "Nils Hoglander"
+      ]
+    ],
+    [
+      "NHL",
+      "8481540",
+      "nhl-cole-caufield",
+      [
+        "Cole Caufield"
+      ]
+    ],
+    [
+      "NHL",
+      "8481542",
+      "nhl-moritz-seider",
+      [
+        "Moritz Seider"
+      ]
+    ],
+    [
+      "NHL",
+      "8481546",
+      "nhl-cam-york",
+      [
+        "Cam York"
+      ]
+    ],
+    [
+      "NHL",
+      "8481553",
+      "nhl-bobby-brink",
+      [
+        "Bobby Brink"
+      ]
+    ],
+    [
+      "NHL",
+      "8481554",
+      "nhl-kaapo-kakko",
+      [
+        "Kaapo Kakko"
+      ]
+    ],
+    [
+      "NHL",
+      "8481557",
+      "nhl-matt-boldy",
+      [
+        "Matt Boldy"
+      ]
+    ],
+    [
+      "NHL",
+      "8481559",
+      "nhl-jack-hughes",
+      [
+        "Jack Hughes"
+      ]
+    ],
+    [
+      "NHL",
+      "8481563",
+      "nhl-drew-helleson",
+      [
+        "Drew Helleson"
+      ]
+    ],
+    [
+      "NHL",
+      "8481568",
+      "nhl-alex-vlasic",
+      [
+        "Alex Vlasic"
+      ]
+    ],
+    [
+      "NHL",
+      "8481580",
+      "nhl-connor-mcmichael",
+      [
+        "Connor McMichael"
+      ]
+    ],
+    [
+      "NHL",
+      "8481581",
+      "nhl-thomas-harley",
+      [
+        "Thomas Harley"
+      ]
+    ],
+    [
+      "NHL",
+      "8481582",
+      "nhl-nicholas-robertson",
+      [
+        "Nicholas Robertson"
+      ]
+    ],
+    [
+      "NHL",
+      "8481593",
+      "nhl-jayden-struble",
+      [
+        "Jayden Struble"
+      ]
+    ],
+    [
+      "NHL",
+      "8481596",
+      "nhl-shane-pinto",
+      [
+        "Shane Pinto"
+      ]
+    ],
+    [
+      "NHL",
+      "8481598",
+      "nhl-philip-broberg",
+      [
+        "Philip Broberg"
+      ]
+    ],
+    [
+      "NHL",
+      "8481601",
+      "nhl-simon-holmstrom",
+      [
+        "Simon Holmstrom"
+      ]
+    ],
+    [
+      "NHL",
+      "8481604",
+      "nhl-pavel-dorofeyev",
+      [
+        "Pavel Dorofeyev"
+      ]
+    ],
+    [
+      "NHL",
+      "8481605",
+      "nhl-jackson-lacombe",
+      [
+        "Jackson LaCombe"
+      ]
+    ],
+    [
+      "NHL",
+      "8481606",
+      "nhl-jordan-spence",
+      [
+        "Jordan Spence"
+      ]
+    ],
+    [
+      "NHL",
+      "8481607",
+      "nhl-albert-johansson",
+      [
+        "Albert Johansson"
+      ]
+    ],
+    [
+      "NHL",
+      "8481611",
+      "nhl-pyotr-kochetkov",
+      [
+        "Pyotr Kochetkov"
+      ]
+    ],
+    [
+      "NHL",
+      "8481617",
+      "nhl-vasily-podkolzin",
+      [
+        "Vasily Podkolzin"
+      ]
+    ],
+    [
+      "NHL",
+      "8481618",
+      "nhl-alex-newhook",
+      [
+        "Alex Newhook"
+      ]
+    ],
+    [
+      "NHL",
+      "8481624",
+      "nhl-ilya-mikheyev",
+      [
+        "Ilya Mikheyev"
+      ]
+    ],
+    [
+      "NHL",
+      "8481656",
+      "nhl-aliaksei-protas",
+      [
+        "Aliaksei Protas"
+      ]
+    ],
+    [
+      "NHL",
+      "8481668",
+      "nhl-arturs-silovs",
+      [
+        "Arturs Silovs"
+      ]
+    ],
+    [
+      "NHL",
+      "8481692",
+      "nhl-dustin-wolf",
+      [
+        "Dustin Wolf"
+      ]
+    ],
+    [
+      "NHL",
+      "8481711",
+      "nhl-matias-maccelli",
+      [
+        "Matias Maccelli"
+      ]
+    ],
+    [
+      "NHL",
+      "8481716",
+      "nhl-dmitri-voronkov",
+      [
+        "Dmitri Voronkov"
+      ]
+    ],
+    [
+      "NHL",
+      "8481721",
+      "nhl-arseny-gritsyuk",
+      [
+        "Arseny Gritsyuk"
+      ]
+    ],
+    [
+      "NHL",
+      "8481789",
+      "nhl-tye-kartye",
+      [
+        "Tye Kartye"
+      ]
+    ],
+    [
+      "NHL",
+      "8481806",
+      "nhl-louis-crevier",
+      [
+        "Louis Crevier"
+      ]
+    ],
+    [
+      "NHL",
+      "8482055",
+      "nhl-drew-o-connor",
+      [
+        "Drew O'Connor"
+      ]
+    ],
+    [
+      "NHL",
+      "8482062",
+      "nhl-cole-smith",
+      [
+        "Cole Smith"
+      ]
+    ],
+    [
+      "NHL",
+      "8482073",
+      "nhl-braden-schneider",
+      [
+        "Braden Schneider"
+      ]
+    ],
+    [
+      "NHL",
+      "8482074",
+      "nhl-connor-zary",
+      [
+        "Connor Zary"
+      ]
+    ],
+    [
+      "NHL",
+      "8482077",
+      "nhl-dylan-holloway",
+      [
+        "Dylan Holloway"
+      ]
+    ],
+    [
+      "NHL",
+      "8482078",
+      "nhl-lucas-raymond",
+      [
+        "Lucas Raymond"
+      ]
+    ],
+    [
+      "NHL",
+      "8482079",
+      "nhl-marco-rossi",
+      [
+        "Marco Rossi"
+      ]
+    ],
+    [
+      "NHL",
+      "8482087",
+      "nhl-kaiden-guhle",
+      [
+        "Kaiden Guhle"
+      ]
+    ],
+    [
+      "NHL",
+      "8482088",
+      "nhl-justin-sourdif",
+      [
+        "Justin Sourdif"
+      ]
+    ],
+    [
+      "NHL",
+      "8482089",
+      "nhl-jake-neighbours",
+      [
+        "Jake Neighbours"
+      ]
+    ],
+    [
+      "NHL",
+      "8482092",
+      "nhl-ridly-greig",
+      [
+        "Ridly Greig"
+      ]
+    ],
+    [
+      "NHL",
+      "8482093",
+      "nhl-seth-jarvis",
+      [
+        "Seth Jarvis"
+      ]
+    ],
+    [
+      "NHL",
+      "8482095",
+      "nhl-tyler-kleven",
+      [
+        "Tyler Kleven"
+      ]
+    ],
+    [
+      "NHL",
+      "8482097",
+      "nhl-jack-quinn",
+      [
+        "Jack Quinn"
+      ]
+    ],
+    [
+      "NHL",
+      "8482100",
+      "nhl-alexander-nikishin",
+      [
+        "Alexander Nikishin"
+      ]
+    ],
+    [
+      "NHL",
+      "8482105",
+      "nhl-jake-sanderson",
+      [
+        "Jake Sanderson"
+      ]
+    ],
+    [
+      "NHL",
+      "8482109",
+      "nhl-alexis-lafreniere",
+      [
+        "Alexis Lafrenière"
+      ]
+    ],
+    [
+      "NHL",
+      "8482110",
+      "nhl-dawson-mercer",
+      [
+        "Dawson Mercer"
+      ]
+    ],
+    [
+      "NHL",
+      "8482113",
+      "nhl-anton-lundell",
+      [
+        "Anton Lundell"
+      ]
+    ],
+    [
+      "NHL",
+      "8482116",
+      "nhl-tim-stutzle",
+      [
+        "Tim Stützle"
+      ]
+    ],
+    [
+      "NHL",
+      "8482122",
+      "nhl-brock-faber",
+      [
+        "Brock Faber"
+      ]
+    ],
+    [
+      "NHL",
+      "8482124",
+      "nhl-quinton-byfield",
+      [
+        "Quinton Byfield"
+      ]
+    ],
+    [
+      "NHL",
+      "8482126",
+      "nhl-emil-andrae",
+      [
+        "Emil Andrae"
+      ]
+    ],
+    [
+      "NHL",
+      "8482137",
+      "nhl-yaroslav-askarov",
+      [
+        "Yaroslav Askarov"
+      ]
+    ],
+    [
+      "NHL",
+      "8482142",
+      "nhl-jamie-drysdale",
+      [
+        "Jamie Drysdale"
+      ]
+    ],
+    [
+      "NHL",
+      "8482145",
+      "nhl-mavrik-bourque",
+      [
+        "Mavrik Bourque"
+      ]
+    ],
+    [
+      "NHL",
+      "8482146",
+      "nhl-luke-evangelista",
+      [
+        "Luke Evangelista"
+      ]
+    ],
+    [
+      "NHL",
+      "8482149",
+      "nhl-cole-perfetti",
+      [
+        "Cole Perfetti"
+      ]
+    ],
+    [
+      "NHL",
+      "8482155",
+      "nhl-alex-laferriere",
+      [
+        "Alex Laferriere"
+      ]
+    ],
+    [
+      "NHL",
+      "8482157",
+      "nhl-will-cuylle",
+      [
+        "Will Cuylle"
+      ]
+    ],
+    [
+      "NHL",
+      "8482159",
+      "nhl-tyson-foerster",
+      [
+        "Tyson Foerster"
+      ]
+    ],
+    [
+      "NHL",
+      "8482165",
+      "nhl-yan-kuznetsov",
+      [
+        "Yan Kuznetsov"
+      ]
+    ],
+    [
+      "NHL",
+      "8482166",
+      "nhl-shakir-mukhamadullin",
+      [
+        "Shakir Mukhamadullin"
+      ]
+    ],
+    [
+      "NHL",
+      "8482175",
+      "nhl-jj-peterka",
+      [
+        "JJ Peterka"
+      ]
+    ],
+    [
+      "NHL",
+      "8482176",
+      "nhl-wyatt-kaiser",
+      [
+        "Wyatt Kaiser"
+      ]
+    ],
+    [
+      "NHL",
+      "8482177",
+      "nhl-marat-khusnutdinov",
+      [
+        "Marat Khusnutdinov"
+      ]
+    ],
+    [
+      "NHL",
+      "8482178",
+      "nhl-ian-moore",
+      [
+        "Ian Moore"
+      ]
+    ],
+    [
+      "NHL",
+      "8482201",
+      "nhl-gage-goncalves",
+      [
+        "Gage Goncalves"
+      ]
+    ],
+    [
+      "NHL",
+      "8482245",
+      "nhl-artem-zub",
+      [
+        "Artem Zub"
+      ]
+    ],
+    [
+      "NHL",
+      "8482259",
+      "nhl-bobby-mcmann",
+      [
+        "Bobby McMann"
+      ]
+    ],
+    [
+      "NHL",
+      "8482445",
+      "nhl-devin-cooley",
+      [
+        "Devin Cooley"
+      ]
+    ],
+    [
+      "NHL",
+      "8482475",
+      "nhl-egor-chinakhov",
+      [
+        "Egor Chinakhov"
+      ]
+    ],
+    [
+      "NHL",
+      "8482476",
+      "nhl-emil-heineman",
+      [
+        "Emil Heineman"
+      ]
+    ],
+    [
+      "NHL",
+      "8482482",
+      "nhl-adam-wilsby",
+      [
+        "Adam Wilsby"
+      ]
+    ],
+    [
+      "NHL",
+      "8482487",
+      "nhl-jakub-dobes",
+      [
+        "Jakub Dobes"
+      ]
+    ],
+    [
+      "NHL",
+      "8482511",
+      "nhl-mason-lohrei",
+      [
+        "Mason Lohrei"
+      ]
+    ],
+    [
+      "NHL",
+      "8482516",
+      "nhl-matthew-kessel",
+      [
+        "Matthew Kessel"
+      ]
+    ],
+    [
+      "NHL",
+      "8482655",
+      "nhl-j-j-moser",
+      [
+        "J.J. Moser"
+      ]
+    ],
+    [
+      "NHL",
+      "8482659",
+      "nhl-josh-doan",
+      [
+        "Josh Doan"
+      ]
+    ],
+    [
+      "NHL",
+      "8482661",
+      "nhl-jesper-wallstedt",
+      [
+        "Jesper Wallstedt"
+      ]
+    ],
+    [
+      "NHL",
+      "8482665",
+      "nhl-matty-beniers",
+      [
+        "Matty Beniers"
+      ]
+    ],
+    [
+      "NHL",
+      "8482667",
+      "nhl-william-eklund",
+      [
+        "William Eklund"
+      ]
+    ],
+    [
+      "NHL",
+      "8482671",
+      "nhl-owen-power",
+      [
+        "Owen Power"
+      ]
+    ],
+    [
+      "NHL",
+      "8482679",
+      "nhl-matt-coronato",
+      [
+        "Matt Coronato"
+      ]
+    ],
+    [
+      "NHL",
+      "8482684",
+      "nhl-luke-hughes",
+      [
+        "Luke Hughes"
+      ]
+    ],
+    [
+      "NHL",
+      "8482691",
+      "nhl-aatu-raty",
+      [
+        "Aatu Räty"
+      ]
+    ],
+    [
+      "NHL",
+      "8482699",
+      "nhl-dylan-guenther",
+      [
+        "Dylan Guenther"
+      ]
+    ],
+    [
+      "NHL",
+      "8482702",
+      "nhl-logan-stankoven",
+      [
+        "Logan Stankoven"
+      ]
+    ],
+    [
+      "NHL",
+      "8482703",
+      "nhl-colton-dach",
+      [
+        "Colton Dach"
+      ]
+    ],
+    [
+      "NHL",
+      "8482705",
+      "nhl-cole-sillinger",
+      [
+        "Cole Sillinger"
+      ]
+    ],
+    [
+      "NHL",
+      "8482713",
+      "nhl-mackie-samoskevich",
+      [
+        "Mackie Samoskevich"
+      ]
+    ],
+    [
+      "NHL",
+      "8482720",
+      "nhl-matthew-knies",
+      [
+        "Matthew Knies"
+      ]
+    ],
+    [
+      "NHL",
+      "8482730",
+      "nhl-brandt-clarke",
+      [
+        "Brandt Clarke"
+      ]
+    ],
+    [
+      "NHL",
+      "8482733",
+      "nhl-logan-mailloux",
+      [
+        "Logan Mailloux"
+      ]
+    ],
+    [
+      "NHL",
+      "8482737",
+      "nhl-zachary-bolduc",
+      [
+        "Zachary Bolduc"
+      ]
+    ],
+    [
+      "NHL",
+      "8482740",
+      "nhl-wyatt-johnston",
+      [
+        "Wyatt Johnston"
+      ]
+    ],
+    [
+      "NHL",
+      "8482745",
+      "nhl-mason-mctavish",
+      [
+        "Mason McTavish"
+      ]
+    ],
+    [
+      "NHL",
+      "8482762",
+      "nhl-simon-edvinsson",
+      [
+        "Simon Edvinsson"
+      ]
+    ],
+    [
+      "NHL",
+      "8482765",
+      "nhl-isak-rosen",
+      [
+        "Isak Rosen"
+      ]
+    ],
+    [
+      "NHL",
+      "8482775",
+      "nhl-oliver-kapanen",
+      [
+        "Oliver Kapanen"
+      ]
+    ],
+    [
+      "NHL",
+      "8482803",
+      "nhl-olen-zellweger",
+      [
+        "Olen Zellweger"
+      ]
+    ],
+    [
+      "NHL",
+      "8482809",
+      "nhl-jackson-blake",
+      [
+        "Jackson Blake"
+      ]
+    ],
+    [
+      "NHL",
+      "8482821",
+      "nhl-arvid-soderblom",
+      [
+        "Arvid Soderblom"
+      ]
+    ],
+    [
+      "NHL",
+      "8482858",
+      "nhl-ryker-evans",
+      [
+        "Ryker Evans"
+      ]
+    ],
+    [
+      "NHL",
+      "8482929",
+      "nhl-emil-lilleberg",
+      [
+        "Emil Lilleberg"
+      ]
+    ],
+    [
+      "NHL",
+      "8482982",
+      "nhl-jet-greaves",
+      [
+        "Jet Greaves"
+      ]
+    ],
+    [
+      "NHL",
+      "8483398",
+      "nhl-declan-carlile",
+      [
+        "Declan Carlile"
+      ]
+    ],
+    [
+      "NHL",
+      "8483425",
+      "nhl-lian-bichsel",
+      [
+        "Lian Bichsel"
+      ]
+    ],
+    [
+      "NHL",
+      "8483431",
+      "nhl-logan-cooley",
+      [
+        "Logan Cooley"
+      ]
+    ],
+    [
+      "NHL",
+      "8483445",
+      "nhl-cutter-gauthier",
+      [
+        "Cutter Gauthier"
+      ]
+    ],
+    [
+      "NHL",
+      "8483450",
+      "nhl-ryan-greene",
+      [
+        "Ryan Greene"
+      ]
+    ],
+    [
+      "NHL",
+      "8483457",
+      "nhl-lane-hutson",
+      [
+        "Lane Hutson"
+      ]
+    ],
+    [
+      "NHL",
+      "8483464",
+      "nhl-marco-kasper",
+      [
+        "Marco Kasper"
+      ]
+    ],
+    [
+      "NHL",
+      "8483485",
+      "nhl-denton-mateychuk",
+      [
+        "Denton Mateychuk"
+      ]
+    ],
+    [
+      "NHL",
+      "8483489",
+      "nhl-fraser-minten",
+      [
+        "Fraser Minten"
+      ]
+    ],
+    [
+      "NHL",
+      "8483490",
+      "nhl-pavel-mintyukov",
+      [
+        "Pavel Mintyukov"
+      ]
+    ],
+    [
+      "NHL",
+      "8483493",
+      "nhl-frank-nazar",
+      [
+        "Frank Nazar"
+      ]
+    ],
+    [
+      "NHL",
+      "8483495",
+      "nhl-simon-nemec",
+      [
+        "Simon Nemec"
+      ]
+    ],
+    [
+      "NHL",
+      "8483499",
+      "nhl-liam-ohgren",
+      [
+        "Liam Ohgren"
+      ]
+    ],
+    [
+      "NHL",
+      "8483500",
+      "nhl-noah-ostlund",
+      [
+        "Noah Ostlund"
+      ]
+    ],
+    [
+      "NHL",
+      "8483506",
+      "nhl-sam-rinzel",
+      [
+        "Sam Rinzel"
+      ]
+    ],
+    [
+      "NHL",
+      "8483512",
+      "nhl-matt-savoie",
+      [
+        "Matt Savoie"
+      ]
+    ],
+    [
+      "NHL",
+      "8483515",
+      "nhl-juraj-slafkovsky",
+      [
+        "Juraj Slafkovský"
+      ]
+    ],
+    [
+      "NHL",
+      "8483516",
+      "nhl-jimmy-snuggerud",
+      [
+        "Jimmy Snuggerud"
+      ]
+    ],
+    [
+      "NHL",
+      "8483524",
+      "nhl-shane-wright",
+      [
+        "Shane Wright"
+      ]
+    ],
+    [
+      "NHL",
+      "8483525",
+      "nhl-danila-yurov",
+      [
+        "Danila Yurov"
+      ]
+    ],
+    [
+      "NHL",
+      "8483530",
+      "nhl-jaxson-stauber",
+      [
+        "Jaxson Stauber"
+      ]
+    ],
+    [
+      "NHL",
+      "8483548",
+      "nhl-brandon-bussi",
+      [
+        "Brandon Bussi"
+      ]
+    ],
+    [
+      "NHL",
+      "8483570",
+      "nhl-ben-meyers",
+      [
+        "Ben Meyers"
+      ]
+    ],
+    [
+      "NHL",
+      "8483609",
+      "nhl-adam-klapka",
+      [
+        "Adam Klapka"
+      ]
+    ],
+    [
+      "NHL",
+      "8483678",
+      "nhl-elias-pettersson-8483678",
+      [
+        "Elias Pettersson"
+      ]
+    ],
+    [
+      "NHL",
+      "8483690",
+      "nhl-noah-laba",
+      [
+        "Noah Laba"
+      ]
+    ],
+    [
+      "NHL",
+      "8483703",
+      "nhl-sergei-murashov",
+      [
+        "Sergei Murashov"
+      ]
+    ],
+    [
+      "NHL",
+      "8483710",
+      "nhl-dennis-hildeby",
+      [
+        "Dennis Hildeby"
+      ]
+    ],
+    [
+      "NHL",
+      "8483731",
+      "nhl-alex-bump",
+      [
+        "Alex Bump"
+      ]
+    ],
+    [
+      "NHL",
+      "8483808",
+      "nhl-andrei-kuzmenko",
+      [
+        "Andrei Kuzmenko"
+      ]
+    ],
+    [
+      "NHL",
+      "8483890",
+      "nhl-braeden-bowman",
+      [
+        "Braeden Bowman"
+      ]
+    ],
+    [
+      "NHL",
+      "8484136",
+      "nhl-max-sasson",
+      [
+        "Max Sasson"
+      ]
+    ],
+    [
+      "NHL",
+      "8484144",
+      "nhl-connor-bedard",
+      [
+        "Connor Bedard"
+      ]
+    ],
+    [
+      "NHL",
+      "8484145",
+      "nhl-zach-benson",
+      [
+        "Zach Benson"
+      ]
+    ],
+    [
+      "NHL",
+      "8484153",
+      "nhl-leo-carlsson",
+      [
+        "Leo Carlsson"
+      ]
+    ],
+    [
+      "NHL",
+      "8484164",
+      "nhl-dalibor-dvorsky",
+      [
+        "Dalibor Dvorsky"
+      ]
+    ],
+    [
+      "NHL",
+      "8484166",
+      "nhl-adam-fantilli",
+      [
+        "Adam Fantilli"
+      ]
+    ],
+    [
+      "NHL",
+      "8484170",
+      "nhl-jacob-fowler",
+      [
+        "Jacob Fowler"
+      ]
+    ],
+    [
+      "NHL",
+      "8484185",
+      "nhl-nick-lardis",
+      [
+        "Nick Lardis"
+      ]
+    ],
+    [
+      "NHL",
+      "8484186",
+      "nhl-ryan-leonard",
+      [
+        "Ryan Leonard"
+      ]
+    ],
+    [
+      "NHL",
+      "8484197",
+      "nhl-oliver-moore",
+      [
+        "Oliver Moore"
+      ]
+    ],
+    [
+      "NHL",
+      "8484210",
+      "nhl-gabe-perreault",
+      [
+        "Gabe Perreault"
+      ]
+    ],
+    [
+      "NHL",
+      "8484227",
+      "nhl-will-smith",
+      [
+        "Will Smith"
+      ]
+    ],
+    [
+      "NHL",
+      "8484240",
+      "nhl-tom-willander",
+      [
+        "Tom Willander"
+      ]
+    ],
+    [
+      "NHL",
+      "8484241",
+      "nhl-matthew-wood",
+      [
+        "Matthew Wood"
+      ]
+    ],
+    [
+      "NHL",
+      "8484258",
+      "nhl-sam-malinski",
+      [
+        "Sam Malinski"
+      ]
+    ],
+    [
+      "NHL",
+      "8484262",
+      "nhl-travis-mitchell",
+      [
+        "Travis Mitchell"
+      ]
+    ],
+    [
+      "NHL",
+      "8484304",
+      "nhl-uvis-balinskis",
+      [
+        "Uvis Balinskis"
+      ]
+    ],
+    [
+      "NHL",
+      "8484321",
+      "nhl-nikolas-matinpalo",
+      [
+        "Nikolas Matinpalo"
+      ]
+    ],
+    [
+      "NHL",
+      "8484387",
+      "nhl-matvei-michkov",
+      [
+        "Matvei Michkov"
+      ]
+    ],
+    [
+      "NHL",
+      "8484471",
+      "nhl-emmitt-finnie",
+      [
+        "Emmitt Finnie"
+      ]
+    ],
+    [
+      "NHL",
+      "8484762",
+      "nhl-beckett-sennecke",
+      [
+        "Beckett Sennecke"
+      ]
+    ],
+    [
+      "NHL",
+      "8484768",
+      "nhl-zayne-parekh",
+      [
+        "Zayne Parekh"
+      ]
+    ],
+    [
+      "NHL",
+      "8484783",
+      "nhl-artyom-levshunov",
+      [
+        "Artyom Levshunov"
+      ]
+    ],
+    [
+      "NHL",
+      "8484798",
+      "nhl-zeev-buium",
+      [
+        "Zeev Buium"
+      ]
+    ],
+    [
+      "NHL",
+      "8484801",
+      "nhl-macklin-celebrini",
+      [
+        "Macklin Celebrini"
+      ]
+    ],
+    [
+      "NHL",
+      "8484803",
+      "nhl-trevor-connelly",
+      [
+        "Trevor Connelly"
+      ]
+    ],
+    [
+      "NHL",
+      "8484806",
+      "nhl-sam-dickinson",
+      [
+        "Sam Dickinson"
+      ]
+    ],
+    [
+      "NHL",
+      "8484829",
+      "nhl-justin-hryckowian",
+      [
+        "Justin Hryckowian"
+      ]
+    ],
+    [
+      "NHL",
+      "8484860",
+      "nhl-matvei-gridin",
+      [
+        "Matvei Gridin"
+      ]
+    ],
+    [
+      "NHL",
+      "8484911",
+      "nhl-collin-graf",
+      [
+        "Collin Graf"
+      ]
+    ],
+    [
+      "NHL",
+      "8484938",
+      "nhl-arttu-hyry",
+      [
+        "Arttu Hyry"
+      ]
+    ],
+    [
+      "NHL",
+      "8484984",
+      "nhl-ivan-demidov",
+      [
+        "Ivan Demidov"
+      ]
+    ],
+    [
+      "NHL",
+      "8485366",
+      "nhl-matthew-schaefer",
+      [
+        "Matthew Schaefer"
+      ]
+    ],
+    [
+      "NHL",
+      "8485402",
+      "nhl-michael-misa",
+      [
+        "Michael Misa"
+      ]
+    ],
+    [
+      "NHL",
+      "8485414",
+      "nhl-ben-kindel",
+      [
+        "Ben Kindel"
+      ]
+    ],
+    [
+      "NHL",
+      "8485702",
+      "nhl-maksim-shabanov",
+      [
+        "Maksim Shabanov"
+      ]
+    ],
+    [
+      "PWHL",
+      "100",
+      "pwhl-natalie-spooner",
+      [
+        "Natalie Spooner"
+      ]
+    ],
+    [
+      "PWHL",
+      "101",
+      "pwhl-alexa-vasko",
+      [
+        "Alexa Vasko"
+      ]
+    ],
+    [
+      "PWHL",
+      "102",
+      "pwhl-claire-butorac",
+      [
+        "Claire Butorac"
+      ]
+    ],
+    [
+      "PWHL",
+      "104",
+      "pwhl-denisa-krizova",
+      [
+        "Denisa Křížová"
+      ]
+    ],
+    [
+      "PWHL",
+      "11",
+      "pwhl-sophie-jaques",
+      [
+        "Sophie Jaques"
+      ]
+    ],
+    [
+      "PWHL",
+      "114",
+      "pwhl-abby-boreen",
+      [
+        "Abby Boreen"
+      ]
+    ],
+    [
+      "PWHL",
+      "115",
+      "pwhl-michela-cava",
+      [
+        "Michela Cava"
+      ]
+    ],
+    [
+      "PWHL",
+      "116",
+      "pwhl-clair-degeorge",
+      [
+        "Clair DeGeorge"
+      ]
+    ],
+    [
+      "PWHL",
+      "118",
+      "pwhl-emma-greco",
+      [
+        "Emma Greco"
+      ]
+    ],
+    [
+      "PWHL",
+      "12",
+      "pwhl-megan-keller",
+      [
+        "Megan Keller"
+      ]
+    ],
+    [
+      "PWHL",
+      "123",
+      "pwhl-maddie-rooney",
+      [
+        "Maddie Rooney"
+      ]
+    ],
+    [
+      "PWHL",
+      "126",
+      "pwhl-samantha-cogan",
+      [
+        "Samantha Cogan"
+      ]
+    ],
+    [
+      "PWHL",
+      "128",
+      "pwhl-kaitlin-willoughby",
+      [
+        "Kaitlin Willoughby"
+      ]
+    ],
+    [
+      "PWHL",
+      "129",
+      "pwhl-mellissa-channell-watkins",
+      [
+        "Mellissa Channell-Watkins"
+      ]
+    ],
+    [
+      "PWHL",
+      "13",
+      "pwhl-hilary-knight",
+      [
+        "Hilary Knight"
+      ]
+    ],
+    [
+      "PWHL",
+      "132",
+      "pwhl-jessica-kondas",
+      [
+        "Jessica Kondas"
+      ]
+    ],
+    [
+      "PWHL",
+      "134",
+      "pwhl-carly-jackson",
+      [
+        "Carly Jackson"
+      ]
+    ],
+    [
+      "PWHL",
+      "138",
+      "pwhl-mikyla-grant-mentis",
+      [
+        "Mikyla Grant-Mentis"
+      ]
+    ],
+    [
+      "PWHL",
+      "142",
+      "pwhl-natalie-snodgrass",
+      [
+        "Natalie Snodgrass"
+      ]
+    ],
+    [
+      "PWHL",
+      "149",
+      "pwhl-jill-saulnier",
+      [
+        "Jill Saulnier"
+      ]
+    ],
+    [
+      "PWHL",
+      "15",
+      "pwhl-alina-muller",
+      [
+        "Alina Müller"
+      ]
+    ],
+    [
+      "PWHL",
+      "155",
+      "pwhl-corinne-schroeder",
+      [
+        "Corinne Schroeder"
+      ]
+    ],
+    [
+      "PWHL",
+      "156",
+      "pwhl-gabrielle-david",
+      [
+        "Gabrielle David"
+      ]
+    ],
+    [
+      "PWHL",
+      "157",
+      "pwhl-catherine-dubois",
+      [
+        "Catherine Dubois"
+      ]
+    ],
+    [
+      "PWHL",
+      "16",
+      "pwhl-jamie-lee-rattray",
+      [
+        "Jamie Lee Rattray"
+      ]
+    ],
+    [
+      "PWHL",
+      "161",
+      "pwhl-tereza-vanisova",
+      [
+        "Tereza Vanišová"
+      ]
+    ],
+    [
+      "PWHL",
+      "162",
+      "pwhl-madison-bizal",
+      [
+        "Madison Bizal"
+      ]
+    ],
+    [
+      "PWHL",
+      "166",
+      "pwhl-marlene-boissonnault",
+      [
+        "Marlène Boissonnault"
+      ]
+    ],
+    [
+      "PWHL",
+      "167",
+      "pwhl-sidney-morin",
+      [
+        "Sidney Morin"
+      ]
+    ],
+    [
+      "PWHL",
+      "169",
+      "pwhl-claire-thompson",
+      [
+        "Claire Thompson"
+      ]
+    ],
+    [
+      "PWHL",
+      "17",
+      "pwhl-theresa-schafzahl",
+      [
+        "Theresa Schafzahl"
+      ]
+    ],
+    [
+      "PWHL",
+      "18",
+      "pwhl-sophie-shirley",
+      [
+        "Sophie Shirley"
+      ]
+    ],
+    [
+      "PWHL",
+      "180",
+      "pwhl-sydney-bard",
+      [
+        "Sydney Bard"
+      ]
+    ],
+    [
+      "PWHL",
+      "181",
+      "pwhl-hannah-bilka",
+      [
+        "Hannah Bilka"
+      ]
+    ],
+    [
+      "PWHL",
+      "182",
+      "pwhl-hadley-hartmetz",
+      [
+        "Hadley Hartmetz"
+      ]
+    ],
+    [
+      "PWHL",
+      "183",
+      "pwhl-shay-maloney",
+      [
+        "Shay Maloney"
+      ]
+    ],
+    [
+      "PWHL",
+      "185",
+      "pwhl-daniela-pejsova",
+      [
+        "Daniela Pejšová"
+      ]
+    ],
+    [
+      "PWHL",
+      "188",
+      "pwhl-mae-batherson",
+      [
+        "Mae Batherson"
+      ]
+    ],
+    [
+      "PWHL",
+      "189",
+      "pwhl-britta-curl-salemme",
+      [
+        "Britta Curl-Salemme"
+      ]
+    ],
+    [
+      "PWHL",
+      "190",
+      "pwhl-klara-hymlarova",
+      [
+        "Klára Hymlárová"
+      ]
+    ],
+    [
+      "PWHL",
+      "191",
+      "pwhl-katy-knoll",
+      [
+        "Katy Knoll"
+      ]
+    ],
+    [
+      "PWHL",
+      "192",
+      "pwhl-brooke-mcquigge",
+      [
+        "Brooke McQuigge"
+      ]
+    ],
+    [
+      "PWHL",
+      "195",
+      "pwhl-dominique-petrie",
+      [
+        "Dominique Petrie"
+      ]
+    ],
+    [
+      "PWHL",
+      "196",
+      "pwhl-cayla-barnes",
+      [
+        "Cayla Barnes"
+      ]
+    ],
+    [
+      "PWHL",
+      "198",
+      "pwhl-jenn-gardiner",
+      [
+        "Jenn Gardiner"
+      ]
+    ],
+    [
+      "PWHL",
+      "199",
+      "pwhl-dara-greig",
+      [
+        "Dara Greig"
+      ]
+    ],
+    [
+      "PWHL",
+      "2",
+      "pwhl-emily-brown",
+      [
+        "Emily Brown"
+      ]
+    ],
+    [
+      "PWHL",
+      "20",
+      "pwhl-kendall-coyne-schofield",
+      [
+        "Kendall Coyne Schofield"
+      ]
+    ],
+    [
+      "PWHL",
+      "200",
+      "pwhl-anna-kjellbin",
+      [
+        "Anna Kjellbin"
+      ]
+    ],
+    [
+      "PWHL",
+      "201",
+      "pwhl-lina-ljungblom",
+      [
+        "Lina Ljungblom"
+      ]
+    ],
+    [
+      "PWHL",
+      "203",
+      "pwhl-anna-wilgren",
+      [
+        "Anna Wilgren"
+      ]
+    ],
+    [
+      "PWHL",
+      "204",
+      "pwhl-emmy-fecteau",
+      [
+        "Emmy Fecteau"
+      ]
+    ],
+    [
+      "PWHL",
+      "205",
+      "pwhl-sarah-fillier",
+      [
+        "Sarah Fillier"
+      ]
+    ],
+    [
+      "PWHL",
+      "206",
+      "pwhl-elle-hartje",
+      [
+        "Elle Hartje"
+      ]
+    ],
+    [
+      "PWHL",
+      "207",
+      "pwhl-lauren-bernard",
+      [
+        "Lauren Bernard"
+      ]
+    ],
+    [
+      "PWHL",
+      "208",
+      "pwhl-megan-carter",
+      [
+        "Megan Carter"
+      ]
+    ],
+    [
+      "PWHL",
+      "209",
+      "pwhl-izzy-daniel",
+      [
+        "Izzy Daniel"
+      ]
+    ],
+    [
+      "PWHL",
+      "21",
+      "pwhl-taylor-heise",
+      [
+        "Taylor Heise"
+      ]
+    ],
+    [
+      "PWHL",
+      "210",
+      "pwhl-julia-gosling",
+      [
+        "Julia Gosling"
+      ]
+    ],
+    [
+      "PWHL",
+      "211",
+      "pwhl-raygan-kirk",
+      [
+        "Raygan Kirk"
+      ]
+    ],
+    [
+      "PWHL",
+      "212",
+      "pwhl-laura-kluge",
+      [
+        "Laura Kluge"
+      ]
+    ],
+    [
+      "PWHL",
+      "214",
+      "pwhl-noemi-neubauerova",
+      [
+        "Noemi Neubauerová"
+      ]
+    ],
+    [
+      "PWHL",
+      "217",
+      "pwhl-taylor-house",
+      [
+        "Taylor House"
+      ]
+    ],
+    [
+      "PWHL",
+      "219",
+      "pwhl-stephanie-markowski",
+      [
+        "Stephanie Markowski"
+      ]
+    ],
+    [
+      "PWHL",
+      "22",
+      "pwhl-nicole-hensley",
+      [
+        "Nicole Hensley"
+      ]
+    ],
+    [
+      "PWHL",
+      "220",
+      "pwhl-mannon-mcmahon",
+      [
+        "Mannon McMahon"
+      ]
+    ],
+    [
+      "PWHL",
+      "222",
+      "pwhl-gwyneth-philips",
+      [
+        "Gwyneth Philips"
+      ]
+    ],
+    [
+      "PWHL",
+      "223",
+      "pwhl-ronja-savolainen",
+      [
+        "Ronja Savolainen"
+      ]
+    ],
+    [
+      "PWHL",
+      "224",
+      "pwhl-danielle-serdachny",
+      [
+        "Danielle Serdachny"
+      ]
+    ],
+    [
+      "PWHL",
+      "227",
+      "pwhl-gabby-rosenthal",
+      [
+        "Gabby Rosenthal"
+      ]
+    ],
+    [
+      "PWHL",
+      "228",
+      "pwhl-kayle-osborne",
+      [
+        "Kayle Osborne"
+      ]
+    ],
+    [
+      "PWHL",
+      "229",
+      "pwhl-maja-nylen-persson",
+      [
+        "Maja Nylén Persson"
+      ]
+    ],
+    [
+      "PWHL",
+      "23",
+      "pwhl-kelly-pannek",
+      [
+        "Kelly Pannek"
+      ]
+    ],
+    [
+      "PWHL",
+      "230",
+      "pwhl-allyson-simpson",
+      [
+        "Allyson Simpson"
+      ]
+    ],
+    [
+      "PWHL",
+      "232",
+      "pwhl-rylind-mackinnon",
+      [
+        "Rylind MacKinnon"
+      ]
+    ],
+    [
+      "PWHL",
+      "236",
+      "pwhl-kendall-cooper",
+      [
+        "Kendall Cooper"
+      ]
+    ],
+    [
+      "PWHL",
+      "237",
+      "pwhl-jenna-buglioni",
+      [
+        "Jenna Buglioni"
+      ]
+    ],
+    [
+      "PWHL",
+      "238",
+      "pwhl-sanni-ahola",
+      [
+        "Sanni Ahola"
+      ]
+    ],
+    [
+      "PWHL",
+      "24",
+      "pwhl-lee-stecklein",
+      [
+        "Lee Stecklein"
+      ]
+    ],
+    [
+      "PWHL",
+      "240",
+      "pwhl-fanuza-kadirova",
+      [
+        "Fanuza Kadirova"
+      ]
+    ],
+    [
+      "PWHL",
+      "242",
+      "pwhl-rory-guilday",
+      [
+        "Rory Guilday"
+      ]
+    ],
+    [
+      "PWHL",
+      "243",
+      "pwhl-ella-huber",
+      [
+        "Ella Huber"
+      ]
+    ],
+    [
+      "PWHL",
+      "244",
+      "pwhl-emma-gentry",
+      [
+        "Emma Gentry"
+      ]
+    ],
+    [
+      "PWHL",
+      "245",
+      "pwhl-kristyna-kaltounkova",
+      [
+        "Kristýna Kaltounková"
+      ]
+    ],
+    [
+      "PWHL",
+      "246",
+      "pwhl-haley-winn",
+      [
+        "Haley Winn"
+      ]
+    ],
+    [
+      "PWHL",
+      "247",
+      "pwhl-abby-hustler",
+      [
+        "Abby Hustler"
+      ]
+    ],
+    [
+      "PWHL",
+      "248",
+      "pwhl-anna-segedi",
+      [
+        "Anna Segedi"
+      ]
+    ],
+    [
+      "PWHL",
+      "249",
+      "pwhl-anne-cherkowski",
+      [
+        "Anne Cherkowski"
+      ]
+    ],
+    [
+      "PWHL",
+      "25",
+      "pwhl-grace-zumwinkle",
+      [
+        "Grace Zumwinkle"
+      ]
+    ],
+    [
+      "PWHL",
+      "250",
+      "pwhl-hannah-murphy",
+      [
+        "Hannah Murphy"
+      ]
+    ],
+    [
+      "PWHL",
+      "251",
+      "pwhl-dayle-ross",
+      [
+        "Dayle Ross"
+      ]
+    ],
+    [
+      "PWHL",
+      "253",
+      "pwhl-nicole-gosling",
+      [
+        "Nicole Gosling"
+      ]
+    ],
+    [
+      "PWHL",
+      "254",
+      "pwhl-mia-biotti",
+      [
+        "Mia Biotti"
+      ]
+    ],
+    [
+      "PWHL",
+      "255",
+      "pwhl-riley-brengman",
+      [
+        "Riley Brengman"
+      ]
+    ],
+    [
+      "PWHL",
+      "256",
+      "pwhl-olivia-mobley",
+      [
+        "Olivia Mobley"
+      ]
+    ],
+    [
+      "PWHL",
+      "26",
+      "pwhl-claire-dalton",
+      [
+        "Claire Dalton"
+      ]
+    ],
+    [
+      "PWHL",
+      "262",
+      "pwhl-amanda-thiele",
+      [
+        "Amanda Thiele"
+      ]
+    ],
+    [
+      "PWHL",
+      "263",
+      "pwhl-peyton-anderson",
+      [
+        "Peyton Anderson"
+      ]
+    ],
+    [
+      "PWHL",
+      "264",
+      "pwhl-brooke-becker",
+      [
+        "Brooke Becker"
+      ]
+    ],
+    [
+      "PWHL",
+      "270",
+      "pwhl-megan-warrener",
+      [
+        "Megan Warrener"
+      ]
+    ],
+    [
+      "PWHL",
+      "271",
+      "pwhl-tamara-giaquinto",
+      [
+        "Tamara Giaquinto"
+      ]
+    ],
+    [
+      "PWHL",
+      "274",
+      "pwhl-natalie-mlynkova",
+      [
+        "Natálie Mlýnková"
+      ]
+    ],
+    [
+      "PWHL",
+      "277",
+      "pwhl-anna-bargman",
+      [
+        "Anna Bargman"
+      ]
+    ],
+    [
+      "PWHL",
+      "28",
+      "pwhl-ann-renee-desbiens",
+      [
+        "Ann-Renée Desbiens"
+      ]
+    ],
+    [
+      "PWHL",
+      "282",
+      "pwhl-callie-shanahan",
+      [
+        "Callie Shanahan"
+      ]
+    ],
+    [
+      "PWHL",
+      "283",
+      "pwhl-nicole-vallario",
+      [
+        "Nicole Vallario"
+      ]
+    ],
+    [
+      "PWHL",
+      "285",
+      "pwhl-maddi-wheeler",
+      [
+        "Maddi Wheeler"
+      ]
+    ],
+    [
+      "PWHL",
+      "286",
+      "pwhl-peyton-hemp",
+      [
+        "Peyton Hemp"
+      ]
+    ],
+    [
+      "PWHL",
+      "288",
+      "pwhl-vita-poniatovskaia",
+      [
+        "Vita Poniatovskaia"
+      ]
+    ],
+    [
+      "PWHL",
+      "289",
+      "pwhl-kathryn-reilly",
+      [
+        "Kathryn Reilly"
+      ]
+    ],
+    [
+      "PWHL",
+      "291",
+      "pwhl-lily-delianedis",
+      [
+        "Lily Delianedis"
+      ]
+    ],
+    [
+      "PWHL",
+      "292",
+      "pwhl-jada-habisch",
+      [
+        "Jada Habisch"
+      ]
+    ],
+    [
+      "PWHL",
+      "293",
+      "pwhl-sydney-langseth",
+      [
+        "Sydney Langseth"
+      ]
+    ],
+    [
+      "PWHL",
+      "294",
+      "pwhl-lyndie-lobdell",
+      [
+        "Lyndie Lobdell"
+      ]
+    ],
+    [
+      "PWHL",
+      "296",
+      "pwhl-olivia-wallin",
+      [
+        "Olivia Wallin"
+      ]
+    ],
+    [
+      "PWHL",
+      "30",
+      "pwhl-kristin-o-neill",
+      [
+        "Kristin O'Neill"
+      ]
+    ],
+    [
+      "PWHL",
+      "301",
+      "pwhl-katie-chan",
+      [
+        "Katie Chan"
+      ]
+    ],
+    [
+      "PWHL",
+      "305",
+      "pwhl-nina-jobst-smith",
+      [
+        "Nina Jobst-Smith"
+      ]
+    ],
+    [
+      "PWHL",
+      "306",
+      "pwhl-darcie-lappan",
+      [
+        "Darcie Lappan"
+      ]
+    ],
+    [
+      "PWHL",
+      "31",
+      "pwhl-marie-philip-poulin",
+      [
+        "Marie-Philip Poulin"
+      ]
+    ],
+    [
+      "PWHL",
+      "314",
+      "pwhl-jessie-mcpherson",
+      [
+        "Jessie McPherson"
+      ]
+    ],
+    [
+      "PWHL",
+      "315",
+      "pwhl-lauren-messier",
+      [
+        "Lauren Messier"
+      ]
+    ],
+    [
+      "PWHL",
+      "32",
+      "pwhl-laura-stacey",
+      [
+        "Laura Stacey"
+      ]
+    ],
+    [
+      "PWHL",
+      "320",
+      "pwhl-nadia-mattivi",
+      [
+        "Nadia Mattivi"
+      ]
+    ],
+    [
+      "PWHL",
+      "323",
+      "pwhl-alice-philbert",
+      [
+        "Alice Philbert"
+      ]
+    ],
+    [
+      "PWHL",
+      "324",
+      "pwhl-emma-nuutinen",
+      [
+        "Emma Nuutinen"
+      ]
+    ],
+    [
+      "PWHL",
+      "34",
+      "pwhl-alex-carpenter",
+      [
+        "Alex Carpenter"
+      ]
+    ],
+    [
+      "PWHL",
+      "35",
+      "pwhl-jade-downie-landry",
+      [
+        "Jade Downie-Landry"
+      ]
+    ],
+    [
+      "PWHL",
+      "36",
+      "pwhl-jessie-eldridge",
+      [
+        "Jessie Eldridge"
+      ]
+    ],
+    [
+      "PWHL",
+      "37",
+      "pwhl-elizabeth-giguere",
+      [
+        "Élizabeth Giguère"
+      ]
+    ],
+    [
+      "PWHL",
+      "38",
+      "pwhl-brooke-hobson",
+      [
+        "Brooke Hobson"
+      ]
+    ],
+    [
+      "PWHL",
+      "39",
+      "pwhl-alexandra-labelle",
+      [
+        "Alexandra Labelle"
+      ]
+    ],
+    [
+      "PWHL",
+      "4",
+      "pwhl-shiann-darkangelo",
+      [
+        "Shiann Darkangelo"
+      ]
+    ],
+    [
+      "PWHL",
+      "40",
+      "pwhl-paetyn-levis",
+      [
+        "Paetyn Levis"
+      ]
+    ],
+    [
+      "PWHL",
+      "41",
+      "pwhl-abbey-levy",
+      [
+        "Abbey Levy"
+      ]
+    ],
+    [
+      "PWHL",
+      "42",
+      "pwhl-abby-roque",
+      [
+        "Abby Roque"
+      ]
+    ],
+    [
+      "PWHL",
+      "44",
+      "pwhl-ella-shelton",
+      [
+        "Ella Shelton"
+      ]
+    ],
+    [
+      "PWHL",
+      "45",
+      "pwhl-kayla-vespa",
+      [
+        "Kayla Vespa"
+      ]
+    ],
+    [
+      "PWHL",
+      "47",
+      "pwhl-micah-zandee-hart",
+      [
+        "Micah Zandee-Hart"
+      ]
+    ],
+    [
+      "PWHL",
+      "49",
+      "pwhl-lexie-adzija",
+      [
+        "Lexie Adzija"
+      ]
+    ],
+    [
+      "PWHL",
+      "5",
+      "pwhl-jessica-digirolamo",
+      [
+        "Jessica DiGirolamo"
+      ]
+    ],
+    [
+      "PWHL",
+      "50",
+      "pwhl-ashton-bell",
+      [
+        "Ashton Bell"
+      ]
+    ],
+    [
+      "PWHL",
+      "51",
+      "pwhl-amanda-boulier",
+      [
+        "Amanda Boulier"
+      ]
+    ],
+    [
+      "PWHL",
+      "52",
+      "pwhl-zoe-boyd",
+      [
+        "Zoe Boyd"
+      ]
+    ],
+    [
+      "PWHL",
+      "53",
+      "pwhl-emily-clark",
+      [
+        "Emily Clark"
+      ]
+    ],
+    [
+      "PWHL",
+      "54",
+      "pwhl-kristin-della-rovere",
+      [
+        "Kristin Della Rovere"
+      ]
+    ],
+    [
+      "PWHL",
+      "57",
+      "pwhl-gabbie-hughes",
+      [
+        "Gabbie Hughes"
+      ]
+    ],
+    [
+      "PWHL",
+      "58",
+      "pwhl-brianne-jenner",
+      [
+        "Brianne Jenner"
+      ]
+    ],
+    [
+      "PWHL",
+      "59",
+      "pwhl-emerance-maschmeyer",
+      [
+        "Emerance Maschmeyer"
+      ]
+    ],
+    [
+      "PWHL",
+      "6",
+      "pwhl-aerin-frankel",
+      [
+        "Aerin Frankel"
+      ]
+    ],
+    [
+      "PWHL",
+      "61",
+      "pwhl-hayley-scamurra",
+      [
+        "Hayley Scamurra"
+      ]
+    ],
+    [
+      "PWHL",
+      "62",
+      "pwhl-aneta-tejralova",
+      [
+        "Aneta Tejralová"
+      ]
+    ],
+    [
+      "PWHL",
+      "63",
+      "pwhl-daryl-watts",
+      [
+        "Daryl Watts"
+      ]
+    ],
+    [
+      "PWHL",
+      "64",
+      "pwhl-kristen-campbell",
+      [
+        "Kristen Campbell"
+      ]
+    ],
+    [
+      "PWHL",
+      "65",
+      "pwhl-jesse-compher",
+      [
+        "Jesse Compher"
+      ]
+    ],
+    [
+      "PWHL",
+      "66",
+      "pwhl-maggie-connors",
+      [
+        "Maggie Connors"
+      ]
+    ],
+    [
+      "PWHL",
+      "67",
+      "pwhl-renata-fast",
+      [
+        "Renata Fast"
+      ]
+    ],
+    [
+      "PWHL",
+      "68",
+      "pwhl-kali-flanagan",
+      [
+        "Kali Flanagan"
+      ]
+    ],
+    [
+      "PWHL",
+      "71",
+      "pwhl-jocelyne-larocque",
+      [
+        "Jocelyne Larocque"
+      ]
+    ],
+    [
+      "PWHL",
+      "72",
+      "pwhl-rebecca-leslie",
+      [
+        "Rebecca Leslie"
+      ]
+    ],
+    [
+      "PWHL",
+      "73",
+      "pwhl-emma-maltais",
+      [
+        "Emma Maltais"
+      ]
+    ],
+    [
+      "PWHL",
+      "74",
+      "pwhl-allie-munroe",
+      [
+        "Allie Munroe"
+      ]
+    ],
+    [
+      "PWHL",
+      "75",
+      "pwhl-sarah-nurse",
+      [
+        "Sarah Nurse"
+      ]
+    ],
+    [
+      "PWHL",
+      "78",
+      "pwhl-susanna-tapani",
+      [
+        "Susanna Tapani"
+      ]
+    ],
+    [
+      "PWHL",
+      "79",
+      "pwhl-maggie-flaherty",
+      [
+        "Maggie Flaherty"
+      ]
+    ],
+    [
+      "PWHL",
+      "8",
+      "pwhl-loren-gabel",
+      [
+        "Loren Gabel"
+      ]
+    ],
+    [
+      "PWHL",
+      "82",
+      "pwhl-dominika-laskova",
+      [
+        "Dominika Lásková"
+      ]
+    ],
+    [
+      "PWHL",
+      "83",
+      "pwhl-erin-ambrose",
+      [
+        "Erin Ambrose"
+      ]
+    ],
+    [
+      "PWHL",
+      "84",
+      "pwhl-kati-tabin",
+      [
+        "Kati Tabin"
+      ]
+    ],
+    [
+      "PWHL",
+      "85",
+      "pwhl-elaine-chuli",
+      [
+        "Elaine Chuli"
+      ]
+    ],
+    [
+      "PWHL",
+      "86",
+      "pwhl-emma-woods",
+      [
+        "Emma Woods"
+      ]
+    ],
+    [
+      "PWHL",
+      "87",
+      "pwhl-jaime-bourbonnais",
+      [
+        "Jaime Bourbonnais"
+      ]
+    ],
+    [
+      "PWHL",
+      "88",
+      "pwhl-katerina-mrazova",
+      [
+        "Kateřina Mrázová"
+      ]
+    ],
+    [
+      "PWHL",
+      "89",
+      "pwhl-hannah-miller",
+      [
+        "Hannah Miller"
+      ]
+    ],
+    [
+      "PWHL",
+      "9",
+      "pwhl-taylor-girard",
+      [
+        "Taylor Girard"
+      ]
+    ],
+    [
+      "PWHL",
+      "90",
+      "pwhl-natalie-buchbinder",
+      [
+        "Natalie Buchbinder"
+      ]
+    ],
+    [
+      "PWHL",
+      "91",
+      "pwhl-brooke-bryant",
+      [
+        "Brooke Bryant"
+      ]
+    ],
+    [
+      "PWHL",
+      "97",
+      "pwhl-liz-schepers",
+      [
+        "Liz Schepers"
+      ]
+    ],
+    [
+      "PWHL",
+      "98",
+      "pwhl-maureen-murphy",
+      [
+        "Maureen Murphy"
+      ]
+    ],
+    [
+      "PWHL",
+      "99",
+      "pwhl-mariah-keopple",
+      [
+        "Mariah Keopple"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-1",
+      "pwhl-caroline-harvey",
+      [
+        "Caroline Harvey"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-10",
+      "pwhl-grace-dwyer",
+      [
+        "Grace Dwyer"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-15",
+      "pwhl-andrea-brandli",
+      [
+        "Andrea Brändli"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-16",
+      "pwhl-sloane-matthews",
+      [
+        "Sloane Matthews"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-18",
+      "pwhl-jade-iginla",
+      [
+        "Jade Iginla"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-19",
+      "pwhl-elisa-holopainen",
+      [
+        "Elisa Holopainen"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-20",
+      "pwhl-jamie-nelson",
+      [
+        "Jamie Nelson"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-23",
+      "pwhl-jordan-ray",
+      [
+        "Jordan Ray"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-25",
+      "pwhl-jules-constantinople",
+      [
+        "Jules Constantinople"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-28",
+      "pwhl-tia-chan",
+      [
+        "Tia Chan"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-29",
+      "pwhl-josefin-bouveng",
+      [
+        "Josefin Bouveng"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-30",
+      "pwhl-elyssa-biederman",
+      [
+        "Elyssa Biederman"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-31",
+      "pwhl-carina-diantonio",
+      [
+        "Carina DiAntonio"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-32",
+      "pwhl-brooke-disher",
+      [
+        "Brooke Disher"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-33",
+      "pwhl-maddy-christian",
+      [
+        "Maddy Christian"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-34",
+      "pwhl-mk-o-brien",
+      [
+        "MK O'Brien"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-38",
+      "pwhl-grace-elliott",
+      [
+        "Grace Elliott"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-4",
+      "pwhl-laila-edwards",
+      [
+        "Laila Edwards"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-40",
+      "pwhl-lily-shannon",
+      [
+        "Lily Shannon"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-41",
+      "pwhl-saskia-maurer",
+      [
+        "Saskia Maurer"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-42",
+      "pwhl-megan-woodworth",
+      [
+        "Megan Woodworth"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-44",
+      "pwhl-jane-kuehl",
+      [
+        "Jane Kuehl"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-45",
+      "pwhl-tova-henderson",
+      [
+        "Tova Henderson"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-49",
+      "pwhl-kendall-butze",
+      [
+        "Kendall Butze"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-5",
+      "pwhl-lacey-eden",
+      [
+        "Lacey Eden"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-50",
+      "pwhl-gracie-gilkyson",
+      [
+        "Gracie Gilkyson"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-51",
+      "pwhl-sena-catterall",
+      [
+        "Sena Catterall"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-54",
+      "pwhl-emma-sofie-nordstrom",
+      [
+        "Emma-Sofie Nordström"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-56",
+      "pwhl-emerson-o-leary",
+      [
+        "Emerson O'Leary"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-6",
+      "pwhl-nelli-laitinen",
+      [
+        "Nelli Laitinen"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-60",
+      "pwhl-erica-rieder",
+      [
+        "Erica Rieder"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-61",
+      "pwhl-ashley-messier",
+      [
+        "Ashley Messier"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-64",
+      "pwhl-reichen-kirchmair",
+      [
+        "Reichen Kirchmair"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-65",
+      "pwhl-sydney-healey",
+      [
+        "Sydney Healey"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-70",
+      "pwhl-maeve-kelly",
+      [
+        "Maeve Kelly"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-71",
+      "pwhl-taylor-otremba",
+      [
+        "Taylor Otremba"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-8",
+      "pwhl-kirsten-simms",
+      [
+        "Kirsten Simms"
+      ]
+    ],
+    [
+      "PWHL",
+      "draft-2026-9",
+      "pwhl-sara-swiderski",
+      [
+        "Sara Swiderski"
+      ]
+    ]
+  ]
+}

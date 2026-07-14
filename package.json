@@ -7,12 +7,17 @@
     "dev": "vite",
     "typecheck": "tsc -b --pretty false",
     "build": "tsc -b && vite build",
+    "env:check": "tsx scripts/check-client-env.ts",
+    "build:deployment": "pnpm env:check && pnpm build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:e2e:production": "pnpm build && E2E_PRODUCTION=1 playwright test",
+    "test:e2e:production": "pnpm build:deployment && E2E_PRODUCTION=1 playwright test",
     "catalog:validate": "tsx scripts/validate-catalog.ts",
+    "content:snapshot": "tsx scripts/import-official-content.ts",
+    "catalog:generate": "tsx scripts/generate-content-catalog.ts",
+    "catalog:generate:check": "tsx scripts/generate-content-catalog.ts --check",
     "catalog:sql": "tsx scripts/generate-supabase-catalog.ts",
     "catalog:sql:write": "tsx scripts/generate-supabase-catalog.ts --write",
     "catalog:sql:check": "tsx scripts/generate-supabase-catalog.ts --check",
@@ -21,7 +26,7 @@
     "supabase:start": "supabase start",
     "supabase:test": "supabase test db",
     "supabase:types": "supabase gen types typescript --local > src/infrastructure/supabase/database.types.ts",
-    "qa:core": "pnpm typecheck && pnpm test && pnpm catalog:validate && pnpm catalog:sql:check && pnpm balance && pnpm build"
+    "qa:core": "pnpm catalog:generate:check && pnpm typecheck && pnpm test && pnpm catalog:validate && pnpm catalog:sql:check && pnpm balance && pnpm build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.2",

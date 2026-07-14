@@ -29,7 +29,9 @@ function jwtRole(value: string): string | undefined {
 export function validateClientEnvironment(environment: ClientEnvironment): ClientEnvironmentResult {
   const url = environment.VITE_SUPABASE_URL?.trim();
   const publishableKey = environment.VITE_SUPABASE_PUBLISHABLE_KEY?.trim();
-  if (!url || !publishableKey) {
+  const usesTemplatePlaceholder = url === "https://your-project-ref.supabase.co"
+    || publishableKey === "your-publishable-key";
+  if (!url || !publishableKey || usesTemplatePlaceholder) {
     return {
       valid: false,
       message: "Rink Rivals could not start because the server configuration is missing.",
@@ -49,10 +51,23 @@ export function validateClientEnvironment(environment: ClientEnvironment): Clien
     };
   }
 
-  if (publishableKey.toLowerCase().includes("service_role") || jwtRole(publishableKey) === "service_role") {
+  const normalizedKey = publishableKey.toLowerCase();
+  const embeddedRole = jwtRole(publishableKey);
+  if (
+    normalizedKey.startsWith("sb_secret_")
+    || normalizedKey.includes("service_role")
+    || embeddedRole === "service_role"
+  ) {
     return {
       valid: false,
       message: "Rink Rivals blocked an unsafe browser credential. Configure a publishable key instead.",
+    };
+  }
+
+  if (!normalizedKey.startsWith("sb_publishable_") && embeddedRole !== "anon") {
+    return {
+      valid: false,
+      message: "Rink Rivals could not start because the publishable browser key is invalid.",
     };
   }
 

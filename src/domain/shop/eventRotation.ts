@@ -40,6 +40,9 @@ function validateConfig(config: EventShopConfig): void {
   if (config.periodAnchor !== undefined && !Number.isFinite(Date.parse(config.periodAnchor))) {
     throw new TypeError("Event Shop periodAnchor must be a valid ISO timestamp.");
   }
+  if (config.deckRotationIndex !== undefined && !Number.isSafeInteger(config.deckRotationIndex)) {
+    throw new TypeError("Event Shop deck rotation index must be a safe integer.");
+  }
   if (
     !Number.isFinite(config.spotlightDiscountPercent) ||
     config.spotlightDiscountPercent < 0 ||
@@ -81,12 +84,16 @@ export function createEventShopRotation(
   const periodMs = config.periodDays * DAY_IN_MS;
   const anchorMs = config.periodAnchor === undefined ? 0 : Date.parse(config.periodAnchor);
   const periodIndex = Math.floor((timestamp - anchorMs) / periodMs);
+  const deckRotationIndex = config.deckRotationIndex ?? periodIndex;
   const startsAtMs = anchorMs + periodIndex * periodMs;
   const rotationKey = `${config.eventSetId}:${config.periodDays}d:${periodIndex}`;
 
   const eligibleCards = cards
     .filter((card) => {
-      if (card.isPermanent || card.setId !== config.eventSetId) return false;
+      if (card.cardType !== "event"
+        || card.marketAvailability !== "event-shop"
+        || card.isPermanent
+        || card.setId !== config.eventSetId) return false;
       const availableFrom = card.availableFrom === undefined ? Number.NEGATIVE_INFINITY : Date.parse(card.availableFrom);
       const availableTo = card.availableTo === undefined ? Number.POSITIVE_INFINITY : Date.parse(card.availableTo);
       if (!Number.isFinite(availableFrom) && availableFrom !== Number.NEGATIVE_INFINITY) {
@@ -120,7 +127,7 @@ export function createEventShopRotation(
   const selectedCount = Math.min(config.offerCount, seededDeck.length);
   const startIndex = seededDeck.length === 0
     ? 0
-    : ((periodIndex * selectedCount) % seededDeck.length + seededDeck.length) %
+    : ((deckRotationIndex * selectedCount) % seededDeck.length + seededDeck.length) %
       seededDeck.length;
   const selectedCards = Array.from(
     { length: selectedCount },

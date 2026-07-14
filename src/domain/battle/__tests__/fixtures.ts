@@ -34,11 +34,25 @@ function createPlayer(prefix: string, league: League, slot: LineupSlot, index: n
     id,
     name: `${prefix.toUpperCase()} ${slot}`,
     league,
+    currentTeamId: `${league.toLowerCase()}-test-club`,
     team: `${league} Test Club`,
     nationality: 'CAN',
     archetype: slot === 'G' ? 'Hybrid' : 'Two-way',
     handedness: index % 2 === 0 ? ('left' as const) : ('right' as const),
     imageReference: `placeholder:${id}`,
+    active: true as const,
+    sourceMetadata: {
+      provider: league === 'NHL' ? 'nhl-api' as const : 'pwhl-hockeytech' as const,
+      sourceIds: [id],
+      sourceUrls: ['https://example.test/fixture'],
+      snapshotDate: '2026-07-14',
+      rosterSeason: 'test',
+      statsSeason: 'test',
+      sourceRosterStatus: 'active-roster' as const,
+      positionSource: 'official-exact' as const,
+      requiresManualReview: false,
+      manualReviewReasons: [],
+    },
   };
 
   if (slot === 'G') {
@@ -52,12 +66,17 @@ function createCard(player: Player, prefix: string, index: number): CardVersion 
   const common = {
     id: `${prefix}-${player.primaryPosition.toLowerCase()}-card`,
     playerId: player.id,
+    teamId: player.currentTeamId,
     setId: 'base-set',
     cardType: 'base' as const,
+    cardTier: 'standard' as const,
     overall: 82 + (index % 6),
     abilities: [],
     price: 1_000 + index * 100,
+    marketAvailability: 'base-market' as const,
     isPermanent: true,
+    imageReference: `placeholder:card/${player.id}`,
+    visualMetadata: { treatment: 'neutral-placeholder' as const, accent: '#667788', frame: 'standard' as const },
   };
 
   return player.role === 'goalie'
