@@ -53,7 +53,9 @@ export function chooseAiCard(
     return ranked[0];
   }
 
-  const pool = difficulty === 'rookie' ? ranked : ranked.slice(0, Math.ceil(ranked.length / 2));
+  const pool = difficulty === 'rookie'
+    ? ranked.slice(Math.floor(ranked.length / 2))
+    : ranked.slice(0, Math.ceil(ranked.length / 2));
   const index = randomIndex(
     `${state.seed}:ai:${difficulty}:${state.roundIndex}:${state.usedCardIds.opponent.join(',')}`,
     pool.length,

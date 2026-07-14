@@ -109,6 +109,9 @@ test.describe("Rink Rivals MVP", () => {
     }
 
     await expect(page.getByText("Final horn")).toBeVisible();
+    const roundSummaries = page.getByRole("list", { name: "All round results" }).getByRole("listitem");
+    await expect(roundSummaries).toHaveCount(5);
+    expect((await roundSummaries.allTextContents()).every((summary) => summary.includes("vs"))).toBe(true);
     await expect(page.getByText(/Match settled on the server/)).toBeVisible();
     const finalCredits = await page.getByLabel(/credits/i).innerText();
     expect(finalCredits).not.toContain("1,000");

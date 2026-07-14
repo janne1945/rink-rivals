@@ -89,10 +89,10 @@ describe('balance diagnostics', () => {
 
   it('detects the former open-ticket abandonment reroll path', () => {
     const { sql } = readRewardAuthoritySql();
-    const rerollingSql = sql.replace(
-      'if existing_ticket.id is not null then',
-      "if existing_ticket.id is not null then\n    update public.match_tickets set status = 'abandoned' where id = existing_ticket.id;",
-    );
+    const guard = 'if existing_ticket.id is not null then';
+    const lastGuard = sql.lastIndexOf(guard);
+    const rerollingSql = lastGuard < 0 ? sql : `${sql.slice(0, lastGuard)}${guard}
+    update public.match_tickets set status = 'abandoned' where id = existing_ticket.id;${sql.slice(lastGuard + guard.length)}`;
     expect(rerollingSql).not.toBe(sql);
 
     const analysis = analyzeRewardLoops(rerollingSql);

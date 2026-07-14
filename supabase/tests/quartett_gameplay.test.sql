@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(12);
+select plan(13);
 
 select has_function('public', 'quartett_situation', array['jsonb'], 'Quartett category normalizer exists');
 select has_function('public', 'card_quartett_score', array['text', 'jsonb'], 'visible card score helper exists');
@@ -25,7 +25,13 @@ set local request.jwt.claim.sub = '77777777-7777-4777-8777-777777777777';
 set local request.jwt.claim.role = 'authenticated';
 
 select public.claim_starter_team('nhl-edmonton-oilers');
-select public.start_match('quartett-match', 'nhl-circuit', 'rookie');
+select is(
+  (select count(*)::integer
+    from jsonb_array_elements(public.start_match('quartett-match', 'nhl-circuit', 'rookie') -> 'situations') category
+    where category ? 'attribute' and not category ? 'weights'),
+  5,
+  'the first start_match response exposes five single-value Quartett categories'
+);
 
 select is(
   (select jsonb_array_length(situations_snapshot) from public.match_tickets where user_id = auth.uid()),
@@ -91,4 +97,3 @@ select ok(
 
 select * from finish();
 rollback;
-

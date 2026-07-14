@@ -87,7 +87,7 @@ function FinalScreen({ battle, rewardGranted, settling, settlementError, progres
       </header>
       <RoundTimeline battle={battle} />
       <ol className={styles.finalRounds} aria-label="All round results">
-        {battle.results.map((result) => <li key={result.roundNumber}><span>R{result.roundNumber}</span><strong>{result.situation.name}</strong><span>{result.playerScore.value}–{result.opponentScore.value}</span><b>{resultLabel(result)}</b></li>)}
+        {battle.results.map((result) => <li key={result.roundNumber}><span>R{result.roundNumber}</span><strong>{result.situation.name}</strong><small>{result.playerCard.player.name} vs {result.opponentCard.player.name}</small><span>{result.playerScore.value}–{result.opponentScore.value}</span><b>{resultLabel(result)}</b></li>)}
       </ol>
       <div className={styles.settlement} role="status" aria-live="polite">
         <p>{rewardGranted ? progressionMessage : settling ? "Settling match securely…" : settlementError || "Recording match…"}</p>

@@ -81,6 +81,13 @@ describe('battle engine', () => {
     expect(new Set(firstChoices)).toHaveLength(3);
     expect(repeatedChoices).toEqual(firstChoices);
     expect(firstChoices.every((cardId) => legalIds.includes(cardId))).toBe(true);
+    const situation = state.situations[state.roundIndex];
+    const values = firstChoices.map((cardId) => calculateCategoryValue(
+      state.lineups.opponent.cards.find(({ card }) => card.id === cardId)!.card,
+      situation,
+    ));
+    expect(values[0]).toBeLessThanOrEqual(values[1]);
+    expect(values[1]).toBeLessThanOrEqual(values[2]);
   });
 
   it('selects five unique situations with exactly one guaranteed goalie round', () => {

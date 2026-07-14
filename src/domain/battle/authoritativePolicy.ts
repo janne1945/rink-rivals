@@ -49,7 +49,7 @@ export const AUTHORITATIVE_AI_SELECTION_POLICY: Readonly<Record<AiDifficulty, st
   elite: 'strongest-eligible',
 };
 
-/** Mirrors the server's weakest/seeded/strongest eligible-card tier policy. */
+/** Mirrors the server's lower-half/upper-half/strongest eligible-card tier policy. */
 export function selectAuthoritativeOpponentCard(
   candidates: readonly ResolvedLineupCard[],
   situation: BattleSituation,

@@ -58,6 +58,7 @@
 .finalRounds li { display: grid; min-width: 0; gap: 5px; padding: 12px; border: 1px solid rgb(255 255 255 / 9%); border-radius: 12px; background: rgb(255 255 255 / 3%); text-align: center; }
 .finalRounds span { color: var(--muted); font-size: .58rem; }
 .finalRounds strong { overflow: hidden; color: var(--ice-50); font-size: .7rem; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.finalRounds small { overflow: hidden; color: var(--muted); font-size: .56rem; text-overflow: ellipsis; white-space: nowrap; }
 .finalRounds b { color: var(--gold-300); font-size: .58rem; text-transform: uppercase; }
 .settlement { text-align: center; }
 .settlement p { margin: 0; color: var(--ice-100); }
@@ -70,7 +71,7 @@
   .hand { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .lockedStage, .comparison { grid-template-columns: minmax(130px, 1fr) minmax(150px, .8fr) minmax(130px, 1fr); gap: 14px; min-height: 470px; padding: 20px; }
   .finalRounds { grid-template-columns: 1fr; }
-  .finalRounds li { grid-template-columns: 28px minmax(0, 1fr) auto auto; align-items: center; text-align: left; }
+  .finalRounds li { grid-template-columns: 28px minmax(0, 1fr) minmax(0, 1.3fr) auto auto; align-items: center; text-align: left; }
 }
 @media (max-width: 560px) {
   .screen { min-height: auto; }
