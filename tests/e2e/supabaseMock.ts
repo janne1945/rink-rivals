@@ -98,6 +98,7 @@ const defaultStarterTeamId = gameCatalog.teams.find((team) => team.name === "Edm
   ?? gameCatalog.starterSquads[0]?.teamId
   ?? "";
 const catalogPlayers = new Map(gameCatalog.players.map((player) => [player.id, player]));
+const catalogCards = new Map(gameCatalog.cards.map((card) => [card.id, card]));
 const lineupSlotOrder: readonly LineupSlot[] = ["LW", "C", "RW", "LD", "RD", "G"];
 
 const serverSituations = [
@@ -231,28 +232,51 @@ function provisionStarter(state: SupabaseMockState, teamId: string): void {
   state.lineups.set(starterLineupId, starterLineup(teamId));
 }
 
-function mockOpponentSlots(mode: GameMode, difficulty: AiDifficulty): Record<LineupSlot, string> {
-  const requiredLeague = mode === "nhl-circuit" ? "NHL" : mode === "pwhl-circuit" ? "PWHL" : null;
+function mockOpponentSlots(
+  opponent: ReturnType<typeof selectAiOpponent>,
+  seed: string,
+): Record<LineupSlot, string> {
+  const { mode, difficulty } = opponent;
+  const variantCount = difficulty === "rookie" ? 16 : difficulty === "pro" ? 8 : 3;
+  const variantHash = createHash("md5")
+    .update(`${seed}:${opponent.id}:${difficulty}`)
+    .digest("hex");
+  const variantIndex = Number.parseInt(variantHash.slice(0, 2), 16) % variantCount;
+  const selectionSeed = `${opponent.id}:${difficulty}:variant:${variantIndex}`;
   const usedCards = new Set<string>();
+  const usedPlayers = new Set<string>();
   return Object.fromEntries(lineupSlotOrder.map((slot) => {
+    const anchorCard = catalogCards.get(opponent.lineup.slots[slot]);
+    const anchorPlayer = anchorCard ? catalogPlayers.get(anchorCard.playerId) : null;
+    const requiredLeague = mode === "nhl-circuit"
+      ? "NHL"
+      : mode === "pwhl-circuit" ? "PWHL" : anchorPlayer?.league;
+    if (!requiredLeague) throw new Error(`Missing mock opponent league anchor for ${opponent.id} ${slot}.`);
     const candidates = gameCatalog.cards
       .filter((card) => {
         const player = catalogPlayers.get(card.playerId);
-        return card.cardType === "base"
-          && card.marketAvailability === "base-market"
+        const allowedDifficultyPool = difficulty === "rookie"
+          ? card.cardType === "base" && card.marketAvailability === "base-market" && card.overall >= 68 && card.overall <= 76
+          : difficulty === "pro"
+            ? card.cardType === "base" && card.marketAvailability === "base-market" && card.overall >= 77 && card.overall <= 82
+            : card.cardType === "event" && card.marketAvailability === "event-shop" && card.overall >= 87;
+        return allowedDifficultyPool
+          && player?.active
+          && player.sourceMetadata.sourceRosterStatus === "active-roster"
           && player?.eligiblePositions.includes(slot as never)
-          && (!requiredLeague || player.league === requiredLeague)
-          && !usedCards.has(card.id);
+          && player.league === requiredLeague
+          && !usedCards.has(card.id)
+          && !usedPlayers.has(card.playerId);
       })
-      .sort((left, right) => left.overall - right.overall || left.id.localeCompare(right.id));
-    const index = difficulty === "rookie"
-      ? Math.floor(candidates.length * 0.25)
-      : difficulty === "pro"
-        ? Math.floor(candidates.length * 0.55)
-        : Math.floor(candidates.length * 0.85);
-    const card = candidates[Math.min(index, candidates.length - 1)];
+      .sort((left, right) => {
+        const leftHash = createHash("md5").update(`${selectionSeed}:${slot}:${left.id}`).digest("hex");
+        const rightHash = createHash("md5").update(`${selectionSeed}:${slot}:${right.id}`).digest("hex");
+        return leftHash.localeCompare(rightHash) || left.id.localeCompare(right.id);
+      });
+    const card = candidates[0];
     if (!card) throw new Error(`Missing mock opponent ${slot} for ${mode}.`);
     usedCards.add(card.id);
+    usedPlayers.add(card.playerId);
     return [slot, card.id];
   })) as Record<LineupSlot, string>;
 }
@@ -691,7 +715,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       }
       const seed = `mock-seed:${clientMatchId}`;
       const opponent = selectAiOpponent(mode, difficulty, seed);
-      const opponentSlots = mockOpponentSlots(mode, difficulty);
+      const opponentSlots = mockOpponentSlots(opponent, seed);
       const activeLineup = [...state.lineups.values()].find((lineup) => lineup.mode === mode && lineup.isActive);
       if (!activeLineup) return databaseError(route, "An active lineup is required for this mode.");
       const ticket: MatchTicket = {
