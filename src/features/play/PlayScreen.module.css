@@ -71,6 +71,12 @@
     linear-gradient(0deg, rgb(5 8 16 / 74%), transparent 78%),
     url("/assets/ui/play-pwhl-circuit.webp") center 58% / cover no-repeat;
 }
+.openice {
+  background:
+    linear-gradient(90deg, rgb(3 12 18 / 97%) 0%, rgb(4 15 22 / 82%) 42%, rgb(5 27 38 / 44%) 72%, rgb(3 11 17 / 64%) 100%),
+    linear-gradient(0deg, rgb(3 12 18 / 72%), transparent 78%),
+    url("/assets/ui/play-open-ice-circuit.webp") center 52% / cover no-repeat;
+}
 .circuitCard::after { position: absolute; right: -38px; bottom: -50px; width: 150px; height: 110px; border: 1px solid rgb(255 255 255 / 5%); border-radius: 50%; content: ""; }
 .circuitCrest { display: grid; width: 58px; height: 70px; place-items: center; border: 1px solid #8c744c; color: #d8dde0; background: linear-gradient(145deg, #1c2832, #050b10); clip-path: polygon(50% 0, 94% 20%, 94% 78%, 50% 100%, 6% 78%, 6% 20%); font-family: var(--font-display); font-size: .74rem; font-weight: 950; }
 .officialCrest { border: 0; background: transparent; clip-path: none; }
