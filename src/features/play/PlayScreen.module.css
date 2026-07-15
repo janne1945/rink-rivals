@@ -59,6 +59,18 @@
 
 .circuitGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .circuitCard { position: relative; display: grid; min-width: 0; min-height: 139px; grid-template-columns: 65px minmax(0, 1fr); align-items: center; gap: 16px; padding: 16px 18px; overflow: hidden; border: 1px solid rgb(144 177 195 / 20%); border-radius: 8px; color: var(--ice-100); background: linear-gradient(145deg, rgb(9 22 34 / 94%), rgb(3 10 17 / 98%)); text-align: left; cursor: pointer; }
+.nhlcircuit {
+  background:
+    linear-gradient(90deg, rgb(3 10 17 / 97%) 0%, rgb(3 10 17 / 83%) 42%, rgb(3 10 17 / 50%) 72%, rgb(3 10 17 / 70%) 100%),
+    linear-gradient(0deg, rgb(3 10 17 / 72%), transparent 78%),
+    url("/assets/ui/play-nhl-circuit.webp") center 58% / cover no-repeat;
+}
+.pwhlcircuit {
+  background:
+    linear-gradient(90deg, rgb(5 8 16 / 97%) 0%, rgb(9 7 19 / 82%) 42%, rgb(28 9 42 / 48%) 72%, rgb(5 8 16 / 70%) 100%),
+    linear-gradient(0deg, rgb(5 8 16 / 74%), transparent 78%),
+    url("/assets/ui/play-pwhl-circuit.webp") center 58% / cover no-repeat;
+}
 .circuitCard::after { position: absolute; right: -38px; bottom: -50px; width: 150px; height: 110px; border: 1px solid rgb(255 255 255 / 5%); border-radius: 50%; content: ""; }
 .circuitCrest { display: grid; width: 58px; height: 70px; place-items: center; border: 1px solid #8c744c; color: #d8dde0; background: linear-gradient(145deg, #1c2832, #050b10); clip-path: polygon(50% 0, 94% 20%, 94% 78%, 50% 100%, 6% 78%, 6% 20%); font-family: var(--font-display); font-size: .74rem; font-weight: 950; }
 .officialCrest { border: 0; background: transparent; clip-path: none; }
