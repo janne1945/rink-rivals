@@ -12,3 +12,4 @@ test-results/
 !.env.example
 *.md
 !docs/social-competition.md
+!docs/ui-redesign/*.md
