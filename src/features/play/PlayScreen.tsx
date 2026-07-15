@@ -6,9 +6,9 @@ import { Button } from "../../shared/Button";
 import { formatRivalryPoints } from "../../shared/rivalryPoints";
 import styles from "./PlayScreen.module.css";
 
-const modes: Array<{ id: GameMode; label: string; kicker: string; copy: string; crest: string }> = [
-  { id: "nhl-circuit", label: "NHL Circuit", kicker: "NHL cards only", copy: "Take on six-card NHL lineups in a pure circuit matchup.", crest: "NHL" },
-  { id: "pwhl-circuit", label: "PWHL Circuit", kicker: "PWHL cards only", copy: "Build around PWHL stars and compete in a dedicated circuit.", crest: "PWHL" },
+const modes: Array<{ id: GameMode; label: string; kicker: string; copy: string; crest: string; crestSrc?: string }> = [
+  { id: "nhl-circuit", label: "NHL Circuit", kicker: "NHL cards only", copy: "Take on six-card NHL lineups in a pure circuit matchup.", crest: "NHL", crestSrc: "/assets/ui/nhl-shield.webp" },
+  { id: "pwhl-circuit", label: "PWHL Circuit", kicker: "PWHL cards only", copy: "Build around PWHL stars and compete in a dedicated circuit.", crest: "PWHL", crestSrc: "/assets/ui/pwhl-logo.webp" },
   { id: "open-ice", label: "Open Ice", kicker: "NHL and PWHL cards", copy: "Mix both leagues freely. No penalty, only the right card for the moment.", crest: "★" },
 ];
 
@@ -136,7 +136,9 @@ export function PlayScreen({
               onClick={() => setSelected(mode.id)}
               aria-pressed={selectedModeCard}
             >
-              <span className={styles.circuitCrest} aria-hidden="true">{mode.crest}</span>
+              <span className={`${styles.circuitCrest} ${mode.crestSrc ? styles.officialCrest : ""}`} aria-hidden="true">
+                {mode.crestSrc ? <img src={mode.crestSrc} alt="" /> : mode.crest}
+              </span>
               <span className={styles.circuitCopy}>
                 <small>{mode.kicker}</small>
                 <strong>{mode.label}</strong>
