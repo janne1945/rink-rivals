@@ -94,6 +94,9 @@ describe("progression UI", () => {
         preferredDifficulty="rookie"
         onDifficultyChange={onDifficultyChange}
         onStart={onStart}
+        onStartArena={vi.fn()}
+        onOpenLive={vi.fn()}
+        onOpenSeason={vi.fn()}
       />,
     );
 
@@ -102,7 +105,7 @@ describe("progression UI", () => {
     fireEvent.click(elite);
     expect(onDifficultyChange).not.toHaveBeenCalled();
 
-    fireEvent.click(screen.getByRole("button", { name: /pro/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^pro unlocked/i }));
     expect(onDifficultyChange).toHaveBeenCalledWith("pro");
     expect(screen.getByText(/win \+180 rp · draw \+120 rp · loss \+80 rp/i)).toBeVisible();
 

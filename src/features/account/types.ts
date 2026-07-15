@@ -5,6 +5,7 @@ import type {
   AccountProfile,
   AccountObjectiveProgress,
   AccountRivalryRoadProgress,
+  SeasonLockerState,
 } from "../../infrastructure/supabase";
 
 export interface AccountSnapshot {
@@ -14,4 +15,5 @@ export interface AccountSnapshot {
   readonly objectives: readonly AccountObjectiveProgress[];
   readonly rivalryRoad: AccountRivalryRoadProgress;
   readonly market: AccountMarketState;
+  readonly season: SeasonLockerState;
 }

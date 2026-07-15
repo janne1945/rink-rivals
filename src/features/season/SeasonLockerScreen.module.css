@@ -1,0 +1,38 @@
+.page { display: grid; gap: 28px; animation: enter 320ms ease both; }
+@keyframes enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.eyebrow { margin: 0 0 8px; color: var(--gold-300); font-size: .68rem; font-weight: 900; letter-spacing: .17em; text-transform: uppercase; }
+.hero { position: relative; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; min-height: 360px; padding: clamp(26px, 6vw, 56px); overflow: hidden; border: 1px solid rgb(246 217 139 / 28%); border-radius: var(--radius-xl); background: radial-gradient(circle at 80% 30%, rgb(93 218 228 / 28%), transparent 24%), radial-gradient(circle at 82% 38%, rgb(246 217 139 / 25%), transparent 42%), linear-gradient(135deg, #102b45, #07101c 58%, #171b28); box-shadow: var(--shadow-lg); isolation: isolate; }
+.hero::before { position: absolute; right: -8%; bottom: -58%; z-index: -1; width: min(68vw, 700px); aspect-ratio: 1; border: 2px solid rgb(255 255 255 / 10%); border-radius: 50%; box-shadow: inset 0 0 0 70px rgb(255 255 255 / 2%), inset 0 0 0 72px rgb(255 255 255 / 7%); content: ""; }
+.hero h1 { max-width: 760px; margin: 0 0 16px; font-size: clamp(3rem, 10vw, 7.5rem); font-weight: 950; line-height: .78; letter-spacing: -.04em; text-transform: uppercase; }
+.hero > div > p:not(.eyebrow) { max-width: 600px; color: var(--ice-100); line-height: 1.6; }
+.rules { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.rules span { padding: 8px 11px; border: 1px solid rgb(255 255 255 / 12%); border-radius: 999px; color: var(--ice-100); background: rgb(4 12 22 / 58%); font-size: .72rem; font-weight: 800; }
+.seasonMark { display: grid; width: clamp(120px, 18vw, 180px); aspect-ratio: 1; place-content: center; border: 1px solid rgb(246 217 139 / 46%); border-radius: 50%; text-align: center; background: rgb(6 16 28 / 72%); box-shadow: 0 0 70px rgb(246 217 139 / 17%); }
+.seasonMark strong { color: var(--gold-300); font-family: var(--font-display); font-size: clamp(2.8rem, 7vw, 5rem); line-height: .8; }
+.seasonMark span { margin-top: 9px; color: var(--muted); font-size: .68rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+.progressPanel { padding: clamp(20px, 4vw, 30px); border: 1px solid var(--line); border-radius: var(--radius-xl); background: linear-gradient(145deg, rgb(17 39 62 / 92%), rgb(7 16 28 / 96%)); }
+.progressCopy, .sectionHead { display: flex; align-items: end; justify-content: space-between; gap: 18px; }
+.progressCopy h2, .sectionHead h2 { margin: 0; font-size: clamp(1.7rem, 4vw, 2.7rem); text-transform: uppercase; }
+.progressCopy > p, .sectionHead > p, .sourceNote { color: var(--muted); font-size: .82rem; }
+.progressTrack { height: 14px; margin: 20px 0 12px; overflow: hidden; border: 1px solid rgb(255 255 255 / 9%); border-radius: 999px; background: rgb(2 8 14 / 70%); }
+.progressTrack span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--cyan-300), var(--gold-300)); box-shadow: 0 0 22px rgb(246 217 139 / 35%); transition: width 420ms ease; }
+.sourceNote { margin: 0; }
+.rewardGrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 13px; margin: 16px 0 0; padding: 0; list-style: none; }
+.reward { display: grid; min-width: 0; min-height: 320px; grid-template-rows: auto minmax(90px, auto) 1fr auto; gap: 14px; padding: 15px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: linear-gradient(155deg, rgb(15 34 55 / 94%), rgb(6 14 25 / 98%)); box-shadow: 0 14px 34px rgb(0 0 0 / 17%); }
+.rewardTopline { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: .62rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.rewardTopline strong { color: var(--ice-100); }
+.glyph { display: grid; min-height: 96px; place-content: center; border: 1px solid rgb(255 255 255 / 8%); border-radius: 16px; color: var(--gold-300); background: radial-gradient(circle, rgb(246 217 139 / 13%), transparent 62%); font-family: var(--font-display); font-size: 2.6rem; font-weight: 950; }
+.rewardCopy h3 { margin: 0 0 7px; font-size: 1rem; text-transform: uppercase; }
+.rewardCopy p { margin: 0; color: var(--muted); font-size: .75rem; line-height: 1.45; }
+.locked { opacity: .62; }
+.unlocked { border-color: rgb(91 215 226 / 32%); }
+.claimed { border-color: rgb(246 217 139 / 42%); background: linear-gradient(155deg, rgb(45 46 41 / 92%), rgb(12 20 27 / 98%)); }
+.claimedLabel { align-self: end; color: var(--gold-300); font-size: .73rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.success, .error { margin: 0; padding: 13px 16px; border-radius: 12px; font-weight: 800; }
+.success { border: 1px solid rgb(91 215 226 / 35%); color: var(--ice-50); background: rgb(33 108 119 / 22%); }
+.error { border: 1px solid rgb(255 107 107 / 38%); color: #ffd2d2; background: rgb(118 25 32 / 24%); }
+.empty { padding: 48px; border: 1px solid var(--line); border-radius: var(--radius-xl); text-align: center; }
+@media (max-width: 1080px) { .rewardGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .hero { grid-template-columns: 1fr; min-height: auto; } .seasonMark { width: 112px; } .progressCopy, .sectionHead { align-items: start; flex-direction: column; } .rewardGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 440px) { .rewardGrid { grid-template-columns: 1fr; } .reward { min-height: 280px; } }
+@media (prefers-reduced-motion: reduce) { .page { animation: none; } .progressTrack span { transition: none; } }

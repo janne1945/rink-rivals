@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       ai_opponents: {
@@ -37,6 +62,178 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      arena_match_rounds: {
+        Row: {
+          client_request_id: string
+          opponent_card_id: string
+          opponent_score: number
+          opponent_slot: string
+          played_at: string
+          player_card_id: string
+          player_score: number
+          player_slot: string
+          round_index: number
+          situation_id: string
+          ticket_id: string
+          transcript: Json
+          user_id: string
+          winner: string
+        }
+        Insert: {
+          client_request_id: string
+          opponent_card_id: string
+          opponent_score: number
+          opponent_slot: string
+          played_at?: string
+          player_card_id: string
+          player_score: number
+          player_slot: string
+          round_index: number
+          situation_id: string
+          ticket_id: string
+          transcript: Json
+          user_id: string
+          winner: string
+        }
+        Update: {
+          client_request_id?: string
+          opponent_card_id?: string
+          opponent_score?: number
+          opponent_slot?: string
+          played_at?: string
+          player_card_id?: string
+          player_score?: number
+          player_slot?: string
+          round_index?: number
+          situation_id?: string
+          ticket_id?: string
+          transcript?: Json
+          user_id?: string
+          winner?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "arena_match_rounds_opponent_card_id_fkey"
+            columns: ["opponent_card_id"]
+            isOneToOne: false
+            referencedRelation: "card_catalog"
+            referencedColumns: ["card_id"]
+          },
+          {
+            foreignKeyName: "arena_match_rounds_player_card_id_fkey"
+            columns: ["player_card_id"]
+            isOneToOne: false
+            referencedRelation: "card_catalog"
+            referencedColumns: ["card_id"]
+          },
+          {
+            foreignKeyName: "arena_match_rounds_ticket_id_user_id_fkey"
+            columns: ["ticket_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "arena_match_tickets"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "arena_match_rounds_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      arena_match_tickets: {
+        Row: {
+          client_match_id: string
+          id: string
+          lineup_id: string
+          lineup_snapshot: Json
+          lineup_strength: number
+          mode: string
+          opponent_label: string
+          opponent_lineup_id: string
+          opponent_snapshot: Json
+          opponent_strength: number
+          opponent_user_id: string
+          outcome: string | null
+          seed: string
+          settled_at: string | null
+          situations_snapshot: Json
+          started_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          client_match_id: string
+          id?: string
+          lineup_id: string
+          lineup_snapshot: Json
+          lineup_strength: number
+          mode: string
+          opponent_label: string
+          opponent_lineup_id: string
+          opponent_snapshot: Json
+          opponent_strength: number
+          opponent_user_id: string
+          outcome?: string | null
+          seed: string
+          settled_at?: string | null
+          situations_snapshot: Json
+          started_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          client_match_id?: string
+          id?: string
+          lineup_id?: string
+          lineup_snapshot?: Json
+          lineup_strength?: number
+          mode?: string
+          opponent_label?: string
+          opponent_lineup_id?: string
+          opponent_snapshot?: Json
+          opponent_strength?: number
+          opponent_user_id?: string
+          outcome?: string | null
+          seed?: string
+          settled_at?: string | null
+          situations_snapshot?: Json
+          started_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "arena_match_tickets_lineup_id_user_id_fkey"
+            columns: ["lineup_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "lineups"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "arena_match_tickets_opponent_lineup_id_opponent_user_id_fkey"
+            columns: ["opponent_lineup_id", "opponent_user_id"]
+            isOneToOne: false
+            referencedRelation: "lineups"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "arena_match_tickets_opponent_user_id_fkey"
+            columns: ["opponent_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "arena_match_tickets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       card_catalog: {
         Row: {
@@ -251,6 +448,329 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_rivalry_action_receipts: {
+        Row: {
+          action: string
+          client_request_id: string
+          created_at: string
+          request_payload: Json
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          client_request_id: string
+          created_at?: string
+          request_payload: Json
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          client_request_id?: string
+          created_at?: string
+          request_payload?: Json
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_rivalry_action_receipts_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "live_rivalry_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_rivalry_action_receipts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_rivalry_choices: {
+        Row: {
+          card_id: string
+          client_request_id: string
+          locked_at: string
+          room_id: string
+          round_index: number
+          score: Json
+          slot: string
+          user_id: string
+        }
+        Insert: {
+          card_id: string
+          client_request_id: string
+          locked_at?: string
+          room_id: string
+          round_index: number
+          score: Json
+          slot: string
+          user_id: string
+        }
+        Update: {
+          card_id?: string
+          client_request_id?: string
+          locked_at?: string
+          room_id?: string
+          round_index?: number
+          score?: Json
+          slot?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_rivalry_choices_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "card_catalog"
+            referencedColumns: ["card_id"]
+          },
+          {
+            foreignKeyName: "live_rivalry_choices_room_id_user_id_fkey"
+            columns: ["room_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "live_rivalry_players"
+            referencedColumns: ["room_id", "user_id"]
+          },
+        ]
+      }
+      live_rivalry_players: {
+        Row: {
+          display_label: string
+          join_request_id: string
+          joined_at: string
+          last_seen_at: string
+          lineup_id: string
+          lineup_snapshot: Json
+          ready: boolean
+          ready_at: string | null
+          role: string
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          display_label: string
+          join_request_id: string
+          joined_at?: string
+          last_seen_at?: string
+          lineup_id: string
+          lineup_snapshot: Json
+          ready?: boolean
+          ready_at?: string | null
+          role: string
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          display_label?: string
+          join_request_id?: string
+          joined_at?: string
+          last_seen_at?: string
+          lineup_id?: string
+          lineup_snapshot?: Json
+          ready?: boolean
+          ready_at?: string | null
+          role?: string
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_rivalry_players_lineup_id_user_id_fkey"
+            columns: ["lineup_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "lineups"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "live_rivalry_players_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "live_rivalry_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_rivalry_players_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_rivalry_rooms: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          current_round: number
+          expires_at: string
+          host_request_id: string
+          host_user_id: string
+          id: string
+          mode: string
+          rematch_of: string | null
+          room_code: string
+          seed: string
+          situations_snapshot: Json
+          started_at: string | null
+          state_version: number
+          status: string
+          winner_user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          current_round?: number
+          expires_at: string
+          host_request_id: string
+          host_user_id: string
+          id?: string
+          mode: string
+          rematch_of?: string | null
+          room_code: string
+          seed: string
+          situations_snapshot: Json
+          started_at?: string | null
+          state_version?: number
+          status?: string
+          winner_user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          current_round?: number
+          expires_at?: string
+          host_request_id?: string
+          host_user_id?: string
+          id?: string
+          mode?: string
+          rematch_of?: string | null
+          room_code?: string
+          seed?: string
+          situations_snapshot?: Json
+          started_at?: string | null
+          state_version?: number
+          status?: string
+          winner_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_rivalry_rooms_host_user_id_fkey"
+            columns: ["host_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_rivalry_rooms_rematch_of_fkey"
+            columns: ["rematch_of"]
+            isOneToOne: false
+            referencedRelation: "live_rivalry_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_rivalry_rooms_winner_user_id_fkey"
+            columns: ["winner_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_rivalry_rounds: {
+        Row: {
+          guest_card_id: string
+          guest_score: number
+          guest_slot: string
+          guest_user_id: string
+          host_card_id: string
+          host_score: number
+          host_slot: string
+          host_user_id: string
+          resolved_at: string
+          room_id: string
+          round_index: number
+          situation_id: string
+          tie_breaker: string
+          transcript: Json
+          winner_user_id: string
+        }
+        Insert: {
+          guest_card_id: string
+          guest_score: number
+          guest_slot: string
+          guest_user_id: string
+          host_card_id: string
+          host_score: number
+          host_slot: string
+          host_user_id: string
+          resolved_at?: string
+          room_id: string
+          round_index: number
+          situation_id: string
+          tie_breaker: string
+          transcript: Json
+          winner_user_id: string
+        }
+        Update: {
+          guest_card_id?: string
+          guest_score?: number
+          guest_slot?: string
+          guest_user_id?: string
+          host_card_id?: string
+          host_score?: number
+          host_slot?: string
+          host_user_id?: string
+          resolved_at?: string
+          room_id?: string
+          round_index?: number
+          situation_id?: string
+          tie_breaker?: string
+          transcript?: Json
+          winner_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_rivalry_rounds_guest_card_id_fkey"
+            columns: ["guest_card_id"]
+            isOneToOne: false
+            referencedRelation: "card_catalog"
+            referencedColumns: ["card_id"]
+          },
+          {
+            foreignKeyName: "live_rivalry_rounds_host_card_id_fkey"
+            columns: ["host_card_id"]
+            isOneToOne: false
+            referencedRelation: "card_catalog"
+            referencedColumns: ["card_id"]
+          },
+          {
+            foreignKeyName: "live_rivalry_rounds_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "live_rivalry_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_rivalry_rounds_room_id_guest_user_id_fkey"
+            columns: ["room_id", "guest_user_id"]
+            isOneToOne: false
+            referencedRelation: "live_rivalry_players"
+            referencedColumns: ["room_id", "user_id"]
+          },
+          {
+            foreignKeyName: "live_rivalry_rounds_room_id_host_user_id_fkey"
+            columns: ["room_id", "host_user_id"]
+            isOneToOne: false
+            referencedRelation: "live_rivalry_players"
+            referencedColumns: ["room_id", "user_id"]
           },
         ]
       }
@@ -751,6 +1271,235 @@ export type Database = {
           },
         ]
       }
+      rivalry_challenge_attempts: {
+        Row: {
+          challenge_id: string
+          client_match_id: string
+          id: string
+          lineup_id: string
+          lineup_snapshot: Json
+          outcome: string | null
+          seed: string
+          settled_at: string | null
+          started_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          client_match_id: string
+          id?: string
+          lineup_id: string
+          lineup_snapshot: Json
+          outcome?: string | null
+          seed: string
+          settled_at?: string | null
+          started_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          client_match_id?: string
+          id?: string
+          lineup_id?: string
+          lineup_snapshot?: Json
+          outcome?: string | null
+          seed?: string
+          settled_at?: string | null
+          started_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rivalry_challenge_attempts_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "rivalry_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rivalry_challenge_attempts_lineup_id_user_id_fkey"
+            columns: ["lineup_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "lineups"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "rivalry_challenge_attempts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rivalry_challenge_rounds: {
+        Row: {
+          attempt_id: string
+          client_request_id: string
+          ghost_card_id: string
+          ghost_score: number
+          ghost_slot: string
+          played_at: string
+          player_card_id: string
+          player_score: number
+          player_slot: string
+          round_index: number
+          situation_id: string
+          transcript: Json
+          user_id: string
+          winner: string
+        }
+        Insert: {
+          attempt_id: string
+          client_request_id: string
+          ghost_card_id: string
+          ghost_score: number
+          ghost_slot: string
+          played_at?: string
+          player_card_id: string
+          player_score: number
+          player_slot: string
+          round_index: number
+          situation_id: string
+          transcript: Json
+          user_id: string
+          winner: string
+        }
+        Update: {
+          attempt_id?: string
+          client_request_id?: string
+          ghost_card_id?: string
+          ghost_score?: number
+          ghost_slot?: string
+          played_at?: string
+          player_card_id?: string
+          player_score?: number
+          player_slot?: string
+          round_index?: number
+          situation_id?: string
+          transcript?: Json
+          user_id?: string
+          winner?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rivalry_challenge_rounds_attempt_id_user_id_fkey"
+            columns: ["attempt_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "rivalry_challenge_attempts"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "rivalry_challenge_rounds_ghost_card_id_fkey"
+            columns: ["ghost_card_id"]
+            isOneToOne: false
+            referencedRelation: "card_catalog"
+            referencedColumns: ["card_id"]
+          },
+          {
+            foreignKeyName: "rivalry_challenge_rounds_player_card_id_fkey"
+            columns: ["player_card_id"]
+            isOneToOne: false
+            referencedRelation: "card_catalog"
+            referencedColumns: ["card_id"]
+          },
+          {
+            foreignKeyName: "rivalry_challenge_rounds_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rivalry_challenges: {
+        Row: {
+          challenge_strength: number
+          client_request_id: string
+          created_at: string
+          creator_label: string
+          creator_user_id: string
+          difficulty: string
+          expires_at: string
+          ghost_selections_snapshot: Json
+          id: string
+          lineup_snapshot: Json
+          mode: string
+          revoked_at: string | null
+          seed: string
+          situations_snapshot: Json
+          slug: string
+          source_attempt_id: string | null
+          source_kind: string
+          source_ticket_id: string | null
+        }
+        Insert: {
+          challenge_strength: number
+          client_request_id: string
+          created_at?: string
+          creator_label: string
+          creator_user_id: string
+          difficulty: string
+          expires_at?: string
+          ghost_selections_snapshot: Json
+          id?: string
+          lineup_snapshot: Json
+          mode: string
+          revoked_at?: string | null
+          seed: string
+          situations_snapshot: Json
+          slug: string
+          source_attempt_id?: string | null
+          source_kind: string
+          source_ticket_id?: string | null
+        }
+        Update: {
+          challenge_strength?: number
+          client_request_id?: string
+          created_at?: string
+          creator_label?: string
+          creator_user_id?: string
+          difficulty?: string
+          expires_at?: string
+          ghost_selections_snapshot?: Json
+          id?: string
+          lineup_snapshot?: Json
+          mode?: string
+          revoked_at?: string | null
+          seed?: string
+          situations_snapshot?: Json
+          slug?: string
+          source_attempt_id?: string | null
+          source_kind?: string
+          source_ticket_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rivalry_challenges_creator_user_id_fkey"
+            columns: ["creator_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rivalry_challenges_source_attempt_fkey"
+            columns: ["source_attempt_id"]
+            isOneToOne: false
+            referencedRelation: "rivalry_challenge_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rivalry_challenges_source_ticket_id_fkey"
+            columns: ["source_ticket_id"]
+            isOneToOne: false
+            referencedRelation: "match_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rivalry_reward_options: {
         Row: {
           card_id: string
@@ -808,6 +1557,177 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      season_reward_claims: {
+        Row: {
+          claimed_at: string
+          client_request_id: string
+          id: string
+          reward_snapshot: Json
+          season_id: string
+          tier: number
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string
+          client_request_id: string
+          id?: string
+          reward_snapshot: Json
+          season_id: string
+          tier: number
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string
+          client_request_id?: string
+          id?: string
+          reward_snapshot?: Json
+          season_id?: string
+          tier?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "season_reward_claims_season_id_tier_fkey"
+            columns: ["season_id", "tier"]
+            isOneToOne: false
+            referencedRelation: "season_reward_definitions"
+            referencedColumns: ["season_id", "tier"]
+          },
+          {
+            foreignKeyName: "season_reward_claims_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      season_reward_definitions: {
+        Row: {
+          amount: number | null
+          card_id: string | null
+          cosmetic_slug: string | null
+          description: string
+          label: string
+          metadata: Json
+          reward_type: string
+          season_id: string
+          tier: number
+          xp_required: number
+        }
+        Insert: {
+          amount?: number | null
+          card_id?: string | null
+          cosmetic_slug?: string | null
+          description?: string
+          label: string
+          metadata?: Json
+          reward_type: string
+          season_id: string
+          tier: number
+          xp_required: number
+        }
+        Update: {
+          amount?: number | null
+          card_id?: string | null
+          cosmetic_slug?: string | null
+          description?: string
+          label?: string
+          metadata?: Json
+          reward_type?: string
+          season_id?: string
+          tier?: number
+          xp_required?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "season_reward_definitions_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "card_catalog"
+            referencedColumns: ["card_id"]
+          },
+          {
+            foreignKeyName: "season_reward_definitions_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      season_xp_receipts: {
+        Row: {
+          granted_at: string
+          id: string
+          season_id: string
+          source_id: string
+          source_kind: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          granted_at?: string
+          id?: string
+          season_id: string
+          source_id: string
+          source_kind: string
+          user_id: string
+          xp: number
+        }
+        Update: {
+          granted_at?: string
+          id?: string
+          season_id?: string
+          source_id?: string
+          source_kind?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "season_xp_receipts_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "seasons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "season_xp_receipts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seasons: {
+        Row: {
+          created_at: string
+          description: string
+          ends_at: string
+          id: string
+          name: string
+          starts_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          ends_at: string
+          id: string
+          name: string
+          starts_at: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          ends_at?: string
+          id?: string
+          name?: string
+          starts_at?: string
+        }
+        Relationships: []
       }
       starter_grant_receipts: {
         Row: {
@@ -1026,12 +1946,107 @@ export type Database = {
           },
         ]
       }
+      user_cosmetics: {
+        Row: {
+          cosmetic_kind: string
+          cosmetic_slug: string
+          source: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          cosmetic_kind: string
+          cosmetic_slug: string
+          source?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          cosmetic_kind?: string
+          cosmetic_slug?: string
+          source?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_cosmetics_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_season_progress: {
+        Row: {
+          arena_matches: number
+          faceoff_matches: number
+          season_id: string
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          arena_matches?: number
+          faceoff_matches?: number
+          season_id: string
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          arena_matches?: number
+          faceoff_matches?: number
+          season_id?: string
+          updated_at?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_season_progress_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "seasons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_season_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
       activate_lineup: { Args: { lineup_id: string }; Returns: Json }
+      active_season: {
+        Args: { at_time?: string }
+        Returns: {
+          created_at: string
+          description: string
+          ends_at: string
+          id: string
+          name: string
+          starts_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "seasons"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      arena_match_payload: {
+        Args: { requested_status: string; requested_ticket_id: string }
+        Returns: Json
+      }
       assert_valid_lineup: {
         Args: {
           lineup_mode: string
@@ -1061,9 +2076,33 @@ export type Database = {
         Args: { card_id: string; client_request_id: string }
         Returns: Json
       }
+      claim_season_reward: {
+        Args: { client_request_id: string; season_id: string; tier: number }
+        Returns: Json
+      }
       claim_starter_team: {
         Args: { selected_team_id: string }
         Returns: string
+      }
+      create_live_rivalry_rematch: {
+        Args: {
+          client_request_id: string
+          lineup_id: string
+          previous_room_id: string
+        }
+        Returns: Json
+      }
+      create_live_rivalry_room: {
+        Args: { client_request_id: string; lineup_id: string; mode: string }
+        Returns: Json
+      }
+      create_rivalry_challenge: {
+        Args: {
+          client_request_id: string
+          source_client_match_id: string
+          source_kind: string
+        }
+        Returns: Json
       }
       current_market_offers: {
         Args: { at_time: string }
@@ -1079,12 +2118,76 @@ export type Database = {
           starts_at: string
         }[]
       }
+      get_live_rivalry_room: { Args: { room_id?: string }; Returns: Json }
       get_market_state: { Args: never; Returns: Json }
+      get_public_rivalry_challenge: {
+        Args: { challenge_slug: string }
+        Returns: Json
+      }
+      get_season_locker: { Args: never; Returns: Json }
+      grant_season_xp: {
+        Args: {
+          source_id: string
+          source_kind: string
+          target_user_id: string
+          xp_amount: number
+        }
+        Returns: Json
+      }
+      join_live_rivalry_room: {
+        Args: {
+          client_request_id: string
+          lineup_id: string
+          room_code: string
+        }
+        Returns: Json
+      }
+      leave_live_rivalry_room: {
+        Args: { client_request_id: string; room_id: string }
+        Returns: Json
+      }
       lineup_as_json: {
         Args: { requested_lineup_id: string; requesting_user_id: string }
         Returns: Json
       }
+      list_rivalry_challenges: { Args: never; Returns: Json }
+      live_rivalry_room_payload: {
+        Args: { requested_room_id: string }
+        Returns: Json
+      }
+      lock_live_rivalry_choice: {
+        Args: {
+          card_id: string
+          client_request_id: string
+          room_id: string
+          round_index: number
+        }
+        Returns: Json
+      }
+      next_live_rivalry_code: { Args: never; Returns: string }
+      notify_live_rivalry_room: {
+        Args: { requested_room_id: string }
+        Returns: undefined
+      }
+      play_arena_match_round: {
+        Args: {
+          client_match_id: string
+          client_request_id: string
+          player_card_id: string
+          round_index: number
+        }
+        Returns: Json
+      }
       play_match_round: {
+        Args: {
+          client_match_id: string
+          client_request_id: string
+          player_card_id: string
+          round_index: number
+        }
+        Returns: Json
+      }
+      play_rivalry_challenge_round: {
         Args: {
           client_match_id: string
           client_request_id: string
@@ -1102,13 +2205,45 @@ export type Database = {
         Args: { at_time: string }
         Returns: number
       }
+      revoke_rivalry_challenge: {
+        Args: { challenge_slug: string }
+        Returns: Json
+      }
+      rivalry_challenge_status: {
+        Args: {
+          challenge: Database["public"]["Tables"]["rivalry_challenges"]["Row"]
+        }
+        Returns: string
+      }
       save_lineup: {
         Args: { lineup_id: string; mode: string; name: string; slots: Json }
         Returns: Json
       }
+      set_live_rivalry_ready: {
+        Args: { client_request_id: string; ready: boolean; room_id: string }
+        Returns: Json
+      }
+      settle_arena_match: { Args: { client_match_id: string }; Returns: Json }
       settle_match: { Args: { client_match_id: string }; Returns: Json }
+      settle_rivalry_challenge: {
+        Args: { client_match_id: string }
+        Returns: Json
+      }
+      social_competition_situations: { Args: never; Returns: Json }
+      start_arena_match: {
+        Args: { client_match_id: string; mode: string }
+        Returns: Json
+      }
       start_match: {
         Args: { client_match_id: string; difficulty: string; mode: string }
+        Returns: Json
+      }
+      start_rivalry_challenge: {
+        Args: {
+          challenge_slug: string
+          client_match_id: string
+          lineup_id: string
+        }
         Returns: Json
       }
     }
@@ -1239,6 +2374,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },

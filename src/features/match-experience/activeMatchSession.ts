@@ -8,7 +8,7 @@ export interface ActiveMatchSession {
   readonly clientMatchId: string;
   readonly mode: GameMode;
   readonly difficulty: AiDifficulty;
-  readonly source: { readonly kind: "ai" } | {
+  readonly source: { readonly kind: "ai" } | { readonly kind: "arena" } | {
     readonly kind: "ghost-challenge";
     readonly slug: string;
     readonly lineupId: string;
@@ -36,7 +36,7 @@ export function readActiveMatchSession(): ActiveMatchSession | null {
     };
     if ((value.version !== 1 && value.version !== 2) || typeof value.clientMatchId !== "string" || !validMode(value.mode) || !validDifficulty(value.difficulty)) return null;
     const source = value.version === 1 ? { kind: "ai" as const } : value.source;
-    if (!source || (source.kind !== "ai" && (
+    if (!source || (source.kind !== "ai" && source.kind !== "arena" && (
       source.kind !== "ghost-challenge"
       || typeof source.slug !== "string"
       || !/^[0-9a-f]{32}$/.test(source.slug)

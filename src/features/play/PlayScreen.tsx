@@ -32,6 +32,9 @@ export interface PlayScreenProps {
   readonly startError?: string;
   readonly onDifficultyChange?: (difficulty: AiDifficulty) => void;
   readonly onStart: (mode: GameMode, difficulty: AiDifficulty) => Promise<void> | void;
+  readonly onStartArena: (mode: GameMode) => Promise<void> | void;
+  readonly onOpenLive: () => void;
+  readonly onOpenSeason: () => void;
 }
 
 export function PlayScreen({
@@ -43,6 +46,9 @@ export function PlayScreen({
   startError,
   onDifficultyChange,
   onStart,
+  onStartArena,
+  onOpenLive,
+  onOpenSeason,
 }: PlayScreenProps) {
   const initialMode = modes.find((mode) => lineups.some((lineup) => lineup.id === activeLineupIds[mode.id]))?.id ?? "nhl-circuit";
   const [selected, setSelected] = useState<GameMode>(initialMode);
@@ -61,10 +67,22 @@ export function PlayScreen({
   return (
     <div className={styles.page}>
       <header>
-        <p className={styles.eyebrow}>Choose your ice</p>
-        <h1 className={styles.title}>Faceoff</h1>
-        <p className={styles.lede}>Five situations. Five hidden selections. Read the matchup and save the right card for the right shift.</p>
+        <p className={styles.eyebrow}>Three ways to compete</p>
+        <h1 className={styles.title}>Play</h1>
+        <p className={styles.lede}>Face the server, challenge a real club’s lineup in Rivalry Arena, or meet a friend live with a private room code.</p>
       </header>
+      <div className={styles.competitionGrid}>
+        <section className={`${styles.competitionCard} ${styles.faceoffCard}`}>
+          <span>01 · Solo</span><h2>Faceoff</h2><p>Five transparent Quartett rounds against a server-built opponent. Earn Credits, goals, and Season XP.</p><a href="#faceoff-setup">Configure Faceoff ↓</a>
+        </section>
+        <section className={`${styles.competitionCard} ${styles.arenaCard}`}>
+          <span>02 · Real lineup, server AI</span><h2>Rivalry Arena</h2><p>The server finds the closest valid active lineup from another real club and controls it. No ranking or divisions.</p><Button disabled={!active || starting} onClick={() => void onStartArena(selected)}>{starting ? "Finding rival…" : "Enter Arena"}</Button>
+        </section>
+        <section className={`${styles.competitionCard} ${styles.liveCard}`}>
+          <span>03 · Two players live</span><h2>Ghost Challenge</h2><p>Create or enter a six-character code. Both players lock hidden choices simultaneously. Pure rivalry, zero rewards.</p><Button onClick={onOpenLive}>Open Live rooms</Button>
+        </section>
+      </div>
+      <button type="button" className={styles.seasonCallout} onClick={onOpenSeason}><span><strong>Season Locker</strong> · 30 visible, guaranteed rewards</span><b>View progress →</b></button>
       <div className={styles.modeGrid}>
         {modes.map((mode) => (
           <button key={mode.id} className={`${styles.modeCard} ${selected === mode.id ? styles.modeSelected : ""}`} onClick={() => setSelected(mode.id)} aria-pressed={selected === mode.id}>
@@ -72,7 +90,7 @@ export function PlayScreen({
           </button>
         ))}
       </div>
-      <section aria-labelledby="difficulty-heading">
+      <section id="faceoff-setup" aria-labelledby="difficulty-heading">
         <div className={styles.sectionHead}>
           <div><p className={styles.eyebrow}>Rival strength</p><h2 id="difficulty-heading">Choose difficulty</h2></div>
           <p>Collection score: {collectionScore.toLocaleString("en-US")}</p>

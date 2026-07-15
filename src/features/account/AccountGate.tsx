@@ -8,9 +8,14 @@ import type {
   AccountRepository,
   ClaimRivalryRewardInput,
   ClaimRivalryRewardResult,
+  ClaimSeasonRewardInput,
+  ClaimSeasonRewardResult,
+  CreateLiveRivalryRoomInput,
   CreateRivalryChallengeInput,
   CreateRivalryChallengeResult,
   LineupMutationResult,
+  LiveRivalryRoomState,
+  LockLiveRivalryChoiceInput,
   PlayMatchRoundInput,
   PlayMatchRoundResult,
   PurchaseCardInput,
@@ -22,6 +27,8 @@ import type {
   SettleRivalryChallengeResult,
   StartMatchInput,
   StartMatchResult,
+  StartArenaMatchInput,
+  JoinLiveRivalryRoomInput,
   StartRivalryChallengeInput,
   RivalryChallengeSummary,
 } from "../../infrastructure/supabase";
@@ -51,6 +58,18 @@ export interface AccountActions {
   readonly startMatch: (input: StartMatchInput) => Promise<StartMatchResult>;
   readonly playMatchRound: (input: PlayMatchRoundInput) => Promise<PlayMatchRoundResult>;
   readonly settleMatch: (input: SettleMatchInput) => Promise<SettleMatchResult>;
+  readonly claimSeasonReward: (input: ClaimSeasonRewardInput) => Promise<ClaimSeasonRewardResult>;
+  readonly startArenaMatch: (input: StartArenaMatchInput) => Promise<StartMatchResult>;
+  readonly playArenaMatchRound: (input: PlayMatchRoundInput) => Promise<PlayMatchRoundResult>;
+  readonly settleArenaMatch: (input: SettleMatchInput) => Promise<SettleMatchResult>;
+  readonly loadLiveRivalryRoom: (roomId?: string) => Promise<LiveRivalryRoomState | null>;
+  readonly createLiveRivalryRoom: (input: CreateLiveRivalryRoomInput) => Promise<LiveRivalryRoomState>;
+  readonly joinLiveRivalryRoom: (input: JoinLiveRivalryRoomInput) => Promise<LiveRivalryRoomState>;
+  readonly setLiveRivalryReady: (roomId: string, ready: boolean, clientRequestId: string) => Promise<LiveRivalryRoomState>;
+  readonly lockLiveRivalryChoice: (input: LockLiveRivalryChoiceInput) => Promise<LiveRivalryRoomState>;
+  readonly leaveLiveRivalryRoom: (roomId: string, clientRequestId: string) => Promise<LiveRivalryRoomState>;
+  readonly createLiveRivalryRematch: (previousRoomId: string, clientRequestId: string, lineupId: string) => Promise<LiveRivalryRoomState>;
+  readonly subscribeToLiveRivalryRoom: AccountRepository["subscribeToLiveRivalryRoom"];
   readonly createRivalryChallenge: (input: CreateRivalryChallengeInput) => Promise<CreateRivalryChallengeResult>;
   readonly startRivalryChallenge: (input: StartRivalryChallengeInput) => Promise<StartMatchResult>;
   readonly playRivalryChallengeRound: (input: PlayMatchRoundInput) => Promise<PlayMatchRoundResult>;
@@ -78,6 +97,11 @@ const emptyMarket = {
   offers: [],
 } as const;
 
+const emptySeason = {
+  status: "unavailable", serverTime: new Date(0).toISOString(), season: null,
+  xp: 0, faceoffMatches: 0, arenaMatches: 0, rewards: [],
+} as const;
+
 export function AccountGate({ auth, repository, children }: AccountGateProps) {
   const [state, setState] = useState<GateState>({ status: "booting" });
   const [actionBusy, setActionBusy] = useState(false);
@@ -87,11 +111,12 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
   const actionBusyRef = useRef(false);
 
   async function loadReadyAccount(profile: Awaited<ReturnType<AccountRepository["loadProfile"]>>): Promise<AccountSnapshot> {
-    const [cards, lineups, objectives, rivalryRoad, market] = await Promise.all([
+    const [cards, lineups, objectives, rivalryRoad, market, season] = await Promise.all([
       repository.loadOwnCards(), repository.loadLineups(),
       repository.loadObjectiveProgress(), repository.loadRivalryRoadProgress(), repository.loadMarketState(),
+      repository.loadSeasonLocker(),
     ]);
-    return { profile, cards, lineups, objectives, rivalryRoad, market };
+    return { profile, cards, lineups, objectives, rivalryRoad, market, season };
   }
 
   function beginAction(): boolean {
@@ -114,7 +139,7 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
       if (version !== loadVersion.current) return;
       if (!profile.onboardingCompleted) {
         setState({ status: "onboarding", account: {
-          profile, cards: [], lineups: [], objectives: [], market: emptyMarket,
+          profile, cards: [], lineups: [], objectives: [], market: emptyMarket, season: emptySeason,
           rivalryRoad: { currentStepIndex: 0, completedStepIds: [], status: "in-progress", selectedCardId: null },
         } });
         return;
@@ -305,6 +330,14 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     return refreshAfterMutation(() => repository.settleMatch(input));
   }
 
+  function claimSeasonReward(input: ClaimSeasonRewardInput): Promise<ClaimSeasonRewardResult> {
+    return refreshAfterMutation(() => repository.claimSeasonReward(input));
+  }
+
+  function settleArenaMatch(input: SettleMatchInput): Promise<SettleMatchResult> {
+    return refreshAfterMutation(() => repository.settleArenaMatch(input));
+  }
+
   function createRivalryChallenge(input: CreateRivalryChallengeInput): Promise<CreateRivalryChallengeResult> {
     return repository.createRivalryChallenge(input);
   }
@@ -352,6 +385,18 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     startMatch,
     playMatchRound,
     settleMatch,
+    claimSeasonReward,
+    startArenaMatch: (input) => repository.startArenaMatch(input),
+    playArenaMatchRound: (input) => repository.playArenaMatchRound(input),
+    settleArenaMatch,
+    loadLiveRivalryRoom: (roomId) => repository.loadLiveRivalryRoom(roomId),
+    createLiveRivalryRoom: (input) => repository.createLiveRivalryRoom(input),
+    joinLiveRivalryRoom: (input) => repository.joinLiveRivalryRoom(input),
+    setLiveRivalryReady: (roomId, ready, clientRequestId) => repository.setLiveRivalryReady(roomId, ready, clientRequestId),
+    lockLiveRivalryChoice: (input) => repository.lockLiveRivalryChoice(input),
+    leaveLiveRivalryRoom: (roomId, clientRequestId) => repository.leaveLiveRivalryRoom(roomId, clientRequestId),
+    createLiveRivalryRematch: (previousRoomId, clientRequestId, lineupId) => repository.createLiveRivalryRematch(previousRoomId, clientRequestId, lineupId),
+    subscribeToLiveRivalryRoom: (topic, onUpdate, onStatus) => repository.subscribeToLiveRivalryRoom(topic, onUpdate, onStatus),
     createRivalryChallenge,
     startRivalryChallenge,
     playRivalryChallengeRound,

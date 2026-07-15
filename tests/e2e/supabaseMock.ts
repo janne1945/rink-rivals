@@ -182,6 +182,12 @@ type MockRivalryChallenge = {
   challengerWins: number;
 };
 
+type LivePendingChoice = {
+  clientRequestId: string;
+  roundIndex: number;
+  cardId: string;
+};
+
 export interface SupabaseMockOptions {
   readonly authenticated?: boolean;
   readonly onboardingCompleted?: boolean;
@@ -218,6 +224,12 @@ export interface SupabaseMockState {
   matchTickets: Map<string, MatchTicket>;
   settlements: Map<string, { matchId: string; rewardCredits: number; outcome: "win" | "draw" | "loss" }>;
   rewardClaims: Map<string, { cardId: string; claimedAt: string }>;
+  seasonXp: number;
+  seasonClaims: Map<number, string>;
+  liveRoom: Record<string, unknown> | null;
+  liveOpponentSlots: Record<LineupSlot, string> | null;
+  livePendingChoice: LivePendingChoice | null;
+  liveRoundRequests: Map<string, LivePendingChoice>;
   rivalryChallenges: Map<string, MockRivalryChallenge>;
   ghostAttemptSlugs: Map<string, string>;
   ghostSettlements: Map<string, { outcome: "win" | "loss"; playerWins: number; ghostWins: number }>;
@@ -319,6 +331,12 @@ export function createSupabaseMockState(onboardingCompleted = true, selectedTeam
     matchTickets: new Map(),
     settlements: new Map(),
     rewardClaims: new Map(),
+    seasonXp: 240,
+    seasonClaims: new Map(),
+    liveRoom: null,
+    liveOpponentSlots: null,
+    livePendingChoice: null,
+    liveRoundRequests: new Map(),
     rivalryChallenges: new Map(),
     ghostAttemptSlugs: new Map(),
     ghostSettlements: new Map(),
@@ -428,6 +446,137 @@ function lineupRow(lineup: MockLineup) {
 
 function rpcLineup(lineup: MockLineup) {
   return { ...lineupRow(lineup), slots: lineup.slots };
+}
+
+function seasonRewards(state: SupabaseMockState) {
+  return Array.from({ length: 30 }, (_, index) => {
+    const tier = index + 1;
+    const isNhlCard = tier === 15;
+    const isPwhlCard = tier === 30;
+    const cardId = isNhlCard
+      ? "nhl-connor-mcdavid-rivalry-2026"
+      : isPwhlCard ? "pwhl-marie-philip-poulin-rivalry-2026" : null;
+    return {
+      tier,
+      xp_required: tier * 100,
+      reward_type: cardId ? "card" : tier % 4 === 0 ? "banner" : "credits",
+      label: cardId ? (isNhlCard ? "NHL Seasonal Star" : "PWHL Seasonal Star") : `Tier ${tier} Reward`,
+      description: cardId ? "Guaranteed seasonal reward card." : tier % 4 === 0 ? "Guaranteed Season cosmetic." : `${100 + tier * 25} Rivalry Points.`,
+      amount: cardId || tier % 4 === 0 ? null : 100 + tier * 25,
+      card_id: cardId,
+      cosmetic_slug: tier % 4 === 0 ? `season-banner-${tier}` : null,
+      metadata: cardId ? { league: isNhlCard ? "NHL" : "PWHL" } : {},
+      unlocked: state.seasonXp >= tier * 100,
+      claimed: state.seasonClaims.has(tier),
+      claimed_at: state.seasonClaims.get(tier) ?? null,
+    };
+  });
+}
+
+function mockLiveRoom(lineup: MockLineup): Record<string, unknown> {
+  return {
+    server_time: "2026-07-15T12:00:00.000Z",
+    room_id: "55555555-5555-4555-8555-555555555555",
+    room_code: "RANK26",
+    topic: "live-rivalry:55555555-5555-4555-8555-555555555555",
+    status: "waiting",
+    state_version: 1,
+    mode: lineup.mode,
+    current_round: 0,
+    situations: serverSituations,
+    created_at: "2026-07-15T12:00:00.000Z",
+    started_at: null,
+    completed_at: null,
+    expires_at: "2026-07-15T12:15:00.000Z",
+    rematch_of: null,
+    me: {
+      user_id: userId,
+      role: "host",
+      display_label: "Alex",
+      lineup_id: lineup.id,
+      lineup_name: lineup.name,
+      lineup: rpcLineup(lineup),
+      ready: false,
+      locked: false,
+    },
+    opponent: null,
+    rounds: [],
+    result: null,
+    head_to_head: { matches: 0, player_wins: 0, opponent_wins: 0 },
+    rewards: { credits: 0, season_xp: 0, cards: 0, objectives: 0 },
+  };
+}
+
+function resolvePendingLiveChoice(state: SupabaseMockState): void {
+  const pending = state.livePendingChoice;
+  const room = state.liveRoom;
+  const opponentSlots = state.liveOpponentSlots;
+  if (!pending || !room || !opponentSlots || room.status !== "active") return;
+
+  const me = room.me as Record<string, unknown>;
+  const lineup = me.lineup as Record<string, unknown>;
+  const playerSlots = lineup.slots as Record<LineupSlot, string>;
+  const rounds = room.rounds as Array<Record<string, unknown>>;
+  const situation = serverSituations[pending.roundIndex];
+  if (!situation) throw new Error(`Missing Live situation ${pending.roundIndex}.`);
+  const playerSlot = lineupSlotOrder.find((slot) => playerSlots[slot] === pending.cardId);
+  if (!playerSlot) throw new Error(`Live player card ${pending.cardId} is not in the mock lineup.`);
+
+  const usedOpponentCards = new Set(rounds.map((round) => String(round.opponent_card_id)));
+  const opponentChoice = lineupSlotOrder
+    .filter((slot) => situation.eligible_slots.includes(slot as never))
+    .map((slot) => ({ slot, cardId: opponentSlots[slot] }))
+    .find(({ cardId }) => !usedOpponentCards.has(cardId));
+  if (!opponentChoice) throw new Error(`Missing eligible Live opponent card for round ${pending.roundIndex}.`);
+
+  const playerScore = scoreCard(pending.cardId, situation.attribute);
+  const opponentScore = scoreCard(opponentChoice.cardId, situation.attribute);
+  const tieBreaker = playerScore.value !== opponentScore.value
+    ? "category"
+    : playerScore.overall !== opponentScore.overall ? "overall" : "match-seed";
+  const winner = playerScore.value !== opponentScore.value
+    ? playerScore.value > opponentScore.value ? "player" : "opponent"
+    : playerScore.overall !== opponentScore.overall
+      ? playerScore.overall > opponentScore.overall ? "player" : "opponent"
+      : pending.roundIndex % 2 === 0 ? "player" : "opponent";
+  rounds.push({
+    round_index: pending.roundIndex,
+    situation_id: situation.id,
+    player_card_id: pending.cardId,
+    player_slot: playerSlot,
+    player_score: playerScore.value,
+    opponent_card_id: opponentChoice.cardId,
+    opponent_slot: opponentChoice.slot,
+    opponent_score: opponentScore.value,
+    winner,
+    tie_breaker: tieBreaker,
+    transcript: { situation, player: playerScore, opponent: opponentScore },
+    resolved_at: "2026-07-15T12:05:00.000Z",
+  });
+  room.current_round = pending.roundIndex + 1;
+  room.state_version = Number(room.state_version) + 1;
+  room.me = { ...me, locked: false };
+  room.opponent = { ...(room.opponent as Record<string, unknown>), locked: false };
+  state.livePendingChoice = null;
+
+  if (Number(room.current_round) === 5) {
+    const playerWins = rounds.filter((round) => round.winner === "player").length;
+    const opponentWins = 5 - playerWins;
+    const playerWon = playerWins > opponentWins;
+    room.status = "completed";
+    room.completed_at = "2026-07-15T12:05:00.000Z";
+    room.result = {
+      outcome: playerWon ? "win" : "loss",
+      player_wins: playerWins,
+      opponent_wins: opponentWins,
+      winner_user_id: playerWon ? userId : "22222222-2222-4222-8222-222222222222",
+    };
+    room.head_to_head = {
+      matches: 1,
+      player_wins: playerWon ? 1 : 0,
+      opponent_wins: playerWon ? 0 : 1,
+    };
+  }
 }
 
 function queryValue(url: URL, field: string, operator: "eq" | "in"): string | null {
@@ -560,6 +709,27 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
   let dropRoundResponseOnce = options.roundResponseLossOnce ?? false;
   let dropRivalryStartResponseOnce = options.rivalryStartResponseLossOnce ?? false;
   let failSettlementOnce = options.settlementErrorOnce ?? false;
+  await page.routeWebSocket(new RegExp(`^wss://${projectRef}\\.supabase\\.co/realtime/v1/websocket`), (socket) => {
+    socket.onMessage((message) => {
+      if (typeof message !== "string") return;
+      try {
+        const packet = JSON.parse(message) as unknown;
+        if (!Array.isArray(packet) || packet.length < 5) return;
+        const [joinRef, ref, topic, event] = packet;
+        if (event === "phx_join" || event === "heartbeat") {
+          socket.send(JSON.stringify([
+            joinRef,
+            ref,
+            topic,
+            "phx_reply",
+            { status: "ok", response: {} },
+          ]));
+        }
+      } catch {
+        // Ignore malformed test-client traffic; the browser remains connected.
+      }
+    });
+  });
   if (options.authenticated) {
     await page.addInitScript(({ key, value }) => localStorage.setItem(key, value), {
       key: `sb-${projectRef}-auth-token`,
@@ -661,6 +831,121 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
         } : null,
         offers: currentOffers(state, marketEventRotation, marketNow),
       });
+    }
+    if (url.pathname === "/rest/v1/rpc/get_season_locker") {
+      return json(route, {
+        status: "active",
+        server_time: "2026-07-15T12:00:00.000Z",
+        season: {
+          id: "season-zero-2026",
+          name: "Season Zero: First Shift",
+          description: "A 28-day, gameplay-only locker. Every reward is visible and guaranteed.",
+          starts_at: "2026-07-15T00:00:00.000Z",
+          ends_at: "2026-08-12T00:00:00.000Z",
+        },
+        xp: state.seasonXp,
+        faceoff_matches: 1,
+        arena_matches: 1,
+        rewards: seasonRewards(state),
+      });
+    }
+    if (url.pathname === "/rest/v1/rpc/claim_season_reward") {
+      const body = request.postDataJSON() as { season_id: string; tier: number; client_request_id: string };
+      if (state.seasonXp < body.tier * 100) return databaseError(route, "Earn more Season XP to unlock this reward.");
+      const alreadyClaimed = state.seasonClaims.has(body.tier);
+      const claimedAt = state.seasonClaims.get(body.tier) ?? "2026-07-15T12:01:00.000Z";
+      state.seasonClaims.set(body.tier, claimedAt);
+      return json(route, {
+        status: alreadyClaimed ? "already-claimed" : "claimed",
+        season_id: body.season_id,
+        tier: body.tier,
+        reward: seasonRewards(state)[body.tier - 1],
+        claimed_at: claimedAt,
+        credits: state.credits,
+      });
+    }
+    if (url.pathname === "/rest/v1/rpc/get_live_rivalry_room") {
+      resolvePendingLiveChoice(state);
+      return json(route, state.liveRoom ?? { status: "none" });
+    }
+    if (url.pathname === "/rest/v1/rpc/create_live_rivalry_room") {
+      const body = request.postDataJSON() as { mode: GameMode; lineup_id: string };
+      const lineup = state.lineups.get(body.lineup_id);
+      if (!lineup || lineup.mode !== body.mode) return databaseError(route, "Choose a lineup that matches the Live room mode.");
+      state.liveRoom = mockLiveRoom(lineup);
+      return json(route, state.liveRoom);
+    }
+    if (url.pathname === "/rest/v1/rpc/join_live_rivalry_room") {
+      const body = request.postDataJSON() as { room_code: string; lineup_id: string };
+      const lineup = state.lineups.get(body.lineup_id);
+      if (!lineup || body.room_code !== "RANK26") return databaseError(route, "Live room not found.");
+      const joined = mockLiveRoom(lineup);
+      joined.me = { ...(joined.me as Record<string, unknown>), role: "guest" };
+      joined.opponent = { user_id: "22222222-2222-4222-8222-222222222222", role: "host", display_label: "Morgan", lineup_id: "rival-lineup", lineup_name: "Morgan's Six", ready: false, online: true, locked: false };
+      joined.state_version = 2;
+      state.liveRoom = joined;
+      state.liveOpponentSlots = mockOpponentSlots(
+        selectAiOpponent(lineup.mode, "pro", "live-rival-lineup"),
+        "live-rival-lineup",
+      );
+      return json(route, joined);
+    }
+    if (url.pathname === "/rest/v1/rpc/set_live_rivalry_ready") {
+      const body = request.postDataJSON() as { ready: boolean };
+      if (!state.liveRoom) return databaseError(route, "Live room not found.");
+      state.liveRoom.me = { ...(state.liveRoom.me as Record<string, unknown>), ready: body.ready };
+      if (body.ready && state.liveRoom.opponent) {
+        state.liveRoom.opponent = { ...(state.liveRoom.opponent as Record<string, unknown>), ready: true };
+        state.liveRoom.status = "active";
+        state.liveRoom.started_at = "2026-07-15T12:02:00.000Z";
+        state.liveRoom.expires_at = "2026-07-16T12:02:00.000Z";
+      }
+      state.liveRoom.state_version = Number(state.liveRoom.state_version) + 1;
+      return json(route, state.liveRoom);
+    }
+    if (url.pathname === "/rest/v1/rpc/lock_live_rivalry_choice") {
+      const body = request.postDataJSON() as { round_index: number; card_id: string; client_request_id: string };
+      if (!state.liveRoom || state.liveRoom.status !== "active") return databaseError(route, "Live room is not active.");
+      const existing = state.liveRoundRequests.get(body.client_request_id);
+      if (existing) {
+        if (existing.roundIndex !== body.round_index || existing.cardId !== body.card_id) {
+          return databaseError(route, "Live request id was already used for another choice.");
+        }
+        return json(route, state.liveRoom);
+      }
+      if (Number(state.liveRoom.current_round) !== body.round_index) return databaseError(route, "That Live round is no longer active.");
+      const me = state.liveRoom.me as Record<string, unknown>;
+      const lineup = me.lineup as Record<string, unknown>;
+      const slots = lineup.slots as Record<LineupSlot, string>;
+      const situation = serverSituations[body.round_index];
+      const slot = lineupSlotOrder.find((candidate) => slots[candidate] === body.card_id);
+      const usedCards = new Set((state.liveRoom.rounds as Array<Record<string, unknown>>).map((round) => String(round.player_card_id)));
+      if (!situation || !slot || !situation.eligible_slots.includes(slot as never) || usedCards.has(body.card_id)) {
+        return databaseError(route, "That card is not eligible for this Live round.");
+      }
+      const choice = { clientRequestId: body.client_request_id, roundIndex: body.round_index, cardId: body.card_id };
+      state.liveRoundRequests.set(body.client_request_id, choice);
+      state.livePendingChoice = choice;
+      state.liveRoom.me = { ...me, locked: true };
+      state.liveRoom.state_version = Number(state.liveRoom.state_version) + 1;
+      return json(route, state.liveRoom);
+    }
+    if (url.pathname === "/rest/v1/rpc/leave_live_rivalry_room") {
+      if (!state.liveRoom) return databaseError(route, "Live room not found.");
+      state.liveRoom.status = state.liveRoom.status === "active" ? "completed" : "cancelled";
+      state.liveRoom.state_version = Number(state.liveRoom.state_version) + 1;
+      return json(route, state.liveRoom);
+    }
+    if (url.pathname === "/rest/v1/rpc/create_live_rivalry_rematch") {
+      const me = state.liveRoom?.me as Record<string, unknown> | undefined;
+      const lineupId = String(me?.lineup_id ?? "");
+      const lineup = state.lineups.get(lineupId);
+      if (!lineup) return databaseError(route, "Live rematch lineup not found.");
+      state.liveRoom = mockLiveRoom(lineup);
+      state.liveOpponentSlots = null;
+      state.livePendingChoice = null;
+      state.liveRoundRequests.clear();
+      return json(route, state.liveRoom);
     }
     if (url.pathname === "/rest/v1/rpc/purchase_card") {
       state.purchaseCallCount += 1;
@@ -848,6 +1133,28 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       }
       return json(route, startResponse("started", ticket));
     }
+    if (url.pathname === "/rest/v1/rpc/start_arena_match") {
+      const body = request.postDataJSON() as { client_match_id: string; mode: GameMode };
+      const previous = state.matchTickets.get(body.client_match_id);
+      if (previous) return json(route, startResponse("already-started", previous));
+      const activeLineup = [...state.lineups.values()].find((lineup) => lineup.mode === body.mode && lineup.isActive);
+      if (!activeLineup) return databaseError(route, "An active lineup is required for this Arena.");
+      const ticket: MatchTicket = {
+        clientMatchId: body.client_match_id,
+        mode: body.mode,
+        difficulty: "pro",
+        seed: `arena-seed:${body.client_match_id}`,
+        opponentId: "arena:22222222-2222-4222-8222-222222222222",
+        opponentName: "Morgan's Six",
+        playerLineupId: activeLineup.id,
+        playerLineupName: activeLineup.name,
+        playerSlots: { ...activeLineup.slots },
+        opponentSlots: { ...activeLineup.slots },
+        rounds: new Map(), roundRequests: new Map(), status: "open",
+      };
+      state.matchTickets.set(ticket.clientMatchId, ticket);
+      return json(route, startResponse("started", ticket));
+    }
     if (url.pathname === "/rest/v1/rpc/start_match") {
       state.startMatchCallCount += 1;
       if (options.startMatchError) return databaseError(route, "Match service temporarily unavailable", 503);
@@ -891,7 +1198,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       state.matchTickets.set(clientMatchId, ticket);
       return json(route, startResponse("started", ticket));
     }
-    if (url.pathname === "/rest/v1/rpc/play_match_round" || url.pathname === "/rest/v1/rpc/play_rivalry_challenge_round") {
+    if (url.pathname === "/rest/v1/rpc/play_match_round" || url.pathname === "/rest/v1/rpc/play_rivalry_challenge_round" || url.pathname === "/rest/v1/rpc/play_arena_match_round") {
       state.playRoundCallCount += 1;
       if (options.roundDelayMs) await new Promise((resolve) => setTimeout(resolve, options.roundDelayMs));
       if (options.roundError) return databaseError(route, "Round service temporarily unavailable", 503);
@@ -963,7 +1270,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       }
       return json(route, roundResponse("played", ticket, receipt));
     }
-    if (url.pathname === "/rest/v1/rpc/settle_match" || url.pathname === "/rest/v1/rpc/settle_rivalry_challenge") {
+    if (url.pathname === "/rest/v1/rpc/settle_match" || url.pathname === "/rest/v1/rpc/settle_rivalry_challenge" || url.pathname === "/rest/v1/rpc/settle_arena_match") {
       const isGhostSettlement = url.pathname.endsWith("settle_rivalry_challenge");
       state.settleMatchCallCount += 1;
       if (failSettlementOnce) {

@@ -1201,8 +1201,67 @@
   backdrop-filter: blur(18px);
 }
 
+.competitionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.competitionCard {
+  position: relative;
+  display: grid;
+  min-height: 300px;
+  align-content: end;
+  gap: 12px;
+  padding: clamp(20px, 4vw, 30px);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(150deg, rgb(18 42 67 / 94%), rgb(6 14 25 / 98%));
+  box-shadow: var(--shadow-lg);
+  isolation: isolate;
+}
+
+.competitionCard::before {
+  position: absolute;
+  top: -36%;
+  right: -22%;
+  z-index: -1;
+  width: 74%;
+  aspect-ratio: 1;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 50%;
+  content: "";
+  box-shadow: inset 0 0 0 40px rgb(255 255 255 / 2%);
+}
+
+.competitionCard > span { color: var(--gold-300); font-size: .65rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+.competitionCard h2 { margin: 0; font-size: clamp(2rem, 5vw, 3.4rem); line-height: .86; text-transform: uppercase; }
+.competitionCard p { margin: 0 0 8px; color: var(--muted); font-size: .82rem; line-height: 1.5; }
+.competitionCard a { color: var(--ice-50); font-size: .76rem; font-weight: 900; text-decoration: none; text-transform: uppercase; }
+.arenaCard { border-color: rgb(246 217 139 / 30%); background: radial-gradient(circle at 85% 18%, rgb(246 217 139 / 20%), transparent 32%), linear-gradient(150deg, rgb(42 44 48 / 95%), rgb(8 15 23 / 98%)); }
+.liveCard { border-color: rgb(91 215 226 / 30%); background: radial-gradient(circle at 85% 18%, rgb(91 215 226 / 20%), transparent 32%), linear-gradient(150deg, rgb(16 52 68 / 95%), rgb(6 15 25 / 98%)); }
+
+.seasonCallout {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 18px;
+  border: 1px solid rgb(246 217 139 / 26%);
+  border-radius: 16px;
+  color: var(--ice-100);
+  background: linear-gradient(90deg, rgb(246 217 139 / 10%), rgb(91 215 226 / 8%));
+  cursor: pointer;
+}
+
+.seasonCallout strong, .seasonCallout b { color: var(--gold-300); }
+
 @media (max-width: 1000px) {
   .cardGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .competitionGrid { grid-template-columns: 1fr 1fr; }
+  .competitionCard:first-child { grid-column: 1 / -1; min-height: 230px; }
 }
 
 @media (max-width: 720px) {
@@ -1214,6 +1273,8 @@
   .slotPicker { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .candidateGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .objectiveGrid, .difficultyGrid, .rivalryRoad { grid-template-columns: 1fr; }
+  .competitionGrid { grid-template-columns: 1fr; }
+  .competitionCard:first-child { grid-column: auto; }
   .goalsHero { align-items: flex-start; flex-direction: column; }
   .marketHero { align-items: flex-start; flex-direction: column; }
   .countdown { width: 100%; text-align: left; }
@@ -1243,6 +1304,7 @@
   .marketTabs button { flex: 1; }
   .marketFeedbackActions > *, .marketDialogActions > * { width: 100%; }
   .goalSummaryStrip strong { white-space: normal; }
+  .seasonCallout { align-items: flex-start; flex-direction: column; }
 }
 
 @media (max-height: 520px) and (orientation: landscape) {

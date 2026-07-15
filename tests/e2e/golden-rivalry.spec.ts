@@ -58,18 +58,10 @@ test.describe("Golden Ghost Rivalry journey", () => {
     expect(state.credits).toBe(creditsBefore);
     expect(state.completedMatches).toBe(matchesBefore);
     expect(state.ghostSettlements.size).toBe(1);
-    await page.getByRole("button", { name: "Create Ghost Rivalry" }).click();
-    await expect(page.getByText("Your ghost is ready")).toBeVisible();
-    await page.getByRole("button", { name: "Share challenge" }).click();
-    await expect(page.getByText(/link copied|Ghost Rivalry secured/i)).toBeVisible();
-    expect([...state.rivalryChallenges.values()].filter((challenge) => challenge.owned)).toHaveLength(1);
-
-    await page.goto("/rivalries");
-    await expect(page.getByRole("heading", { name: "Ghost Rivalries" })).toBeVisible();
-    await expect(page.getByText("OVR ghost")).toBeVisible();
-    await page.getByRole("button", { name: "Revoke" }).click();
-    await expect(page.getByRole("status")).toContainText("revoked");
-    await expect(page.getByText("revoked", { exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Create Ghost Rivalry" })).toHaveCount(0);
+    await page.goto("/ghost");
+    await expect(page.getByRole("heading", { name: "Live Ghost Challenge" })).toBeVisible();
+    await expect(page.getByText(/Both choices stay hidden until both players lock/i)).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
     expect(browserErrors).toEqual([]);
   });

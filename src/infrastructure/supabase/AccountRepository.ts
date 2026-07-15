@@ -1,4 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { RealtimeChannel, SupabaseClient } from "@supabase/supabase-js";
 
 import type { AiDifficulty, BattleSituation, CardRoundScore, RoundWinner } from "../../domain/battle";
 import type { GameMode, LineupSlot } from "../../domain/lineups";
@@ -47,6 +47,152 @@ export interface SettleMatchResult {
   readonly rewardCredits: number;
   readonly credits: number;
   readonly completedMatches: number;
+}
+
+export interface SeasonReward {
+  readonly tier: number;
+  readonly xpRequired: number;
+  readonly rewardType: "credits" | "emblem" | "banner" | "title" | "broadcast-sting" | "card";
+  readonly label: string;
+  readonly description: string;
+  readonly amount: number | null;
+  readonly cardId: string | null;
+  readonly cosmeticSlug: string | null;
+  readonly metadata: Readonly<Record<string, unknown>>;
+  readonly unlocked: boolean;
+  readonly claimed: boolean;
+  readonly claimedAt: string | null;
+}
+
+export interface SeasonLockerState {
+  readonly status: "active" | "upcoming" | "ended" | "unavailable";
+  readonly serverTime: string;
+  readonly season: {
+    readonly id: string;
+    readonly name: string;
+    readonly description: string;
+    readonly startsAt: string;
+    readonly endsAt: string;
+  } | null;
+  readonly xp: number;
+  readonly faceoffMatches: number;
+  readonly arenaMatches: number;
+  readonly rewards: readonly SeasonReward[];
+}
+
+export interface ClaimSeasonRewardInput {
+  readonly seasonId: string;
+  readonly tier: number;
+  readonly clientRequestId: string;
+}
+
+export interface ClaimSeasonRewardResult {
+  readonly status: "claimed" | "already-claimed";
+  readonly seasonId: string;
+  readonly tier: number;
+  readonly reward: Readonly<Record<string, unknown>>;
+  readonly claimedAt: string;
+  readonly credits: number;
+}
+
+export interface StartArenaMatchInput {
+  readonly clientMatchId: string;
+  readonly mode: GameMode;
+}
+
+export type LiveRivalryRoomStatus = "waiting" | "active" | "completed" | "cancelled" | "expired";
+
+export interface LiveRivalryRound {
+  readonly roundIndex: number;
+  readonly situationId: string;
+  readonly playerCardId: string;
+  readonly playerSlot: LineupSlot;
+  readonly playerScore: number;
+  readonly opponentCardId: string;
+  readonly opponentSlot: LineupSlot;
+  readonly opponentScore: number;
+  readonly winner: "player" | "opponent";
+  readonly tieBreaker: import("../../domain/battle").RoundTieBreaker;
+  readonly transcript: {
+    readonly situation: BattleSituation;
+    readonly player: CardRoundScore;
+    readonly opponent: CardRoundScore;
+  };
+  readonly resolvedAt: string;
+}
+
+export interface LiveRivalryRoomState {
+  readonly serverTime: string;
+  readonly roomId: string;
+  readonly roomCode: string;
+  readonly topic: string;
+  readonly status: LiveRivalryRoomStatus;
+  readonly stateVersion: number;
+  readonly mode: GameMode;
+  readonly currentRound: number;
+  readonly situations: readonly BattleSituation[];
+  readonly createdAt: string;
+  readonly startedAt: string | null;
+  readonly completedAt: string | null;
+  readonly expiresAt: string;
+  readonly rematchOf: string | null;
+  readonly me: {
+    readonly userId: string;
+    readonly role: "host" | "guest";
+    readonly displayLabel: string;
+    readonly lineupId: string;
+    readonly lineupName: string;
+    readonly lineup: MatchLineupSnapshot;
+    readonly ready: boolean;
+    readonly locked: boolean;
+  };
+  readonly opponent: {
+    readonly userId: string;
+    readonly role: "host" | "guest";
+    readonly displayLabel: string;
+    readonly lineupId: string;
+    readonly lineupName: string;
+    readonly ready: boolean;
+    readonly online: boolean;
+    readonly locked: boolean;
+  } | null;
+  readonly rounds: readonly LiveRivalryRound[];
+  readonly result: {
+    readonly outcome: "win" | "loss";
+    readonly playerWins: number;
+    readonly opponentWins: number;
+    readonly winnerUserId: string;
+  } | null;
+  readonly headToHead: {
+    readonly matches: number;
+    readonly playerWins: number;
+    readonly opponentWins: number;
+  };
+  readonly rewards: {
+    readonly credits: 0;
+    readonly seasonXp: 0;
+    readonly cards: 0;
+    readonly objectives: 0;
+  };
+}
+
+export interface CreateLiveRivalryRoomInput {
+  readonly clientRequestId: string;
+  readonly mode: GameMode;
+  readonly lineupId: string;
+}
+
+export interface JoinLiveRivalryRoomInput {
+  readonly roomCode: string;
+  readonly clientRequestId: string;
+  readonly lineupId: string;
+}
+
+export interface LockLiveRivalryChoiceInput {
+  readonly roomId: string;
+  readonly roundIndex: number;
+  readonly cardId: string;
+  readonly clientRequestId: string;
 }
 
 export interface AccountMarketEvent {
@@ -264,6 +410,19 @@ export interface AccountRepository {
   startMatch(input: StartMatchInput): Promise<StartMatchResult>;
   playMatchRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult>;
   settleMatch(input: SettleMatchInput): Promise<SettleMatchResult>;
+  loadSeasonLocker(): Promise<SeasonLockerState>;
+  claimSeasonReward(input: ClaimSeasonRewardInput): Promise<ClaimSeasonRewardResult>;
+  startArenaMatch(input: StartArenaMatchInput): Promise<StartMatchResult>;
+  playArenaMatchRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult>;
+  settleArenaMatch(input: SettleMatchInput): Promise<SettleMatchResult>;
+  loadLiveRivalryRoom(roomId?: string): Promise<LiveRivalryRoomState | null>;
+  createLiveRivalryRoom(input: CreateLiveRivalryRoomInput): Promise<LiveRivalryRoomState>;
+  joinLiveRivalryRoom(input: JoinLiveRivalryRoomInput): Promise<LiveRivalryRoomState>;
+  setLiveRivalryReady(roomId: string, ready: boolean, clientRequestId: string): Promise<LiveRivalryRoomState>;
+  lockLiveRivalryChoice(input: LockLiveRivalryChoiceInput): Promise<LiveRivalryRoomState>;
+  leaveLiveRivalryRoom(roomId: string, clientRequestId: string): Promise<LiveRivalryRoomState>;
+  createLiveRivalryRematch(previousRoomId: string, clientRequestId: string, lineupId: string): Promise<LiveRivalryRoomState>;
+  subscribeToLiveRivalryRoom(topic: string, onUpdate: (stateVersion: number) => void, onStatus?: (status: string) => void): () => void;
   loadPublicRivalryChallenge(slug: string): Promise<PublicRivalryChallenge>;
   createRivalryChallenge(input: CreateRivalryChallengeInput): Promise<CreateRivalryChallengeResult>;
   startRivalryChallenge(input: StartRivalryChallengeInput): Promise<StartMatchResult>;
@@ -328,6 +487,19 @@ function nonNegativeIntegerField(value: unknown, label: string): number {
   const parsed = numberField(value, label);
   if (!Number.isInteger(parsed) || parsed < 0) throw new Error(`Supabase returned an invalid ${label}.`);
   return parsed;
+}
+
+function booleanField(value: unknown, label: string): boolean {
+  if (typeof value !== "boolean") throw new Error(`Supabase returned an invalid ${label}.`);
+  return value;
+}
+
+function nullableTextField(value: unknown, label: string): string | null {
+  return value === null || value === undefined ? null : textField(value, label);
+}
+
+function nullableDateField(value: unknown, label: string): string | null {
+  return value === null || value === undefined ? null : dateField(value, label);
 }
 
 function modeField(value: unknown): GameMode {
@@ -471,6 +643,210 @@ function startMatchResultField(value: unknown): StartMatchResult {
     rounds: payload.rounds.map(matchRoundField),
     mode: modeField(payload.mode),
     difficulty,
+  };
+}
+
+function seasonLockerField(value: unknown): SeasonLockerState {
+  const payload = record(value, "Season Locker");
+  if (payload.status === "unavailable") {
+    return {
+      status: "unavailable",
+      serverTime: dateField(payload.server_time, "Season server time"),
+      season: null,
+      xp: 0,
+      faceoffMatches: 0,
+      arenaMatches: 0,
+      rewards: [],
+    };
+  }
+  if (!["active", "upcoming", "ended"].includes(String(payload.status))) {
+    throw new Error("Supabase returned an invalid Season status.");
+  }
+  const season = record(payload.season, "Season");
+  if (!Array.isArray(payload.rewards) || payload.rewards.length !== 30) {
+    throw new Error("Supabase returned an incomplete Season reward path.");
+  }
+  const rewardTypes = ["credits", "emblem", "banner", "title", "broadcast-sting", "card"] as const;
+  const rewards = payload.rewards.map((value) => {
+    const reward = record(value, "Season reward");
+    if (!rewardTypes.includes(reward.reward_type as typeof rewardTypes[number])) {
+      throw new Error("Supabase returned an invalid Season reward type.");
+    }
+    return {
+      tier: nonNegativeIntegerField(reward.tier, "Season reward tier"),
+      xpRequired: nonNegativeIntegerField(reward.xp_required, "Season reward XP"),
+      rewardType: reward.reward_type as SeasonReward["rewardType"],
+      label: textField(reward.label, "Season reward label"),
+      description: typeof reward.description === "string" ? reward.description : "",
+      amount: reward.amount === null ? null : nonNegativeIntegerField(reward.amount, "Season reward amount"),
+      cardId: nullableTextField(reward.card_id, "Season reward card"),
+      cosmeticSlug: nullableTextField(reward.cosmetic_slug, "Season reward cosmetic"),
+      metadata: record(reward.metadata ?? {}, "Season reward metadata"),
+      unlocked: booleanField(reward.unlocked, "Season reward unlock state"),
+      claimed: booleanField(reward.claimed, "Season reward claim state"),
+      claimedAt: nullableDateField(reward.claimed_at, "Season reward claim time"),
+    };
+  });
+  if (rewards.some((reward, index) => reward.tier !== index + 1 || (index > 0 && reward.xpRequired <= rewards[index - 1]!.xpRequired))) {
+    throw new Error("Supabase returned an unordered Season reward path.");
+  }
+  return {
+    status: payload.status as SeasonLockerState["status"],
+    serverTime: dateField(payload.server_time, "Season server time"),
+    season: {
+      id: textField(season.id, "Season id"),
+      name: textField(season.name, "Season name"),
+      description: typeof season.description === "string" ? season.description : "",
+      startsAt: dateField(season.starts_at, "Season start"),
+      endsAt: dateField(season.ends_at, "Season end"),
+    },
+    xp: nonNegativeIntegerField(payload.xp, "Season XP"),
+    faceoffMatches: nonNegativeIntegerField(payload.faceoff_matches, "Season Faceoff count"),
+    arenaMatches: nonNegativeIntegerField(payload.arena_matches, "Season Arena count"),
+    rewards,
+  };
+}
+
+function liveRivalryRoomField(value: unknown): LiveRivalryRoomState {
+  const payload = record(value, "Live Ghost room");
+  if (!["waiting", "active", "completed", "cancelled", "expired"].includes(String(payload.status))) {
+    throw new Error("Supabase returned an invalid Live room status.");
+  }
+  if (!Array.isArray(payload.situations) || payload.situations.length !== 5) {
+    throw new Error("Supabase returned invalid Live room categories.");
+  }
+  const situations = payload.situations.map(situationField);
+  if (!Array.isArray(payload.rounds) || payload.rounds.length > 5) {
+    throw new Error("Supabase returned invalid Live room rounds.");
+  }
+  const me = record(payload.me, "Live room player");
+  const lineup = record(me.lineup, "Live room lineup");
+  const opponentValue = payload.opponent;
+  const opponent = opponentValue === null ? null : record(opponentValue, "Live room opponent");
+  const resultValue = payload.result;
+  const result = resultValue === null ? null : record(resultValue, "Live room result");
+  const h2h = record(payload.head_to_head, "Live head-to-head");
+  const rewards = record(payload.rewards, "Live reward guardrail");
+  const roleField = (role: unknown): "host" | "guest" => {
+    if (role !== "host" && role !== "guest") throw new Error("Supabase returned an invalid Live player role.");
+    return role;
+  };
+  const rounds = payload.rounds.map((value): LiveRivalryRound => {
+    const round = record(value, "Live round");
+    const winner = round.winner;
+    if (winner !== "player" && winner !== "opponent") throw new Error("Supabase returned an invalid Live round winner.");
+    const tieBreaker = round.tie_breaker;
+    if (tieBreaker !== "category" && tieBreaker !== "overall" && tieBreaker !== "match-seed") {
+      throw new Error("Supabase returned an invalid Live tie-breaker.");
+    }
+    const transcript = record(round.transcript, "Live round transcript");
+    return {
+      roundIndex: nonNegativeIntegerField(round.round_index, "Live round index"),
+      situationId: textField(round.situation_id, "Live situation id"),
+      playerCardId: textField(round.player_card_id, "Live player card"),
+      playerSlot: lineupSlotField(round.player_slot, "Live player slot"),
+      playerScore: nonNegativeIntegerField(round.player_score, "Live player score"),
+      opponentCardId: textField(round.opponent_card_id, "Live opponent card"),
+      opponentSlot: lineupSlotField(round.opponent_slot, "Live opponent slot"),
+      opponentScore: nonNegativeIntegerField(round.opponent_score, "Live opponent score"),
+      winner,
+      tieBreaker,
+      transcript: {
+        situation: situationField(transcript.situation),
+        player: scoreField(transcript.player, "Live player score detail"),
+        opponent: scoreField(transcript.opponent, "Live opponent score detail"),
+      },
+      resolvedAt: dateField(round.resolved_at, "Live resolution time"),
+    };
+  });
+  const currentRound = nonNegativeIntegerField(payload.current_round, "Live current round");
+  if (currentRound > 5) throw new Error("Supabase returned an invalid Live current round.");
+  if (rounds.length !== currentRound || rounds.some((round, index) => round.roundIndex !== index || round.situationId !== situations[index]?.id)) {
+    throw new Error("Supabase returned an inconsistent Live round sequence.");
+  }
+  if (payload.status === "active" && (opponent === null || currentRound >= 5)) {
+    throw new Error("Supabase returned an inconsistent active Live room.");
+  }
+  if (payload.status === "completed" && (opponent === null || result === null)) {
+    throw new Error("Supabase returned an incomplete Live result.");
+  }
+  if (payload.status !== "completed" && result !== null) {
+    throw new Error("Supabase returned a premature Live result.");
+  }
+  const roomId = textField(payload.room_id, "Live room id");
+  const roomCode = textField(payload.room_code, "Live room code");
+  const topic = textField(payload.topic, "Live room topic");
+  if (!/^[A-HJ-NP-Z2-9]{6}$/.test(roomCode) || topic !== `live-rivalry:${roomId}`) {
+    throw new Error("Supabase returned an invalid Live room identity.");
+  }
+  const roomMode = modeField(payload.mode);
+  const lineupMode = modeField(lineup.mode);
+  if (roomMode !== lineupMode) throw new Error("Supabase returned a mismatched Live lineup mode.");
+  const liveRewards = {
+    credits: numberField(rewards.credits, "Live Credits guardrail"),
+    seasonXp: numberField(rewards.season_xp, "Live XP guardrail"),
+    cards: numberField(rewards.cards, "Live cards guardrail"),
+    objectives: numberField(rewards.objectives, "Live objectives guardrail"),
+  };
+  if (Object.values(liveRewards).some((reward) => reward !== 0)) {
+    throw new Error("Supabase violated the zero-reward contract for a private Live challenge.");
+  }
+  return {
+    serverTime: dateField(payload.server_time, "Live server time"),
+    roomId,
+    roomCode,
+    topic,
+    status: payload.status as LiveRivalryRoomStatus,
+    stateVersion: nonNegativeIntegerField(payload.state_version, "Live state version"),
+    mode: roomMode,
+    currentRound,
+    situations,
+    createdAt: dateField(payload.created_at, "Live room creation time"),
+    startedAt: nullableDateField(payload.started_at, "Live room start time"),
+    completedAt: nullableDateField(payload.completed_at, "Live room completion time"),
+    expiresAt: dateField(payload.expires_at, "Live room expiry"),
+    rematchOf: nullableTextField(payload.rematch_of, "Live rematch room"),
+    me: {
+      userId: textField(me.user_id, "Live player id"),
+      role: roleField(me.role),
+      displayLabel: textField(me.display_label, "Live player label"),
+      lineupId: textField(me.lineup_id, "Live lineup id"),
+      lineupName: textField(me.lineup_name, "Live lineup name"),
+      lineup: {
+        id: textField(lineup.id, "Live lineup snapshot id"),
+        name: textField(lineup.name, "Live lineup snapshot name"),
+        mode: lineupMode,
+        slots: lineupSlotRecord(lineup.slots, "Live lineup slots"),
+      },
+      ready: booleanField(me.ready, "Live ready state"),
+      locked: booleanField(me.locked, "Live lock state"),
+    },
+    opponent: opponent === null ? null : {
+      userId: textField(opponent.user_id, "Live opponent id"),
+      role: roleField(opponent.role),
+      displayLabel: textField(opponent.display_label, "Live opponent label"),
+      lineupId: textField(opponent.lineup_id, "Live opponent lineup id"),
+      lineupName: textField(opponent.lineup_name, "Live opponent lineup name"),
+      ready: booleanField(opponent.ready, "Live opponent ready state"),
+      online: booleanField(opponent.online, "Live opponent online state"),
+      locked: booleanField(opponent.locked, "Live opponent lock state"),
+    },
+    rounds,
+    result: result === null ? null : (() => {
+      if (result.outcome !== "win" && result.outcome !== "loss") throw new Error("Supabase returned an invalid Live outcome.");
+      return {
+        outcome: result.outcome,
+        playerWins: nonNegativeIntegerField(result.player_wins, "Live player wins"),
+        opponentWins: nonNegativeIntegerField(result.opponent_wins, "Live opponent wins"),
+        winnerUserId: textField(result.winner_user_id, "Live winner id"),
+      };
+    })(),
+    headToHead: {
+      matches: nonNegativeIntegerField(h2h.matches, "Live head-to-head matches"),
+      playerWins: nonNegativeIntegerField(h2h.player_wins, "Live head-to-head player wins"),
+      opponentWins: nonNegativeIntegerField(h2h.opponent_wins, "Live head-to-head opponent wins"),
+    },
+    rewards: liveRewards as LiveRivalryRoomState["rewards"],
   };
 }
 
@@ -830,6 +1206,138 @@ export class SupabaseAccountRepository implements AccountRepository {
       rewardCredits: nonNegativeIntegerField(result.reward_credits, "settlement reward credits"),
       credits: nonNegativeIntegerField(result.credits, "settlement credit balance"),
       completedMatches: nonNegativeIntegerField(result.completed_matches, "settlement completed matches"),
+    };
+  }
+
+  async loadSeasonLocker(): Promise<SeasonLockerState> {
+    return seasonLockerField(await this.callRpc("get_season_locker"));
+  }
+
+  async claimSeasonReward(input: ClaimSeasonRewardInput): Promise<ClaimSeasonRewardResult> {
+    const payload = record(await this.callRpc("claim_season_reward", {
+      season_id: input.seasonId,
+      tier: input.tier,
+      client_request_id: input.clientRequestId,
+    }), "Season reward claim");
+    if (payload.status !== "claimed" && payload.status !== "already-claimed") {
+      throw new Error("Supabase returned an invalid Season reward claim.");
+    }
+    return {
+      status: payload.status,
+      seasonId: textField(payload.season_id, "Season claim id"),
+      tier: nonNegativeIntegerField(payload.tier, "Season claim tier"),
+      reward: record(payload.reward, "Season claimed reward"),
+      claimedAt: dateField(payload.claimed_at, "Season claim time"),
+      credits: nonNegativeIntegerField(payload.credits, "Season claim Credits"),
+    };
+  }
+
+  async startArenaMatch(input: StartArenaMatchInput): Promise<StartMatchResult> {
+    return startMatchResultField(await this.callRpc("start_arena_match", {
+      client_match_id: input.clientMatchId,
+      mode: input.mode,
+    }));
+  }
+
+  async playArenaMatchRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult> {
+    return matchRoundField(await this.callRpc("play_arena_match_round", {
+      client_match_id: input.clientMatchId,
+      round_index: input.roundIndex,
+      player_card_id: input.playerCardId,
+      client_request_id: input.clientRequestId,
+    }));
+  }
+
+  async settleArenaMatch(input: SettleMatchInput): Promise<SettleMatchResult> {
+    const result = record(await this.callRpc("settle_arena_match", {
+      client_match_id: input.clientMatchId,
+    }), "Arena settlement");
+    if (result.status !== "settled" && result.status !== "already-settled") {
+      throw new Error("Supabase returned an invalid Arena settlement.");
+    }
+    return {
+      status: result.status,
+      matchId: textField(result.match_id, "Arena match id"),
+      rewardCredits: nonNegativeIntegerField(result.reward_credits, "Arena reward Credits"),
+      credits: nonNegativeIntegerField(result.credits, "Arena credit balance"),
+      completedMatches: nonNegativeIntegerField(result.completed_matches, "Arena completed matches"),
+    };
+  }
+
+  async loadLiveRivalryRoom(roomId?: string): Promise<LiveRivalryRoomState | null> {
+    const payload = await this.callRpc("get_live_rivalry_room", { room_id: roomId ?? null });
+    const possibleNone = record(payload, "Live room state");
+    return possibleNone.status === "none" ? null : liveRivalryRoomField(possibleNone);
+  }
+
+  async createLiveRivalryRoom(input: CreateLiveRivalryRoomInput): Promise<LiveRivalryRoomState> {
+    return liveRivalryRoomField(await this.callRpc("create_live_rivalry_room", {
+      client_request_id: input.clientRequestId,
+      mode: input.mode,
+      lineup_id: input.lineupId,
+    }));
+  }
+
+  async joinLiveRivalryRoom(input: JoinLiveRivalryRoomInput): Promise<LiveRivalryRoomState> {
+    return liveRivalryRoomField(await this.callRpc("join_live_rivalry_room", {
+      room_code: input.roomCode.trim().toUpperCase(),
+      client_request_id: input.clientRequestId,
+      lineup_id: input.lineupId,
+    }));
+  }
+
+  async setLiveRivalryReady(roomId: string, ready: boolean, clientRequestId: string): Promise<LiveRivalryRoomState> {
+    return liveRivalryRoomField(await this.callRpc("set_live_rivalry_ready", {
+      room_id: roomId,
+      ready,
+      client_request_id: clientRequestId,
+    }));
+  }
+
+  async lockLiveRivalryChoice(input: LockLiveRivalryChoiceInput): Promise<LiveRivalryRoomState> {
+    return liveRivalryRoomField(await this.callRpc("lock_live_rivalry_choice", {
+      room_id: input.roomId,
+      round_index: input.roundIndex,
+      card_id: input.cardId,
+      client_request_id: input.clientRequestId,
+    }));
+  }
+
+  async leaveLiveRivalryRoom(roomId: string, clientRequestId: string): Promise<LiveRivalryRoomState> {
+    return liveRivalryRoomField(await this.callRpc("leave_live_rivalry_room", {
+      room_id: roomId,
+      client_request_id: clientRequestId,
+    }));
+  }
+
+  async createLiveRivalryRematch(previousRoomId: string, clientRequestId: string, lineupId: string): Promise<LiveRivalryRoomState> {
+    return liveRivalryRoomField(await this.callRpc("create_live_rivalry_rematch", {
+      previous_room_id: previousRoomId,
+      client_request_id: clientRequestId,
+      lineup_id: lineupId,
+    }));
+  }
+
+  subscribeToLiveRivalryRoom(
+    topic: string,
+    onUpdate: (stateVersion: number) => void,
+    onStatus?: (status: string) => void,
+  ): () => void {
+    let channel: RealtimeChannel | null = null;
+    let active = true;
+    void this.client.realtime.setAuth().then(() => {
+      if (!active) return;
+      channel = this.client
+        .channel(topic, { config: { private: true, broadcast: { self: false, ack: false } } })
+        .on("broadcast", { event: "room_updated" }, ({ payload }) => {
+          const stateVersion = Number((payload as { state_version?: unknown }).state_version);
+          if (Number.isSafeInteger(stateVersion) && stateVersion > 0) onUpdate(stateVersion);
+        })
+        .subscribe((status) => onStatus?.(status));
+    }).catch(() => onStatus?.("CHANNEL_ERROR"));
+    return () => {
+      active = false;
+      if (channel) void this.client.removeChannel(channel);
     };
   }
 

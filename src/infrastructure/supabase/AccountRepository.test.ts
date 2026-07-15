@@ -49,6 +49,38 @@ const roundPayload = {
   },
 };
 
+const liveRoomPayload = {
+  server_time: "2026-07-15T12:00:00.000Z",
+  room_id: "55555555-5555-4555-8555-555555555555",
+  room_code: "RANK26",
+  topic: "live-rivalry:55555555-5555-4555-8555-555555555555",
+  status: "waiting",
+  state_version: 2,
+  mode: "nhl-circuit",
+  current_round: 0,
+  situations,
+  created_at: "2026-07-15T12:00:00.000Z",
+  started_at: null,
+  completed_at: null,
+  expires_at: "2026-07-15T12:15:00.000Z",
+  rematch_of: null,
+  me: {
+    user_id: "11111111-1111-4111-8111-111111111111",
+    role: "host",
+    display_label: "Alex",
+    lineup_id: lineup.id,
+    lineup_name: lineup.name,
+    lineup,
+    ready: false,
+    locked: false,
+  },
+  opponent: null,
+  rounds: [],
+  result: null,
+  head_to_head: { matches: 0, player_wins: 0, opponent_wins: 0 },
+  rewards: { credits: 0, season_xp: 0, cards: 0, objectives: 0 },
+};
+
 describe("SupabaseAccountRepository RPC mapping", () => {
   it("maps the server-authoritative market state", async () => {
     const { repository, rpc } = repositoryWithRpc({
@@ -299,5 +331,100 @@ describe("SupabaseAccountRepository RPC mapping", () => {
     expect(rpc).toHaveBeenCalledWith("create_rivalry_challenge", { client_request_id: "create-1", source_client_match_id: "source-1", source_kind: "ai-match" });
     expect(rpc).toHaveBeenCalledWith("start_rivalry_challenge", { challenge_slug: "0123456789abcdef0123456789abcdef", client_match_id: "ghost-match-1", lineup_id: "lineup-1" });
     expect(rpc).toHaveBeenCalledWith("settle_rivalry_challenge", { client_match_id: "ghost-match-1" });
+  });
+
+  it("maps Season Locker and Rivalry Arena through server-only RPC inputs", async () => {
+    const rewards = Array.from({ length: 30 }, (_, index) => ({
+      tier: index + 1,
+      xp_required: (index + 1) * 100,
+      reward_type: index === 14 ? "card" : "credits",
+      label: `Tier ${index + 1}`,
+      description: "Guaranteed reward.",
+      amount: index === 14 ? null : 100,
+      card_id: index === 14 ? "nhl-connor-mcdavid-rivalry-2026" : null,
+      cosmetic_slug: null,
+      metadata: {},
+      unlocked: index < 2,
+      claimed: false,
+      claimed_at: null,
+    }));
+    const arenaTicket = {
+      status: "started",
+      client_match_id: "arena-1",
+      seed: "arena-seed",
+      opponent_id: "22222222-2222-4222-8222-222222222222",
+      opponent: { id: "22222222-2222-4222-8222-222222222222", name: "Morgan's Six", mode: lineup.mode, slots: lineup.slots },
+      lineup: { id: lineup.id, name: lineup.name, mode: lineup.mode, slots: lineup.slots },
+      situations,
+      rounds: [],
+      mode: lineup.mode,
+      difficulty: "pro",
+    };
+    const { repository, rpc } = repositoryWithRpc({
+      get_season_locker: {
+        status: "active",
+        server_time: "2026-07-15T12:00:00.000Z",
+        season: { id: "season-zero-2026", name: "Season Zero", description: "Free.", starts_at: "2026-07-15T00:00:00.000Z", ends_at: "2026-08-12T00:00:00.000Z" },
+        xp: 240,
+        faceoff_matches: 1,
+        arena_matches: 1,
+        rewards,
+      },
+      claim_season_reward: { status: "claimed", season_id: "season-zero-2026", tier: 1, reward: rewards[0], claimed_at: "2026-07-15T12:01:00.000Z", credits: 1100 },
+      start_arena_match: arenaTicket,
+      play_arena_match_round: { ...roundPayload, client_match_id: "arena-1" },
+      settle_arena_match: { status: "settled", match_id: "arena-db-1", reward_credits: 420, credits: 1520, completed_matches: 2 },
+    });
+
+    const locker = await repository.loadSeasonLocker();
+    expect(locker).toMatchObject({ status: "active", xp: 240 });
+    expect(locker.rewards).toHaveLength(30);
+    expect(locker.rewards[0]).toMatchObject({ tier: 1, unlocked: true });
+    expect(locker.rewards[14]).toMatchObject({ tier: 15, rewardType: "card" });
+    await expect(repository.claimSeasonReward({ seasonId: "season-zero-2026", tier: 1, clientRequestId: "claim-1" })).resolves.toMatchObject({ status: "claimed", tier: 1 });
+    await expect(repository.startArenaMatch({ clientMatchId: "arena-1", mode: "nhl-circuit" })).resolves.toMatchObject({ opponentId: "22222222-2222-4222-8222-222222222222", difficulty: "pro" });
+    await expect(repository.playArenaMatchRound({ clientMatchId: "arena-1", roundIndex: 0, playerCardId: "lw", clientRequestId: "arena-round-1" })).resolves.toMatchObject({ winner: "player" });
+    await expect(repository.settleArenaMatch({ clientMatchId: "arena-1" })).resolves.toMatchObject({ rewardCredits: 420 });
+    expect(rpc).toHaveBeenCalledWith("start_arena_match", { client_match_id: "arena-1", mode: "nhl-circuit" });
+    expect(rpc).toHaveBeenCalledWith("play_arena_match_round", { client_match_id: "arena-1", round_index: 0, player_card_id: "lw", client_request_id: "arena-round-1" });
+  });
+
+  it("maps Live rooms, sends only immutable action inputs, and rejects any non-zero reward", async () => {
+    const { repository, rpc } = repositoryWithRpc({
+      get_live_rivalry_room: liveRoomPayload,
+      create_live_rivalry_room: liveRoomPayload,
+      join_live_rivalry_room: { ...liveRoomPayload, me: { ...liveRoomPayload.me, role: "guest" } },
+      set_live_rivalry_ready: { ...liveRoomPayload, me: { ...liveRoomPayload.me, ready: true } },
+      lock_live_rivalry_choice: {
+        ...liveRoomPayload,
+        status: "active",
+        started_at: "2026-07-15T12:02:00.000Z",
+        me: { ...liveRoomPayload.me, ready: true, locked: true },
+        opponent: {
+          user_id: "22222222-2222-4222-8222-222222222222",
+          role: "guest",
+          display_label: "Morgan",
+          lineup_id: "lineup-2",
+          lineup_name: "Morgan's Six",
+          ready: true,
+          online: true,
+          locked: false,
+        },
+      },
+    });
+
+    await expect(repository.loadLiveRivalryRoom()).resolves.toMatchObject({ roomCode: "RANK26", opponent: null, rewards: { credits: 0, seasonXp: 0 } });
+    await repository.createLiveRivalryRoom({ clientRequestId: "create-live-1", mode: "nhl-circuit", lineupId: lineup.id });
+    await repository.joinLiveRivalryRoom({ roomCode: "rank26", clientRequestId: "join-live-1", lineupId: lineup.id });
+    await repository.setLiveRivalryReady(liveRoomPayload.room_id, true, "ready-1");
+    await repository.lockLiveRivalryChoice({ roomId: liveRoomPayload.room_id, roundIndex: 0, cardId: "lw", clientRequestId: "lock-1" });
+
+    expect(rpc).toHaveBeenCalledWith("join_live_rivalry_room", { room_code: "RANK26", client_request_id: "join-live-1", lineup_id: lineup.id });
+    expect(rpc).toHaveBeenCalledWith("lock_live_rivalry_choice", { room_id: liveRoomPayload.room_id, round_index: 0, card_id: "lw", client_request_id: "lock-1" });
+
+    const unsafe = repositoryWithRpc({
+      get_live_rivalry_room: { ...liveRoomPayload, rewards: { ...liveRoomPayload.rewards, season_xp: 1 } },
+    }).repository;
+    await expect(unsafe.loadLiveRivalryRoom()).rejects.toThrow(/zero-reward contract/i);
   });
 });
