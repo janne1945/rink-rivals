@@ -455,8 +455,11 @@ test.describe("Supabase account flow", () => {
   test("rejects an incomplete new lineup before calling the server", async ({ page }) => {
     const state = await installSupabaseMock(page, { authenticated: true });
     await page.goto("/lineups");
-    const pwhl = page.locator("section").filter({ has: page.getByRole("heading", { name: "PWHL Circuit", exact: true }) });
+    const pwhl = page.locator("section[data-mode='pwhl-circuit']").filter({ has: page.getByRole("button", { name: "New lineup" }) });
     await pwhl.getByRole("button", { name: "New lineup" }).click();
+    const inlineEditor = page.locator("[data-lineup-editor='pwhl-circuit']");
+    await expect(inlineEditor).toBeVisible();
+    await expect(pwhl.locator("xpath=following-sibling::*[1]")).toHaveAttribute("data-lineup-editor", "pwhl-circuit");
     await page.getByRole("button", { name: "Save lineup" }).click();
     await expect(page.getByRole("alert")).toContainText("LW requires a card");
     expect(state.lineupSaveCallCount).toBe(0);

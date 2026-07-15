@@ -321,13 +321,15 @@ test.describe("Rink Rivals MVP", () => {
   test("loads the active Supabase lineup and restores it after reload", async ({ page }) => {
     await page.goto("/lineups");
     await expect(page.getByRole("heading", { name: "Edmonton Oilers Starter" })).toBeVisible();
-    await page.getByRole("button", { name: "Edit six" }).first().click();
+    const nhlCircuit = page.locator("section[data-mode='nhl-circuit']").filter({ has: page.getByRole("button", { name: "Edit six" }) });
+    await nhlCircuit.getByRole("button", { name: "Edit six" }).click();
+    await expect(nhlCircuit.locator("xpath=following-sibling::*[1]")).toHaveAttribute("data-lineup-editor", "nhl-circuit");
     for (const slot of lineupSlots) {
       await expect(page.getByRole("tab", { name: edmontonStarterTabName(slot), exact: true })).toBeVisible();
     }
     await page.reload();
     await expect(page.getByRole("heading", { name: "Edmonton Oilers Starter" })).toBeVisible();
-    await page.getByRole("button", { name: "Edit six" }).first().click();
+    await nhlCircuit.getByRole("button", { name: "Edit six" }).click();
     for (const slot of lineupSlots) {
       await expect(page.getByRole("tab", { name: edmontonStarterTabName(slot), exact: true })).toBeVisible();
     }

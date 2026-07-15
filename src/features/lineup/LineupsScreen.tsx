@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { cardEligiblePositions, type CardCatalog } from "../../domain/cards";
 import { resolveCardImage } from "../../domain/cards/assets";
 import type { OwnedCard } from "../../domain/economy";
@@ -70,9 +70,19 @@ export function LineupsScreen({ lineups, activeLineupIds, catalog, collection, o
   const [activatingId, setActivatingId] = useState<string | null>(null);
   const savingRef = useRef(false);
   const activatingRef = useRef(false);
+  const editorRef = useRef<HTMLElement>(null);
   const players = useMemo(() => new Map(catalog.players.map((player) => [player.id, player])), [catalog]);
   const cards = useMemo(() => new Map(catalog.cards.map((card) => [card.id, card])), [catalog]);
   const editing = editor?.lineup ?? null;
+
+  useEffect(() => {
+    if (!editing) return;
+    const frame = window.requestAnimationFrame(() => {
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      editorRef.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [editing?.id]);
 
   const candidates = editing ? catalog.cards.filter((card) => {
     const player = players.get(card.playerId);
@@ -177,6 +187,58 @@ export function LineupsScreen({ lineups, activeLineupIds, catalog, collection, o
     }
   }
 
+  const builderPanel = editing ? (
+    <section ref={editorRef} className={styles.builder} data-mode={editing.mode} data-lineup-editor={editing.mode} aria-labelledby="builder-title">
+      <div className={styles.builderHeader}>
+        <div>
+          <p className={styles.eyebrow}>{editor?.isNew ? "New lineup" : "Lineup builder"}</p>
+          <h2 id="builder-title">{modeCopy[editing.mode].label}</h2>
+          <p>Choose a position, then assign one of your eligible owned cards.</p>
+        </div>
+        <Button variant="ghost" disabled={saving} onClick={() => setEditor(null)}>Close editor</Button>
+      </div>
+      <label className={styles.lineupNameLabel}>
+        Lineup name
+        <input className={styles.lineupNameInput} value={editing.name} maxLength={48} disabled={saving} onChange={(event) => updateEditing((lineup) => ({ ...lineup, name: event.target.value }))} />
+      </label>
+      <div className={styles.slotPicker} role="tablist" aria-label="Lineup slots">
+        {LINEUP_SLOTS.map((position) => {
+          const card = cards.get(editing.slots[position]);
+          const player = card ? players.get(card.playerId) : undefined;
+          return (
+            <button type="button" key={position} role="tab" aria-selected={slot === position} className={`${styles.slotButton} ${slot === position ? styles.slotButtonActive : ""}`} onClick={() => setSlot(position)}>
+              <span>{position}</span><small>{player?.name ?? "Empty"}</small>
+            </button>
+          );
+        })}
+      </div>
+      <div className={styles.candidateHeader}>
+        <div><h2>Eligible for {slot}</h2><p>{requiredLeagueForMode(editing.mode) ?? "NHL and PWHL"} · owned cards only</p></div>
+        <Button variant="ghost" disabled={!editing.slots[slot] || saving} onClick={clearSlot}>Clear {slot}</Button>
+      </div>
+      <div className={styles.candidateGrid}>
+        {candidates.map((card) => {
+          const player = players.get(card.playerId)!;
+          const usedAt = LINEUP_SLOTS.find((position) => position !== slot && editing.slots[position] === card.id);
+          return (
+            <HockeyCard
+              key={card.id}
+              card={card}
+              player={player}
+              selected={editing.slots[slot] === card.id}
+              disabled={Boolean(usedAt) || saving}
+              status={usedAt ? `Used at ${usedAt}` : collection[card.id]?.quantity > 1 ? `Owned ×${collection[card.id]?.quantity}` : undefined}
+              onClick={() => assign(card.id)}
+            />
+          );
+        })}
+        {candidates.length === 0 ? <div className={styles.emptyCandidates}>No owned cards are eligible for {slot}.</div> : null}
+      </div>
+      {editorError ? <div className={styles.error} role="alert">{editorError}</div> : null}
+      <div className={styles.builderActions}><Button onClick={() => void saveLineup()} disabled={saving}>{saving ? "Saving securely…" : "Save lineup"}</Button></div>
+    </section>
+  ) : null;
+
   return (
     <div className={styles.page}>
       <header className={styles.hero}>
@@ -202,7 +264,8 @@ export function LineupsScreen({ lineups, activeLineupIds, catalog, collection, o
           const filledPositions = focusedLineup ? LINEUP_SLOTS.filter((position) => Boolean(focusedLineup.slots[position])).length : 0;
 
           return (
-            <section className={styles.modeSection} key={mode} data-mode={mode} aria-labelledby={`${mode}-heading`}>
+            <Fragment key={mode}>
+              <section className={styles.modeSection} data-mode={mode} aria-labelledby={`${mode}-heading`}>
               <div className={styles.modeIdentity}>
                 <CircuitCrest mode={mode} />
                 <div className={styles.modeIdentityCopy}>
@@ -283,7 +346,9 @@ export function LineupsScreen({ lineups, activeLineupIds, catalog, collection, o
               </div>
 
               <Button className={styles.newLineupButton} variant="secondary" onClick={() => createLineup(mode)}>New lineup <span aria-hidden="true">＋</span></Button>
-            </section>
+              </section>
+              {editing?.mode === mode ? builderPanel : null}
+            </Fragment>
           );
         })}
       </div>
@@ -294,57 +359,6 @@ export function LineupsScreen({ lineups, activeLineupIds, catalog, collection, o
         <span className={styles.serverVerified}>✓ Server verified</span>
       </aside>
 
-      {editing ? (
-        <section className={styles.builder} aria-labelledby="builder-title">
-          <div className={styles.builderHeader}>
-            <div>
-              <p className={styles.eyebrow}>{editor?.isNew ? "New lineup" : "Lineup builder"}</p>
-              <h2 id="builder-title">{modeCopy[editing.mode].label}</h2>
-              <p>Choose a position, then assign one of your eligible owned cards.</p>
-            </div>
-            <Button variant="ghost" disabled={saving} onClick={() => setEditor(null)}>Close editor</Button>
-          </div>
-          <label className={styles.lineupNameLabel}>
-            Lineup name
-            <input className={styles.lineupNameInput} value={editing.name} maxLength={48} disabled={saving} onChange={(event) => updateEditing((lineup) => ({ ...lineup, name: event.target.value }))} />
-          </label>
-          <div className={styles.slotPicker} role="tablist" aria-label="Lineup slots">
-            {LINEUP_SLOTS.map((position) => {
-              const card = cards.get(editing.slots[position]);
-              const player = card ? players.get(card.playerId) : undefined;
-              return (
-                <button type="button" key={position} role="tab" aria-selected={slot === position} className={`${styles.slotButton} ${slot === position ? styles.slotButtonActive : ""}`} onClick={() => setSlot(position)}>
-                  <span>{position}</span><small>{player?.name ?? "Empty"}</small>
-                </button>
-              );
-            })}
-          </div>
-          <div className={styles.candidateHeader}>
-            <div><h2>Eligible for {slot}</h2><p>{requiredLeagueForMode(editing.mode) ?? "NHL and PWHL"} · owned cards only</p></div>
-            <Button variant="ghost" disabled={!editing.slots[slot] || saving} onClick={clearSlot}>Clear {slot}</Button>
-          </div>
-          <div className={styles.candidateGrid}>
-            {candidates.map((card) => {
-              const player = players.get(card.playerId)!;
-              const usedAt = LINEUP_SLOTS.find((position) => position !== slot && editing.slots[position] === card.id);
-              return (
-                <HockeyCard
-                  key={card.id}
-                  card={card}
-                  player={player}
-                  selected={editing.slots[slot] === card.id}
-                  disabled={Boolean(usedAt) || saving}
-                  status={usedAt ? `Used at ${usedAt}` : collection[card.id]?.quantity > 1 ? `Owned ×${collection[card.id]?.quantity}` : undefined}
-                  onClick={() => assign(card.id)}
-                />
-              );
-            })}
-            {candidates.length === 0 ? <div className={styles.emptyCandidates}>No owned cards are eligible for {slot}.</div> : null}
-          </div>
-          {editorError ? <div className={styles.error} role="alert">{editorError}</div> : null}
-          <div className={styles.builderActions}><Button onClick={() => void saveLineup()} disabled={saving}>{saving ? "Saving securely…" : "Save lineup"}</Button></div>
-        </section>
-      ) : null}
     </div>
   );
 }
