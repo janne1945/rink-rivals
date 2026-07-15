@@ -423,12 +423,12 @@ test.describe("Supabase account flow", () => {
 
     await page.goto("/market");
     const renderedOffers = page.getByLabel("Market offers").locator(":scope > article");
-    await expect(renderedOffers).toHaveCount(48);
+    await expect(renderedOffers).toHaveCount(6);
     const showMore = page.getByRole("button", { name: "Show More Releases" });
     await expect(showMore).toBeVisible();
     expect(await renderedOffers.count()).toBeLessThan(gameCatalog.cards.length);
     await showMore.click();
-    await expect(renderedOffers).toHaveCount(96);
+    await expect(renderedOffers).toHaveCount(12);
   });
 
   test("keeps onboarding controls at least 44 pixels on every configured viewport", async ({ page }) => {

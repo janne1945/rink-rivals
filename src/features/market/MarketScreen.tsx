@@ -20,7 +20,7 @@ import { createServerClockAnchor, serverTimestampAt } from "../../shared/serverC
 import styles from "../Screens.module.css";
 import { persistMarketTab, readMarketTab, type MarketTab } from "./marketTabStorage";
 
-const OFFER_RENDER_BATCH = 48;
+const OFFER_RENDER_BATCH = 6;
 
 interface MarketScreenProps {
   readonly catalog: ContentCatalog;

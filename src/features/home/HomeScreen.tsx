@@ -9,6 +9,7 @@ export interface HomeScreenProps {
   uniqueCards: number;
   collectionScore: number;
   completedMatches: number;
+  seasonXp?: number;
   goals?: GoalsSummaryViewModel;
 }
 
@@ -16,11 +17,14 @@ function compactProgress(objective: ObjectiveViewModel): string {
   return `${Math.max(0, Math.min(objective.progress, objective.target))}/${objective.target}`;
 }
 
-export function HomeScreen({ credits, uniqueCards, collectionScore, completedMatches, goals }: HomeScreenProps) {
+export function HomeScreen({ credits, uniqueCards, collectionScore, completedMatches, seasonXp = 0, goals }: HomeScreenProps) {
   const navigate = useNavigate();
+  const level = Math.max(1, Math.floor(seasonXp / 1_000) + 1);
+  const levelProgress = seasonXp % 1_000;
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${styles.homePage}`}>
+      <div className={styles.homeHeroGrid}>
       <section className={styles.hero}>
         <div className={styles.heroContent}>
           <p className={styles.eyebrow}>Your collection. Your rivalry.</p>
@@ -36,7 +40,18 @@ export function HomeScreen({ credits, uniqueCards, collectionScore, completedMat
         </div>
       </section>
 
-      <section aria-labelledby="progress-heading">
+      <aside className={styles.ghostPromo}>
+        <div>
+          <p className={styles.liveLabel}>Live now</p>
+          <h2>Ghost Challenge</h2>
+          <p>Create or enter a 6-character code. Both players lock hidden choices simultaneously. Pure rivalry, zero rewards.</p>
+        </div>
+        <Button variant="secondary" onClick={() => navigate("/ghost")}>Open Live rooms</Button>
+      </aside>
+      </div>
+
+      <div className={styles.homeMiddleGrid}>
+      <section className={styles.reportPanel} aria-labelledby="progress-heading">
         <div className={styles.sectionHead}>
           <div>
             <p className={styles.eyebrow}>Club progress</p>
@@ -51,8 +66,15 @@ export function HomeScreen({ credits, uniqueCards, collectionScore, completedMat
         </div>
       </section>
 
+      <aside className={styles.levelPanel} aria-label="Club level">
+        <span className={styles.levelRing}>{level}</span>
+        <div><strong>{levelProgress.toLocaleString("en-US")} / 1,000 EP</strong><span><i style={{ width: `${levelProgress / 10}%` }} /></span><small>Next level {level + 1}</small></div>
+      </aside>
+      </div>
+
       {goals ? (
-        <section aria-labelledby="goals-summary-heading">
+        <div className={styles.homeLowerGrid}>
+        <section className={styles.goalsPanel} aria-labelledby="goals-summary-heading">
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.eyebrow}>Goals</p>
@@ -80,9 +102,7 @@ export function HomeScreen({ credits, uniqueCards, collectionScore, completedMat
             </div>
           </div>
         </section>
-      ) : null}
-
-      <section className={styles.panel}>
+      <section className={styles.nextShift}>
         <p className={styles.eyebrow}>Next shift</p>
         <div className={styles.sectionHead}>
           <div>
@@ -92,6 +112,13 @@ export function HomeScreen({ credits, uniqueCards, collectionScore, completedMat
           <Button variant="secondary" onClick={() => navigate("/play")}>Choose mode</Button>
         </div>
       </section>
+        </div>
+      ) : (
+        <section className={styles.nextShift}>
+          <p className={styles.eyebrow}>Next shift</p>
+          <div className={styles.sectionHead}><div><h2>Make your debut</h2><p>Choose a circuit and learn the five-round rivalry format.</p></div><Button variant="secondary" onClick={() => navigate("/play")}>Choose mode</Button></div>
+        </section>
+      )}
     </div>
   );
 }

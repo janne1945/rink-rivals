@@ -1317,3 +1317,183 @@
   .page { animation: none; }
   .difficultyCard { transition: none; }
 }
+
+/* 2026 arena redesign */
+.page { gap: 16px; }
+.page > header:not(.marketPageHeader) {
+  position: relative;
+  min-height: 220px;
+  padding: 34px 38% 28px 0;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, #030a12 0%, rgb(3 10 18 / 87%) 38%, transparent 74%),
+    radial-gradient(ellipse at 73% 78%, rgb(88 136 161 / 22%), transparent 30%),
+    repeating-linear-gradient(172deg, transparent 0 34px, rgb(255 255 255 / 2%) 35px 36px),
+    linear-gradient(140deg, #07111b, #0b1721 55%, #030912);
+  isolation: isolate;
+}
+.page > header:not(.marketPageHeader)::after {
+  position: absolute; right: 10%; bottom: -45%; z-index: -1; width: 42%; aspect-ratio: 2; border: 1px solid rgb(201 225 237 / 15%); border-radius: 50%; content: ""; box-shadow: inset 0 0 0 30px rgb(255 255 255 / 1%);
+}
+.title { font-size: clamp(3.4rem, 6vw, 5.8rem); letter-spacing: -.035em; line-height: .88; text-shadow: 0 10px 35px rgb(0 0 0 / 65%); }
+.eyebrow { color: #e6b84e; font-size: .72rem; letter-spacing: .2em; }
+.lede { color: #a6aeb6; font-size: .88rem; }
+
+/* Home */
+.homePage { gap: 18px; }
+.homeHeroGrid { display: grid; min-height: 350px; grid-template-columns: minmax(0, 2.25fr) minmax(280px, .85fr); gap: 18px; }
+.homeHeroGrid .hero { min-height: 350px; align-items: center; padding: 38px; border-radius: 8px; box-shadow: none; background:
+  linear-gradient(90deg, rgb(3 9 16 / 97%) 0%, rgb(3 9 16 / 70%) 43%, transparent 78%),
+  radial-gradient(circle at 70% 50%, rgb(126 175 197 / 23%), transparent 22%),
+  repeating-linear-gradient(172deg, transparent 0 40px, rgb(255 255 255 / 2%) 41px 42px),
+  linear-gradient(135deg, #071522, #132532 62%, #03080e);
+}
+.homeHeroGrid .hero::before { right: 8%; width: 45%; border-color: rgb(220 240 249 / 10%); }
+.homeHeroGrid .hero::after { right: 36%; }
+.homeHeroGrid .heroContent { max-width: 500px; }
+.homeHeroGrid .heroTitle { font-size: clamp(3.9rem, 7vw, 6rem); line-height: .82; }
+.homeHeroGrid .heroCopy { max-width: 430px; color: #b3b9bf; font-size: .86rem; }
+.heroActions > button { min-height: 42px; border-radius: 5px; font-family: var(--font-display); font-size: .72rem; letter-spacing: .04em; }
+.ghostPromo { position: relative; display: grid; min-width: 0; align-content: space-between; padding: 34px 28px; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background:
+  radial-gradient(circle at 84% 35%, rgb(73 119 147 / 24%), transparent 28%),
+  linear-gradient(145deg, #0b1722, #040b13 74%); }
+.ghostPromo::after { position: absolute; right: -8%; bottom: -15%; width: 52%; aspect-ratio: 1; border: 1px solid rgb(140 192 218 / 12%); border-radius: 50%; content: ""; box-shadow: inset 0 0 30px rgb(91 215 226 / 7%); }
+.ghostPromo h2 { margin: 10px 0 14px; font-size: 2rem; text-transform: uppercase; }
+.ghostPromo p:not(.liveLabel) { max-width: 31ch; color: #9da8b1; font-size: .82rem; line-height: 1.55; }
+.ghostPromo > button { z-index: 1; width: 100%; border-radius: 4px; }
+.liveLabel { margin: 0; color: #63d781; font-size: .68rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.homeMiddleGrid { display: grid; grid-template-columns: minmax(0, 2.25fr) minmax(280px, .85fr); gap: 18px; }
+.reportPanel, .levelPanel, .goalsPanel, .nextShift { border: 1px solid var(--line); border-radius: 8px; background: linear-gradient(145deg, rgb(9 21 33 / 88%), rgb(3 10 18 / 94%)); }
+.reportPanel { padding: 16px 24px 18px; }
+.reportPanel .sectionHead h2 { font-size: 1.35rem; }
+.reportPanel .statGrid { gap: 12px; }
+.reportPanel .stat { min-height: 76px; padding: 14px 18px; border-radius: 5px; box-shadow: none; }
+.reportPanel .stat strong { font-size: 1.45rem; }
+.levelPanel { display: flex; align-items: center; gap: 24px; padding: 20px 30px; }
+.levelRing { display: grid; width: 94px; height: 94px; flex: 0 0 auto; place-items: center; border: 9px solid #16202a; border-top-color: var(--gold-400); border-radius: 50%; color: var(--gold-300); font-family: var(--font-display); font-size: 2rem; font-weight: 950; box-shadow: inset 0 0 0 1px var(--line-strong); }
+.levelPanel > div { display: grid; flex: 1; gap: 8px; }
+.levelPanel strong { font-family: var(--font-display); font-size: .92rem; }
+.levelPanel small { color: #78848e; font-size: .62rem; text-transform: uppercase; }
+.levelPanel div > span { height: 5px; overflow: hidden; border-radius: 99px; background: rgb(255 255 255 / 10%); }
+.levelPanel div > span i { display: block; height: 100%; background: var(--gold-300); }
+.homeLowerGrid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(330px, 1fr); gap: 18px; }
+.goalsPanel { padding: 16px 24px 18px; }
+.goalsPanel .sectionHead h2 { font-size: 1.3rem; }
+.goalsPanel .homeGoal { min-height: 94px; padding: 13px; border-radius: 5px; }
+.goalsPanel .homeGoal h3 { font-size: .9rem; }
+.goalsPanel .goalSummaryStrip { border-radius: 5px; }
+.nextShift { min-height: 244px; align-content: end; padding: 26px; background:
+  linear-gradient(0deg, rgb(3 9 16 / 96%), transparent 70%),
+  radial-gradient(ellipse at 60% 80%, rgb(92 137 160 / 24%), transparent 36%),
+  repeating-linear-gradient(170deg, transparent 0 36px, rgb(255 255 255 / 2%) 37px 38px), #0a1721; }
+.nextShift .sectionHead { align-items: end; }
+.nextShift .sectionHead h2 { font-size: 1.65rem; }
+
+/* Play */
+.competitionGrid { grid-template-columns: .86fr 1.08fr 1.08fr; gap: 12px; }
+.competitionCard { min-height: 350px; padding: 24px; border-radius: 9px; box-shadow: none; background:
+  linear-gradient(0deg, rgb(3 9 16 / 97%), rgb(3 9 16 / 18%) 78%),
+  radial-gradient(circle at 50% 48%, rgb(85 131 153 / 22%), transparent 30%), #0b1823; }
+.competitionCard::before { top: 22%; right: -10%; width: 80%; border-color: rgb(255 255 255 / 6%); }
+.competitionCard h2 { font-size: clamp(2rem, 3vw, 2.8rem); }
+.competitionCard > button, .competitionCard > a { display: flex; min-height: 44px; align-items: center; justify-content: center; border: 1px solid var(--line-strong); border-radius: 5px; }
+.arenaCard { border-color: #d3a838; box-shadow: inset 0 0 24px rgb(220 184 92 / 8%), 0 0 22px rgb(220 184 92 / 8%); background: linear-gradient(0deg, rgb(9 9 9 / 96%), transparent 78%), radial-gradient(circle at 78% 28%, rgb(220 184 92 / 28%), transparent 30%), #111921; }
+.liveCard { border-color: var(--line); background: linear-gradient(0deg, rgb(3 9 16 / 97%), transparent 76%), radial-gradient(circle at 75% 34%, rgb(91 108 121 / 25%), transparent 30%), #09131c; }
+.seasonCallout { min-height: 70px; border-radius: 8px; background: linear-gradient(90deg, rgb(173 135 49 / 9%), rgb(7 16 28 / 92%)); }
+.modeGrid { gap: 12px; }
+.modeCard { min-height: 138px; padding: 20px 22px 18px 88px; border-radius: 8px; }
+.modeCard::before { position: absolute; top: 24px; left: 24px; display: grid; width: 45px; height: 53px; place-items: center; border: 1px solid var(--line-strong); color: var(--gold-300); background: rgb(255 255 255 / 3%); clip-path: polygon(50% 0, 95% 21%, 95% 79%, 50% 100%, 5% 79%, 5% 21%); content: "★"; }
+.modeCard h3 { margin: 4px 0 8px; font-size: 1.45rem; }
+.modeCard p { font-size: .74rem; }
+.difficultyGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.difficultyCard { position: relative; min-height: 150px; padding: 18px 18px 16px 78px; border-radius: 8px; }
+.difficultyCard::before { position: absolute; margin-left: -60px; width: 42px; height: 50px; border: 1px solid var(--line-strong); content: ""; clip-path: polygon(50% 0, 95% 21%, 95% 79%, 50% 100%, 5% 79%, 5% 21%); background: linear-gradient(145deg, #1b2732, #060b11); }
+.difficultySelected { box-shadow: inset 0 0 24px rgb(220 184 92 / 9%); }
+
+/* Lineups */
+.modeLineupGrid { gap: 12px; }
+.modeLineupSection { position: relative; min-height: 164px; grid-template-columns: 340px 1fr; align-items: stretch; gap: 28px; padding: 18px; border-radius: 8px; background: linear-gradient(90deg, rgb(11 24 37 / 96%), rgb(3 11 19 / 88%)); }
+.modeLineupSection:nth-child(1) { border-left: 2px solid #d9a92f; }
+.modeLineupSection:nth-child(2) { border-left: 2px solid #9d48df; }
+.modeLineupSection:nth-child(3) { border-left: 2px solid #28a7c8; }
+.lineupSectionHead { align-items: center; padding: 0 16px; }
+.lineupSectionHead > div { padding-left: 102px; }
+.lineupSectionHead > div::before { position: absolute; left: 42px; width: 66px; height: 78px; border: 1px solid var(--line-strong); color: var(--gold-300); background: linear-gradient(145deg, #1d2b38, #050c13); clip-path: polygon(50% 0, 94% 20%, 94% 78%, 50% 100%, 6% 78%, 6% 20%); content: "RR"; display: grid; place-items: center; font-family: var(--font-display); font-size: 1.25rem; font-weight: 950; }
+.lineupSectionHead > button { position: absolute; top: 24px; right: 20px; z-index: 2; min-height: 42px; border-radius: 5px; }
+.lineupGrid { align-items: center; grid-template-columns: 1fr; padding-right: 180px; }
+.lineupCard { gap: 9px; padding: 14px 16px; border-radius: 7px; }
+.lineupTop { position: absolute; margin-top: -3px; }
+.lineupTop h3 { margin-top: 6px; font-size: 1rem; }
+.lineupCard .miniSlots { margin-top: 30px; }
+.miniSlot { min-height: 73px; aspect-ratio: auto; border-radius: 5px; background: linear-gradient(145deg, rgb(13 28 42 / 92%), rgb(4 10 17 / 95%)); }
+.lineupActions { grid-template-columns: 1fr 1fr; }
+.lineupActions button { min-height: 38px; border-radius: 4px; }
+.lineupEmpty { min-height: 116px; grid-template-columns: 1fr; border-radius: 6px; }
+.builder { border-radius: 8px; }
+
+/* Market */
+.marketPageHeader { min-height: 338px; max-width: none; justify-content: center; padding: 36px 65% 36px 40px; border: 1px solid var(--line); border-radius: 8px; background:
+  linear-gradient(90deg, rgb(3 9 16 / 98%) 0%, rgb(3 9 16 / 75%) 39%, transparent 70%),
+  radial-gradient(circle at 55% 54%, rgb(91 129 149 / 25%), transparent 20%),
+  repeating-linear-gradient(170deg, transparent 0 42px, rgb(255 255 255 / 2%) 43px 44px), #0b1721; }
+.marketPageHeader .title { font-size: clamp(3rem, 5vw, 4.4rem); }
+.marketTrust { margin-top: 24px; color: #77cfff; }
+.marketHero { position: absolute; top: 163px; right: max(4.3vw, calc((100vw - 1480px) / 2 + 40px)); z-index: 2; width: min(310px, 25vw); min-height: 290px; align-items: stretch; flex-direction: column; justify-content: space-between; padding: 24px; border-radius: 8px; box-shadow: none; background: linear-gradient(145deg, rgb(10 23 35 / 98%), rgb(3 10 17 / 98%)); }
+.marketHero h2 { font-size: 1.65rem; }
+.marketHero p:not(.eyebrow) { font-size: .76rem; }
+.marketHeroAction { width: 100%; margin-top: 16px; border-radius: 4px; }
+.countdown { width: 100%; min-width: 0; padding: 12px; border-radius: 5px; text-align: center; }
+.marketBrowse { margin-top: 2px; }
+.marketBrowse > .sectionHead { align-items: end; }
+.marketBrowse > .sectionHead > div:first-child { max-width: 660px; }
+.marketBrowse .sectionHead h2 { font-size: 1.7rem; }
+.marketTabs { order: -1; align-self: end; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.marketTabs button { min-width: 150px; border: 1px solid var(--line); border-radius: 4px; text-transform: uppercase; }
+.marketTabs .tabActive { border-color: var(--gold-400); background: linear-gradient(135deg, var(--gold-300), var(--gold-500)); }
+.shopCard { padding: 0; border: 1px solid var(--line); border-radius: 7px; background: #06101a; }
+.shopCard > article { border-radius: 6px 6px 0 0; }
+.offerDetails { padding: 0 10px; }
+.shopAction { margin: 0 8px 8px; border-radius: 4px; }
+
+@media (max-width: 1050px) {
+  .homeHeroGrid, .homeMiddleGrid { grid-template-columns: 1.5fr 1fr; }
+  .homeLowerGrid { grid-template-columns: 1fr; }
+  .difficultyGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .modeLineupSection { grid-template-columns: 270px 1fr; }
+  .lineupSectionHead > div { padding-left: 76px; }
+  .lineupSectionHead > div::before { left: 28px; width: 54px; height: 64px; }
+  .marketPageHeader { padding-right: 52%; }
+  .marketHero { width: 38vw; }
+}
+
+@media (max-width: 760px) {
+  .page > header:not(.marketPageHeader) { min-height: 180px; padding: 24px 10% 24px 0; }
+  .title { font-size: 3.6rem; }
+  .homeHeroGrid, .homeMiddleGrid, .homeLowerGrid { grid-template-columns: 1fr; }
+  .homeHeroGrid { min-height: 0; }
+  .homeHeroGrid .hero { min-height: 420px; }
+  .ghostPromo { min-height: 260px; }
+  .competitionGrid { grid-template-columns: 1fr; }
+  .competitionCard { min-height: 270px; }
+  .difficultyGrid { grid-template-columns: 1fr; }
+  .modeLineupSection { grid-template-columns: 1fr; }
+  .lineupSectionHead { min-height: 104px; }
+  .lineupGrid { padding: 0; }
+  .lineupSectionHead > button { position: static; }
+  .marketPageHeader { min-height: 350px; padding: 28px 24px; }
+  .marketHero { position: static; width: auto; min-height: 0; }
+  .marketBrowse > .sectionHead { align-items: stretch; }
+  .marketTabs { order: 0; }
+}
+
+@media (max-width: 430px) {
+  .homeHeroGrid .hero { min-height: 440px; padding: 26px 20px; }
+  .homeHeroGrid .heroTitle { font-size: 4rem; }
+  .reportPanel, .goalsPanel { padding: 16px; }
+  .levelPanel { padding: 18px; }
+  .modeCard { padding-left: 76px; }
+  .difficultyCard { padding-left: 72px; }
+  .modeLineupSection { padding: 13px; }
+  .lineupSectionHead { padding: 0; }
+  .lineupSectionHead > div::before { left: 18px; }
+}

@@ -615,9 +615,9 @@ export function GameApp({ account, actions }: {
   });
 
   return (
-    <AppShell credits={account.profile.credits} displayName={account.profile.displayName} onLogout={actions.logout} logoutBusy={actions.busy} logoutError={actions.errorMessage} immersive={pathname === "/match"}>
+    <AppShell credits={account.profile.credits} displayName={account.profile.displayName} seasonXp={account.season.xp} onLogout={actions.logout} logoutBusy={actions.busy} logoutError={actions.errorMessage} immersive={pathname === "/match"}>
       <Routes>
-        <Route path="/" element={<HomeScreen credits={account.profile.credits} uniqueCards={uniqueCards} collectionScore={cloudCollectionScore} completedMatches={account.profile.completedMatches} goals={progressionModels.goalsSummary} />} />
+        <Route path="/" element={<HomeScreen credits={account.profile.credits} uniqueCards={uniqueCards} collectionScore={cloudCollectionScore} completedMatches={account.profile.completedMatches} seasonXp={account.season.xp} goals={progressionModels.goalsSummary} />} />
         <Route path="/collection" element={<CollectionScreen catalog={gameCatalog} collection={cloudCollection} />} />
         <Route path="/lineups" element={<LineupsScreen lineups={lineups} activeLineupIds={activeLineupIds} catalog={gameCatalog} collection={cloudCollection} onActivate={async (lineupId) => { await actions.activateLineup(lineupId); }} onSave={async (lineup) => { await actions.saveLineup({ lineupId: lineup.id, name: lineup.name, mode: lineup.mode, slots: lineup.slots }); }} />} />
         <Route path="/play" element={<PlayScreen lineups={lineups} activeLineupIds={activeLineupIds} collectionScore={cloudCollectionScore} preferredDifficulty={preferredDifficulty} starting={matchStarting} startError={matchStartError} onDifficultyChange={(difficulty) => void selectDifficulty(difficulty)} onStart={startMatch} onStartArena={startArenaMatch} onOpenLive={() => navigate("/ghost")} onOpenSeason={() => navigate("/season")} />} />

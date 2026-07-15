@@ -259,3 +259,46 @@
   .experience::after, .winnerCard::after { display: none; }
   .subduedCard { filter: none; opacity: .76; }
 }
+
+/* Reference-aligned live broadcast layout */
+.experience {
+  --v2-cyan: #54c9f3;
+  --v2-gold: #e3b64e;
+  height: min(860px, calc(100svh - 150px));
+  min-height: 680px;
+  border: 1px solid rgb(144 181 201 / 14%);
+  border-radius: 7px;
+  background: #020912;
+}
+.experience::before {
+  position: absolute;
+  background: radial-gradient(ellipse at 48% 48%, rgb(74 121 148 / 22%), transparent 36%), linear-gradient(155deg, #06131f, #020810 60%);
+}
+.experience::after { position: absolute; opacity: .2; }
+.utilityBar { min-height: 46px; padding: 8px 18px; background: #020912; }
+.presetControl select, .exitButton { border-radius: 5px; text-transform: uppercase; }
+.hud { width: min(76%, 980px); margin-top: 10px; padding: 12px 18px 10px; border-radius: 7px; border-color: rgb(140 179 198 / 20%); background: linear-gradient(105deg, rgb(6 21 33 / 98%), rgb(2 8 15 / 98%), rgb(6 20 31 / 98%)); box-shadow: 0 14px 35px rgb(0 0 0 / 24%); }
+.scoreboard strong { color: var(--v2-gold); }
+.timelineSlot { min-height: 22px; border-radius: 4px; }
+.arena { width: calc(100% - 62px); margin-top: 8px; border: 0; border-radius: 0; background:
+  linear-gradient(0deg, rgb(2 8 14 / 95%), transparent 50%),
+  radial-gradient(ellipse at 50% 50%, rgb(77 139 165 / 24%), transparent 34%),
+  repeating-linear-gradient(171deg, transparent 0 42px, rgb(255 255 255 / 2%) 43px 44px),
+  linear-gradient(180deg, #0a1822, #020912); box-shadow: none; }
+.battleStage { padding: 20px 30px; }
+.cardPositions { min-height: 330px; grid-template-columns: minmax(150px, 230px) minmax(260px, 1fr) minmax(150px, 230px); gap: 36px; }
+.stageCard, .emptySlot, .concealedCard { width: min(100%, 205px); }
+.emptySlot, .concealedCard { border-radius: 7px; }
+.emptySlot { border-color: rgb(100 164 195 / 48%); background: rgb(3 11 18 / 70%); }
+.concealedCard { border-color: #d1a53c; background: repeating-linear-gradient(132deg, rgb(255 255 255 / 2.5%) 0 10px, transparent 10px 20px), radial-gradient(circle, rgb(173 135 49 / 18%), transparent 50%), #071018; }
+.concealedCard::after { border-color: rgb(227 182 78 / 13%); }
+.centerIce > h1 { font-size: clamp(4rem, 7vw, 7rem); color: #eef1f2; }
+.centerIce > p { font-size: .85rem; }
+.handSection { padding: 12px 16px 16px; border: 1px solid rgb(136 177 197 / 16%); border-radius: 6px; background: rgb(2 9 15 / 88%); }
+.handRail { gap: 10px; }
+
+@media (max-width: 760px) {
+  .experience { height: auto; min-height: calc(100svh - 110px); }
+  .hud { width: calc(100% - 20px); }
+  .arena { width: 100%; }
+}
