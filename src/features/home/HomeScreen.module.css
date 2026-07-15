@@ -132,9 +132,9 @@
 .goalSummaryStrip b { position: absolute; right: 20px; color: #bd9138; font-family: var(--font-display); font-size: .8rem; }
 
 .nextShift { display: flex; min-height: 247px; align-items: flex-end; justify-content: space-between; gap: 20px; padding: 24px 24px 20px 34px; background:
-  linear-gradient(0deg, rgb(3 9 16 / 96%) 0%, rgb(3 9 16 / 58%) 50%, transparent 100%),
-  linear-gradient(90deg, rgb(3 9 16 / 87%), transparent 78%),
-  url("/assets/ui/home-arena.svg") 46% 68% / cover no-repeat;
+  linear-gradient(0deg, rgb(3 9 16 / 94%) 0%, rgb(3 9 16 / 36%) 58%, transparent 100%),
+  linear-gradient(90deg, rgb(3 9 16 / 92%) 0%, rgb(3 9 16 / 48%) 48%, rgb(3 9 16 / 12%) 100%),
+  url("/assets/ui/home-next-shift.webp") center / cover no-repeat;
 }
 .nextShift > div { position: relative; z-index: 1; max-width: 430px; }
 .nextShift h2 { margin: 8px 0 5px; font-family: var(--font-display); font-size: 1.55rem; line-height: .95; text-transform: uppercase; }
