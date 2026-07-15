@@ -1,8 +1,8 @@
 .shell {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 50% -15%, rgb(29 68 92 / 22%), transparent 38rem),
-    linear-gradient(180deg, #030a12 0%, #020810 100%);
+    radial-gradient(ellipse at 50% -8%, rgb(34 84 110 / 24%), transparent 44rem),
+    linear-gradient(180deg, rgb(3 10 17 / 72%) 0%, rgb(1 5 10 / 96%) 100%);
 }
 
 .immersive { background: #020811; }
@@ -12,43 +12,44 @@
   position: sticky;
   top: 0;
   z-index: 30;
-  border-bottom: 1px solid rgb(157 197 216 / 13%);
-  background: rgb(2 8 15 / 91%);
-  backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgb(157 197 216 / 12%);
+  background: linear-gradient(180deg, rgb(2 7 13 / 97%), rgb(2 8 15 / 91%));
+  box-shadow: 0 18px 48px rgb(0 0 0 / 22%);
+  backdrop-filter: blur(28px) saturate(1.15);
 }
 
 .headerInner {
   display: grid;
-  width: min(100% - 44px, 1480px);
-  min-height: 104px;
+  width: min(100% - 56px, var(--content));
+  min-height: var(--nav-height);
   grid-template-columns: minmax(260px, 1fr) auto minmax(360px, 1fr);
   align-items: center;
   gap: 28px;
   margin: 0 auto;
 }
 
-.brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
-.mark { width: 58px; height: 68px; border-radius: 0; filter: drop-shadow(0 7px 15px rgb(0 0 0 / 55%)); }
-.wordmark { display: block; font-family: var(--font-display); font-size: 1.5rem; font-weight: 950; letter-spacing: .055em; line-height: 1; text-transform: uppercase; }
+.brand { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.mark { width: 62px; height: 72px; border-radius: 0; filter: drop-shadow(0 9px 18px rgb(0 0 0 / 68%)) drop-shadow(0 0 16px rgb(215 168 62 / 10%)); }
+.wordmark { display: block; font-family: var(--font-display); font-size: 1.55rem; font-weight: 950; letter-spacing: .06em; line-height: 1; text-transform: uppercase; }
 .tagline { display: block; margin-top: 7px; color: #8b949d; font-size: .66rem; letter-spacing: .09em; text-transform: uppercase; }
 
 .nav { align-self: stretch; }
-.navInner { display: flex; height: 100%; align-items: stretch; justify-content: center; gap: 22px; }
-.navLink { position: relative; display: grid; min-width: 66px; place-items: center; color: #9399a2; font-family: var(--font-display); font-size: .86rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
+.navInner { display: flex; height: 100%; align-items: stretch; justify-content: center; gap: 26px; }
+.navLink { position: relative; display: grid; min-width: 68px; place-items: center; color: #8d969f; font-family: var(--font-display); font-size: .88rem; font-weight: 850; letter-spacing: .085em; text-transform: uppercase; transition: color 180ms ease, text-shadow 180ms ease; }
 .navLink::after { position: absolute; right: 5px; bottom: 0; left: 5px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold-300), transparent); content: ""; opacity: 0; box-shadow: 0 0 18px var(--gold-400); }
-.navLink:hover { color: var(--ice-50); }
-.active { color: var(--ice-50); }
+.navLink:hover { color: var(--ice-50); text-shadow: 0 0 16px rgb(255 255 255 / 22%); }
+.active { color: var(--ice-50); text-shadow: 0 0 20px rgb(244 206 114 / 20%); }
 .active::after { opacity: 1; }
 
 .accountActions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; min-width: 0; }
-.currency { display: flex; min-height: 44px; align-items: center; gap: 9px; padding: 0 14px; border: 1px solid rgb(150 183 201 / 10%); border-radius: 12px; background: rgb(1 6 12 / 38%); white-space: nowrap; }
+.currency { display: flex; min-height: 42px; align-items: center; gap: 9px; padding: 0 13px; border: 1px solid rgb(150 183 201 / 11%); border-radius: 6px; background: linear-gradient(180deg, rgb(9 20 31 / 72%), rgb(1 6 12 / 48%)); box-shadow: 0 8px 20px rgb(0 0 0 / 18%); white-space: nowrap; }
 .currency i { display: grid; width: 22px; height: 22px; place-items: center; border: 1px solid var(--gold-400); border-radius: 50%; color: var(--ink-950); background: var(--gold-300); font-size: .68rem; font-style: normal; font-weight: 950; }
 .currency i::before { content: "R"; }
 .currency strong { font-family: var(--font-display); font-size: 1rem; letter-spacing: .035em; }
 .shards i { border: 0; color: #78c8ff; background: transparent; font-size: 1.1rem; }
 .shards i::before { content: none; }
 .profile { display: flex; min-width: 182px; align-items: center; gap: 11px; padding-left: 12px; border-left: 1px solid var(--line); }
-.levelBadge { display: grid; width: 48px; height: 54px; place-items: center; border: 2px solid var(--gold-400); color: var(--gold-300); background: linear-gradient(145deg, #101b25, #050b12); clip-path: polygon(50% 0, 93% 22%, 93% 78%, 50% 100%, 7% 78%, 7% 22%); font-family: var(--font-display); font-size: 1.2rem; font-weight: 950; }
+.levelBadge { display: grid; width: 50px; height: 58px; place-items: center; border: 2px solid var(--gold-400); color: var(--gold-300); background: linear-gradient(145deg, #142333, #03080e); clip-path: polygon(50% 0, 93% 22%, 93% 78%, 50% 100%, 7% 78%, 7% 22%); font-family: var(--font-display); font-size: 1.25rem; font-weight: 950; filter: drop-shadow(0 8px 12px rgb(0 0 0 / 45%)); }
 .profileCopy { display: grid; min-width: 118px; gap: 4px; }
 .profileCopy > strong { overflow: hidden; font-family: var(--font-display); font-size: .78rem; letter-spacing: .08em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
 .profileCopy small { color: #c5c6c8; font-size: .62rem; }
@@ -59,8 +60,8 @@
 .logout:disabled { cursor: wait; opacity: .5; }
 
 .accountError { width: min(100% - 44px, 1480px); margin: 12px auto 0; padding: 10px 14px; border: 1px solid rgb(255 114 131 / 28%); color: #ffc3cb; background: rgb(255 114 131 / 8%); font-size: .78rem; }
-.main { width: min(100% - 44px, 1480px); margin: 0 auto; padding: 28px 0 36px; }
-.disclaimer { width: min(100% - 44px, 1480px); margin: 0 auto 18px; color: #56636e; font-size: .64rem; line-height: 1.5; text-align: center; }
+.main { width: min(100% - 56px, var(--content)); margin: 0 auto; padding: 24px 0 42px; }
+.disclaimer { width: min(100% - 56px, var(--content)); margin: 0 auto 18px; color: #4d5b66; font-size: .64rem; line-height: 1.5; text-align: center; }
 
 @media (max-width: 1120px) {
   .headerInner { grid-template-columns: auto 1fr auto; gap: 14px; }

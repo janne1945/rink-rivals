@@ -36,3 +36,40 @@
 @media (max-width: 720px) { .hero { grid-template-columns: 1fr; min-height: auto; } .seasonMark { width: 112px; } .progressCopy, .sectionHead { align-items: start; flex-direction: column; } .rewardGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 440px) { .rewardGrid { grid-template-columns: 1fr; } .reward { min-height: 280px; } }
 @media (prefers-reduced-motion: reduce) { .page { animation: none; } .progressTrack span { transition: none; } }
+
+/* Seasonal campaign presentation */
+.page { gap: 20px; }
+.hero {
+  min-height: 430px;
+  padding: clamp(34px, 6vw, 64px);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(90deg, rgb(2 8 14 / 99%) 0%, rgb(2 8 14 / 88%) 42%, rgb(2 8 14 / 24%) 80%),
+    linear-gradient(0deg, rgb(2 8 14 / 76%), transparent),
+    url("/assets/ui/home-arena.svg") center 58% / cover no-repeat;
+  box-shadow: var(--shadow-lg);
+}
+.hero::after { position: absolute; inset: 0; z-index: -1; background: linear-gradient(112deg, transparent 48%, rgb(255 255 255 / 4%) 48.2%, transparent 56%); content: ""; }
+.hero h1 { max-width: 850px; font-size: clamp(4rem, 9vw, 7.7rem); }
+.rules span { border-radius: var(--radius-sm); background: rgb(3 10 18 / 76%); }
+.seasonMark {
+  width: clamp(128px, 17vw, 180px);
+  border-radius: 0;
+  background: linear-gradient(145deg, rgb(16 31 42 / 84%), rgb(2 8 14 / 94%));
+  box-shadow: 0 28px 42px rgb(0 0 0 / 48%), 0 0 32px rgb(215 168 62 / 10%);
+  clip-path: polygon(50% 0, 93% 21%, 93% 79%, 50% 100%, 7% 79%, 7% 21%);
+}
+.progressPanel { border-radius: var(--radius-lg); background: linear-gradient(145deg, rgb(12 30 47 / 94%), rgb(3 10 18 / 98%)); box-shadow: 0 22px 48px rgb(0 0 0 / 28%); }
+.progressTrack { height: 10px; border-radius: 2px; }
+.progressTrack span { border-radius: 1px; background: linear-gradient(90deg, var(--gold-500), var(--gold-200)); }
+.rewardGrid { gap: 14px; }
+.reward { min-height: 350px; border-radius: var(--radius-md); background: linear-gradient(155deg, rgb(11 27 42 / 96%), rgb(3 10 17 / 99%)); box-shadow: 0 22px 46px rgb(0 0 0 / 30%), inset 0 1px rgb(255 255 255 / 3%); transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease; }
+.glyph { border-radius: var(--radius-sm); background: radial-gradient(circle, rgb(244 206 114 / 12%), transparent 64%), linear-gradient(145deg, rgb(12 28 42 / 94%), rgb(3 10 17 / 96%)); }
+.unlocked { border-color: rgb(244 206 114 / 42%); }
+@media (hover: hover) and (pointer: fine) {
+  .reward:hover { z-index: 2; border-color: rgb(244 206 114 / 48%); box-shadow: 0 30px 58px rgb(0 0 0 / 48%), 0 0 28px rgb(215 168 62 / 8%); transform: translateY(-5px); }
+}
+@media (max-width: 720px) {
+  .hero { min-height: 470px; }
+  .seasonMark { width: 100px; }
+}

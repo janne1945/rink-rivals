@@ -6,16 +6,19 @@
   gap: 8px;
   padding: 0 20px;
   border: 1px solid transparent;
-  border-radius: 999px;
-  font-weight: 800;
-  letter-spacing: 0.015em;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, filter 180ms ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .button:hover:not(:disabled) {
-    transform: translateY(-1px);
+    filter: brightness(1.08);
+    transform: translateY(-2px);
   }
 }
 
@@ -31,12 +34,12 @@
 .primary {
   color: #07101c;
   background: linear-gradient(135deg, var(--gold-300), var(--gold-500));
-  box-shadow: 0 10px 30px rgb(220 184 92 / 18%);
+  box-shadow: 0 12px 34px rgb(220 184 92 / 22%), 0 1px 0 rgb(255 255 255 / 28%) inset;
 }
 
 .secondary {
   color: var(--ice-50);
-  background: rgb(86 149 177 / 12%);
+  background: linear-gradient(180deg, rgb(88 132 155 / 15%), rgb(20 42 57 / 12%));
   border-color: var(--line);
 }
 
@@ -44,6 +47,12 @@
   color: var(--ice-100);
   background: transparent;
   border-color: var(--line);
+}
+
+.secondary:hover:not(:disabled),
+.ghost:hover:not(:disabled) {
+  border-color: rgb(244 206 114 / 48%);
+  box-shadow: 0 0 24px rgb(215 168 62 / 10%), inset 0 0 18px rgb(255 255 255 / 3%);
 }
 
 .wide {

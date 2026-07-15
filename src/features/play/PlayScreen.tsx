@@ -66,20 +66,23 @@ export function PlayScreen({
 
   return (
     <div className={`${styles.page} ${styles.playPage}`}>
-      <header>
-        <p className={styles.eyebrow}>Three ways to compete</p>
-        <h1 className={styles.title}>Play</h1>
-        <p className={styles.lede}>Face the server, challenge a real club’s lineup in Rivalry Arena, or meet a friend live with a private room code.</p>
+      <header className={styles.playHeader}>
+        <div>
+          <p className={styles.eyebrow}>Three ways to compete</p>
+          <h1 className={styles.title}>Play</h1>
+          <p className={styles.lede}>Face the server, challenge a real club’s lineup in Rivalry Arena, or meet a friend live with a private room code.</p>
+        </div>
+        <div className={styles.playHeaderCrest} aria-hidden="true"><span>RR</span><small>Choose your rivalry</small></div>
       </header>
       <div className={styles.competitionGrid}>
         <section className={`${styles.competitionCard} ${styles.faceoffCard}`}>
-          <span>01 · Solo</span><h2>Faceoff</h2><p>Five transparent Quartett rounds against a server-built opponent. Earn Credits, goals, and Season XP.</p><a href="#faceoff-setup">Configure Faceoff ↓</a>
+          <span>01 · Solo</span><i className={styles.modeIcon} aria-hidden="true">×</i><h2>Faceoff</h2><p>Five transparent Quartett rounds against a server-built opponent. Earn Credits, goals, and Season XP.</p><a href="#faceoff-setup">Configure Faceoff ↓</a>
         </section>
         <section className={`${styles.competitionCard} ${styles.arenaCard}`}>
-          <span>02 · Real lineup, server AI</span><h2>Rivalry Arena</h2><p>The server finds the closest valid active lineup from another real club and controls it. No ranking or divisions.</p><Button disabled={!active || starting} onClick={() => void onStartArena(selected)}>{starting ? "Finding rival…" : "Enter Arena"}</Button>
+          <span>02 · Real lineup, server AI</span><i className={styles.modeIcon} aria-hidden="true">VS</i><h2>Rivalry Arena</h2><p>The server finds the closest valid active lineup from another real club and controls it. No ranking or divisions.</p><Button disabled={!active || starting} onClick={() => void onStartArena(selected)}>{starting ? "Finding rival…" : "Enter Arena"}</Button>
         </section>
         <section className={`${styles.competitionCard} ${styles.liveCard}`}>
-          <span>03 · Two players live</span><h2>Ghost Challenge</h2><p>Create or enter a six-character code. Both players lock hidden choices simultaneously. Pure rivalry, zero rewards.</p><Button onClick={onOpenLive}>Open Live rooms</Button>
+          <span>03 · Two players live</span><i className={styles.modeIcon} aria-hidden="true">◈</i><h2>Ghost Challenge</h2><p>Create or enter a six-character code. Both players lock hidden choices simultaneously. Pure rivalry, zero rewards.</p><Button onClick={onOpenLive}>Open Live rooms</Button>
         </section>
       </div>
       <button type="button" className={styles.seasonCallout} onClick={onOpenSeason}><span><strong>Season Locker</strong> · 30 visible, guaranteed rewards</span><b>View progress →</b></button>

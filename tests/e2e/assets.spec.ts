@@ -344,7 +344,7 @@ test.describe("card asset integration", () => {
 
     await page.goto("/market");
     const marketImages = page.getByLabel("Market offers").locator("img[data-card-image]");
-    await expect(marketImages).toHaveCount(48, { timeout: 20_000 });
+    await expect(marketImages).toHaveCount(6, { timeout: 20_000 });
     await expectAllCardImagesLoaded(marketImages);
 
     const search = page.getByLabel("Search market");

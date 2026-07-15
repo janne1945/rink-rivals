@@ -10,15 +10,15 @@
   padding: 12px;
   overflow: hidden;
   border: 1px solid rgb(246 217 139 / 38%);
-  border-radius: 18px;
+  border-radius: 8px;
   color: var(--ice-50);
   background:
     radial-gradient(circle at 50% 33%, rgb(103 183 210 / 28%), transparent 36%),
     linear-gradient(145deg, #173650, #08111f 55%, #0f2134);
-  box-shadow: var(--shadow-card), inset 0 0 0 1px rgb(255 255 255 / 4%);
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgb(255 255 255 / 6%);
   contain: paint;
   isolation: isolate;
-  transition: transform 180ms ease, border-color 180ms ease, filter 180ms ease;
+  transition: transform 220ms cubic-bezier(.2, .8, .2, 1), border-color 180ms ease, filter 180ms ease, box-shadow 220ms ease;
 }
 
 .card::before {
@@ -26,7 +26,7 @@
   inset: 7px;
   z-index: 3;
   border: 1px solid rgb(246 217 139 / 18%);
-  border-radius: 13px;
+  border-radius: 5px;
   content: "";
   pointer-events: none;
 }
@@ -34,14 +34,15 @@
 .card::after {
   position: absolute;
   top: -20%;
-  left: 42%;
+  left: -70%;
   z-index: 1;
-  width: 42%;
+  width: 48%;
   height: 135%;
   background: linear-gradient(90deg, transparent, rgb(255 255 255 / 11%), transparent);
   content: "";
   pointer-events: none;
-  transform: rotate(23deg);
+  transform: rotate(18deg);
+  transition: left 600ms cubic-bezier(.2, .8, .2, 1);
 }
 
 .artwork {
@@ -135,14 +136,20 @@
 .selected {
   border-color: var(--gold-300);
   filter: brightness(1.08);
-  transform: translateY(-4px);
+  box-shadow: 0 28px 56px rgb(0 0 0 / 55%), 0 0 28px rgb(215 168 62 / 14%);
+  transform: translateY(-6px) scale(1.015);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .interactive:hover:not(.disabled) {
     border-color: var(--gold-300);
     filter: brightness(1.08);
-    transform: translateY(-4px);
+    box-shadow: 0 30px 58px rgb(0 0 0 / 58%), 0 0 30px rgb(215 168 62 / 12%);
+    transform: translateY(-7px) scale(1.018);
+  }
+
+  .card:hover::after {
+    left: 126%;
   }
 }
 
@@ -153,7 +160,7 @@
 }
 
 .compact {
-  border-radius: 14px;
+  border-radius: 6px;
 }
 
 .disabled {

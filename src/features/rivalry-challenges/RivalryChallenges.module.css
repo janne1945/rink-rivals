@@ -102,3 +102,23 @@
   .matchupLine > b { transform: rotate(90deg); justify-self: center; }
   .matchupLine > div:last-child { text-align: left; }
 }
+
+/* Rivalry campaign presentation */
+.publicPage { background: #01060b; }
+.ambient { background: linear-gradient(0deg, rgb(2 8 14 / 88%), transparent 66%), linear-gradient(90deg, rgb(2 8 14 / 84%), transparent), url("/assets/ui/home-arena.svg") center / cover no-repeat; }
+.ambient::after { background-image: linear-gradient(112deg, transparent 46%, rgb(255 255 255 / 2%) 46.2%, transparent 54%); background-size: 100% 100%; }
+.brand span { border-radius: 0; color: var(--gold-300); clip-path: polygon(50% 0, 93% 21%, 93% 79%, 50% 100%, 7% 79%, 7% 21%); }
+.inviteCard { border-radius: var(--radius-lg); background: linear-gradient(140deg, rgb(10 28 43 / 94%), rgb(2 8 14 / 98%)); box-shadow: 0 42px 110px rgb(0 0 0 / 58%), inset 0 1px rgb(255 255 255 / 5%); backdrop-filter: blur(10px); }
+.inviteCard h1 span { color: var(--gold-300); }
+.challengeStats div, .unavailable, .primaryAction { border-radius: var(--radius-sm); }
+.primaryAction { color: #07101a; background: linear-gradient(135deg, var(--gold-200), var(--gold-500)); box-shadow: 0 16px 38px rgb(215 168 62 / 22%); }
+.setupPage, .inboxPage { width: min(calc(100% - 44px), var(--content)); }
+.setupHero, .inboxHeader { max-width: none; min-height: 310px; padding: 48px 44% 42px 44px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: linear-gradient(90deg, rgb(2 8 14 / 98%), rgb(2 8 14 / 78%) 55%, transparent), url("/assets/ui/play-locker.svg") center / cover no-repeat; box-shadow: var(--shadow-lg); }
+.setupPanel, .summaryCard, .emptyInbox, .matchupLine > div { border-radius: var(--radius-md); background: linear-gradient(145deg, rgb(10 27 42 / 95%), rgb(3 10 17 / 99%)); box-shadow: 0 22px 48px rgb(0 0 0 / 30%); }
+.rulesBox { border-left-color: var(--gold-400); background: rgb(244 206 114 / 5%); }
+.statusChip, .cardActions button { border-radius: var(--radius-sm); }
+
+@media (max-width: 650px) {
+  .setupPage, .inboxPage { width: min(calc(100% - 24px), var(--content)); }
+  .setupHero, .inboxHeader { min-height: 350px; padding: 32px 22px; }
+}

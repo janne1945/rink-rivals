@@ -1307,6 +1307,457 @@
   .seasonCallout { align-items: flex-start; flex-direction: column; }
 }
 
+/* AAA menu language: shared depth, deliberate hierarchy, responsive spectacle */
+.page {
+  gap: 22px;
+}
+
+.page::before {
+  position: fixed;
+  inset: var(--nav-height) 0 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgb(61 117 144 / 10%), transparent 45%),
+    linear-gradient(90deg, transparent 0 12%, rgb(255 255 255 / 1.5%) 12.1% 12.2%, transparent 12.3% 87%, rgb(255 255 255 / 1.5%) 87.1% 87.2%, transparent 87.3%);
+  content: "";
+  pointer-events: none;
+}
+
+.page > header:not(.marketPageHeader) {
+  min-height: 264px;
+  padding: 44px 43% 36px 42px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.page > header:not(.marketPageHeader)::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-top: 1px solid rgb(255 255 255 / 5%);
+  background: linear-gradient(110deg, transparent 0 58%, rgb(255 255 255 / 4%) 59%, transparent 64%);
+  content: "";
+  pointer-events: none;
+}
+
+.title {
+  margin-bottom: 12px;
+  font-size: clamp(4rem, 7vw, 6.8rem);
+  letter-spacing: -.045em;
+}
+
+.lede {
+  max-width: 560px;
+  color: #aeb8c0;
+  line-height: 1.62;
+}
+
+.sectionHead h2 {
+  letter-spacing: -.02em;
+}
+
+.panel,
+.stat,
+.goalCard,
+.modeCard,
+.lineupCard,
+.difficultyCard,
+.rivalryStep {
+  box-shadow: 0 20px 46px rgb(0 0 0 / 24%), inset 0 1px rgb(255 255 255 / 3%);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .modeCard,
+  .difficultyCard,
+  .competitionCard,
+  .shopCard,
+  .homeGoal,
+  .lineupCard {
+    transition: transform 220ms cubic-bezier(.2, .8, .2, 1), border-color 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+  }
+
+  .modeCard:hover,
+  .difficultyCard:hover:not(.difficultyLocked),
+  .competitionCard:hover,
+  .shopCard:hover,
+  .homeGoal:hover,
+  .lineupCard:hover {
+    z-index: 2;
+    border-color: rgb(244 206 114 / 52%);
+    box-shadow: 0 28px 58px rgb(0 0 0 / 48%), 0 0 28px rgb(215 168 62 / 8%), inset 0 1px rgb(255 255 255 / 6%);
+    filter: brightness(1.05);
+    transform: translateY(-5px);
+  }
+}
+
+/* Home spectacle */
+.homeHeroGrid {
+  min-height: 520px;
+  grid-template-columns: minmax(0, 2.35fr) minmax(330px, .78fr);
+  gap: 16px;
+}
+
+.homeHeroGrid .hero {
+  min-height: 520px;
+  align-items: center;
+  padding: 54px;
+  border-color: rgb(178 211 228 / 19%);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(90deg, rgb(1 6 11 / 99%) 0%, rgb(2 8 14 / 94%) 34%, rgb(2 8 14 / 42%) 62%, rgb(2 8 14 / 12%)),
+    linear-gradient(0deg, rgb(1 6 11 / 82%), transparent 54%),
+    url("/assets/ui/home-arena.svg") 58% center / cover no-repeat;
+  box-shadow: var(--shadow-lg), inset 0 0 80px rgb(0 0 0 / 20%);
+}
+
+.homeHeroGrid .hero::before {
+  right: 24%;
+  width: 35%;
+  opacity: .35;
+}
+
+.homeHeroGrid .heroContent {
+  position: relative;
+  z-index: 4;
+  max-width: 540px;
+}
+
+.homeHeroGrid .heroTitle {
+  font-size: clamp(4.8rem, 8vw, 7.9rem);
+  line-height: .76;
+}
+
+.homeHeroGrid .heroCopy {
+  max-width: 470px;
+  font-size: .94rem;
+}
+
+.heroCardFan {
+  position: absolute;
+  right: 2.5%;
+  bottom: -9%;
+  z-index: 2;
+  width: 47%;
+  height: 108%;
+  pointer-events: none;
+}
+
+.heroCardFan::before {
+  position: absolute;
+  right: 1%;
+  bottom: 2%;
+  width: 94%;
+  height: 25%;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 68%);
+  filter: blur(24px);
+  content: "";
+}
+
+.heroCardFan > i {
+  position: absolute;
+  bottom: 4%;
+  left: 34%;
+  width: min(44%, 245px);
+  aspect-ratio: 2 / 3;
+  max-width: none;
+  background: center / contain no-repeat;
+  filter: drop-shadow(0 28px 22px rgb(0 0 0 / 72%));
+  transform: rotate(-1deg);
+}
+
+.heroCardFan > .heroCardLeft {
+  bottom: 1%;
+  left: 4%;
+  z-index: -1;
+  width: min(38%, 212px);
+  background-image: url("/assets/players/pwhl/marie-philip-poulin/signature.webp");
+  filter: brightness(.62) saturate(.72) drop-shadow(0 24px 18px rgb(0 0 0 / 75%));
+  transform: rotate(-11deg);
+}
+
+.heroCardFan > .heroCardCenter {
+  background-image: url("/assets/players/nhl/connor-mcdavid/signature.webp");
+}
+
+.heroCardFan > .heroCardRight {
+  bottom: 0;
+  left: 62%;
+  z-index: -1;
+  width: min(37%, 205px);
+  background-image: url("/assets/players/nhl/cale-makar/signature.webp");
+  filter: brightness(.58) saturate(.65) drop-shadow(0 24px 18px rgb(0 0 0 / 75%));
+  transform: rotate(10deg);
+}
+
+.heroCardFan > span {
+  position: absolute;
+  right: 3%;
+  bottom: 13%;
+  z-index: 3;
+  display: grid;
+  width: 84px;
+  height: 96px;
+  place-content: center;
+  border: 1px solid var(--gold-400);
+  color: var(--gold-300);
+  background: rgb(2 8 14 / 86%);
+  clip-path: polygon(50% 0, 93% 21%, 93% 79%, 50% 100%, 7% 79%, 7% 21%);
+  text-align: center;
+  filter: drop-shadow(0 10px 18px rgb(0 0 0 / 70%));
+}
+
+.heroCardFan b { font-family: var(--font-display); font-size: 1.7rem; }
+.heroCardFan small { max-width: 58px; color: #a89262; font-size: .42rem; letter-spacing: .1em; text-transform: uppercase; }
+
+.heroBroadcast {
+  position: absolute;
+  right: 24px;
+  bottom: 18px;
+  left: 28px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: #647580;
+  font-size: .56rem;
+  font-weight: 800;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.heroBroadcast span { color: var(--gold-300); }
+.heroBroadcast i { width: 32px; height: 1px; background: var(--gold-400); }
+
+.ghostPromo {
+  min-height: 520px;
+  padding: 40px 32px 32px;
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(0deg, rgb(2 8 14 / 99%) 0%, rgb(2 8 14 / 70%) 68%, rgb(2 8 14 / 30%)),
+    linear-gradient(90deg, rgb(3 10 17 / 92%), transparent),
+    url("/assets/ui/play-locker.svg") 58% center / cover no-repeat;
+  box-shadow: var(--shadow-lg);
+}
+
+.ghostPromo::before {
+  position: absolute;
+  inset: 0;
+  border-top: 1px solid rgb(255 255 255 / 5%);
+  background: radial-gradient(circle at 76% 30%, rgb(77 188 213 / 16%), transparent 20%);
+  content: "";
+}
+
+.ghostPromo > * { position: relative; z-index: 2; }
+.ghostPromo h2 { font-size: 2.45rem; line-height: .92; }
+.ghostMark { justify-self: end; color: rgb(148 220 234 / 58%); font-size: 4.2rem; text-shadow: 0 0 30px rgb(83 192 220 / 28%); }
+
+.homeMiddleGrid,
+.homeLowerGrid { gap: 16px; }
+.reportPanel, .levelPanel, .goalsPanel, .nextShift { border-radius: var(--radius-lg); box-shadow: 0 20px 48px rgb(0 0 0 / 28%), inset 0 1px rgb(255 255 255 / 3%); }
+.reportPanel { padding: 20px 28px 24px; }
+.reportPanel .stat { border-radius: var(--radius-sm); background: linear-gradient(135deg, rgb(13 30 45 / 92%), rgb(4 11 18 / 92%)); }
+.levelPanel { background: radial-gradient(circle at 22% 50%, rgb(215 168 62 / 9%), transparent 30%), linear-gradient(145deg, rgb(9 21 33 / 94%), rgb(3 10 18 / 98%)); }
+.levelRing { border-width: 10px; box-shadow: 0 14px 30px rgb(0 0 0 / 38%), inset 0 0 0 1px var(--line-strong), 0 0 24px rgb(215 168 62 / 8%); }
+.goalsPanel .homeGoal { border-radius: var(--radius-sm); background: linear-gradient(145deg, rgb(11 26 39 / 92%), rgb(3 10 17 / 95%)); }
+.nextShift { position: relative; min-height: 280px; overflow: hidden; }
+.nextShift::after { position: absolute; inset: 0; background: linear-gradient(110deg, transparent 50%, rgb(255 255 255 / 4%) 50.2%, transparent 57%); content: ""; pointer-events: none; }
+.nextShift .sectionHead { position: relative; z-index: 2; }
+.nextShiftIndex { position: absolute; top: 16px; right: 24px; color: rgb(255 255 255 / 6%); font-family: var(--font-display); font-size: 5rem; font-weight: 950; }
+
+/* Play menu */
+.playHeader { display: grid; grid-template-columns: minmax(0, 1fr) 220px; align-items: center; }
+.playHeaderCrest,
+.lineupHeroBadge {
+  position: absolute;
+  right: 9%;
+  display: grid;
+  width: 132px;
+  height: 150px;
+  place-content: center;
+  border: 1px solid var(--gold-400);
+  color: var(--gold-300);
+  background: linear-gradient(145deg, rgb(20 34 44 / 78%), rgb(2 7 12 / 94%));
+  clip-path: polygon(50% 0, 93% 21%, 93% 79%, 50% 100%, 7% 79%, 7% 21%);
+  text-align: center;
+  filter: drop-shadow(0 22px 24px rgb(0 0 0 / 65%));
+}
+.playHeaderCrest span,
+.lineupHeroBadge span { font-family: var(--font-display); font-size: 2.7rem; font-weight: 950; }
+.playHeaderCrest small,
+.lineupHeroBadge small { max-width: 90px; color: #a99261; font-size: .52rem; letter-spacing: .12em; text-transform: uppercase; }
+
+.competitionGrid { grid-template-columns: .92fr 1.12fr 1fr; gap: 14px; }
+.competitionCard { min-height: 470px; padding: 32px 30px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+.competitionCard::after { position: absolute; inset: 0; z-index: -1; border-top: 1px solid rgb(255 255 255 / 5%); background: linear-gradient(115deg, transparent 45%, rgb(255 255 255 / 4%) 45.3%, transparent 54%); content: ""; }
+.competitionCard h2 { max-width: 280px; font-size: clamp(2.5rem, 3.2vw, 3.7rem); }
+.competitionCard p { max-width: 40ch; color: #9ba8b1; font-size: .86rem; }
+.competitionCard > button,
+.competitionCard > a { width: 100%; margin-top: 6px; }
+.modeIcon { position: absolute; top: 31px; right: 28px; color: rgb(244 206 114 / 45%); font-family: var(--font-display); font-size: 2.1rem; font-style: normal; font-weight: 950; text-shadow: 0 0 22px rgb(215 168 62 / 20%); }
+.arenaCard { transform: translateY(-8px); }
+.arenaCard:hover { transform: translateY(-13px) !important; }
+.seasonCallout { position: relative; min-height: 76px; padding: 16px 24px 16px 88px; overflow: hidden; border-radius: var(--radius-md); box-shadow: 0 18px 38px rgb(0 0 0 / 24%); }
+.seasonCallout::before { position: absolute; left: 28px; display: grid; width: 38px; height: 46px; place-items: center; border: 1px solid var(--gold-400); color: var(--gold-300); content: "RR"; clip-path: polygon(50% 0, 94% 21%, 94% 79%, 50% 100%, 6% 79%, 6% 21%); font-family: var(--font-display); font-size: .72rem; }
+.modeCard { min-height: 172px; border-radius: var(--radius-md); }
+.difficultyCard { min-height: 184px; border-radius: var(--radius-md); }
+
+/* Collection vault */
+.collectionHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 47%;
+  align-items: center;
+  background:
+    linear-gradient(90deg, rgb(2 8 14 / 99%) 0%, rgb(2 8 14 / 90%) 42%, rgb(2 8 14 / 28%) 75%),
+    linear-gradient(0deg, rgb(2 8 14 / 70%), transparent),
+    url("/assets/ui/lineup-banner.svg") center / cover no-repeat !important;
+}
+.collectionMetrics { display: flex; flex-wrap: wrap; gap: 0; margin-top: 26px; }
+.collectionMetrics span { display: grid; min-width: 108px; gap: 2px; padding: 0 22px; border-left: 1px solid var(--line); color: #82919c; font-size: .58rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+.collectionMetrics span:first-child { padding-left: 0; border-left: 0; }
+.collectionMetrics strong { color: var(--ice-50); font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0; }
+.collectionCardFan { position: absolute; top: -10%; right: 3%; width: 43%; height: 120%; pointer-events: none; }
+.collectionCardFan::after { position: absolute; right: 0; bottom: 6%; width: 100%; height: 25%; border-radius: 50%; background: rgb(0 0 0 / 65%); filter: blur(24px); content: ""; }
+.collectionCardFan > i { position: absolute; bottom: -13%; left: 35%; z-index: 2; width: min(38%, 210px); aspect-ratio: 2 / 3; max-width: none; background: center / contain no-repeat; filter: drop-shadow(0 26px 22px rgb(0 0 0 / 70%)); transform: rotate(-1deg); }
+.collectionCardFan > .collectionCardLeft { left: 7%; z-index: 1; background-image: url("/assets/players/pwhl/megan-keller/signature.webp"); filter: brightness(.64) drop-shadow(0 25px 20px rgb(0 0 0 / 75%)); transform: rotate(-10deg); }
+.collectionCardFan > .collectionCardCenter { background-image: url("/assets/players/nhl/david-pastrnak/signature.webp"); }
+.collectionCardFan > .collectionCardRight { left: 64%; z-index: 1; background-image: url("/assets/players/nhl/jeremy-swayman/signature.webp"); filter: brightness(.6) drop-shadow(0 25px 20px rgb(0 0 0 / 75%)); transform: rotate(10deg); }
+
+.collectionPage .cardGrid { gap: 20px 14px; }
+.collectionPage .cardWrap { padding: 8px; border: 1px solid transparent; border-radius: var(--radius-md); background: linear-gradient(180deg, rgb(12 27 40 / 42%), rgb(2 8 14 / 34%)); transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+@media (hover: hover) and (pointer: fine) {
+  .collectionPage .cardWrap:hover { z-index: 2; border-color: rgb(244 206 114 / 28%); box-shadow: 0 28px 52px rgb(0 0 0 / 42%); transform: translateY(-6px); }
+}
+
+/* Lineup war room */
+.lineupsHeader { display: grid; grid-template-columns: 1fr 220px; align-items: center; }
+.lineupHeroBadge span { font-size: 4rem; }
+.modeLineupSection { min-height: 208px; grid-template-columns: 360px minmax(0, 1fr); padding: 22px; border-radius: var(--radius-lg); box-shadow: 0 24px 54px rgb(0 0 0 / 30%), inset 0 1px rgb(255 255 255 / 3%); }
+.modeLineupSection::after { position: absolute; inset: 0; z-index: 0; background: linear-gradient(110deg, transparent 54%, rgb(255 255 255 / 3%) 54.2%, transparent 61%); content: ""; pointer-events: none; }
+.modeLineupSection > * { position: relative; z-index: 1; }
+.modeLineupSection > .lineupSectionHead { position: static; }
+.lineupSectionHead > div { position: relative; z-index: 1; }
+.modeLineupSection[data-mode="pwhl-circuit"] { background: radial-gradient(circle at 8% 50%, rgb(140 66 199 / 13%), transparent 28%), linear-gradient(90deg, rgb(11 24 37 / 98%), rgb(3 11 19 / 94%)); }
+.modeLineupSection[data-mode="open-ice"] { background: radial-gradient(circle at 8% 50%, rgb(40 167 200 / 11%), transparent 28%), linear-gradient(90deg, rgb(11 24 37 / 98%), rgb(3 11 19 / 94%)); }
+.lineupSectionHead > div::before { width: 72px; height: 84px; box-shadow: 0 16px 30px rgb(0 0 0 / 38%); }
+.lineupGrid { padding-right: 170px; }
+.lineupCard { padding: 16px; border-radius: var(--radius-md); background: linear-gradient(150deg, rgb(12 27 41 / 92%), rgb(3 9 16 / 96%)); }
+.miniSlots { gap: 7px; }
+.miniSlot { position: relative; min-height: 92px; align-content: space-between; justify-items: start; padding: 8px; overflow: hidden; border-radius: var(--radius-sm); }
+.miniSlot::after { position: absolute; right: -16px; bottom: -25px; width: 58px; height: 75px; border-radius: 50% 50% 0 0; background: linear-gradient(180deg, rgb(135 174 193 / 12%), transparent); content: ""; }
+.miniSlot i { position: absolute; right: 6px; bottom: -7px; color: rgb(255 255 255 / 10%); font-family: var(--font-display); font-size: 3.2rem; font-style: normal; font-weight: 950; }
+.miniSlot small { position: relative; z-index: 2; }
+
+/* Market stage and offer wall */
+.marketPageHeader { min-height: 410px; padding: 48px 66% 48px 46px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+.marketPageHeader .title { font-size: clamp(4rem, 6vw, 6rem); }
+.marketHero { top: 24px; right: max(3.1vw, calc((100vw - var(--content)) / 2 + 28px)); width: min(350px, 25vw); min-height: 352px; padding: 30px; border-radius: var(--radius-lg); box-shadow: 0 28px 64px rgb(0 0 0 / 52%), inset 0 1px rgb(255 255 255 / 4%); }
+.marketHero h2 { font-size: 2.1rem; }
+.marketBrowse { padding: 28px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: linear-gradient(145deg, rgb(8 20 32 / 82%), rgb(2 8 14 / 88%)); box-shadow: 0 18px 46px rgb(0 0 0 / 24%); }
+.marketBrowse > .sectionHead { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+.marketBrowse > .sectionHead > div:first-child { max-width: 700px; }
+.marketBrowse .marketTabs { order: 0; }
+.shopCard { position: relative; border-radius: var(--radius-md); box-shadow: 0 20px 42px rgb(0 0 0 / 34%); }
+.shopCardSpotlight::before { position: absolute; inset: -1px; z-index: 2; border: 1px solid var(--gold-400); border-radius: inherit; content: ""; pointer-events: none; box-shadow: 0 0 28px rgb(215 168 62 / 12%); }
+
+@media (max-width: 1120px) {
+  .heroCardFan { right: -4%; width: 49%; opacity: .78; }
+  .homeHeroGrid { grid-template-columns: minmax(0, 1.7fr) minmax(290px, .8fr); }
+  .homeHeroGrid .heroContent { max-width: 480px; }
+  .modeLineupSection { grid-template-columns: 290px minmax(0, 1fr); }
+  .lineupGrid { padding-right: 130px; }
+  .marketPageHeader { padding-right: 56%; }
+  .marketHero { width: 38vw; }
+}
+
+@media (max-width: 800px) {
+  .page > header:not(.marketPageHeader) { min-height: 230px; padding: 30px 26px; }
+  .title { font-size: clamp(3.4rem, 14vw, 5rem); }
+  .homeHeroGrid, .homeMiddleGrid, .homeLowerGrid { grid-template-columns: 1fr; }
+  .homeHeroGrid .hero { min-height: 560px; padding: 38px 30px 180px; align-items: start; }
+  .homeHeroGrid .heroTitle { font-size: clamp(4.4rem, 18vw, 6rem); }
+  .heroCardFan { right: 2%; bottom: -24%; width: 72%; height: 100%; opacity: .82; }
+  .heroCardFan > span { display: none; }
+  .ghostPromo { min-height: 350px; }
+  .playHeaderCrest, .lineupHeroBadge { right: 5%; width: 92px; height: 106px; opacity: .46; }
+  .playHeaderCrest span, .lineupHeroBadge span { font-size: 2rem; }
+  .playHeaderCrest small, .lineupHeroBadge small { display: none; }
+  .competitionGrid { grid-template-columns: 1fr; }
+  .competitionCard { min-height: 360px; }
+  .arenaCard { transform: none; }
+  .arenaCard:hover { transform: translateY(-5px) !important; }
+  .collectionHeader { min-height: 420px !important; align-items: start !important; padding-bottom: 150px !important; }
+  .collectionCardFan { top: 30%; right: -2%; width: 64%; height: 78%; opacity: .74; }
+  .modeLineupSection { grid-template-columns: 1fr; }
+  .lineupGrid { padding-right: 0; }
+  .marketPageHeader { min-height: 390px; padding: 34px 28px 170px; }
+  .marketHero { position: static; width: auto; min-height: 0; }
+  .marketBrowse { padding: 20px; }
+}
+
+@media (max-width: 480px) {
+  .page { gap: 16px; }
+  .homeHeroGrid .hero { min-height: 520px; padding: 28px 20px 155px; }
+  .homeHeroGrid .heroTitle { font-size: 4.3rem; }
+  .homeHeroGrid .heroCopy { font-size: .82rem; }
+  .heroCardFan { right: -4%; bottom: -26%; width: 88%; }
+  .heroBroadcast { display: none; }
+  .ghostPromo { min-height: 320px; padding: 28px 22px 22px; }
+  .ghostMark { font-size: 3rem; }
+  .homeMiddleGrid .statGrid { grid-template-columns: 1fr; }
+  .levelPanel { align-items: flex-start; }
+  .levelRing { width: 76px; height: 76px; border-width: 8px; }
+  .competitionCard { min-height: 330px; padding: 26px 22px; }
+  .seasonCallout { padding-left: 72px; }
+  .seasonCallout::before { left: 20px; }
+  .collectionHeader { padding-bottom: 128px !important; }
+  .collectionMetrics span { min-width: 84px; padding: 0 12px; }
+  .collectionCardFan { top: 45%; width: 84%; height: 62%; }
+  .modeLineupSection { padding: 14px; }
+  .lineupSectionHead > div { padding-left: 82px; }
+  .lineupSectionHead > div::before { left: 8px; }
+  .miniSlots { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Goals campaign map */
+.goalsHero {
+  position: relative;
+  min-height: 340px;
+  padding: 46px 42% 42px 46px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(90deg, rgb(2 8 14 / 99%) 0%, rgb(2 8 14 / 88%) 42%, rgb(2 8 14 / 22%) 78%),
+    linear-gradient(0deg, rgb(2 8 14 / 70%), transparent),
+    url("/assets/ui/home-arena.svg") center 62% / cover no-repeat;
+  box-shadow: var(--shadow-lg);
+}
+.goalsHero::before { position: absolute; top: 32px; right: 8%; display: grid; width: 116px; height: 134px; place-content: center; border: 1px solid var(--gold-400); color: var(--gold-300); background: rgb(2 8 14 / 72%); clip-path: polygon(50% 0, 93% 21%, 93% 79%, 50% 100%, 7% 79%, 7% 21%); content: "03"; font-family: var(--font-display); font-size: 2.8rem; font-weight: 950; filter: drop-shadow(0 18px 22px rgb(0 0 0 / 55%)); }
+.goalsHero > * { position: relative; z-index: 1; }
+.goalsHero .title { font-size: clamp(4rem, 7vw, 6.5rem); }
+.goalsHero > button { position: absolute; right: 42px; bottom: 36px; }
+
+.objectiveGrid { grid-template-columns: 1.12fr 1fr 1fr; gap: 14px; }
+.goalCard { position: relative; min-height: 240px; padding: 24px; overflow: hidden; border-radius: var(--radius-md); background: linear-gradient(145deg, rgb(12 29 44 / 94%), rgb(3 10 17 / 98%)); }
+.goalCard::before { position: absolute; right: -8px; bottom: -32px; color: rgb(255 255 255 / 4%); font-family: var(--font-display); font-size: 9rem; font-weight: 950; line-height: 1; content: "01"; }
+.objectiveGrid .goalCard:nth-child(2)::before { content: "02"; }
+.objectiveGrid .goalCard:nth-child(3)::before { content: "03"; }
+.goalCard > * { position: relative; z-index: 1; }
+.goalCompleted { background: radial-gradient(circle at 85% 12%, rgb(98 216 155 / 11%), transparent 30%), linear-gradient(145deg, rgb(13 40 42 / 92%), rgb(3 14 19 / 98%)); }
+.rivalryRoad { position: relative; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.rivalryRoad::before { position: absolute; top: 38px; right: 12%; left: 12%; height: 1px; background: linear-gradient(90deg, var(--gold-400), rgb(244 206 114 / 18%)); content: ""; }
+.rivalryStep { min-height: 248px; border-radius: var(--radius-md); background: linear-gradient(145deg, rgb(10 24 37 / 94%), rgb(3 10 17 / 98%)); }
+.rivalryIndex { position: relative; z-index: 2; border-radius: var(--radius-sm); background: #08121c; box-shadow: 0 10px 24px rgb(0 0 0 / 42%); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+
+@media (max-width: 800px) {
+  .goalsHero { min-height: 380px; padding: 32px 24px 96px; }
+  .goalsHero::before { right: 22px; width: 86px; height: 100px; opacity: .5; }
+  .goalsHero > button { right: 24px; bottom: 24px; left: 24px; }
+  .objectiveGrid, .rivalryRoad { grid-template-columns: 1fr; }
+  .rivalryRoad::before { top: 7%; bottom: 7%; left: 40px; width: 1px; height: auto; background: linear-gradient(180deg, var(--gold-400), rgb(244 206 114 / 18%)); }
+}
+
 @media (max-height: 520px) and (orientation: landscape) {
   .hero { min-height: 300px; }
   .heroTitle { font-size: 3.5rem; }
@@ -1504,4 +1955,33 @@
   .modeLineupSection { padding: 13px; }
   .lineupSectionHead { padding: 0; }
   .lineupSectionHead > div::before { left: 18px; }
+}
+
+/* Final cascade corrections after the legacy arena layer. */
+.page { position: relative; gap: 22px; }
+.marketPageHeader { min-height: 410px; padding: 48px 66% 48px 46px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+.marketPageHeader .title { font-size: clamp(4rem, 6vw, 6rem); }
+.marketHero { top: 18px; right: 28px; width: min(350px, 25vw); min-height: 370px; padding: 30px; border-radius: var(--radius-lg); box-shadow: 0 28px 64px rgb(0 0 0 / 52%), inset 0 1px rgb(255 255 255 / 4%); }
+.marketHero h2 { font-size: 2.1rem; }
+.marketBrowse { margin-top: 0; padding: 28px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: linear-gradient(145deg, rgb(8 20 32 / 82%), rgb(2 8 14 / 88%)); box-shadow: 0 18px 46px rgb(0 0 0 / 24%); }
+.marketBrowse > .sectionHead { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+.marketBrowse > .sectionHead > div:first-child { max-width: 700px; }
+.marketBrowse .marketTabs { order: 0; }
+.shopCard { box-shadow: 0 20px 42px rgb(0 0 0 / 34%); }
+
+@media (hover: hover) and (pointer: fine) {
+  .shopCard:hover { transform: none; }
+}
+
+@media (max-width: 1050px) {
+  .marketPageHeader { padding-right: 56%; }
+  .marketHero { width: 38vw; }
+}
+
+@media (max-width: 760px) {
+  .page { gap: 16px; }
+  .marketPageHeader { min-height: 390px; padding: 34px 28px 170px; }
+  .marketHero { position: static; width: auto; min-height: 0; }
+  .marketBrowse { padding: 20px; }
+  .marketBrowse > .sectionHead { display: flex; align-items: stretch; }
 }

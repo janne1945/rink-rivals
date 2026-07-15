@@ -38,9 +38,17 @@ export function HomeScreen({ credits, uniqueCards, collectionScore, completedMat
             <Button variant="ghost" onClick={() => navigate("/ghost")}>Live Ghost Challenge</Button>
           </div>
         </div>
+        <div className={styles.heroCardFan} aria-hidden="true">
+          <i className={styles.heroCardLeft} />
+          <i className={styles.heroCardCenter} />
+          <i className={styles.heroCardRight} />
+          <span><b>RR</b><small>Rivalry collection</small></span>
+        </div>
+        <div className={styles.heroBroadcast} aria-hidden="true"><span>Live season</span><i /> North America · 2026</div>
       </section>
 
       <aside className={styles.ghostPromo}>
+        <span className={styles.ghostMark} aria-hidden="true">◈</span>
         <div>
           <p className={styles.liveLabel}>Live now</p>
           <h2>Ghost Challenge</h2>
@@ -111,12 +119,14 @@ export function HomeScreen({ credits, uniqueCards, collectionScore, completedMat
           </div>
           <Button variant="secondary" onClick={() => navigate("/play")}>Choose mode</Button>
         </div>
+        <span className={styles.nextShiftIndex} aria-hidden="true">07</span>
       </section>
         </div>
       ) : (
         <section className={styles.nextShift}>
           <p className={styles.eyebrow}>Next shift</p>
           <div className={styles.sectionHead}><div><h2>Make your debut</h2><p>Choose a circuit and learn the five-round rivalry format.</p></div><Button variant="secondary" onClick={() => navigate("/play")}>Choose mode</Button></div>
+          <span className={styles.nextShiftIndex} aria-hidden="true">01</span>
         </section>
       )}
     </div>

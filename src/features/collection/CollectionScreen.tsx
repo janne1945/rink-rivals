@@ -58,11 +58,23 @@ export function CollectionScreen({ catalog, collection }: CollectionScreenProps)
   }
 
   return (
-    <div className={styles.page}>
-      <header>
-        <p className={styles.eyebrow}>The vault</p>
-        <h1 className={styles.title}>Collection</h1>
-        <p className={styles.lede}>Browse the full catalog across both leagues. Starter editions, Base upgrades, Events, and Rewards stay clearly separated.</p>
+    <div className={`${styles.page} ${styles.collectionPage}`}>
+      <header className={styles.collectionHeader}>
+        <div>
+          <p className={styles.eyebrow}>The vault</p>
+          <h1 className={styles.title}>Collection</h1>
+          <p className={styles.lede}>Browse the full catalog across both leagues. Starter editions, Base upgrades, Events, and Rewards stay clearly separated.</p>
+          <div className={styles.collectionMetrics} aria-label="Collection overview">
+            <span><strong>{Object.keys(collection).length}</strong> unique</span>
+            <span><strong>{catalog.cards.length}</strong> releases</span>
+            <span><strong>2</strong> leagues</span>
+          </div>
+        </div>
+        <div className={styles.collectionCardFan} aria-hidden="true">
+          <i className={styles.collectionCardLeft} />
+          <i className={styles.collectionCardCenter} />
+          <i className={styles.collectionCardRight} />
+        </div>
       </header>
 
       <CatalogFilters

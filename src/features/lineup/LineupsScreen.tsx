@@ -159,10 +159,13 @@ export function LineupsScreen({ lineups, activeLineupIds, catalog, collection, o
 
   return (
     <div className={`${styles.page} ${styles.lineupsPage}`}>
-      <header>
-        <p className={styles.eyebrow}>Six cards. Every role matters.</p>
-        <h1 className={styles.title}>Lineups</h1>
-        <p className={styles.lede}>Build and activate a separate six for each mode. Every save is checked again by the server.</p>
+      <header className={styles.lineupsHeader}>
+        <div>
+          <p className={styles.eyebrow}>Six cards. Every role matters.</p>
+          <h1 className={styles.title}>Lineups</h1>
+          <p className={styles.lede}>Build and activate a separate six for each mode. Every save is checked again by the server.</p>
+        </div>
+        <div className={styles.lineupHeroBadge} aria-hidden="true"><span>6</span><small>roles · one club</small></div>
       </header>
 
       {feedback ? <div className={feedback.kind === "error" ? styles.error : styles.notice} role={feedback.kind === "error" ? "alert" : "status"}>{feedback.message}</div> : null}
@@ -171,7 +174,7 @@ export function LineupsScreen({ lineups, activeLineupIds, catalog, collection, o
         {GAME_MODES.map((mode) => {
           const modeLineups = lineups.filter((lineup) => lineup.mode === mode);
           return (
-            <section className={styles.modeLineupSection} key={mode} aria-labelledby={`${mode}-heading`}>
+            <section className={styles.modeLineupSection} key={mode} data-mode={mode} aria-labelledby={`${mode}-heading`}>
               <div className={styles.lineupSectionHead}>
                 <div>
                   <p className={styles.eyebrow}>{modeCopy[mode].description}</p>
@@ -192,7 +195,7 @@ export function LineupsScreen({ lineups, activeLineupIds, catalog, collection, o
                         {LINEUP_SLOTS.map((position) => {
                           const card = cards.get(lineup.slots[position]);
                           const player = card ? players.get(card.playerId) : undefined;
-                          return <span className={styles.miniSlot} key={position} title={player?.name}><strong>{position}</strong><small>{player?.name ?? "Empty"}</small></span>;
+                          return <span className={styles.miniSlot} key={position} title={player?.name}><strong>{position}</strong><i aria-hidden="true">{player?.name.slice(0, 1) ?? "+"}</i><small>{player?.name ?? "Empty"}</small></span>;
                         })}
                       </div>
                       <div className={styles.lineupActions}>

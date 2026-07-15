@@ -434,3 +434,24 @@
 @media (prefers-reduced-motion: reduce) {
   .loaderPuck { animation-duration: 1ms; }
 }
+
+/* Front-door arena treatment */
+.accountPage { grid-template-columns: minmax(0, 600px) minmax(420px, 1fr); background: #01060b; }
+.authCard { position: relative; z-index: 2; padding: clamp(38px, 7vw, 96px); background: linear-gradient(90deg, rgb(2 8 14 / 99%), rgb(4 12 20 / 96%)); box-shadow: 34px 0 80px rgb(0 0 0 / 46%); }
+.brandMark { width: 48px; height: 56px; border-radius: 0; background: linear-gradient(145deg, #142635, #03080e); clip-path: polygon(50% 0, 93% 21%, 93% 79%, 50% 100%, 7% 79%, 7% 21%); }
+.authCard h1 { font-size: clamp(3.1rem, 6vw, 5.3rem); }
+.modeSwitch, .modeSwitch button, .form input, .primaryButton { border-radius: var(--radius-sm); }
+.authVisual { padding: clamp(44px, 7vw, 104px); background: linear-gradient(0deg, rgb(2 8 14 / 86%), transparent 68%), linear-gradient(90deg, rgb(2 8 14 / 72%), transparent), url("/assets/ui/home-arena.svg") center / cover no-repeat; box-shadow: inset 0 0 120px rgb(0 0 0 / 38%); }
+.authVisual::before { position: absolute; top: 10%; right: 10%; display: grid; width: 128px; height: 148px; place-content: center; border: 1px solid var(--gold-400); color: var(--gold-300); background: rgb(2 8 14 / 66%); clip-path: polygon(50% 0, 93% 21%, 93% 79%, 50% 100%, 7% 79%, 7% 21%); content: "RR"; font-family: var(--font-display); font-size: 2.5rem; font-weight: 950; filter: drop-shadow(0 20px 24px rgb(0 0 0 / 58%)); }
+.authVisual::after { display: none; }
+.rinkLines { border-radius: 50%; opacity: .45; transform: perspective(600px) rotateX(62deg); }
+.authVisual p { max-width: 780px; font-size: clamp(3.5rem, 7vw, 7rem); text-shadow: 0 18px 42px rgb(0 0 0 / 70%); }
+.onboardingPage { background: radial-gradient(ellipse at 50% 0, rgb(28 84 111 / 26%), transparent 42rem), linear-gradient(180deg, #040d16, #01060b); }
+.teamChooser, .teamPreview, .starterExplanation, .leagueTabs, .leagueTabs button, .teamSearch input, .teamOption { border-radius: var(--radius-sm); }
+.teamChooser, .teamPreview { background: linear-gradient(145deg, rgb(11 28 43 / 96%), rgb(3 10 17 / 99%)); box-shadow: 0 28px 70px rgb(0 0 0 / 38%), inset 0 1px rgb(255 255 255 / 3%); }
+.starterIntro h1 { font-size: clamp(3.2rem, 6vw, 5.5rem); }
+.teamPreview { border-color: rgb(244 206 114 / 28%); }
+
+@media (max-width: 800px) {
+  .accountPage { grid-template-columns: 1fr; }
+}
