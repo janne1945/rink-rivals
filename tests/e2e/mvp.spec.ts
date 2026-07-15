@@ -99,13 +99,14 @@ test.describe("Rink Rivals MVP", () => {
     await page.getByRole("button", { name: "Start match" }).click();
 
     for (let round = 1; round <= 5; round += 1) {
+      await expect(page.locator("[data-presentation-state='awaitingSelection']")).toBeVisible();
       await expect(page.getByText(`Round ${round} of 5`)).toBeVisible();
       const availableCard = page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='overall']:not([disabled])").first();
       await expect(availableCard).toBeEnabled();
       await availableCard.click();
       await expect(page.getByText("Card locked in")).toBeVisible();
       await page.getByRole("button", { name: "Reveal cards" }).click();
-      if (round < 5) await page.getByRole("button", { name: "Next round" }).click();
+      await page.getByRole("button", { name: round < 5 ? "Continue" : "Final horn" }).click();
     }
 
     await expect(page.getByText("Final horn")).toBeVisible();
@@ -134,16 +135,15 @@ test.describe("Rink Rivals MVP", () => {
     await page.getByRole("button", { name: "Start match" }).click();
 
     await expect(page.getByRole("heading", { name: "Speed", exact: true })).toBeVisible();
-    await expect(page.getByText("Higher Speed wins this round.")).toBeVisible();
+    await expect(page.getByText("Higher Speed wins this round.").first()).toBeVisible();
     await expect(page.getByText(/On a tie: higher OVR/)).toBeVisible();
     await expect(page.getByRole("list", { name: "Round timeline" }).getByRole("listitem")).toHaveCount(5);
-    await expect(page.getByText("Ineligible for Speed", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("Not eligible for Speed", { exact: true }).first()).toBeVisible();
 
     const firstEligible = page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='Eligible']:not([disabled])").first();
     await firstEligible.focus();
     await page.keyboard.press("Enter");
-    await expect(page.getByRole("heading", { name: "Rival card concealed" })).toBeVisible();
-    await expect(page.getByLabel("Rival card hidden")).toBeVisible();
+    await expect(page.getByLabel("Rival card concealed")).toBeVisible();
     await page.getByRole("button", { name: "Reveal cards" }).click();
 
     const result = page.getByRole("region", { name: "Round 1 result" });
@@ -153,7 +153,7 @@ test.describe("Rink Rivals MVP", () => {
     expect(values).toHaveLength(2);
     expect(values.every((value) => /^\d+$/.test(value.trim()))).toBe(true);
     await expect(page.getByRole("listitem", { name: /Round 1: Speed/ })).toBeVisible();
-    await page.getByRole("button", { name: "Next round" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
     await expect(page.getByRole("region", { name: "Player hand" }).locator("button[disabled][aria-label*='Used']")).toHaveCount(1);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
   });
@@ -164,9 +164,10 @@ test.describe("Rink Rivals MVP", () => {
     await page.goto("/play");
     await page.getByRole("button", { name: "Start match" }).click();
     for (let round = 1; round <= 5; round += 1) {
+      await expect(page.locator("[data-presentation-state='awaitingSelection']")).toBeVisible();
       await page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='overall']:not([disabled])").first().click();
       await page.getByRole("button", { name: "Reveal cards" }).click();
-      if (round < 5) await page.getByRole("button", { name: "Next round" }).click();
+      await page.getByRole("button", { name: round < 5 ? "Continue" : "Final horn" }).click();
     }
     await expect(page.getByText("Match settlement temporarily unavailable")).toBeVisible();
     await expect(page.getByRole("button", { name: "Retry settlement" })).toBeEnabled();
@@ -298,7 +299,8 @@ test.describe("Rink Rivals MVP", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/play");
     await page.getByRole("button", { name: "Start match" }).click();
-    await expect(page.getByRole("heading", { name: "Speed", exact: true })).toBeVisible();
+    await expect(page.locator("[data-reduced-motion='true']")).toBeVisible();
+    await expect(page.getByRole("region", { name: "Player hand" })).toBeVisible();
     expect(await page.evaluate(() => {
       if (!matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
       return document.getAnimations().every((animation) => {

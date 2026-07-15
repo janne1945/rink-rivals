@@ -250,4 +250,54 @@ describe("SupabaseAccountRepository RPC mapping", () => {
     }).repository;
     await expect(invalidSettlement.settleMatch({ clientMatchId: "match-1" })).rejects.toThrow(/reward credits/i);
   });
+
+  it("maps the complete Ghost Rivalry contract without client-authored scores", async () => {
+    const challengeTicket = {
+      status: "started",
+      client_match_id: "ghost-match-1",
+      seed: "ghost-seed-1",
+      opponent_id: "challenge:challenge-1",
+      opponent: { id: "challenge:challenge-1", name: "Alex's Ghost", mode: "nhl-circuit", slots: lineup.slots },
+      lineup: { id: lineup.id, name: lineup.name, mode: lineup.mode, slots: lineup.slots },
+      situations,
+      rounds: [],
+      mode: "nhl-circuit",
+      difficulty: "rookie",
+    };
+    const { repository, rpc } = repositoryWithRpc({
+      get_public_rivalry_challenge: {
+        status: "active", slug: "0123456789abcdef0123456789abcdef", creator_label: "Alex",
+        mode: "nhl-circuit", difficulty: "rookie", challenge_strength: 84,
+        created_at: "2026-07-15T00:00:00.000Z", expires_at: "2026-08-14T00:00:00.000Z",
+      },
+      create_rivalry_challenge: {
+        status: "created", challenge_id: "challenge-1", slug: "0123456789abcdef0123456789abcdef",
+        expires_at: "2026-08-14T00:00:00.000Z", challenge_status: "active",
+      },
+      start_rivalry_challenge: challengeTicket,
+      play_rivalry_challenge_round: { ...roundPayload, client_match_id: "ghost-match-1" },
+      settle_rivalry_challenge: {
+        status: "settled", challenge_id: "challenge-1", attempt_id: "attempt-1",
+        outcome: "win", player_wins: 3, ghost_wins: 2,
+      },
+      list_rivalry_challenges: { created: [{
+        slug: "0123456789abcdef0123456789abcdef", creator_label: "Alex", mode: "nhl-circuit",
+        difficulty: "rookie", challenge_strength: 84, status: "active",
+        created_at: "2026-07-15T00:00:00.000Z", expires_at: "2026-08-14T00:00:00.000Z",
+        attempts: 2, completed: 1, ghost_defenses: 1, challenger_wins: 0,
+      }] },
+      revoke_rivalry_challenge: { status: "revoked", slug: "0123456789abcdef0123456789abcdef" },
+    });
+
+    await expect(repository.loadPublicRivalryChallenge("0123456789abcdef0123456789abcdef")).resolves.toMatchObject({ creatorLabel: "Alex", challengeStrength: 84 });
+    await expect(repository.createRivalryChallenge({ clientRequestId: "create-1", sourceClientMatchId: "source-1", sourceKind: "ai-match" })).resolves.toMatchObject({ status: "created", challengeStatus: "active" });
+    await expect(repository.startRivalryChallenge({ slug: "0123456789abcdef0123456789abcdef", clientMatchId: "ghost-match-1", lineupId: "lineup-1" })).resolves.toMatchObject({ opponentId: "challenge:challenge-1", rounds: [] });
+    await expect(repository.playRivalryChallengeRound({ clientMatchId: "ghost-match-1", roundIndex: 0, playerCardId: "lw", clientRequestId: "ghost-round-1" })).resolves.toMatchObject({ winner: "player", playerScore: 90 });
+    await expect(repository.settleRivalryChallenge({ clientMatchId: "ghost-match-1" })).resolves.toMatchObject({ outcome: "win", playerWins: 3, ghostWins: 2 });
+    await expect(repository.listRivalryChallenges()).resolves.toEqual([expect.objectContaining({ attempts: 2, ghostDefenses: 1 })]);
+    await expect(repository.revokeRivalryChallenge("0123456789abcdef0123456789abcdef")).resolves.toBeUndefined();
+    expect(rpc).toHaveBeenCalledWith("create_rivalry_challenge", { client_request_id: "create-1", source_client_match_id: "source-1", source_kind: "ai-match" });
+    expect(rpc).toHaveBeenCalledWith("start_rivalry_challenge", { challenge_slug: "0123456789abcdef0123456789abcdef", client_match_id: "ghost-match-1", lineup_id: "lineup-1" });
+    expect(rpc).toHaveBeenCalledWith("settle_rivalry_challenge", { client_match_id: "ghost-match-1" });
+  });
 });

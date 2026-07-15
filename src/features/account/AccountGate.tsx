@@ -8,16 +8,22 @@ import type {
   AccountRepository,
   ClaimRivalryRewardInput,
   ClaimRivalryRewardResult,
+  CreateRivalryChallengeInput,
+  CreateRivalryChallengeResult,
   LineupMutationResult,
   PlayMatchRoundInput,
   PlayMatchRoundResult,
   PurchaseCardInput,
   PurchaseCardResult,
+  PublicRivalryChallenge,
   SaveLineupInput,
   SettleMatchInput,
   SettleMatchResult,
+  SettleRivalryChallengeResult,
   StartMatchInput,
   StartMatchResult,
+  StartRivalryChallengeInput,
+  RivalryChallengeSummary,
 } from "../../infrastructure/supabase";
 import { AuthScreen } from "./AuthScreen";
 import type { AccountSnapshot } from "./types";
@@ -45,6 +51,13 @@ export interface AccountActions {
   readonly startMatch: (input: StartMatchInput) => Promise<StartMatchResult>;
   readonly playMatchRound: (input: PlayMatchRoundInput) => Promise<PlayMatchRoundResult>;
   readonly settleMatch: (input: SettleMatchInput) => Promise<SettleMatchResult>;
+  readonly createRivalryChallenge: (input: CreateRivalryChallengeInput) => Promise<CreateRivalryChallengeResult>;
+  readonly startRivalryChallenge: (input: StartRivalryChallengeInput) => Promise<StartMatchResult>;
+  readonly playRivalryChallengeRound: (input: PlayMatchRoundInput) => Promise<PlayMatchRoundResult>;
+  readonly settleRivalryChallenge: (input: SettleMatchInput) => Promise<SettleRivalryChallengeResult>;
+  readonly listRivalryChallenges: () => Promise<readonly RivalryChallengeSummary[]>;
+  readonly revokeRivalryChallenge: (slug: string) => Promise<void>;
+  readonly loadPublicRivalryChallenge: (slug: string) => Promise<PublicRivalryChallenge>;
 }
 
 type GateState =
@@ -206,7 +219,11 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     setActionError("");
     setActionSuccess("");
     try {
-      const session = await auth.register(credentials);
+      const returnPath = window.location.pathname.startsWith("/accept/") ? window.location.pathname : "/";
+      const session = await auth.register({
+        ...credentials,
+        redirectTo: new URL(returnPath, window.location.origin).toString(),
+      });
       if (session) await loadAccount(session);
       else setActionSuccess("Account created. Check your email to confirm your address, then sign in.");
     } catch (error) {
@@ -288,6 +305,22 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     return refreshAfterMutation(() => repository.settleMatch(input));
   }
 
+  function createRivalryChallenge(input: CreateRivalryChallengeInput): Promise<CreateRivalryChallengeResult> {
+    return repository.createRivalryChallenge(input);
+  }
+
+  function startRivalryChallenge(input: StartRivalryChallengeInput): Promise<StartMatchResult> {
+    return repository.startRivalryChallenge(input);
+  }
+
+  function playRivalryChallengeRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult> {
+    return repository.playRivalryChallengeRound(input);
+  }
+
+  function settleRivalryChallenge(input: SettleMatchInput): Promise<SettleRivalryChallengeResult> {
+    return repository.settleRivalryChallenge(input);
+  }
+
   if (state.status === "booting" || state.status === "loading-account") {
     return <AccountLoading label={state.status === "booting" ? "Restoring your session…" : "Loading your club…"} />;
   }
@@ -319,6 +352,13 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     startMatch,
     playMatchRound,
     settleMatch,
+    createRivalryChallenge,
+    startRivalryChallenge,
+    playRivalryChallengeRound,
+    settleRivalryChallenge,
+    listRivalryChallenges: () => repository.listRivalryChallenges(),
+    revokeRivalryChallenge: (slug) => repository.revokeRivalryChallenge(slug),
+    loadPublicRivalryChallenge: (slug) => repository.loadPublicRivalryChallenge(slug),
   })}</>;
 }
 

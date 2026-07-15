@@ -4,10 +4,15 @@ import type { GameMode } from "../../domain/lineups";
 const STORAGE_KEY = "rink-rivals:match-experience-v2:active-match";
 
 export interface ActiveMatchSession {
-  readonly version: 1;
+  readonly version: 2;
   readonly clientMatchId: string;
   readonly mode: GameMode;
   readonly difficulty: AiDifficulty;
+  readonly source: { readonly kind: "ai" } | {
+    readonly kind: "ghost-challenge";
+    readonly slug: string;
+    readonly lineupId: string;
+  };
   readonly pendingSelection?: { readonly cardId: string; readonly roundIndex: number };
   readonly reviewingRound: boolean;
   readonly completedBattle?: BattleState;
@@ -25,17 +30,28 @@ export function readActiveMatchSession(): ActiveMatchSession | null {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const value = JSON.parse(raw) as Partial<ActiveMatchSession>;
-    if (value.version !== 1 || typeof value.clientMatchId !== "string" || !validMode(value.mode) || !validDifficulty(value.difficulty)) return null;
+    const value = JSON.parse(raw) as Omit<Partial<ActiveMatchSession>, "version" | "source"> & {
+      version?: 1 | 2;
+      source?: ActiveMatchSession["source"];
+    };
+    if ((value.version !== 1 && value.version !== 2) || typeof value.clientMatchId !== "string" || !validMode(value.mode) || !validDifficulty(value.difficulty)) return null;
+    const source = value.version === 1 ? { kind: "ai" as const } : value.source;
+    if (!source || (source.kind !== "ai" && (
+      source.kind !== "ghost-challenge"
+      || typeof source.slug !== "string"
+      || !/^[0-9a-f]{32}$/.test(source.slug)
+      || typeof source.lineupId !== "string"
+    ))) return null;
     const pending = value.pendingSelection;
     if (pending && (typeof pending.cardId !== "string" || !Number.isInteger(pending.roundIndex) || pending.roundIndex! < 0 || pending.roundIndex! > 4)) return null;
     const completedBattle = value.completedBattle;
     if (completedBattle && (completedBattle.phase !== "complete" || completedBattle.results?.length !== 5 || typeof completedBattle.id !== "string")) return null;
     return {
-      version: 1,
+      version: 2,
       clientMatchId: value.clientMatchId,
       mode: value.mode,
       difficulty: value.difficulty,
+      source,
       pendingSelection: pending,
       reviewingRound: value.reviewingRound === true,
       completedBattle,

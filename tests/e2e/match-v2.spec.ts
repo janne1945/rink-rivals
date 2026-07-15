@@ -80,11 +80,11 @@ function finalShiftWinningSequence(ticket: {
 
 async function startV2(page: Page, state: SupabaseMockState) {
   await page.goto("/play");
-  await page.getByRole("button", { name: "Preview V2" }).click();
-  await expect(page).toHaveURL(/\/match-v2$/);
+  await page.getByRole("button", { name: "Start match" }).click();
+  await expect(page).toHaveURL(/\/match$/);
   const ticket = [...state.matchTickets.values()][0];
   expect(ticket).toBeDefined();
-  await page.goto(`/match-v2?motion=${process.env.CAPTURE_MATCH_V2 === "1" ? "broadcast" : "fastBroadcast"}`);
+  await page.goto(`/match?motion=${process.env.CAPTURE_MATCH_V2 === "1" ? "broadcast" : "fastBroadcast"}`);
   await expect(page.locator("[data-player-hand] button:not([disabled])").first()).toBeVisible();
   return ticket;
 }
@@ -101,6 +101,7 @@ test.describe("Match Experience V2", () => {
     const opponents = opponentSequence(ticket);
     const capture = process.env.CAPTURE_MATCH_V2 === "1";
     const reviewDirectory = resolve("test-results/match-v2-review");
+    const projectSlug = test.info().project.name;
     if (capture) mkdirSync(reviewDirectory, { recursive: true });
 
     await expect(page.getByRole("navigation", { name: "Main navigation" })).toHaveCount(0);
@@ -109,9 +110,8 @@ test.describe("Match Experience V2", () => {
         await expect(page.getByRole("heading", { name: "Final Shift" })).toBeVisible();
         if (capture && test.info().project.name === "desktop") await page.screenshot({ path: resolve(reviewDirectory, "desktop-final-shift.png") });
       }
-      await expect(page.getByText(`Round ${round + 1} / 5`)).toBeVisible();
-      if (capture && round === 0 && test.info().project.name === "desktop") await page.screenshot({ path: resolve(reviewDirectory, "desktop-selection.png"), fullPage: true });
-      if (capture && round === 0 && test.info().project.name === "mobile-chromium") await page.screenshot({ path: resolve(reviewDirectory, "mobile-selection.png"), fullPage: true });
+      await expect(page.getByText(`Round ${round + 1} of 5`)).toBeVisible();
+      if (capture && round === 0) await page.screenshot({ path: resolve(reviewDirectory, `${projectSlug}-selection.png`) });
       const card = page.locator(`button:has([data-card-image='${sequence[round]}'])`);
       await expect(card).toBeEnabled();
       await card.click();
@@ -128,8 +128,7 @@ test.describe("Match Experience V2", () => {
       const result = page.getByRole("region", { name: `Round ${round + 1} result` });
       await expect(result).toBeVisible();
       await expect(result.locator(`[data-card-image='${opponents[round]}']`)).toBeVisible();
-      if (capture && round === 0 && test.info().project.name === "desktop") await page.screenshot({ path: resolve(reviewDirectory, "desktop-reveal.png"), fullPage: true });
-      if (capture && round === 0 && test.info().project.name === "mobile-chromium") await page.screenshot({ path: resolve(reviewDirectory, "mobile-result.png"), fullPage: true });
+      if (capture && round === 0) await page.screenshot({ path: resolve(reviewDirectory, `${projectSlug}-result.png`) });
       await page.getByRole("button", { name: round === 4 ? "Final horn" : "Continue" }).click();
     }
 

@@ -9,6 +9,7 @@ export interface AuthCredentials {
 
 export interface RegistrationCredentials extends AuthCredentials {
   readonly displayName: string;
+  readonly redirectTo?: string;
 }
 
 export type AuthStateListener = (
@@ -42,11 +43,11 @@ export class SupabaseAuthService implements AuthService {
     return () => data.subscription.unsubscribe();
   }
 
-  async register({ email, password, displayName }: RegistrationCredentials): Promise<Session | null> {
+  async register({ email, password, displayName, redirectTo }: RegistrationCredentials): Promise<Session | null> {
     const { data, error } = await this.client.auth.signUp({
       email,
       password,
-      options: { data: { display_name: displayName.trim() } },
+      options: { data: { display_name: displayName.trim() }, emailRedirectTo: redirectTo },
     });
     throwAuthError(error);
     return data.session;

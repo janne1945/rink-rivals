@@ -55,16 +55,17 @@ async function loginToOnboarding(page: Page): Promise<void> {
 
 async function completeFiveRoundMatch(page: Page) {
   for (let round = 1; round <= 5; round += 1) {
+    await expect(page.locator("[data-presentation-state='awaitingSelection']")).toBeVisible();
     await expect(page.getByText(`Round ${round} of 5`)).toBeVisible();
     await page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='overall']:not([disabled])").first().click();
     const revealShift = page.getByRole("button", { name: "Reveal cards" });
     await expect(revealShift).toBeEnabled();
     await revealShift.click();
     if (round < 5) {
-      await expect(page.getByRole("button", { name: "Next round" })).toBeVisible({ timeout: 20_000 });
-      await page.getByRole("button", { name: "Next round" }).click();
+      await expect(page.getByRole("button", { name: "Continue" })).toBeVisible({ timeout: 20_000 });
+      await page.getByRole("button", { name: "Continue" }).click();
       await expect(page.getByText(`Round ${round + 1} of 5`)).toBeVisible();
-    }
+    } else await page.getByRole("button", { name: "Final horn" }).click();
   }
   await expect(page.getByText("Final horn")).toBeVisible();
   await expect(page.getByText(/Match settled on the server/)).toBeVisible();
@@ -472,7 +473,7 @@ test.describe("Supabase account flow", () => {
     expect(ticket.rounds.size).toBe(1);
     expect(ticket.roundRequests.size).toBe(1);
     await page.getByRole("button", { name: "Retry reveal" }).click();
-    await page.getByRole("button", { name: "Next round" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
     await expect(page.getByText("Round 2 of 5")).toBeVisible();
     expect(state.playRoundCallCount).toBe(2);
     expect(ticket.rounds.size).toBe(1);
@@ -490,7 +491,7 @@ test.describe("Supabase account flow", () => {
 
     await page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='overall']:not([disabled])").first().click();
     await page.getByRole("button", { name: "Reveal cards" }).click();
-    await page.getByRole("button", { name: "Next round" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
     await expect(page.getByText("Round 2 of 5")).toBeVisible();
     const firstRound = ticket.rounds.get(0);
     expect(firstRound).toBeDefined();
@@ -507,8 +508,7 @@ test.describe("Supabase account flow", () => {
     accountLineup.slots[firstRound!.playerSlot] = replacementBySlot[firstRound!.playerSlot];
 
     await page.reload();
-    await expect(page).toHaveURL(/\/play$/);
-    await page.getByRole("button", { name: "Start match" }).click();
+    await expect(page).toHaveURL(/\/match$/);
     await expect(page.getByText("Round 2 of 5")).toBeVisible();
 
     expect(state.matchTickets.size).toBe(1);

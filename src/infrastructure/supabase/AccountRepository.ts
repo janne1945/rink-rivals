@@ -176,6 +176,64 @@ export interface PlayMatchRoundResult {
   };
 }
 
+export type RivalryChallengeStatus = "active" | "expired" | "revoked" | "missing";
+export type RivalryChallengeSourceKind = "ai-match" | "ghost-challenge";
+
+export interface PublicRivalryChallenge {
+  readonly status: RivalryChallengeStatus;
+  readonly slug: string | null;
+  readonly creatorLabel: string | null;
+  readonly mode: GameMode | null;
+  readonly difficulty: AiDifficulty | null;
+  readonly challengeStrength: number | null;
+  readonly createdAt: string | null;
+  readonly expiresAt: string | null;
+}
+
+export interface CreateRivalryChallengeInput {
+  readonly clientRequestId: string;
+  readonly sourceClientMatchId: string;
+  readonly sourceKind: RivalryChallengeSourceKind;
+}
+
+export interface CreateRivalryChallengeResult {
+  readonly status: "created" | "already-created";
+  readonly challengeId: string;
+  readonly slug: string;
+  readonly expiresAt: string;
+  readonly challengeStatus: Exclude<RivalryChallengeStatus, "missing">;
+}
+
+export interface StartRivalryChallengeInput {
+  readonly slug: string;
+  readonly clientMatchId: string;
+  readonly lineupId: string;
+}
+
+export interface SettleRivalryChallengeResult {
+  readonly status: "settled" | "already-settled";
+  readonly challengeId: string;
+  readonly attemptId: string;
+  readonly outcome: "win" | "loss";
+  readonly playerWins: number;
+  readonly ghostWins: number;
+}
+
+export interface RivalryChallengeSummary {
+  readonly slug: string;
+  readonly creatorLabel: string;
+  readonly mode: GameMode;
+  readonly difficulty: AiDifficulty;
+  readonly challengeStrength: number;
+  readonly status: Exclude<RivalryChallengeStatus, "missing">;
+  readonly createdAt: string;
+  readonly expiresAt: string;
+  readonly attempts: number;
+  readonly completed: number;
+  readonly ghostDefenses: number;
+  readonly challengerWins: number;
+}
+
 export interface AccountCard {
   readonly cardId: string;
   readonly quantity: number;
@@ -206,6 +264,13 @@ export interface AccountRepository {
   startMatch(input: StartMatchInput): Promise<StartMatchResult>;
   playMatchRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult>;
   settleMatch(input: SettleMatchInput): Promise<SettleMatchResult>;
+  loadPublicRivalryChallenge(slug: string): Promise<PublicRivalryChallenge>;
+  createRivalryChallenge(input: CreateRivalryChallengeInput): Promise<CreateRivalryChallengeResult>;
+  startRivalryChallenge(input: StartRivalryChallengeInput): Promise<StartMatchResult>;
+  playRivalryChallengeRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult>;
+  settleRivalryChallenge(input: SettleMatchInput): Promise<SettleRivalryChallengeResult>;
+  revokeRivalryChallenge(slug: string): Promise<void>;
+  listRivalryChallenges(): Promise<readonly RivalryChallengeSummary[]>;
 }
 
 function requireData<T>(data: T | null, error: { message: string } | null): T {
@@ -253,6 +318,12 @@ function numberField(value: unknown, label: string): number {
   return value;
 }
 
+function dateField(value: unknown, label: string): string {
+  const parsed = textField(value, label);
+  if (!Number.isFinite(Date.parse(parsed))) throw new Error(`Supabase returned an invalid ${label}.`);
+  return parsed;
+}
+
 function nonNegativeIntegerField(value: unknown, label: string): number {
   const parsed = numberField(value, label);
   if (!Number.isInteger(parsed) || parsed < 0) throw new Error(`Supabase returned an invalid ${label}.`);
@@ -264,6 +335,20 @@ function modeField(value: unknown): GameMode {
     throw new Error("Supabase returned an invalid lineup mode.");
   }
   return value as GameMode;
+}
+
+function difficultyField(value: unknown): AiDifficulty {
+  if (!['rookie', 'pro', 'elite'].includes(String(value))) {
+    throw new Error("Supabase returned an invalid match difficulty.");
+  }
+  return value as AiDifficulty;
+}
+
+function challengeStatusField(value: unknown): Exclude<RivalryChallengeStatus, "missing"> {
+  if (!['active', 'expired', 'revoked'].includes(String(value))) {
+    throw new Error("Supabase returned an invalid challenge status.");
+  }
+  return value as Exclude<RivalryChallengeStatus, "missing">;
 }
 
 const lineupSlots = ["LW", "C", "RW", "LD", "RD", "G"] as const;
@@ -347,6 +432,45 @@ function matchRoundField(value: unknown): PlayMatchRoundResult {
       player: scoreField(transcript.player, "player round score"),
       opponent: scoreField(transcript.opponent, "opponent round score"),
     },
+  };
+}
+
+function startMatchResultField(value: unknown): StartMatchResult {
+  const payload = record(value, "match start result");
+  const difficulty = difficultyField(payload.difficulty);
+  const status = payload.status;
+  if (status !== "started" && status !== "already-started") {
+    throw new Error("Supabase returned an invalid match start status.");
+  }
+  const opponent = record(payload.opponent, "match opponent");
+  const lineup = record(payload.lineup, "match lineup");
+  if (!Array.isArray(payload.situations) || payload.situations.length !== 5) {
+    throw new Error("Supabase returned an invalid match situation deck.");
+  }
+  if (!Array.isArray(payload.rounds) || payload.rounds.length > 5) {
+    throw new Error("Supabase returned invalid resumed match rounds.");
+  }
+  return {
+    status,
+    clientMatchId: textField(payload.client_match_id, "client match id"),
+    seed: textField(payload.seed, "match seed"),
+    opponentId: textField(payload.opponent_id, "opponent id"),
+    opponent: {
+      id: textField(opponent.id, "opponent snapshot id"),
+      name: textField(opponent.name, "opponent snapshot name"),
+      mode: modeField(opponent.mode),
+      slots: lineupSlotRecord(opponent.slots, "opponent lineup slots"),
+    },
+    lineup: {
+      id: textField(lineup.id, "match lineup snapshot id"),
+      name: textField(lineup.name, "match lineup snapshot name"),
+      mode: modeField(lineup.mode),
+      slots: lineupSlotRecord(lineup.slots, "match lineup snapshot slots"),
+    },
+    situations: payload.situations.map(situationField),
+    rounds: payload.rounds.map(matchRoundField),
+    mode: modeField(payload.mode),
+    difficulty,
   };
 }
 
@@ -569,45 +693,11 @@ export class SupabaseAccountRepository implements AccountRepository {
   }
 
   async startMatch(input: StartMatchInput): Promise<StartMatchResult> {
-    const payload = record(await this.callRpc("start_match", {
+    return startMatchResultField(await this.callRpc("start_match", {
       client_match_id: input.clientMatchId,
       mode: input.mode,
       difficulty: input.difficulty,
-    }), "match start result");
-    const difficulty = String(payload.difficulty);
-    if (!["rookie", "pro", "elite"].includes(difficulty)) {
-      throw new Error("Supabase returned an invalid match difficulty.");
-    }
-    const status = payload.status;
-    if (status !== "started" && status !== "already-started") throw new Error("Supabase returned an invalid match start status.");
-    const opponent = record(payload.opponent, "match opponent");
-    const lineup = record(payload.lineup, "match lineup");
-    if (!Array.isArray(payload.situations) || payload.situations.length !== 5) {
-      throw new Error("Supabase returned an invalid match situation deck.");
-    }
-    if (!Array.isArray(payload.rounds) || payload.rounds.length > 5) throw new Error("Supabase returned invalid resumed match rounds.");
-    return {
-      status,
-      clientMatchId: textField(payload.client_match_id, "client match id"),
-      seed: textField(payload.seed, "match seed"),
-      opponentId: textField(payload.opponent_id, "opponent id"),
-      opponent: {
-        id: textField(opponent.id, "opponent snapshot id"),
-        name: textField(opponent.name, "opponent snapshot name"),
-        mode: modeField(opponent.mode),
-        slots: lineupSlotRecord(opponent.slots, "opponent lineup slots"),
-      },
-      lineup: {
-        id: textField(lineup.id, "match lineup snapshot id"),
-        name: textField(lineup.name, "match lineup snapshot name"),
-        mode: modeField(lineup.mode),
-        slots: lineupSlotRecord(lineup.slots, "match lineup snapshot slots"),
-      },
-      situations: payload.situations.map(situationField),
-      rounds: payload.rounds.map(matchRoundField),
-      mode: modeField(payload.mode),
-      difficulty: difficulty as StartMatchResult["difficulty"],
-    };
+    }));
   }
 
   async playMatchRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult> {
@@ -617,6 +707,114 @@ export class SupabaseAccountRepository implements AccountRepository {
       player_card_id: input.playerCardId,
       client_request_id: input.clientRequestId,
     }));
+  }
+
+  async loadPublicRivalryChallenge(slug: string): Promise<PublicRivalryChallenge> {
+    const payload = record(await this.callRpc("get_public_rivalry_challenge", {
+      challenge_slug: slug,
+    }), "public challenge");
+    if (payload.status === "missing") {
+      return {
+        status: "missing", slug: null, creatorLabel: null, mode: null,
+        difficulty: null, challengeStrength: null, createdAt: null, expiresAt: null,
+      };
+    }
+    return {
+      status: challengeStatusField(payload.status),
+      slug: textField(payload.slug, "challenge slug"),
+      creatorLabel: textField(payload.creator_label, "challenge creator"),
+      mode: modeField(payload.mode),
+      difficulty: difficultyField(payload.difficulty),
+      challengeStrength: nonNegativeIntegerField(payload.challenge_strength, "challenge strength"),
+      createdAt: dateField(payload.created_at, "challenge creation time"),
+      expiresAt: dateField(payload.expires_at, "challenge expiry time"),
+    };
+  }
+
+  async createRivalryChallenge(input: CreateRivalryChallengeInput): Promise<CreateRivalryChallengeResult> {
+    const payload = record(await this.callRpc("create_rivalry_challenge", {
+      client_request_id: input.clientRequestId,
+      source_client_match_id: input.sourceClientMatchId,
+      source_kind: input.sourceKind,
+    }), "challenge creation result");
+    if (payload.status !== "created" && payload.status !== "already-created") {
+      throw new Error("Supabase returned an invalid challenge creation status.");
+    }
+    return {
+      status: payload.status,
+      challengeId: textField(payload.challenge_id, "challenge id"),
+      slug: textField(payload.slug, "challenge slug"),
+      expiresAt: dateField(payload.expires_at, "challenge expiry time"),
+      challengeStatus: challengeStatusField(payload.challenge_status),
+    };
+  }
+
+  async startRivalryChallenge(input: StartRivalryChallengeInput): Promise<StartMatchResult> {
+    return startMatchResultField(await this.callRpc("start_rivalry_challenge", {
+      challenge_slug: input.slug,
+      client_match_id: input.clientMatchId,
+      lineup_id: input.lineupId,
+    }));
+  }
+
+  async playRivalryChallengeRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult> {
+    return matchRoundField(await this.callRpc("play_rivalry_challenge_round", {
+      client_match_id: input.clientMatchId,
+      round_index: input.roundIndex,
+      player_card_id: input.playerCardId,
+      client_request_id: input.clientRequestId,
+    }));
+  }
+
+  async settleRivalryChallenge(input: SettleMatchInput): Promise<SettleRivalryChallengeResult> {
+    const payload = record(await this.callRpc("settle_rivalry_challenge", {
+      client_match_id: input.clientMatchId,
+    }), "challenge settlement");
+    if (payload.status !== "settled" && payload.status !== "already-settled") {
+      throw new Error("Supabase returned an invalid challenge settlement status.");
+    }
+    if (payload.outcome !== "win" && payload.outcome !== "loss") {
+      throw new Error("Supabase returned an invalid challenge outcome.");
+    }
+    return {
+      status: payload.status,
+      challengeId: textField(payload.challenge_id, "challenge id"),
+      attemptId: textField(payload.attempt_id, "challenge attempt id"),
+      outcome: payload.outcome,
+      playerWins: nonNegativeIntegerField(payload.player_wins, "player wins"),
+      ghostWins: nonNegativeIntegerField(payload.ghost_wins, "ghost wins"),
+    };
+  }
+
+  async revokeRivalryChallenge(slug: string): Promise<void> {
+    const payload = record(await this.callRpc("revoke_rivalry_challenge", {
+      challenge_slug: slug,
+    }), "challenge revocation");
+    if (payload.status !== "revoked" && payload.status !== "already-revoked") {
+      throw new Error("Supabase returned an invalid challenge revocation status.");
+    }
+  }
+
+  async listRivalryChallenges(): Promise<readonly RivalryChallengeSummary[]> {
+    const payload = record(await this.callRpc("list_rivalry_challenges"), "challenge list");
+    if (!Array.isArray(payload.created)) throw new Error("Supabase returned an invalid challenge list.");
+    return payload.created.map((value) => {
+      const challenge = record(value, "challenge summary");
+      return {
+        slug: textField(challenge.slug, "challenge slug"),
+        creatorLabel: textField(challenge.creator_label, "challenge creator"),
+        mode: modeField(challenge.mode),
+        difficulty: difficultyField(challenge.difficulty),
+        challengeStrength: nonNegativeIntegerField(challenge.challenge_strength, "challenge strength"),
+        status: challengeStatusField(challenge.status),
+        createdAt: dateField(challenge.created_at, "challenge creation time"),
+        expiresAt: dateField(challenge.expires_at, "challenge expiry time"),
+        attempts: nonNegativeIntegerField(challenge.attempts, "challenge attempts"),
+        completed: nonNegativeIntegerField(challenge.completed, "completed challenge attempts"),
+        ghostDefenses: nonNegativeIntegerField(challenge.ghost_defenses, "ghost defenses"),
+        challengerWins: nonNegativeIntegerField(challenge.challenger_wins, "challenger wins"),
+      };
+    });
   }
 
   async settleMatch(input: SettleMatchInput): Promise<SettleMatchResult> {

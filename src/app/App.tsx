@@ -1,7 +1,9 @@
 import { lazy, Suspense } from "react";
+import { useLocation } from "react-router-dom";
 
 import { AccountGate } from "../features/account/AccountGate";
-import { createAccountRepository, createAuthService } from "../infrastructure/supabase";
+import { PublicChallengeScreen } from "../features/rivalry-challenges/PublicChallengeScreen";
+import { createAccountRepository, createAuthService, type AccountRepository, type AuthService } from "../infrastructure/supabase";
 import styles from "./App.module.css";
 
 const GameApp = lazy(async () => {
@@ -41,8 +43,19 @@ export function App() {
     );
   }
 
+  return <ConfiguredApp repository={cloudServices.accountRepository} auth={cloudServices.authService} />;
+}
+
+function ConfiguredApp({ repository, auth }: { readonly repository: AccountRepository; readonly auth: AuthService }) {
+  const { pathname } = useLocation();
+
+  const publicChallenge = pathname.match(/^\/(?:c|challenge)\/([0-9a-f]{32})$/i);
+  if (publicChallenge) {
+    return <PublicChallengeScreen repository={repository} slug={publicChallenge[1].toLowerCase()} />;
+  }
+
   return (
-    <AccountGate auth={cloudServices.authService} repository={cloudServices.accountRepository}>
+    <AccountGate auth={auth} repository={repository}>
       {(account, actions) => (
         <Suspense fallback={<GameLoading />}>
           <GameApp account={account} actions={actions} />

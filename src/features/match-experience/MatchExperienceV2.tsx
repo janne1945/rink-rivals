@@ -27,12 +27,17 @@ export interface MatchExperienceV2Props {
   readonly roundError?: string;
   readonly settlementError?: string;
   readonly progressionMessage?: string;
+  readonly challengeBusy?: boolean;
+  readonly challengeUrl?: string;
+  readonly challengeError?: string;
   readonly riveAssetUrl?: string;
   readonly eventSink?: MatchExperienceEventSink;
   readonly onSelect: (cardId: string) => void;
   readonly onReveal: () => void;
   readonly onContinue: () => void;
   readonly onRetrySettlement: () => void;
+  readonly onCreateChallenge?: () => void;
+  readonly onShareChallenge?: () => void;
   readonly onPlayAgain: () => void;
   readonly onFinish: () => void;
   readonly onExit: () => void;
@@ -42,7 +47,9 @@ const stablePresetStates = new Set(["awaitingSelection", "awaitingAuthoritativeR
 
 function initialPreset(): MotionPresetName {
   const requested = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("motion");
-  return requested && requested in motionPresets ? requested as MotionPresetName : "broadcast";
+  const configured = import.meta.env.VITE_MATCH_MOTION_PRESET;
+  if (requested && requested in motionPresets) return requested as MotionPresetName;
+  return configured && configured in motionPresets ? configured as MotionPresetName : "broadcast";
 }
 
 export function MatchExperienceV2(props: MatchExperienceV2Props) {
@@ -63,7 +70,7 @@ export function MatchExperienceV2(props: MatchExperienceV2Props) {
       preset={motionPresets[presetName]}
       forceRestored={generation > 0}
       onStableChange={setStable}
-      presetControl={(
+      presetControl={import.meta.env.DEV ? (
         <label className={styles.presetControl}>
           <span>Motion</span>
           <select value={presetName} disabled={!stable} onChange={(event) => changePreset(event.target.value as MotionPresetName)} aria-label="Motion preset">
@@ -72,7 +79,7 @@ export function MatchExperienceV2(props: MatchExperienceV2Props) {
             <option value="fastBroadcast">Fast broadcast</option>
           </select>
         </label>
-      )}
+      ) : null}
     />
   );
 }
@@ -197,7 +204,7 @@ function ExperienceSession(props: MatchExperienceV2Props & {
     <MotionConfig reducedMotion={reducedMotion.reduced ? "always" : "never"} transition={reducedMotion.reduced ? { duration: 0 } : undefined}>
     <div ref={rootRef} className={`${styles.experience} ${styles[`preset_${preset.name}`]}`} data-presentation-state={state} data-reduced-motion={reducedMotion.reduced ? "true" : "false"}>
       <div className={styles.utilityBar}>
-        <span className={styles.v2Badge}>Match Experience V2</span>
+        <span className={styles.v2Badge}>Rink Rivals Live</span>
         <div>{props.presetControl}<button type="button" className={styles.exitButton} onClick={props.onExit}>Exit match</button></div>
       </div>
       <MatchHud battle={battle} preset={preset} scorePulse={state === "scoreUpdate"} matchPoint={matchPoint} finalShift={finalShift} />
@@ -214,6 +221,11 @@ function ExperienceSession(props: MatchExperienceV2Props & {
                 settling={props.settling}
                 settlementError={props.settlementError}
                 progressionMessage={props.progressionMessage}
+                challengeBusy={props.challengeBusy}
+                challengeUrl={props.challengeUrl}
+                challengeError={props.challengeError}
+                onCreateChallenge={props.onCreateChallenge}
+                onShareChallenge={props.onShareChallenge}
                 onRetrySettlement={() => { send({ type: "RETRY_SETTLEMENT" }); props.onRetrySettlement(); }}
                 onPlayAgain={props.onPlayAgain}
                 onFinish={props.onFinish}
@@ -236,7 +248,7 @@ function ExperienceSession(props: MatchExperienceV2Props & {
                   </div>
                   <div className={styles.centerIce}>
                     <span>Round {battle.roundIndex + 1}</span>
-                    <strong>{situation.name}</strong>
+                    <h1>{situation.name}</h1>
                     <p>{situation.description}</p>
                     <small>On a tie: higher OVR, then the immutable server match seed.</small>
                     {state === "awaitingAuthoritativeReveal" ? (

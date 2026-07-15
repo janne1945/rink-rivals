@@ -46,7 +46,7 @@ export function MatchHud({ battle, preset, scorePulse, matchPoint, finalShift }:
         <strong>{battle.lineups.opponent.name}</strong>
       </div>
       <div className={styles.hudStatus}>
-        <span>Round {Math.min(battle.roundIndex + 1, 5)} / 5</span>
+        <span>Round {Math.min(battle.roundIndex + 1, 5)} of 5</span>
         {finalShift ? <b>Final Shift</b> : matchPoint ? <b>Match Point</b> : <b>{battle.mode.replaceAll("-", " ")}</b>}
       </div>
       <ol className={styles.timeline} aria-label="Round timeline">
@@ -62,4 +62,3 @@ export function MatchHud({ battle, preset, scorePulse, matchPoint, finalShift }:
     </header>
   );
 }
-

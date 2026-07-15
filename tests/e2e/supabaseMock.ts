@@ -163,6 +163,25 @@ type MockRoundReceipt = {
   };
 };
 
+type MockRivalryChallenge = {
+  slug: string;
+  creatorLabel: string;
+  owned: boolean;
+  mode: GameMode;
+  difficulty: AiDifficulty;
+  challengeStrength: number;
+  playerLineupName: string;
+  playerSlots: Record<LineupSlot, string>;
+  ghostSelections: Array<{ cardId: string; slot: LineupSlot }>;
+  status: "active" | "expired" | "revoked";
+  createdAt: string;
+  expiresAt: string;
+  attempts: number;
+  completed: number;
+  ghostDefenses: number;
+  challengerWins: number;
+};
+
 export interface SupabaseMockOptions {
   readonly authenticated?: boolean;
   readonly onboardingCompleted?: boolean;
@@ -175,6 +194,7 @@ export interface SupabaseMockOptions {
   readonly purchaseDelayMs?: number;
   readonly lineupSaveError?: boolean;
   readonly startMatchError?: boolean;
+  readonly rivalryStartResponseLossOnce?: boolean;
   readonly roundError?: boolean;
   readonly roundResponseLossOnce?: boolean;
   readonly roundDelayMs?: number;
@@ -198,6 +218,9 @@ export interface SupabaseMockState {
   matchTickets: Map<string, MatchTicket>;
   settlements: Map<string, { matchId: string; rewardCredits: number; outcome: "win" | "draw" | "loss" }>;
   rewardClaims: Map<string, { cardId: string; claimedAt: string }>;
+  rivalryChallenges: Map<string, MockRivalryChallenge>;
+  ghostAttemptSlugs: Map<string, string>;
+  ghostSettlements: Map<string, { outcome: "win" | "loss"; playerWins: number; ghostWins: number }>;
   objectives: Array<Record<string, unknown>>;
   rivalryRoad: { user_id: string; current_step_index: number; completed_step_ids: string[]; status: string; selected_card_id: string | null; updated_at: string };
   eventEndsAt: string;
@@ -296,6 +319,9 @@ export function createSupabaseMockState(onboardingCompleted = true, selectedTeam
     matchTickets: new Map(),
     settlements: new Map(),
     rewardClaims: new Map(),
+    rivalryChallenges: new Map(),
+    ghostAttemptSlugs: new Map(),
+    ghostSettlements: new Map(),
     objectives: [],
     rivalryRoad: { user_id: userId, current_step_index: 0, completed_step_ids: [], status: "in-progress", selected_card_id: null, updated_at: mockNow },
     eventEndsAt: mockEventRotation.shop.endsAt,
@@ -309,6 +335,38 @@ export function createSupabaseMockState(onboardingCompleted = true, selectedTeam
   };
   if (onboardingCompleted) provisionStarter(state, selectedTeamId);
   return state;
+}
+
+export function seedRivalryChallenge(
+  state: SupabaseMockState,
+  overrides: Partial<MockRivalryChallenge> = {},
+): MockRivalryChallenge {
+  const source = starterLineup(defaultStarterTeamId);
+  const ghostSlots = mockOpponentSlots(selectAiOpponent(source.mode, "rookie", "seeded-ghost-rival"), "seeded-ghost-rival");
+  const challenge: MockRivalryChallenge = {
+    slug: "0123456789abcdef0123456789abcdef",
+    creatorLabel: "Morgan",
+    owned: false,
+    mode: source.mode,
+    difficulty: "rookie",
+    challengeStrength: 82,
+    playerLineupName: "Morgan's Six",
+    playerSlots: ghostSlots,
+    ghostSelections: ["LW", "C", "LD", "RW", "G"].map((slot) => ({
+      slot: slot as LineupSlot,
+      cardId: ghostSlots[slot as LineupSlot],
+    })),
+    status: "active",
+    createdAt: mockNow,
+    expiresAt: "2026-08-13T12:00:00.000Z",
+    attempts: 0,
+    completed: 0,
+    ghostDefenses: 0,
+    challengerWins: 0,
+    ...overrides,
+  };
+  state.rivalryChallenges.set(challenge.slug, challenge);
+  return challenge;
 }
 
 function base64Url(value: object): string {
@@ -500,6 +558,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
   if (options.marketNow && !options.state) state.eventEndsAt = marketEventRotation.shop.endsAt;
   let dropClaimResponseOnce = options.claimResponseLossOnce ?? false;
   let dropRoundResponseOnce = options.roundResponseLossOnce ?? false;
+  let dropRivalryStartResponseOnce = options.rivalryStartResponseLossOnce ?? false;
   let failSettlementOnce = options.settlementErrorOnce ?? false;
   if (options.authenticated) {
     await page.addInitScript(({ key, value }) => localStorage.setItem(key, value), {
@@ -697,6 +756,98 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       state.rivalryRoad = { ...state.rivalryRoad, status: "complete", selected_card_id: body.card_id, updated_at: mockNow };
       return json(route, { status: "claimed", request_id: body.client_request_id, card_id: body.card_id, quantity, claimed_at: mockNow });
     }
+    if (url.pathname === "/rest/v1/rpc/get_public_rivalry_challenge") {
+      const body = request.postDataJSON() as { challenge_slug: string };
+      const challenge = state.rivalryChallenges.get(body.challenge_slug.toLowerCase());
+      if (!challenge) return json(route, { status: "missing" });
+      return json(route, {
+        status: challenge.status,
+        slug: challenge.slug,
+        creator_label: challenge.creatorLabel,
+        mode: challenge.mode,
+        difficulty: challenge.difficulty,
+        challenge_strength: challenge.challengeStrength,
+        created_at: challenge.createdAt,
+        expires_at: challenge.expiresAt,
+      });
+    }
+    if (url.pathname === "/rest/v1/rpc/create_rivalry_challenge") {
+      const body = request.postDataJSON() as { client_request_id: string; source_client_match_id: string; source_kind: "ai-match" | "ghost-challenge" };
+      const existing = [...state.rivalryChallenges.values()].find((challenge) => challenge.owned && challenge.slug === createHash("md5").update(body.client_request_id).digest("hex"));
+      if (existing) return json(route, { status: "already-created", challenge_id: `challenge:${existing.slug}`, slug: existing.slug, expires_at: existing.expiresAt, challenge_status: existing.status });
+      const ticket = state.matchTickets.get(body.source_client_match_id);
+      if (!ticket || ticket.status !== "settled" || ticket.rounds.size !== 5) return databaseError(route, "A settled match is required to create a challenge.");
+      const slug = createHash("md5").update(body.client_request_id).digest("hex");
+      const strength = Math.round(Object.values(ticket.playerSlots).reduce((total, cardId) => total + (catalogCards.get(cardId)?.overall ?? 0), 0) / 6);
+      const challenge: MockRivalryChallenge = {
+        slug,
+        creatorLabel: "Alex",
+        owned: true,
+        mode: ticket.mode,
+        difficulty: ticket.difficulty,
+        challengeStrength: strength,
+        playerLineupName: ticket.playerLineupName,
+        playerSlots: { ...ticket.playerSlots },
+        ghostSelections: [...ticket.rounds.values()].sort((left, right) => left.roundIndex - right.roundIndex).map((round) => ({ cardId: round.playerCardId, slot: round.playerSlot })),
+        status: "active",
+        createdAt: mockNow,
+        expiresAt: "2026-08-13T12:00:00.000Z",
+        attempts: 0,
+        completed: 0,
+        ghostDefenses: 0,
+        challengerWins: 0,
+      };
+      state.rivalryChallenges.set(slug, challenge);
+      return json(route, { status: "created", challenge_id: `challenge:${slug}`, slug, expires_at: challenge.expiresAt, challenge_status: "active" });
+    }
+    if (url.pathname === "/rest/v1/rpc/list_rivalry_challenges") {
+      return json(route, { created: [...state.rivalryChallenges.values()].filter((challenge) => challenge.owned).map((challenge) => ({
+        slug: challenge.slug, creator_label: challenge.creatorLabel, mode: challenge.mode, difficulty: challenge.difficulty,
+        challenge_strength: challenge.challengeStrength, status: challenge.status, created_at: challenge.createdAt, expires_at: challenge.expiresAt,
+        attempts: challenge.attempts, completed: challenge.completed, ghost_defenses: challenge.ghostDefenses, challenger_wins: challenge.challengerWins,
+      })) });
+    }
+    if (url.pathname === "/rest/v1/rpc/revoke_rivalry_challenge") {
+      const body = request.postDataJSON() as { challenge_slug: string };
+      const challenge = state.rivalryChallenges.get(body.challenge_slug);
+      if (!challenge?.owned) return databaseError(route, "Challenge not found.", 404);
+      const alreadyRevoked = challenge.status === "revoked";
+      challenge.status = "revoked";
+      return json(route, { status: alreadyRevoked ? "already-revoked" : "revoked", slug: challenge.slug });
+    }
+    if (url.pathname === "/rest/v1/rpc/start_rivalry_challenge") {
+      const body = request.postDataJSON() as { challenge_slug: string; client_match_id: string; lineup_id: string };
+      const challenge = state.rivalryChallenges.get(body.challenge_slug);
+      if (!challenge || challenge.status !== "active") return databaseError(route, "Challenge is no longer active.");
+      const previous = state.matchTickets.get(body.client_match_id);
+      if (previous) return json(route, startResponse("already-started", previous));
+      const activeLineup = state.lineups.get(body.lineup_id);
+      if (!activeLineup || !activeLineup.isActive || activeLineup.mode !== challenge.mode) return databaseError(route, "An active lineup for the challenge mode is required.");
+      const ticket: MatchTicket = {
+        clientMatchId: body.client_match_id,
+        mode: challenge.mode,
+        difficulty: challenge.difficulty,
+        seed: `ghost-seed:${body.client_match_id}`,
+        opponentId: `challenge:${challenge.slug}`,
+        opponentName: `${challenge.creatorLabel}'s Ghost`,
+        playerLineupId: activeLineup.id,
+        playerLineupName: activeLineup.name,
+        playerSlots: { ...activeLineup.slots },
+        // The start response is deliberately masked with cards the challenger
+        // already knows. Actual ghost identities arrive only in round reveals.
+        opponentSlots: { ...activeLineup.slots },
+        rounds: new Map(), roundRequests: new Map(), status: "open",
+      };
+      state.matchTickets.set(ticket.clientMatchId, ticket);
+      state.ghostAttemptSlugs.set(ticket.clientMatchId, challenge.slug);
+      challenge.attempts += 1;
+      if (dropRivalryStartResponseOnce) {
+        dropRivalryStartResponseOnce = false;
+        await route.abort("failed");
+        return;
+      }
+      return json(route, startResponse("started", ticket));
+    }
     if (url.pathname === "/rest/v1/rpc/start_match") {
       state.startMatchCallCount += 1;
       if (options.startMatchError) return databaseError(route, "Match service temporarily unavailable", 503);
@@ -740,7 +891,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       state.matchTickets.set(clientMatchId, ticket);
       return json(route, startResponse("started", ticket));
     }
-    if (url.pathname === "/rest/v1/rpc/play_match_round") {
+    if (url.pathname === "/rest/v1/rpc/play_match_round" || url.pathname === "/rest/v1/rpc/play_rivalry_challenge_round") {
       state.playRoundCallCount += 1;
       if (options.roundDelayMs) await new Promise((resolve) => setTimeout(resolve, options.roundDelayMs));
       if (options.roundError) return databaseError(route, "Round service temporarily unavailable", 503);
@@ -762,17 +913,23 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       const playerEntry = Object.entries(ticket.playerSlots).find(([slot, cardId]) =>
         cardId === body.player_card_id && situation.eligible_slots.includes(slot as never) && !usedPlayerCards.has(cardId));
       if (!playerEntry) return databaseError(route, "Player card is missing, already used, or ineligible for this situation.");
-      const usedOpponentCards = new Set([...ticket.rounds.values()].map((round) => round.opponentCardId));
-      const opponentCandidates = Object.entries(ticket.opponentSlots)
-        .filter(([slot, cardId]) => situation.eligible_slots.includes(slot as never) && !usedOpponentCards.has(cardId))
-        .map(([slot, cardId]) => ({ slot: slot as LineupSlot, cardId, score: scoreCard(cardId, situation.attribute) }))
-        .sort((left, right) => left.score.value - right.score.value || left.score.overall - right.score.overall || left.cardId.localeCompare(right.cardId));
-      const pool = ticket.difficulty === "elite"
-        ? opponentCandidates.slice(-1)
-        : ticket.difficulty === "rookie"
-          ? opponentCandidates.slice(0, Math.max(1, Math.ceil(opponentCandidates.length / 2)))
-          : opponentCandidates.slice(Math.floor(opponentCandidates.length / 2));
-      const opponent = ticket.difficulty === "elite" ? pool[0] : pool[deterministicIndex(`${ticket.seed}:${body.round_index}:${ticket.difficulty}`, pool.length)];
+      const ghostSlug = state.ghostAttemptSlugs.get(ticket.clientMatchId);
+      const ghostSelection = ghostSlug ? state.rivalryChallenges.get(ghostSlug)?.ghostSelections[body.round_index] : undefined;
+      const opponent = ghostSelection
+        ? { ...ghostSelection, score: scoreCard(ghostSelection.cardId, situation.attribute) }
+        : (() => {
+            const usedOpponentCards = new Set([...ticket.rounds.values()].map((round) => round.opponentCardId));
+            const opponentCandidates = Object.entries(ticket.opponentSlots)
+              .filter(([slot, cardId]) => situation.eligible_slots.includes(slot as never) && !usedOpponentCards.has(cardId))
+              .map(([slot, cardId]) => ({ slot: slot as LineupSlot, cardId, score: scoreCard(cardId, situation.attribute) }))
+              .sort((left, right) => left.score.value - right.score.value || left.score.overall - right.score.overall || left.cardId.localeCompare(right.cardId));
+            const pool = ticket.difficulty === "elite"
+              ? opponentCandidates.slice(-1)
+              : ticket.difficulty === "rookie"
+                ? opponentCandidates.slice(0, Math.max(1, Math.ceil(opponentCandidates.length / 2)))
+                : opponentCandidates.slice(Math.floor(opponentCandidates.length / 2));
+            return ticket.difficulty === "elite" ? pool[0] : pool[deterministicIndex(`${ticket.seed}:${body.round_index}:${ticket.difficulty}`, pool.length)];
+          })();
       if (!opponent) return databaseError(route, "Server opponent has no eligible card for this situation.");
       const playerScore = scoreCard(body.player_card_id, situation.attribute);
       const tieBreaker = playerScore.value !== opponent.score.value
@@ -806,7 +963,8 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       }
       return json(route, roundResponse("played", ticket, receipt));
     }
-    if (url.pathname === "/rest/v1/rpc/settle_match") {
+    if (url.pathname === "/rest/v1/rpc/settle_match" || url.pathname === "/rest/v1/rpc/settle_rivalry_challenge") {
+      const isGhostSettlement = url.pathname.endsWith("settle_rivalry_challenge");
       state.settleMatchCallCount += 1;
       if (failSettlementOnce) {
         failSettlementOnce = false;
@@ -814,6 +972,24 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       }
       if (options.settlementError) return databaseError(route, "Match settlement temporarily unavailable", 503);
       const body = request.postDataJSON() as { client_match_id: string };
+      if (isGhostSettlement) {
+        const previousGhost = state.ghostSettlements.get(body.client_match_id);
+        if (previousGhost) return json(route, { status: "already-settled", challenge_id: `challenge:${state.ghostAttemptSlugs.get(body.client_match_id)}`, attempt_id: `attempt:${body.client_match_id}`, ...previousGhost, ghost_wins: previousGhost.ghostWins, player_wins: previousGhost.playerWins });
+        const ghostTicket = state.matchTickets.get(body.client_match_id);
+        if (!ghostTicket || ghostTicket.status !== "open" || ghostTicket.rounds.size !== 5) return databaseError(route, "All five challenge rounds must be played before settlement.");
+        const playerWins = [...ghostTicket.rounds.values()].filter((round) => round.winner === "player").length;
+        const ghostWins = 5 - playerWins;
+        const outcome = playerWins > ghostWins ? "win" as const : "loss" as const;
+        ghostTicket.status = "settled";
+        state.ghostSettlements.set(body.client_match_id, { outcome, playerWins, ghostWins });
+        const challenge = state.rivalryChallenges.get(state.ghostAttemptSlugs.get(body.client_match_id) ?? "");
+        if (challenge) {
+          challenge.completed += 1;
+          if (outcome === "win") challenge.challengerWins += 1;
+          else challenge.ghostDefenses += 1;
+        }
+        return json(route, { status: "settled", challenge_id: `challenge:${challenge?.slug ?? "missing"}`, attempt_id: `attempt:${body.client_match_id}`, outcome, player_wins: playerWins, ghost_wins: ghostWins });
+      }
       const previous = state.settlements.get(body.client_match_id);
       if (previous) {
         return json(route, { status: "already-settled", match_id: previous.matchId, reward_credits: previous.rewardCredits, credits: state.credits, completed_matches: state.completedMatches });

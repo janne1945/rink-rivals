@@ -17,13 +17,18 @@ function decisiveRound(results: readonly BattleRoundResult[]): number | null {
   return null;
 }
 
-export function MatchFinalLayer({ battle, preset, rewardGranted, settling, settlementError, progressionMessage, onRetrySettlement, onPlayAgain, onFinish }: {
+export function MatchFinalLayer({ battle, preset, rewardGranted, settling, settlementError, progressionMessage, challengeBusy, challengeUrl, challengeError, onCreateChallenge, onShareChallenge, onRetrySettlement, onPlayAgain, onFinish }: {
   readonly battle: BattleViewState;
   readonly preset: MotionPreset;
   readonly rewardGranted: boolean;
   readonly settling: boolean;
   readonly settlementError?: string;
   readonly progressionMessage?: string;
+  readonly challengeBusy?: boolean;
+  readonly challengeUrl?: string;
+  readonly challengeError?: string;
+  readonly onCreateChallenge?: () => void;
+  readonly onShareChallenge?: () => void;
   readonly onRetrySettlement: () => void;
   readonly onPlayAgain: () => void;
   readonly onFinish: () => void;
@@ -60,6 +65,13 @@ export function MatchFinalLayer({ battle, preset, rewardGranted, settling, settl
         <span>{rewardGranted ? "Server confirmed" : settlementError ? "Settlement interrupted" : "Secure settlement"}</span>
         <p>{rewardGranted ? progressionMessage : settlementError || (settling ? "Recording the result and progression on the server…" : "Waiting for server confirmation…")}</p>
       </div>
+      {rewardGranted && onCreateChallenge ? (
+        <div className={styles.challengePanel} aria-live="polite">
+          <div><span>Keep the rivalry alive</span><strong>{challengeUrl ? "Your ghost is ready" : "Turn your five choices into a challenge"}</strong></div>
+          {challengeUrl ? <Button onClick={onShareChallenge}>Share challenge</Button> : <Button onClick={onCreateChallenge} disabled={challengeBusy}>{challengeBusy ? "Creating ghost…" : "Create Ghost Rivalry"}</Button>}
+          {challengeError ? <p role="alert">{challengeError}</p> : null}
+        </div>
+      ) : null}
       <div className={styles.finalActions}>
         {settlementError && !rewardGranted ? <Button onClick={onRetrySettlement} disabled={settling}>Retry settlement</Button> : null}
         <Button onClick={onPlayAgain} disabled={!rewardGranted}>Rematch setup</Button>
@@ -68,4 +80,3 @@ export function MatchFinalLayer({ battle, preset, rewardGranted, settling, settl
     </motion.section>
   );
 }
-

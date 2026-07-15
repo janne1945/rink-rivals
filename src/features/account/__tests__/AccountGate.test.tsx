@@ -94,6 +94,13 @@ function createRepository(profile: AccountProfile = readyProfile): AccountReposi
     settleMatch: vi.fn().mockResolvedValue({
       status: "settled", matchId: "match-db-1", rewardCredits: 345, credits: 1345, completedMatches: 1,
     }),
+    loadPublicRivalryChallenge: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    createRivalryChallenge: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    startRivalryChallenge: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    playRivalryChallengeRound: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    settleRivalryChallenge: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    revokeRivalryChallenge: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    listRivalryChallenges: vi.fn().mockResolvedValue([]),
   };
 }
 
@@ -126,7 +133,7 @@ describe("AccountGate", () => {
     fireEvent.change(screen.getByLabelText("Email"), { target: { value: "alex@example.com" } });
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "password123" } });
     fireEvent.click(screen.getByRole("button", { name: "Create account" }));
-    await waitFor(() => expect(auth.register).toHaveBeenCalledWith({ displayName: "Alex", email: "alex@example.com", password: "password123" }));
+    await waitFor(() => expect(auth.register).toHaveBeenCalledWith(expect.objectContaining({ displayName: "Alex", email: "alex@example.com", password: "password123", redirectTo: "http://localhost:3000/" })));
     expect(await screen.findByRole("status")).toHaveTextContent("Check your email");
   });
 

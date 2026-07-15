@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   createBattle,
   getBattleView,
@@ -23,7 +23,6 @@ import { CollectionScreen } from "../features/collection/CollectionScreen";
 import { HomeScreen } from "../features/home/HomeScreen";
 import { LineupsScreen } from "../features/lineup/LineupsScreen";
 import { MarketScreen } from "../features/market/MarketScreen";
-import { MatchScreen } from "../features/match/MatchScreen";
 import { applyAuthoritativeRound } from "../features/match/authoritativeBattle";
 import {
   clearActiveMatchSession,
@@ -31,9 +30,10 @@ import {
   updateActiveMatchSession,
   writeActiveMatchSession,
 } from "../features/match-experience/activeMatchSession";
-import { isMatchExperienceV2Enabled } from "../features/match-experience/featureFlag";
 import { ObjectiveScreen } from "../features/objectives/ObjectiveScreen";
 import { PlayScreen } from "../features/play/PlayScreen";
+import { ChallengeSetupScreen } from "../features/rivalry-challenges/ChallengeSetupScreen";
+import { RivalryInboxScreen } from "../features/rivalry-challenges/RivalryInboxScreen";
 import {
   DexieGameSaveRepository,
   type SaveGameV2,
@@ -58,6 +58,12 @@ const MatchExperienceV2 = lazy(async () => {
   return { default: module.MatchExperienceV2 };
 });
 
+type MatchSource = { readonly kind: "ai" } | {
+  readonly kind: "ghost-challenge";
+  readonly slug: string;
+  readonly lineupId: string;
+};
+
 function completeLineup(lineup: AccountLineup): Lineup | null {
   if (!LINEUP_SLOT_IDS.every((slot) => lineup.slots[slot])) return null;
   return {
@@ -68,10 +74,42 @@ function completeLineup(lineup: AccountLineup): Lineup | null {
   };
 }
 
+function withAuthoritativeOpponentReveal(
+  state: BattleState,
+  round: PlayMatchRoundResult,
+  maskedOpponent: boolean,
+): BattleState {
+  if (state.lineups.opponent.cards.some(({ card, slot }) => card.id === round.opponentCardId && slot === round.opponentSlot)) {
+    return state;
+  }
+  if (!maskedOpponent) {
+    throw new Error("The server returned a card outside the match snapshot.");
+  }
+  const card = gameCatalog.cards.find((candidate) => candidate.id === round.opponentCardId);
+  const player = card && gameCatalog.players.find((candidate) => candidate.id === card.playerId);
+  const slotExists = state.lineups.opponent.cards.some(({ slot }) => slot === round.opponentSlot);
+  if (!card || !player || !slotExists) {
+    throw new Error("The server revealed a card outside the local game catalog.");
+  }
+  return {
+    ...state,
+    lineups: {
+      ...state.lineups,
+      opponent: {
+        ...state.lineups.opponent,
+        cards: state.lineups.opponent.cards.map((entry) => entry.slot === round.opponentSlot
+          ? { slot: round.opponentSlot, card, player }
+          : entry),
+      },
+    },
+  };
+}
+
 function hydrateAuthoritativeRounds(
   initialBattle: BattleState,
   clientMatchId: string,
   rounds: readonly PlayMatchRoundResult[],
+  maskedOpponent: boolean,
 ): BattleState {
   let hydrated = initialBattle;
   for (const [expectedIndex, round] of rounds.entries()) {
@@ -79,12 +117,15 @@ function hydrateAuthoritativeRounds(
       throw new Error("The server returned an invalid resumed round sequence.");
     }
     const selected = selectCard(hydrated, "player", round.playerCardId);
-    hydrated = applyAuthoritativeRound({ ...selected, phase: "awaiting-reveal" }, round);
+    hydrated = applyAuthoritativeRound(
+      withAuthoritativeOpponentReveal({ ...selected, phase: "awaiting-reveal" }, round, maskedOpponent),
+      round,
+    );
   }
   return hydrated;
 }
 
-function battleFromTicket(ticket: StartMatchResult, mode: GameMode, difficulty: AiDifficulty): BattleState {
+function battleFromTicket(ticket: StartMatchResult, mode: GameMode, difficulty: AiDifficulty, maskedOpponent = false): BattleState {
   if (ticket.mode !== mode || ticket.difficulty !== difficulty || ticket.opponent.id !== ticket.opponentId || ticket.lineup.mode !== mode) {
     throw new Error("The server returned an inconsistent match ticket. Please start a new match.");
   }
@@ -102,8 +143,21 @@ function battleFromTicket(ticket: StartMatchResult, mode: GameMode, difficulty: 
     },
     situationSequence: ticket.situations,
   });
-  return hydrateAuthoritativeRounds(initialBattle, ticket.clientMatchId, ticket.rounds);
+  return hydrateAuthoritativeRounds(initialBattle, ticket.clientMatchId, ticket.rounds, maskedOpponent);
 }
+
+function ChallengeRoute(props: {
+  readonly lineups: readonly AccountLineup[];
+  readonly starting: boolean;
+  readonly errorMessage: string;
+  readonly onAccept: (slug: string, lineupId: string) => void;
+  readonly onLoad: AccountActions["loadPublicRivalryChallenge"];
+}) {
+  const { slug = "" } = useParams();
+  if (!/^[0-9a-f]{32}$/i.test(slug)) return <Navigate to="/" replace />;
+  return <ChallengeSetupScreen {...props} slug={slug.toLowerCase()} onAccept={(lineupId) => props.onAccept(slug.toLowerCase(), lineupId)} />;
+}
+
 export function GameApp({ account, actions }: {
   readonly account: AccountSnapshot;
   readonly actions: AccountActions;
@@ -113,6 +167,7 @@ export function GameApp({ account, actions }: {
   const [save, setSave] = useState<SaveGameV2 | null>(null);
   const [battle, setBattle] = useState<BattleState | null>(null);
   const [matchClientId, setMatchClientId] = useState<string | null>(null);
+  const [matchSource, setMatchSource] = useState<MatchSource>({ kind: "ai" });
   const [matchRestored, setMatchRestored] = useState(false);
   const [matchStarting, setMatchStarting] = useState(false);
   const [matchStartError, setMatchStartError] = useState("");
@@ -123,6 +178,9 @@ export function GameApp({ account, actions }: {
   const [roundPlaying, setRoundPlaying] = useState(false);
   const [reviewingRound, setReviewingRound] = useState(false);
   const [roundError, setRoundError] = useState("");
+  const [challengeBusy, setChallengeBusy] = useState(false);
+  const [challengeUrl, setChallengeUrl] = useState("");
+  const [challengeError, setChallengeError] = useState("");
   const [monotonicClock, setMonotonicClock] = useState(() => performance.now());
   const [choiceSubmitting, setChoiceSubmitting] = useState(false);
   const [choiceError, setChoiceError] = useState("");
@@ -135,7 +193,9 @@ export function GameApp({ account, actions }: {
   const matchSettlingRef = useRef(false);
   const roundPlayingRef = useRef(false);
   const roundRequestIds = useRef(new Map<number, string>());
+  const challengeRequestId = useRef<string | null>(null);
   const startAttemptRef = useRef<{ id: string; mode: GameMode; difficulty: AiDifficulty } | null>(null);
+  const ghostStartAttemptRef = useRef<{ id: string; slug: string; lineupId: string } | null>(null);
   const serverClockAnchor = useMemo(
     () => createServerClockAnchor(account.market.serverTime, performance.now(), Date.now()),
     [account.market.serverTime],
@@ -169,14 +229,14 @@ export function GameApp({ account, actions }: {
   }, [pathname]);
 
   useEffect(() => {
-    if (pathname === "/match" || pathname === "/match-v2" || battle?.phase !== "complete" || !rewardGranted) return;
+    if (pathname === "/match" || battle?.phase !== "complete" || !rewardGranted) return;
     roundRequestIds.current.clear();
     setBattle(null);
     setMatchClientId(null);
   }, [battle?.phase, pathname, rewardGranted]);
 
   useEffect(() => {
-    if (pathname !== "/match-v2" || !save || battle || matchResumingRef.current || !isMatchExperienceV2Enabled()) return;
+    if (pathname !== "/match" || !save || battle || matchResumingRef.current) return;
     const session = readActiveMatchSession();
     if (!session) {
       navigate("/play", { replace: true });
@@ -184,25 +244,30 @@ export function GameApp({ account, actions }: {
     }
     if (session.completedBattle) {
       setMatchClientId(session.clientMatchId);
+      setMatchSource(session.source);
       setBattle(session.completedBattle);
       setReviewingRound(false);
       setMatchRestored(true);
-      void settleCompletedBattle(session.clientMatchId);
+      void settleCompletedBattle(session.clientMatchId, session.source);
       return;
     }
     let active = true;
     matchResumingRef.current = true;
     setMatchStarting(true);
     setMatchStartError("");
-    void actions.startMatch({ clientMatchId: session.clientMatchId, mode: session.mode, difficulty: session.difficulty })
+    const resume = session.source.kind === "ai"
+      ? actions.startMatch({ clientMatchId: session.clientMatchId, mode: session.mode, difficulty: session.difficulty })
+      : actions.startRivalryChallenge({ slug: session.source.slug, clientMatchId: session.clientMatchId, lineupId: session.source.lineupId });
+    void resume
       .then((ticket) => {
         if (!active) return;
-        let resumed = battleFromTicket(ticket, session.mode, session.difficulty);
+        let resumed = battleFromTicket(ticket, session.mode, session.difficulty, session.source.kind === "ghost-challenge");
         const serverPassedPendingRound = session.pendingSelection && ticket.rounds.length > session.pendingSelection.roundIndex;
         if (session.pendingSelection && !serverPassedPendingRound && resumed.phase === "selecting" && resumed.roundIndex === session.pendingSelection.roundIndex) {
           resumed = { ...selectCard(resumed, "player", session.pendingSelection.cardId), phase: "awaiting-reveal" };
         }
         setMatchClientId(ticket.clientMatchId);
+        setMatchSource(session.source);
         setBattle(resumed);
         setReviewingRound(Boolean(ticket.rounds.length && (session.reviewingRound || serverPassedPendingRound) && resumed.phase !== "complete"));
         setMatchRestored(true);
@@ -213,7 +278,7 @@ export function GameApp({ account, actions }: {
           pendingSelection: serverPassedPendingRound ? undefined : session.pendingSelection,
           reviewingRound: Boolean(ticket.rounds.length && (session.reviewingRound || serverPassedPendingRound) && resumed.phase !== "complete"),
         });
-        if (resumed.phase === "complete") void settleCompletedBattle(ticket.clientMatchId);
+        if (resumed.phase === "complete") void settleCompletedBattle(ticket.clientMatchId, session.source);
       })
       .catch((error: unknown) => {
         if (!active) return;
@@ -240,7 +305,7 @@ export function GameApp({ account, actions }: {
     setSave(updated);
   }
 
-  async function startMatch(mode: GameMode, difficulty: AiDifficulty, experience: "v1" | "v2" = "v1") {
+  async function startMatch(mode: GameMode, difficulty: AiDifficulty) {
     if (!save || matchStartingRef.current) return;
     const cloudScore = calculateCollectionScore(
       Object.fromEntries(account.cards.map((card) => [card.cardId, { cardId: card.cardId, quantity: card.quantity, acquiredAt: card.acquiredAt }])),
@@ -266,6 +331,7 @@ export function GameApp({ account, actions }: {
       startAttemptRef.current = null;
       roundRequestIds.current.clear();
       setMatchClientId(ticket.clientMatchId);
+      setMatchSource({ kind: "ai" });
       setBattle(nextBattle);
       setMatchRestored(ticket.rounds.length > 0);
       setRewardGranted(false);
@@ -273,19 +339,66 @@ export function GameApp({ account, actions }: {
       setMatchSettlementError("");
       setRoundError("");
       setReviewingRound(false);
-      if (experience === "v2") {
-        writeActiveMatchSession({
-          version: 1,
-          clientMatchId: ticket.clientMatchId,
-          mode,
-          difficulty,
-          reviewingRound: false,
-        });
-      }
-      navigate(experience === "v2" ? "/match-v2" : "/match");
-      if (nextBattle.phase === "complete") void settleCompletedBattle(ticket.clientMatchId);
+      setChallengeUrl("");
+      setChallengeError("");
+      writeActiveMatchSession({
+        version: 2,
+        clientMatchId: ticket.clientMatchId,
+        mode,
+        difficulty,
+        source: { kind: "ai" },
+        reviewingRound: false,
+      });
+      navigate("/match");
+      if (nextBattle.phase === "complete") void settleCompletedBattle(ticket.clientMatchId, { kind: "ai" });
     } catch (error) {
       setMatchStartError(error instanceof Error ? error.message : "The match could not be started.");
+    } finally {
+      matchStartingRef.current = false;
+      setMatchStarting(false);
+    }
+  }
+
+  async function startGhostChallenge(slug: string, lineupId: string) {
+    if (!save || matchStartingRef.current) return;
+    matchStartingRef.current = true;
+    setMatchStarting(true);
+    setMatchStartError("");
+    const currentAttempt = ghostStartAttemptRef.current;
+    const attempt = currentAttempt?.slug === slug && currentAttempt.lineupId === lineupId
+      ? currentAttempt
+      : { id: crypto.randomUUID(), slug, lineupId };
+    ghostStartAttemptRef.current = attempt;
+    const clientMatchId = attempt.id;
+    const source: MatchSource = { kind: "ghost-challenge", slug, lineupId };
+    try {
+      const ticket = await actions.startRivalryChallenge({ slug, clientMatchId, lineupId });
+      const nextBattle = battleFromTicket(ticket, ticket.mode, ticket.difficulty, true);
+      ghostStartAttemptRef.current = null;
+      roundRequestIds.current.clear();
+      setMatchClientId(ticket.clientMatchId);
+      setMatchSource(source);
+      setBattle(nextBattle);
+      setMatchRestored(ticket.rounds.length > 0);
+      setRewardGranted(false);
+      setMatchProgressionMessage("");
+      setMatchSettlementError("");
+      setRoundError("");
+      setReviewingRound(false);
+      setChallengeUrl("");
+      setChallengeError("");
+      writeActiveMatchSession({
+        version: 2,
+        clientMatchId: ticket.clientMatchId,
+        mode: ticket.mode,
+        difficulty: ticket.difficulty,
+        source,
+        reviewingRound: false,
+      });
+      navigate("/match");
+      if (nextBattle.phase === "complete") void settleCompletedBattle(ticket.clientMatchId, source);
+    } catch (error) {
+      setMatchStartError(error instanceof Error ? error.message : "The Ghost Rivalry could not be started.");
     } finally {
       matchStartingRef.current = false;
       setMatchStarting(false);
@@ -295,7 +408,7 @@ export function GameApp({ account, actions }: {
   function chooseCard(cardId: string) {
     if (!battle || battle.phase !== "selecting" || reviewingRound) return;
     const playerSelected = selectCard(battle, "player", cardId);
-    if (pathname === "/match-v2") {
+    if (pathname === "/match") {
       updateActiveMatchSession((session) => ({
         ...session,
         pendingSelection: { cardId, roundIndex: battle.roundIndex },
@@ -306,16 +419,23 @@ export function GameApp({ account, actions }: {
     setBattle({ ...playerSelected, phase: "awaiting-reveal" });
   }
 
-  async function settleCompletedBattle(clientId: string | null = matchClientId) {
+  async function settleCompletedBattle(clientId: string | null = matchClientId, source: MatchSource = matchSource) {
     if (!clientId || matchSettlingRef.current) return;
     matchSettlingRef.current = true;
     setMatchSettling(true);
     setMatchSettlementError("");
     try {
-      const result = await actions.settleMatch({ clientMatchId: clientId });
-      setMatchProgressionMessage(result.status === "already-settled"
-        ? "This match was already settled. No reward was granted twice."
-        : `Match settled on the server. +${formatRivalryPoints(result.rewardCredits)} including completed goals.`);
+      if (source.kind === "ghost-challenge") {
+        const result = await actions.settleRivalryChallenge({ clientMatchId: clientId });
+        setMatchProgressionMessage(result.status === "already-settled"
+          ? `Ghost Rivalry already secured: ${result.playerWins}–${result.ghostWins}. No rewards were duplicated.`
+          : `Ghost Rivalry secured: ${result.playerWins}–${result.ghostWins}. No Credits, cards, goals, or progression were awarded.`);
+      } else {
+        const result = await actions.settleMatch({ clientMatchId: clientId });
+        setMatchProgressionMessage(result.status === "already-settled"
+          ? "This match was already settled. No reward was granted twice."
+          : `Match settled on the server. +${formatRivalryPoints(result.rewardCredits)} including completed goals.`);
+      }
       setRewardGranted(true);
     } catch (error) {
       setMatchSettlementError(error instanceof Error ? error.message : "The match could not be settled.");
@@ -335,18 +455,24 @@ export function GameApp({ account, actions }: {
     const requestId = roundRequestIds.current.get(battle.roundIndex) ?? crypto.randomUUID();
     roundRequestIds.current.set(battle.roundIndex, requestId);
     try {
-      const result = await actions.playMatchRound({
+      const roundInput = {
         clientMatchId: matchClientId,
         roundIndex: battle.roundIndex,
         playerCardId,
         clientRequestId: requestId,
-      });
+      };
+      const result = matchSource.kind === "ghost-challenge"
+        ? await actions.playRivalryChallengeRound(roundInput)
+        : await actions.playMatchRound(roundInput);
       if (result.clientMatchId !== matchClientId) throw new Error("The server returned a different match.");
-      const nextBattle = applyAuthoritativeRound(battle, result);
+      const nextBattle = applyAuthoritativeRound(
+        withAuthoritativeOpponentReveal(battle, result, matchSource.kind === "ghost-challenge"),
+        result,
+      );
       roundRequestIds.current.delete(battle.roundIndex);
       setBattle(nextBattle);
       setReviewingRound(nextBattle.phase !== "complete");
-      if (pathname === "/match-v2") {
+      if (pathname === "/match") {
         updateActiveMatchSession((session) => ({
           ...session,
           pendingSelection: undefined,
@@ -354,7 +480,7 @@ export function GameApp({ account, actions }: {
           completedBattle: nextBattle.phase === "complete" ? nextBattle : undefined,
         }));
       }
-      if (nextBattle.phase === "complete") void settleCompletedBattle();
+      if (nextBattle.phase === "complete") void settleCompletedBattle(matchClientId, matchSource);
     } catch (error) {
       setRoundError(error instanceof Error ? error.message : "The round could not be played.");
     } finally {
@@ -365,7 +491,7 @@ export function GameApp({ account, actions }: {
 
   function continueRound() {
     setReviewingRound(false);
-    if (pathname === "/match-v2") {
+    if (pathname === "/match") {
       updateActiveMatchSession((session) => ({ ...session, reviewingRound: false }));
     }
   }
@@ -373,6 +499,43 @@ export function GameApp({ account, actions }: {
   function finishV2(destination: "/play" | "/") {
     clearActiveMatchSession();
     navigate(destination);
+  }
+
+  async function createGhostFromMatch() {
+    if (!matchClientId || !rewardGranted || challengeBusy) return;
+    setChallengeBusy(true);
+    setChallengeError("");
+    try {
+      const requestId = challengeRequestId.current ?? crypto.randomUUID();
+      challengeRequestId.current = requestId;
+      const result = await actions.createRivalryChallenge({
+        clientRequestId: requestId,
+        sourceClientMatchId: matchClientId,
+        sourceKind: matchSource.kind === "ai" ? "ai-match" : "ghost-challenge",
+      });
+      challengeRequestId.current = null;
+      setChallengeUrl(`${window.location.origin}/c/${result.slug}`);
+    } catch (error) {
+      setChallengeError(error instanceof Error ? error.message : "Your Ghost Rivalry could not be created.");
+    } finally {
+      setChallengeBusy(false);
+    }
+  }
+
+  async function shareCreatedChallenge() {
+    if (!challengeUrl) return;
+    setChallengeError("");
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Face my Rink Rivals ghost", text: "My five choices are locked. Can your lineup beat them?", url: challengeUrl });
+      } else {
+        await navigator.clipboard.writeText(challengeUrl);
+        setMatchProgressionMessage("Ghost Rivalry link copied. Send it to a friend and defend your five.");
+      }
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      setChallengeError("Sharing was unavailable. Open Rivalries to try again.");
+    }
   }
 
   async function chooseRivalryCard(cardId: string) {
@@ -428,25 +591,24 @@ export function GameApp({ account, actions }: {
   const eligibleCardIds = battle && !reviewingRound
     ? getEligibleCards(battle, "player").map(({ card }) => card.id)
     : [];
-  const matchV2Enabled = isMatchExperienceV2Enabled();
   const progressionModels = buildProgressionScreenModels(progressionFromAccount(account, progressionClock), gameCatalog, progressionClock, {
     isSubmitting: choiceSubmitting,
     errorMessage: choiceError || undefined,
   });
 
   return (
-    <AppShell credits={account.profile.credits} displayName={account.profile.displayName} onLogout={actions.logout} logoutBusy={actions.busy} logoutError={actions.errorMessage} immersive={pathname === "/match-v2"}>
+    <AppShell credits={account.profile.credits} displayName={account.profile.displayName} onLogout={actions.logout} logoutBusy={actions.busy} logoutError={actions.errorMessage} immersive={pathname === "/match"}>
       <Routes>
         <Route path="/" element={<HomeScreen credits={account.profile.credits} uniqueCards={uniqueCards} collectionScore={cloudCollectionScore} completedMatches={account.profile.completedMatches} goals={progressionModels.goalsSummary} />} />
         <Route path="/collection" element={<CollectionScreen catalog={gameCatalog} collection={cloudCollection} />} />
         <Route path="/lineups" element={<LineupsScreen lineups={lineups} activeLineupIds={activeLineupIds} catalog={gameCatalog} collection={cloudCollection} onActivate={async (lineupId) => { await actions.activateLineup(lineupId); }} onSave={async (lineup) => { await actions.saveLineup({ lineupId: lineup.id, name: lineup.name, mode: lineup.mode, slots: lineup.slots }); }} />} />
-        <Route path="/play" element={<PlayScreen lineups={lineups} activeLineupIds={activeLineupIds} collectionScore={cloudCollectionScore} preferredDifficulty={preferredDifficulty} starting={matchStarting} startError={matchStartError} onDifficultyChange={(difficulty) => void selectDifficulty(difficulty)} onStart={startMatch} onStartV2={matchV2Enabled ? (mode, difficulty) => startMatch(mode, difficulty, "v2") : undefined} />} />
+        <Route path="/play" element={<PlayScreen lineups={lineups} activeLineupIds={activeLineupIds} collectionScore={cloudCollectionScore} preferredDifficulty={preferredDifficulty} starting={matchStarting} startError={matchStartError} onDifficultyChange={(difficulty) => void selectDifficulty(difficulty)} onStart={startMatch} />} />
         <Route path="/market" element={<MarketScreen catalog={gameCatalog} collection={cloudCollection} credits={account.profile.credits} market={account.market} onBuy={(offerId, clientRequestId) => actions.purchaseCard({ offerId, clientRequestId })} />} />
         <Route path="/objectives" element={<ObjectiveScreen dailyObjectives={progressionModels.dailyObjectives} dailyPeriodLabel={progressionModels.dailyPeriodLabel} weeklyObjective={progressionModels.weeklyObjective} weeklyPeriodLabel={progressionModels.weeklyPeriodLabel} rivalrySteps={progressionModels.rivalrySteps} rewardChoice={progressionModels.rewardChoice} statusMessage={goalsStatus || undefined} onChooseRivalryCard={(cardId) => void chooseRivalryCard(cardId)} />} />
-        <Route path="/match" element={battle && safeBattle ? <MatchScreen battle={safeBattle} eligibleCardIds={eligibleCardIds} rewardGranted={rewardGranted} settling={matchSettling} settlementError={matchSettlementError} progressionMessage={matchProgressionMessage} roundPlaying={roundPlaying} reviewingRound={reviewingRound} roundError={roundError} onSelect={chooseCard} onReveal={() => void reveal()} onContinue={continueRound} onRetrySettlement={() => void settleCompletedBattle()} onPlayAgain={() => navigate("/play")} onFinish={() => navigate("/")} /> : <Navigate to="/play" replace />} />
-        {matchV2Enabled ? (
-          <Route path="/match-v2" element={battle && safeBattle ? (
-            <Suspense fallback={<div className={styles.loading}><div><div className={styles.puck} /><h1>Opening broadcast</h1><p>Preparing Match Experience V2…</p></div></div>}>
+        <Route path="/accept/:slug" element={<ChallengeRoute lineups={account.lineups} starting={matchStarting} errorMessage={matchStartError} onAccept={(slug, lineupId) => void startGhostChallenge(slug, lineupId)} onLoad={actions.loadPublicRivalryChallenge} />} />
+        <Route path="/rivalries" element={<RivalryInboxScreen onLoad={actions.listRivalryChallenges} onRevoke={actions.revokeRivalryChallenge} />} />
+        <Route path="/match" element={battle && safeBattle ? (
+            <Suspense fallback={<div className={styles.loading}><div><div className={styles.puck} /><h1>Opening broadcast</h1><p>Preparing the live arena…</p></div></div>}>
               <MatchExperienceV2
                 battle={safeBattle}
                 eligibleCardIds={eligibleCardIds}
@@ -454,6 +616,9 @@ export function GameApp({ account, actions }: {
                 settling={matchSettling}
                 settlementError={matchSettlementError}
                 progressionMessage={matchProgressionMessage}
+                challengeBusy={challengeBusy}
+                challengeUrl={challengeUrl}
+                challengeError={challengeError}
                 roundPlaying={roundPlaying}
                 reviewingRound={reviewingRound}
                 restored={matchRestored}
@@ -461,14 +626,16 @@ export function GameApp({ account, actions }: {
                 onSelect={chooseCard}
                 onReveal={() => void reveal()}
                 onContinue={continueRound}
-                onRetrySettlement={() => void settleCompletedBattle()}
+                onRetrySettlement={() => void settleCompletedBattle(matchClientId, matchSource)}
+                onCreateChallenge={() => void createGhostFromMatch()}
+                onShareChallenge={() => void shareCreatedChallenge()}
                 onPlayAgain={() => finishV2("/play")}
                 onFinish={() => finishV2("/")}
                 onExit={() => navigate("/play")}
               />
             </Suspense>
           ) : <div className={styles.loading}><div><div className={styles.puck} /><h1>Restoring the broadcast</h1><p>Checking the active server match…</p></div></div>} />
-        ) : null}
+        <Route path="/match-v2" element={<Navigate to="/match" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppShell>

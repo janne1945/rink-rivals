@@ -31,6 +31,7 @@ export function HomeScreen({ credits, uniqueCards, collectionScore, completedMat
           <div className={styles.heroActions}>
             <Button onClick={() => navigate("/play")}>Play a faceoff</Button>
             <Button variant="secondary" onClick={() => navigate("/collection")}>View collection</Button>
+            <Button variant="ghost" onClick={() => navigate("/rivalries")}>Ghost Rivalries</Button>
           </div>
         </div>
       </section>

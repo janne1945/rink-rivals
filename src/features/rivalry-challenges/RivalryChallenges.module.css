@@ -1,0 +1,104 @@
+.publicPage {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  overflow: hidden;
+  grid-template-rows: auto 1fr auto;
+  color: #f5fbff;
+  background: #030912;
+}
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 22%, rgb(29 178 217 / 24%), transparent 28rem),
+    radial-gradient(circle at 84% 72%, rgb(233 188 78 / 16%), transparent 25rem),
+    linear-gradient(145deg, #071d31, #02070d 56%, #08111c);
+}
+
+.ambient::after {
+  position: absolute;
+  inset: 0;
+  opacity: .28;
+  background-image: linear-gradient(rgb(255 255 255 / 3%) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 3%) 1px, transparent 1px);
+  background-size: 54px 54px;
+  content: "";
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.publicHeader, .publicFooter, .inviteCard { position: relative; z-index: 1; }
+.publicHeader { display: flex; align-items: center; justify-content: space-between; padding: 22px clamp(18px, 5vw, 72px); }
+.brand { display: flex; align-items: center; gap: 10px; color: inherit; font-weight: 900; letter-spacing: .05em; text-decoration: none; text-transform: uppercase; }
+.brand span { display: grid; width: 38px; aspect-ratio: 1; place-items: center; border: 1px solid rgb(121 229 244 / 38%); border-radius: 12px; color: #79e5f4; background: rgb(121 229 244 / 9%); }
+.liveChip { padding: 8px 12px; border: 1px solid rgb(246 217 139 / 28%); border-radius: 999px; color: #f6d98b; font-size: .62rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+.inviteCard { align-self: center; width: min(calc(100% - 32px), 820px); margin: 38px auto; padding: clamp(28px, 6vw, 70px); border: 1px solid rgb(154 221 242 / 18%); border-radius: clamp(24px, 4vw, 42px); background: linear-gradient(140deg, rgb(15 42 64 / 90%), rgb(3 11 19 / 96%)); box-shadow: 0 40px 120px rgb(0 0 0 / 48%), inset 0 1px 0 rgb(255 255 255 / 6%); text-align: center; backdrop-filter: blur(18px); }
+.eyebrow { margin: 0; color: #f6d98b; font-size: .68rem; font-weight: 950; letter-spacing: .19em; text-transform: uppercase; }
+.inviteCard h1 { max-width: 710px; margin: 16px auto; font-family: var(--font-display); font-size: clamp(3rem, 8vw, 6.6rem); line-height: .78; letter-spacing: -.035em; text-transform: uppercase; }
+.inviteCard h1 span { color: #79e5f4; }
+.lead { max-width: 630px; margin: 22px auto; color: #a8c1ce; font-size: clamp(.9rem, 2vw, 1.05rem); line-height: 1.65; }
+.challengeStats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 28px 0; }
+.challengeStats div { padding: 14px 9px; border: 1px solid rgb(255 255 255 / 8%); border-radius: 14px; background: rgb(255 255 255 / 3%); }
+.challengeStats dt { color: #72909f; font-size: .58rem; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; }
+.challengeStats dd { margin: 5px 0 0; color: #fff; font-weight: 900; text-transform: capitalize; }
+.primaryAction { display: inline-grid; min-height: 52px; padding: 0 24px; place-items: center; border-radius: 999px; color: #031018; background: linear-gradient(120deg, #79e5f4, #b8f3f9); box-shadow: 0 14px 35px rgb(66 197 224 / 22%); font-weight: 950; text-decoration: none; text-transform: uppercase; }
+.primaryAction:focus-visible { outline: 3px solid #f6d98b; outline-offset: 4px; }
+.fairPlay, .unavailable { margin: 18px auto 0; color: #728e9d; font-size: .68rem; line-height: 1.5; }
+.unavailable { max-width: 470px; padding: 13px; border: 1px solid rgb(246 217 139 / 22%); border-radius: 12px; color: #f6d98b; background: rgb(246 217 139 / 6%); }
+.loading { display: flex; min-height: 320px; align-items: center; justify-content: center; gap: 12px; color: #aac3cf; }
+.loading span { width: 18px; aspect-ratio: 1; border: 2px solid rgb(121 229 244 / 24%); border-top-color: #79e5f4; border-radius: 50%; animation: spin .8s linear infinite; }
+.publicFooter { padding: 18px; color: #587483; font-size: .62rem; text-align: center; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 560px) {
+  .publicHeader { padding: 16px; }
+  .brand { font-size: .78rem; }
+  .liveChip { font-size: .52rem; }
+  .inviteCard { margin-block: 14px; padding: 32px 20px; }
+  .challengeStats { grid-template-columns: 1fr; }
+  .challengeStats div { display: flex; align-items: center; justify-content: space-between; }
+}
+
+@media (prefers-reduced-motion: reduce) { .loading span { animation-duration: 1.8s; } }
+
+.setupPage, .inboxPage { width: min(calc(100% - 32px), 1180px); margin: 0 auto; padding: clamp(32px, 6vw, 72px) 0 90px; }
+.setupHero { max-width: 780px; }
+.setupHero h1, .inboxHeader h1 { margin: 10px 0 16px; font-family: var(--font-display); font-size: clamp(3rem, 7vw, 6.5rem); line-height: .78; text-transform: uppercase; }
+.setupHero > p:last-child, .inboxHeader > p:last-child { max-width: 670px; color: var(--color-text-muted); line-height: 1.65; }
+.setupPanel { margin-top: 32px; padding: clamp(22px, 4vw, 44px); border: 1px solid var(--color-border); border-radius: 26px; background: linear-gradient(145deg, rgb(18 48 70 / 82%), rgb(5 15 24 / 96%)); box-shadow: 0 24px 70px rgb(0 0 0 / 26%); }
+.matchupLine { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; }
+.matchupLine > div { padding: 20px; border: 1px solid rgb(255 255 255 / 8%); border-radius: 17px; background: rgb(255 255 255 / 3%); }
+.matchupLine > div:last-child { text-align: right; }
+.matchupLine span, .matchupLine small { display: block; color: #7895a5; font-size: .62rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+.matchupLine strong { display: block; margin: 7px 0; font-size: clamp(1.1rem, 3vw, 1.6rem); }
+.matchupLine > b { color: #f6d98b; font-family: var(--font-display); font-size: 2.4rem; }
+.rulesBox { margin: 22px 0; padding: 18px; border-left: 3px solid #79e5f4; border-radius: 4px 13px 13px 4px; color: #a7c0cc; background: rgb(121 229 244 / 5%); }
+.rulesBox strong { color: #fff; }
+.rulesBox p { margin: 7px 0 0; line-height: 1.55; }
+.inlineError, .status { padding: 13px 16px; border: 1px solid rgb(255 101 124 / 28%); border-radius: 12px; color: #ffb4bf; background: rgb(255 101 124 / 7%); }
+.status { border-color: rgb(98 216 155 / 28%); color: #92ebbd; background: rgb(98 216 155 / 7%); }
+.inboxHeader { margin-bottom: 30px; }
+.challengeGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+.summaryCard, .emptyInbox { padding: 22px; border: 1px solid var(--color-border); border-radius: 20px; background: linear-gradient(145deg, rgb(15 39 57 / 86%), rgb(5 14 22 / 96%)); }
+.summaryCard > div:first-child { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.summaryCard small { color: #7895a5; font-size: .56rem; font-weight: 800; text-transform: uppercase; }
+.statusChip { padding: 6px 9px; border: 1px solid rgb(98 216 155 / 26%); border-radius: 999px; color: #8ce9b8; font-size: .55rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.status_expired, .status_revoked { border-color: rgb(255 255 255 / 12%); color: #829aa7; }
+.summaryCard h2 { margin: 22px 0; font-family: var(--font-display); font-size: 3.7rem; line-height: .7; }
+.summaryCard h2 span { color: #7793a2; font-family: var(--font-body); font-size: .7rem; text-transform: uppercase; }
+.summaryCard dl { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0 0 20px; }
+.summaryCard dl div { text-align: center; }
+.summaryCard dt { color: #6d8896; font-size: .54rem; text-transform: uppercase; }
+.summaryCard dd { margin: 4px 0 0; font-weight: 900; }
+.cardActions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cardActions button { min-height: 42px; border: 1px solid rgb(121 229 244 / 20%); border-radius: 999px; color: #dff8fd; background: rgb(121 229 244 / 7%); cursor: pointer; font-weight: 850; }
+.cardActions button:last-child { border-color: rgb(255 101 124 / 18%); color: #ffb4bf; background: rgb(255 101 124 / 5%); }
+.cardActions button:disabled { cursor: not-allowed; opacity: .38; }
+.emptyInbox { display: grid; min-height: 190px; grid-column: 1 / -1; place-content: center; gap: 8px; color: #7895a5; text-align: center; }
+.emptyInbox strong { color: #fff; font-size: 1.2rem; }
+
+@media (max-width: 650px) {
+  .matchupLine { grid-template-columns: 1fr; }
+  .matchupLine > b { transform: rotate(90deg); justify-self: center; }
+  .matchupLine > div:last-child { text-align: left; }
+}

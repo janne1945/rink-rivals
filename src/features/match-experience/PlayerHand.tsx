@@ -15,7 +15,7 @@ export function PlayerHand({ battle, situation, eligibleCardIds, disabled, prese
 }) {
   const eligible = new Set(eligibleCardIds);
   return (
-    <section className={styles.handSection} aria-labelledby="v2-hand-heading" data-player-hand>
+    <section className={styles.handSection} aria-label="Player hand" data-player-hand>
       <div className={styles.handHeading}>
         <div><span>Club inventory</span><h2 id="v2-hand-heading" tabIndex={-1}>Choose your shift</h2></div>
         <p>Eligible cards show the exact <strong>{situation.name}</strong> value used by the server.</p>
