@@ -1,7 +1,8 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(13);
+-- Four contract/privilege checks plus ten authenticated match-flow checks.
+select plan(14);
 
 select has_function('public', 'quartett_situation', array['jsonb'], 'Quartett category normalizer exists');
 select has_function('public', 'card_quartett_score', array['text', 'jsonb'], 'visible card score helper exists');

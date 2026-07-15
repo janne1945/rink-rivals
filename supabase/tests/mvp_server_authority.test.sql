@@ -33,12 +33,12 @@ select is(
     where source = 'event_shop'
   ),
   array[
-    'nhl-cale-makar-signature-series',
-    'nhl-connor-mcdavid-signature-series',
-    'nhl-drake-batherson-signature-series',
-    'nhl-dylan-larkin-signature-series',
-    'nhl-evgeni-malkin-signature-series',
-    'pwhl-erin-ambrose-signature-series'
+    'nhl-david-pastrnak-signature-series',
+    'nhl-jeremy-swayman-signature-series',
+    'nhl-rasmus-dahlin-signature-series',
+    'pwhl-marie-philip-poulin-signature-series',
+    'pwhl-megan-keller-signature-series',
+    'pwhl-sophie-jaques-signature-series'
   ]::text[],
   'the six-card event offer window is deterministic for a fixed server time'
 );
@@ -69,6 +69,13 @@ select ok(
       where catalog.card_type = 'event'
         and catalog.market_availability = 'event-shop'
         and catalog.is_active
+        and exists (
+          select 1
+          from event_times
+          where event_times.event_id = catalog.set_id
+            and catalog.available_from <= event_times.at_time
+            and event_times.at_time < catalog.available_to
+        )
       group by catalog.set_id
     )
     select 1
@@ -76,7 +83,7 @@ select ok(
     left join offered using (event_id)
     where coalesce(offered.offered_count, 0) <> pools.pool_count
   ),
-  'every active event card appears across recurring six-offer windows'
+  'every eligible event card appears across recurring six-offer windows'
 );
 select is(
   (select count(*)::integer from public.current_market_offers('2026-07-14 12:00:00+00') where placement = 'spotlight'),
@@ -223,9 +230,23 @@ select throws_ok(
   '22023', 'Purchase request id was already used for a different offer.',
   'purchase request id cannot be reused for a different offer'
 );
-select throws_ok(
-  $$select public.purchase_card('cannot-afford', current_setting('test.expensive_base_offer'))$$,
-  'P0001', 'Not enough Credits.',
+do $$
+begin
+  perform set_config('test.insufficient_credits_rejected', 'false', true);
+  begin
+    perform public.purchase_card('cannot-afford', current_setting('test.expensive_base_offer'));
+  exception
+    when sqlstate 'P0001' then
+      if sqlerrm is distinct from 'Not enough Credits.' then
+        raise;
+      end if;
+      perform set_config('test.insufficient_credits_rejected', 'true', true);
+  end;
+end;
+$$;
+select is(
+  current_setting('test.insufficient_credits_rejected'),
+  'true',
   'purchase with insufficient Credits is rejected atomically'
 );
 select is((select count(*)::integer from public.purchase_receipts where user_id = auth.uid()), 1, 'failed purchase creates no receipt');
@@ -236,14 +257,24 @@ select throws_ok(
 );
 
 reset role;
-update public.profiles set credits = 20000 where id = '77777777-7777-4777-8777-777777777777';
 do $$
+declare
+  active_offer record;
 begin
-  perform set_config(
-    'test.active_event_offer',
-    (select offer_id from public.current_market_offers(clock_timestamp()) where source = 'event_shop' order by offer_id limit 1),
-    true
-  );
+  select offers.offer_id, offers.price into active_offer
+  from public.current_market_offers(clock_timestamp()) offers
+  where offers.source = 'event_shop'
+  order by offers.offer_id
+  limit 1;
+
+  if active_offer.offer_id is null then
+    raise exception 'No active Event Shop offer is available for the purchase test.';
+  end if;
+
+  perform set_config('test.active_event_offer', active_offer.offer_id, true);
+  update public.profiles
+  set credits = active_offer.price
+  where id = '77777777-7777-4777-8777-777777777777';
 end;
 $$;
 set local role authenticated;

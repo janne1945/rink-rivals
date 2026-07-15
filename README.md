@@ -87,6 +87,7 @@ pnpm build:deployment      # environment gate followed by the production build
 pnpm test                  # Vitest unit, component, and adapter tests
 pnpm supabase:test         # pgTAP database/RLS/RPC suite (requires local Supabase)
 pnpm exec supabase test db --linked # same pgTAP suite on the linked project
+pnpm supabase:test:linked:management # Docker-free linked rollback fallback
 pnpm test:e2e              # Playwright on phone, landscape, tablet, and desktop
 pnpm test:e2e:production   # gated production build plus Playwright
 pnpm catalog:generate:check # generated catalog matches the approved snapshot
@@ -99,6 +100,12 @@ pnpm balance               # league, opponent, economy, and progression diagnost
 Playwright uses a stateful Supabase HTTP test double for deterministic browser
 coverage. It complements, but does not replace, the pgTAP suite that exercises
 the actual Postgres functions and RLS policies.
+
+`supabase:test:linked:management` executes the same transaction-wrapped SQL
+files through the linked Management API, rejects every uncaught SQL error, and
+fails on TAP assertion or plan summaries. It verifies the migrated hosted
+schema without changing persistent data, but it does not replace a fresh local
+`supabase db reset`.
 
 ## Catalog workflow
 

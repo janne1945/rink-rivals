@@ -7,6 +7,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      workbox: {
+        // The optional Rive runtime is fetched only when an approved asset is configured.
+        globIgnores: ["**/RiveBroadcastAsset-*.js"],
+      },
       manifest: {
         name: "Rink Rivals",
         short_name: "Rink Rivals",

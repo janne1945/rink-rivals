@@ -40,63 +40,102 @@ export type Database = {
       }
       card_catalog: {
         Row: {
+          abilities: string[]
           attributes: Json
           available_from: string | null
           available_to: string | null
           card_id: string
+          card_tier: string
           card_type: string
           created_at: string
           eligible_positions: string[]
+          image_reference: string
           is_active: boolean
           is_permanent: boolean
           is_reward_only: boolean
           league: string
+          legacy_retained: boolean
+          market_availability: string
           overall: number
           player_id: string
           price: number
           role: string
           set_id: string
+          source_metadata: Json
+          team_id: string
           updated_at: string
+          visual_metadata: Json
         }
         Insert: {
+          abilities?: string[]
           attributes?: Json
           available_from?: string | null
           available_to?: string | null
           card_id: string
+          card_tier: string
           card_type: string
           created_at?: string
           eligible_positions: string[]
+          image_reference: string
           is_active?: boolean
           is_permanent: boolean
           is_reward_only?: boolean
           league: string
+          legacy_retained?: boolean
+          market_availability: string
           overall: number
           player_id: string
           price: number
           role: string
           set_id: string
+          source_metadata?: Json
+          team_id: string
           updated_at?: string
+          visual_metadata?: Json
         }
         Update: {
+          abilities?: string[]
           attributes?: Json
           available_from?: string | null
           available_to?: string | null
           card_id?: string
+          card_tier?: string
           card_type?: string
           created_at?: string
           eligible_positions?: string[]
+          image_reference?: string
           is_active?: boolean
           is_permanent?: boolean
           is_reward_only?: boolean
           league?: string
+          legacy_retained?: boolean
+          market_availability?: string
           overall?: number
           player_id?: string
           price?: number
           role?: string
           set_id?: string
+          source_metadata?: Json
+          team_id?: string
           updated_at?: string
+          visual_metadata?: Json
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "card_catalog_player_league_fkey"
+            columns: ["player_id", "league"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id", "league"]
+          },
+          {
+            foreignKeyName: "card_catalog_team_league_fkey"
+            columns: ["team_id", "league"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id", "league"]
+          },
+        ]
       }
       event_definitions: {
         Row: {
@@ -134,18 +173,21 @@ export type Database = {
       lineup_slots: {
         Row: {
           card_id: string
+          created_at: string
           lineup_id: string
           slot: string
           user_id: string
         }
         Insert: {
           card_id: string
+          created_at?: string
           lineup_id: string
           slot: string
           user_id: string
         }
         Update: {
           card_id?: string
+          created_at?: string
           lineup_id?: string
           slot?: string
           user_id?: string
@@ -500,6 +542,68 @@ export type Database = {
           },
         ]
       }
+      players: {
+        Row: {
+          active: boolean
+          archetype: string
+          created_at: string
+          current_team_id: string
+          handedness: string
+          id: string
+          image_reference: string | null
+          league: string
+          name: string
+          nationality: string | null
+          primary_position: string
+          role: string
+          secondary_positions: string[]
+          source_metadata: Json
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          archetype: string
+          created_at?: string
+          current_team_id: string
+          handedness: string
+          id: string
+          image_reference?: string | null
+          league: string
+          name: string
+          nationality?: string | null
+          primary_position: string
+          role: string
+          secondary_positions?: string[]
+          source_metadata?: Json
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          archetype?: string
+          created_at?: string
+          current_team_id?: string
+          handedness?: string
+          id?: string
+          image_reference?: string | null
+          league?: string
+          name?: string
+          nationality?: string | null
+          primary_position?: string
+          role?: string
+          secondary_positions?: string[]
+          source_metadata?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "players_current_team_id_league_fkey"
+            columns: ["current_team_id", "league"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id", "league"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           completed_matches: number
@@ -705,6 +809,111 @@ export type Database = {
           },
         ]
       }
+      starter_grant_receipts: {
+        Row: {
+          card_snapshot: Json
+          claimed_at: string
+          credits_granted: number
+          grant_version: string
+          lineup_id: string
+          origin: string
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          card_snapshot: Json
+          claimed_at?: string
+          credits_granted: number
+          grant_version: string
+          lineup_id: string
+          origin: string
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          card_snapshot?: Json
+          claimed_at?: string
+          credits_granted?: number
+          grant_version?: string
+          lineup_id?: string
+          origin?: string
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "starter_grant_receipts_lineup_id_user_id_fkey"
+            columns: ["lineup_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "lineups"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "starter_grant_receipts_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "starter_grant_receipts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      starter_migration_audits: {
+        Row: {
+          audited_at: string
+          credits_at_audit: number
+          legacy_claimed_at: string
+          legacy_lineup_id: string | null
+          legacy_team_id: string | null
+          open_ticket_snapshot: Json
+          ownership_snapshot: Json
+          reason: string
+          reviewed_at: string | null
+          state: string
+          user_id: string
+        }
+        Insert: {
+          audited_at?: string
+          credits_at_audit: number
+          legacy_claimed_at: string
+          legacy_lineup_id?: string | null
+          legacy_team_id?: string | null
+          open_ticket_snapshot: Json
+          ownership_snapshot: Json
+          reason: string
+          reviewed_at?: string | null
+          state: string
+          user_id: string
+        }
+        Update: {
+          audited_at?: string
+          credits_at_audit?: number
+          legacy_claimed_at?: string
+          legacy_lineup_id?: string | null
+          legacy_team_id?: string | null
+          open_ticket_snapshot?: Json
+          ownership_snapshot?: Json
+          reason?: string
+          reviewed_at?: string | null
+          state?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "starter_migration_audits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       starter_team_cards: {
         Row: {
           card_id: string
@@ -729,7 +938,57 @@ export type Database = {
             referencedRelation: "card_catalog"
             referencedColumns: ["card_id"]
           },
+          {
+            foreignKeyName: "starter_team_cards_team_card_fkey"
+            columns: ["team_id", "card_id"]
+            isOneToOne: true
+            referencedRelation: "card_catalog"
+            referencedColumns: ["team_id", "card_id"]
+          },
+          {
+            foreignKeyName: "starter_team_cards_team_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      teams: {
+        Row: {
+          abbreviation: string
+          active: boolean
+          created_at: string
+          id: string
+          league: string
+          name: string
+          source_metadata: Json
+          updated_at: string
+          visual_metadata: Json
+        }
+        Insert: {
+          abbreviation: string
+          active?: boolean
+          created_at?: string
+          id: string
+          league: string
+          name: string
+          source_metadata?: Json
+          updated_at?: string
+          visual_metadata?: Json
+        }
+        Update: {
+          abbreviation?: string
+          active?: boolean
+          created_at?: string
+          id?: string
+          league?: string
+          name?: string
+          source_metadata?: Json
+          updated_at?: string
+          visual_metadata?: Json
+        }
+        Relationships: []
       }
       user_cards: {
         Row: {
@@ -781,6 +1040,19 @@ export type Database = {
         }
         Returns: undefined
       }
+      build_ai_opponent_lineup: {
+        Args: {
+          difficulty: string
+          match_seed: string
+          mode: string
+          opponent_id: string
+        }
+        Returns: Json
+      }
+      card_quartett_score: {
+        Args: { requested_card_id: string; situation: Json }
+        Returns: Json
+      }
       card_situation_score: {
         Args: { requested_card_id: string; situation: Json }
         Returns: number
@@ -824,6 +1096,11 @@ export type Database = {
       purchase_card: {
         Args: { client_request_id: string; offer_id: string }
         Returns: Json
+      }
+      quartett_situation: { Args: { situation: Json }; Returns: Json }
+      resolve_event_rotation_slot: {
+        Args: { at_time: string }
+        Returns: number
       }
       save_lineup: {
         Args: { lineup_id: string; mode: string; name: string; slots: Json }

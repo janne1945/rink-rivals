@@ -3,6 +3,17 @@
   padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom));
 }
 
+.immersive {
+  padding-bottom: 0;
+  background: #030912;
+}
+
+.immersive .main {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .header {
   position: sticky;
   top: 0;

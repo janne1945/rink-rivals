@@ -126,3 +126,50 @@ The AI cannot reuse cards and never sees or changes the player's selection.
 - Rebuild only the match presentation and its tests. Auth, ownership, economy,
   prices, rewards, event rotation, objectives, player identity, card counts,
   catalog values, lineup modes, and settlement amounts remain unchanged.
+
+## Match Experience V2 presentation boundary
+
+The V2 investigation preserves the ownership above. The server ticket and
+`BattleState` own category, eligibility, selections, scores, round winners,
+match winner, and used cards. `GameApp` continues to own request ids, retries,
+ticket hydration, round review, and settlement. The XState machine owns only
+the visible sequence: intro, category broadcast, commit, concealed rival
+entrance, reveal, comparison, result hold, score pulse, transition, Match
+Point, Final Shift, final horn, and settlement presentation.
+
+V2 consumes the same safe `BattleViewState` and the same start, reveal,
+continue, and settlement callbacks as V1. The opponent card id, slot, player,
+artwork, and value are not rendered in the DOM or accessibility tree before a
+validated `play_match_round` response. The concealed card is a presentation
+placeholder without hidden opponent data. Rewards and progression copy appear
+only after `settle_match` succeeds.
+
+The normal V1 route remains `/match`. V2 is lazy-loaded at `/match-v2` and is
+available only in development or when `VITE_MATCH_EXPERIENCE_V2=true` is set.
+Its AppShell mode hides global navigation and the disclaimer while retaining a
+compact exit control. A small session contract stores only ticket identity and
+the player's pending selection before reveal; after all five revealed rounds,
+the completed authoritative transcript may be cached so a final-screen reload
+can retry idempotent settlement without reopening the closed ticket.
+
+The polished `broadcast` preset and functional `arena` and `fastBroadcast`
+presets alter only typed durations, distance, rotation, scale, parallax, blur,
+glow, and camera-like shift. Reduced motion collapses decorative timers to one
+millisecond without changing domain actions. The Rive component is a lazy
+adapter with no checked-in `.riv` asset and a static React/CSS fallback.
+
+### Bundle baseline before V2
+
+The 2026-07-15 production baseline was 468.01 kB (136.73 kB gzip) for the
+initial application shell, 189.79 kB (60.86 kB gzip) for `GameApp`, and
+1,619.07 kB (136.69 kB gzip) for the deferred generated catalog. Initial CSS
+was 14.41 kB (4.00 kB gzip), GameApp CSS was 46.45 kB (9.39 kB gzip), and PWA
+precache was 2,288.74 KiB. The only warning was the existing 500 kB advisory for
+the deferred catalog.
+
+After V2, the default production build's initial shell is 468.04 kB (136.75 kB gzip), `GameApp` is 192.55
+kB (61.81 kB gzip), the isolated V2 chunk is 195.95 kB (63.03 kB gzip), and V2
+CSS is 18.71 kB (4.51 kB gzip). The optional Rive adapter/runtime is a separate
+176.10 kB (51.73 kB gzip) chunk and is excluded from PWA precache until an
+approved asset is configured. The catalog remains exactly 1,619.07 kB (136.69
+kB gzip), so the existing advisory did not grow.

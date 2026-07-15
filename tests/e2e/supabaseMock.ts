@@ -179,6 +179,9 @@ export interface SupabaseMockOptions {
   readonly roundResponseLossOnce?: boolean;
   readonly roundDelayMs?: number;
   readonly settlementError?: boolean;
+  readonly settlementErrorOnce?: boolean;
+  /** Test-only deterministic server seed for match choreography fixtures. */
+  readonly matchSeed?: string;
   /** Test-only server clock override for deterministic Event Shop rotations. */
   readonly marketNow?: string;
   readonly state?: SupabaseMockState;
@@ -497,6 +500,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
   if (options.marketNow && !options.state) state.eventEndsAt = marketEventRotation.shop.endsAt;
   let dropClaimResponseOnce = options.claimResponseLossOnce ?? false;
   let dropRoundResponseOnce = options.roundResponseLossOnce ?? false;
+  let failSettlementOnce = options.settlementErrorOnce ?? false;
   if (options.authenticated) {
     await page.addInitScript(({ key, value }) => localStorage.setItem(key, value), {
       key: `sb-${projectRef}-auth-token`,
@@ -713,7 +717,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
         }
         return json(route, startResponse("already-started", openTicket));
       }
-      const seed = `mock-seed:${clientMatchId}`;
+      const seed = options.matchSeed ?? `mock-seed:${clientMatchId}`;
       const opponent = selectAiOpponent(mode, difficulty, seed);
       const opponentSlots = mockOpponentSlots(opponent, seed);
       const activeLineup = [...state.lineups.values()].find((lineup) => lineup.mode === mode && lineup.isActive);
@@ -804,6 +808,10 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
     }
     if (url.pathname === "/rest/v1/rpc/settle_match") {
       state.settleMatchCallCount += 1;
+      if (failSettlementOnce) {
+        failSettlementOnce = false;
+        return databaseError(route, "Match settlement temporarily unavailable", 503);
+      }
       if (options.settlementError) return databaseError(route, "Match settlement temporarily unavailable", 503);
       const body = request.postDataJSON() as { client_match_id: string };
       const previous = state.settlements.get(body.client_match_id);

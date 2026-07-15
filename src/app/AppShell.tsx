@@ -17,13 +17,14 @@ interface AppShellProps {
   readonly onLogout: () => Promise<void>;
   readonly logoutBusy?: boolean;
   readonly logoutError?: string;
+  readonly immersive?: boolean;
   readonly children: ReactNode;
 }
 
-export function AppShell({ credits, displayName, onLogout, logoutBusy = false, logoutError, children }: AppShellProps) {
+export function AppShell({ credits, displayName, onLogout, logoutBusy = false, logoutError, immersive = false, children }: AppShellProps) {
   return (
-    <div className={styles.shell}>
-      <header className={styles.header}>
+    <div className={`${styles.shell} ${immersive ? styles.immersive : ""}`}>
+      <header className={styles.header} hidden={immersive}>
         <div className={styles.headerInner}>
           <NavLink className={styles.brand} to="/" aria-label="Rink Rivals home">
             <span className={styles.mark} aria-hidden="true">RR</span>
@@ -43,9 +44,9 @@ export function AppShell({ credits, displayName, onLogout, logoutBusy = false, l
         </div>
       </header>
 
-      {logoutError ? <p className={styles.accountError} role="alert">{logoutError}</p> : null}
+      {logoutError && !immersive ? <p className={styles.accountError} role="alert">{logoutError}</p> : null}
 
-      <nav className={styles.nav} aria-label="Main navigation">
+      <nav className={styles.nav} aria-label="Main navigation" hidden={immersive}>
         <div className={styles.navInner}>
           {navItems.map(([to, icon, label]) => (
             <NavLink
@@ -62,7 +63,7 @@ export function AppShell({ credits, displayName, onLogout, logoutBusy = false, l
       </nav>
 
       <main className={styles.main}>{children}</main>
-      <footer className={styles.disclaimer}>
+      <footer className={styles.disclaimer} hidden={immersive}>
         Unofficial, non-commercial prototype. Not affiliated with or endorsed by the NHL, PWHL, their teams, or players.
       </footer>
     </div>

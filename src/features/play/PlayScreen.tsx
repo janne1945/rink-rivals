@@ -31,6 +31,7 @@ export interface PlayScreenProps {
   readonly starting?: boolean;
   readonly startError?: string;
   readonly onDifficultyChange?: (difficulty: AiDifficulty) => void;
+  readonly onStartV2?: (mode: GameMode, difficulty: AiDifficulty) => Promise<void> | void;
   readonly onStart: (mode: GameMode, difficulty: AiDifficulty) => Promise<void> | void;
 }
 
@@ -42,6 +43,7 @@ export function PlayScreen({
   starting = false,
   startError,
   onDifficultyChange,
+  onStartV2,
   onStart,
 }: PlayScreenProps) {
   const initialMode = modes.find((mode) => lineups.some((lineup) => lineup.id === activeLineupIds[mode.id]))?.id ?? "nhl-circuit";
@@ -110,6 +112,18 @@ export function PlayScreen({
         </div>
         {startError ? <p className={styles.error} role="alert">{startError}</p> : null}
       </section>
+      {onStartV2 ? (
+        <section className={styles.panel} aria-labelledby="match-v2-preview-heading">
+          <div className={styles.sectionHead}>
+            <div>
+              <p className={styles.eyebrow}>Development preview</p>
+              <h2 id="match-v2-preview-heading">Match Experience V2</h2>
+              <p>Play the same server-authoritative match in the immersive broadcast presentation. V1 remains the default.</p>
+            </div>
+            <Button onClick={() => void onStartV2(selected, difficulty)} disabled={!active || !difficultyUnlocked || starting}>{starting ? "Preparing rival…" : "Preview V2"}</Button>
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }
