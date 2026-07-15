@@ -282,9 +282,8 @@
 .timelineSlot { min-height: 22px; border-radius: 4px; }
 .arena { width: calc(100% - 62px); margin-top: 8px; border: 0; border-radius: 0; background:
   linear-gradient(0deg, rgb(2 8 14 / 95%), transparent 50%),
-  radial-gradient(ellipse at 50% 50%, rgb(77 139 165 / 24%), transparent 34%),
-  repeating-linear-gradient(171deg, transparent 0 42px, rgb(255 255 255 / 2%) 43px 44px),
-  linear-gradient(180deg, #0a1822, #020912); box-shadow: none; }
+  linear-gradient(90deg, rgb(2 8 14 / 58%), transparent 28% 72%, rgb(2 8 14 / 58%)),
+  url("/assets/ui/home-arena.svg") center 68% / cover no-repeat; box-shadow: none; }
 .battleStage { padding: 20px 30px; }
 .cardPositions { min-height: 330px; grid-template-columns: minmax(150px, 230px) minmax(260px, 1fr) minmax(150px, 230px); gap: 36px; }
 .stageCard, .emptySlot, .concealedCard { width: min(100%, 205px); }

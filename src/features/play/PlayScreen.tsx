@@ -65,7 +65,7 @@ export function PlayScreen({
   }
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${styles.playPage}`}>
       <header>
         <p className={styles.eyebrow}>Three ways to compete</p>
         <h1 className={styles.title}>Play</h1>

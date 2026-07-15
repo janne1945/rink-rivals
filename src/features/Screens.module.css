@@ -1343,10 +1343,9 @@
 .homePage { gap: 18px; }
 .homeHeroGrid { display: grid; min-height: 350px; grid-template-columns: minmax(0, 2.25fr) minmax(280px, .85fr); gap: 18px; }
 .homeHeroGrid .hero { min-height: 350px; align-items: center; padding: 38px; border-radius: 8px; box-shadow: none; background:
-  linear-gradient(90deg, rgb(3 9 16 / 97%) 0%, rgb(3 9 16 / 70%) 43%, transparent 78%),
-  radial-gradient(circle at 70% 50%, rgb(126 175 197 / 23%), transparent 22%),
-  repeating-linear-gradient(172deg, transparent 0 40px, rgb(255 255 255 / 2%) 41px 42px),
-  linear-gradient(135deg, #071522, #132532 62%, #03080e);
+  linear-gradient(90deg, rgb(2 8 14 / 99%) 0%, rgb(2 8 14 / 91%) 36%, rgb(2 8 14 / 30%) 72%, rgb(2 8 14 / 5%)),
+  linear-gradient(0deg, rgb(2 8 14 / 62%), transparent 48%),
+  url("/assets/ui/home-arena.svg") 58% center / cover no-repeat;
 }
 .homeHeroGrid .hero::before { right: 8%; width: 45%; border-color: rgb(220 240 249 / 10%); }
 .homeHeroGrid .hero::after { right: 36%; }
@@ -1355,8 +1354,8 @@
 .homeHeroGrid .heroCopy { max-width: 430px; color: #b3b9bf; font-size: .86rem; }
 .heroActions > button { min-height: 42px; border-radius: 5px; font-family: var(--font-display); font-size: .72rem; letter-spacing: .04em; }
 .ghostPromo { position: relative; display: grid; min-width: 0; align-content: space-between; padding: 34px 28px; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background:
-  radial-gradient(circle at 84% 35%, rgb(73 119 147 / 24%), transparent 28%),
-  linear-gradient(145deg, #0b1722, #040b13 74%); }
+  linear-gradient(90deg, rgb(3 10 17 / 98%), rgb(3 10 17 / 66%)),
+  url("/assets/ui/play-locker.svg") center / cover no-repeat; }
 .ghostPromo::after { position: absolute; right: -8%; bottom: -15%; width: 52%; aspect-ratio: 1; border: 1px solid rgb(140 192 218 / 12%); border-radius: 50%; content: ""; box-shadow: inset 0 0 30px rgb(91 215 226 / 7%); }
 .ghostPromo h2 { margin: 10px 0 14px; font-size: 2rem; text-transform: uppercase; }
 .ghostPromo p:not(.liveLabel) { max-width: 31ch; color: #9da8b1; font-size: .82rem; line-height: 1.55; }
@@ -1384,12 +1383,16 @@
 .goalsPanel .goalSummaryStrip { border-radius: 5px; }
 .nextShift { min-height: 244px; align-content: end; padding: 26px; background:
   linear-gradient(0deg, rgb(3 9 16 / 96%), transparent 70%),
-  radial-gradient(ellipse at 60% 80%, rgb(92 137 160 / 24%), transparent 36%),
-  repeating-linear-gradient(170deg, transparent 0 36px, rgb(255 255 255 / 2%) 37px 38px), #0a1721; }
+  linear-gradient(90deg, rgb(3 9 16 / 90%), transparent),
+  url("/assets/ui/home-arena.svg") 45% 68% / cover no-repeat; }
 .nextShift .sectionHead { align-items: end; }
 .nextShift .sectionHead h2 { font-size: 1.65rem; }
 
 /* Play */
+.playPage > header { background:
+  linear-gradient(90deg, rgb(2 8 14 / 99%) 0%, rgb(2 8 14 / 88%) 35%, transparent 74%),
+  linear-gradient(0deg, rgb(2 8 14 / 70%), transparent),
+  url("/assets/ui/home-arena.svg") center 58% / cover no-repeat !important; }
 .competitionGrid { grid-template-columns: .86fr 1.08fr 1.08fr; gap: 12px; }
 .competitionCard { min-height: 350px; padding: 24px; border-radius: 9px; box-shadow: none; background:
   linear-gradient(0deg, rgb(3 9 16 / 97%), rgb(3 9 16 / 18%) 78%),
@@ -1397,8 +1400,9 @@
 .competitionCard::before { top: 22%; right: -10%; width: 80%; border-color: rgb(255 255 255 / 6%); }
 .competitionCard h2 { font-size: clamp(2rem, 3vw, 2.8rem); }
 .competitionCard > button, .competitionCard > a { display: flex; min-height: 44px; align-items: center; justify-content: center; border: 1px solid var(--line-strong); border-radius: 5px; }
-.arenaCard { border-color: #d3a838; box-shadow: inset 0 0 24px rgb(220 184 92 / 8%), 0 0 22px rgb(220 184 92 / 8%); background: linear-gradient(0deg, rgb(9 9 9 / 96%), transparent 78%), radial-gradient(circle at 78% 28%, rgb(220 184 92 / 28%), transparent 30%), #111921; }
-.liveCard { border-color: var(--line); background: linear-gradient(0deg, rgb(3 9 16 / 97%), transparent 76%), radial-gradient(circle at 75% 34%, rgb(91 108 121 / 25%), transparent 30%), #09131c; }
+.faceoffCard { background: linear-gradient(0deg, rgb(3 9 16 / 98%), rgb(3 9 16 / 30%)), url("/assets/ui/home-arena.svg") 30% center / cover no-repeat; }
+.arenaCard { border-color: #d3a838; box-shadow: inset 0 0 24px rgb(220 184 92 / 8%), 0 0 22px rgb(220 184 92 / 8%); background: linear-gradient(0deg, rgb(6 8 10 / 98%), rgb(6 8 10 / 32%)), url("/assets/ui/home-arena.svg") 76% center / cover no-repeat; }
+.liveCard { border-color: var(--line); background: linear-gradient(0deg, rgb(3 9 16 / 98%), rgb(3 9 16 / 28%)), url("/assets/ui/play-locker.svg") 68% center / cover no-repeat; }
 .seasonCallout { min-height: 70px; border-radius: 8px; background: linear-gradient(90deg, rgb(173 135 49 / 9%), rgb(7 16 28 / 92%)); }
 .modeGrid { gap: 12px; }
 .modeCard { min-height: 138px; padding: 20px 22px 18px 88px; border-radius: 8px; }
@@ -1411,6 +1415,10 @@
 .difficultySelected { box-shadow: inset 0 0 24px rgb(220 184 92 / 9%); }
 
 /* Lineups */
+.lineupsPage > header { background:
+  linear-gradient(90deg, rgb(2 8 14 / 98%) 0%, rgb(2 8 14 / 82%) 36%, transparent 78%),
+  linear-gradient(0deg, rgb(2 8 14 / 64%), transparent),
+  url("/assets/ui/lineup-banner.svg") center / cover no-repeat !important; }
 .modeLineupGrid { gap: 12px; }
 .modeLineupSection { position: relative; min-height: 164px; grid-template-columns: 340px 1fr; align-items: stretch; gap: 28px; padding: 18px; border-radius: 8px; background: linear-gradient(90deg, rgb(11 24 37 / 96%), rgb(3 11 19 / 88%)); }
 .modeLineupSection:nth-child(1) { border-left: 2px solid #d9a92f; }
@@ -1433,9 +1441,9 @@
 
 /* Market */
 .marketPageHeader { min-height: 338px; max-width: none; justify-content: center; padding: 36px 65% 36px 40px; border: 1px solid var(--line); border-radius: 8px; background:
-  linear-gradient(90deg, rgb(3 9 16 / 98%) 0%, rgb(3 9 16 / 75%) 39%, transparent 70%),
-  radial-gradient(circle at 55% 54%, rgb(91 129 149 / 25%), transparent 20%),
-  repeating-linear-gradient(170deg, transparent 0 42px, rgb(255 255 255 / 2%) 43px 44px), #0b1721; }
+  linear-gradient(90deg, rgb(2 8 14 / 99%) 0%, rgb(2 8 14 / 90%) 35%, rgb(2 8 14 / 18%) 72%),
+  linear-gradient(0deg, rgb(2 8 14 / 58%), transparent),
+  url("/assets/ui/market-tunnel.svg") center / cover no-repeat; }
 .marketPageHeader .title { font-size: clamp(3rem, 5vw, 4.4rem); }
 .marketTrust { margin-top: 24px; color: #77cfff; }
 .marketHero { position: absolute; top: 163px; right: max(4.3vw, calc((100vw - 1480px) / 2 + 40px)); z-index: 2; width: min(310px, 25vw); min-height: 290px; align-items: stretch; flex-direction: column; justify-content: space-between; padding: 24px; border-radius: 8px; box-shadow: none; background: linear-gradient(145deg, rgb(10 23 35 / 98%), rgb(3 10 17 / 98%)); }

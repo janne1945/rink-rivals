@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 620" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#07111b"/><stop offset=".55" stop-color="#101b25"/><stop offset="1" stop-color="#02070c"/></linearGradient>
+    <radialGradient id="ice"><stop stop-color="#8ca9b8" stop-opacity=".38"/><stop offset="1" stop-color="#09131c" stop-opacity="0"/></radialGradient>
+    <linearGradient id="jersey" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#13293a"/><stop offset=".5" stop-color="#03090f"/><stop offset="1" stop-color="#0c1b27"/></linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="15"/></filter>
+  </defs>
+  <rect width="1400" height="620" fill="url(#bg)"/>
+  <g fill="#dceef7" opacity=".5" filter="url(#blur)"><circle cx="370" cy="88" r="14"/><circle cx="630" cy="55" r="12"/><circle cx="890" cy="74" r="13"/><circle cx="1130" cy="64" r="11"/></g>
+  <path d="M0 397Q700 270 1400 397V620H0Z" fill="#0b1923"/>
+  <ellipse cx="700" cy="505" rx="620" ry="190" fill="url(#ice)"/>
+  <g fill="none" stroke="#d9eaf1" stroke-opacity=".09"><ellipse cx="730" cy="510" rx="505" ry="130" stroke-width="3"/><path d="M0 428h1400M700 330v290"/><circle cx="700" cy="510" r="75"/></g>
+  <g opacity=".5" fill="#a9c0cd"><path d="M0 310h1400v12H0z"/><path d="M0 336h1400v3H0z"/></g>
+  <g transform="translate(790 95)">
+    <path d="m230 36 44 52-18 104-18 82 22 200-58 0-36-166-42 166H65l38-204-22-83-10-102 45-49 48-16Z" fill="url(#jersey)" stroke="#d7b255" stroke-opacity=".18" stroke-width="3"/>
+    <ellipse cx="167" cy="4" rx="43" ry="49" fill="#02070b"/>
+    <path d="M126-3q40-43 82 0l-5 30h-72Z" fill="#0a1620" stroke="#9faeb6" stroke-opacity=".22"/>
+    <path d="M95 141Q167 183 245 141M124 88h86" fill="none" stroke="#c79b3d" stroke-opacity=".45" stroke-width="9"/>
+    <text x="168" y="120" text-anchor="middle" fill="#c7d2d8" fill-opacity=".68" font-family="Arial Narrow,Arial" font-size="28" font-weight="700" letter-spacing="5">RIVALS</text>
+    <text x="168" y="210" text-anchor="middle" fill="#d4dce0" fill-opacity=".58" font-family="Arial Narrow,Arial" font-size="94" font-weight="900">25</text>
+    <path d="M76 142 12 283M250 143l90 134" stroke="#06101a" stroke-width="32" stroke-linecap="round"/>
+    <path d="m332 258 52 230" stroke="#7b5d34" stroke-width="10"/>
+    <path d="m90 474-92 37m218-37 86 35" stroke="#a8b9c2" stroke-opacity=".5" stroke-width="7"/>
+  </g>
+  <g transform="translate(1140 100)"><path d="M0 0h205v270L103 325 0 270Z" fill="#07131d" stroke="#ad8731" stroke-width="3"/><path d="M16 16h173v242l-86 46-87-46Z" fill="none" stroke="#f6d98b" stroke-opacity=".18"/><text x="103" y="178" text-anchor="middle" fill="#c39b45" font-family="Arial Narrow,Arial" font-size="88" font-weight="900">RR</text></g>
+  <rect width="1400" height="620" fill="url(#ice)" opacity=".12"/>
+</svg>

@@ -31,7 +31,7 @@ export function AppShell({ credits, displayName, seasonXp = 0, onLogout, logoutB
       <header className={styles.header} aria-hidden={immersive || undefined}>
         <div className={styles.headerInner}>
           <NavLink className={styles.brand} to="/" aria-label="Rink Rivals home">
-            <img className={styles.mark} src="/rink-rivals-icon.svg" alt="" />
+            <img className={styles.mark} src="/assets/ui/rink-rivals-crest.svg" alt="" />
             <span>
               <span className={styles.wordmark}>Rink Rivals</span>
               <span className={styles.tagline}>Two leagues. One collection.</span>

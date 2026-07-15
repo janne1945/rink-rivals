@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 430" preserveAspectRatio="xMidYMid slice">
+  <defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0b1620"/><stop offset="1" stop-color="#02070b"/></linearGradient><radialGradient id="l"><stop stop-color="#9ec2d2" stop-opacity=".22"/><stop offset="1" stop-color="#08121a" stop-opacity="0"/></radialGradient></defs>
+  <rect width="1400" height="430" fill="url(#b)"/><ellipse cx="660" cy="330" rx="640" ry="150" fill="url(#l)"/><path d="M0 318Q700 210 1400 318v112H0Z" fill="#09141d"/><g stroke="#d9e9f0" stroke-opacity=".07" fill="none"><ellipse cx="650" cy="360" rx="500" ry="100"/><circle cx="650" cy="360" r="62"/><path d="M650 245v185M0 318h1400"/></g>
+  <g transform="translate(1030 -10)"><path d="M0 0h300v325l-150 82L0 325Z" fill="#07131d" stroke="#ad8731" stroke-width="4"/><path d="M20 20h260v290l-130 70-130-70Z" fill="none" stroke="#f6d98b" stroke-opacity=".18"/><text x="150" y="225" text-anchor="middle" fill="#c39845" font-family="Arial Narrow,Arial" font-size="118" font-weight="900">RR</text></g>
+  <g fill="#eaf5fa" opacity=".42"><circle cx="210" cy="58" r="7"/><circle cx="390" cy="38" r="6"/><circle cx="570" cy="52" r="8"/><circle cx="750" cy="44" r="7"/><circle cx="930" cy="60" r="6"/></g>
+</svg>

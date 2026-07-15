@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice">
+  <defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#15212b"/><stop offset="1" stop-color="#02070c"/></linearGradient><linearGradient id="j"><stop stop-color="#172c3c"/><stop offset="1" stop-color="#040a0f"/></linearGradient></defs>
+  <rect width="1000" height="700" fill="url(#b)"/>
+  <path d="M0 480 1000 390v310H0Z" fill="#050b10"/>
+  <g stroke="#8ca0aa" stroke-opacity=".12"><path d="M0 100h1000M0 210h1000M0 320h1000"/><path d="M100 0v700m150-700v700m150-700v700m150-700v700m150-700v700m150-700v700"/></g>
+  <g transform="translate(510 50)" fill="url(#j)" stroke="#bd9240" stroke-opacity=".24">
+    <path d="M20 70 90 25l65 43 76-43 70 45-35 105v330H54V175Z"/><path d="M335 70 405 25l65 43 76-43 70 45-35 105v330H369V175Z"/><path d="M650 70 720 25l65 43 76-43 70 45-35 105v330H684V175Z"/>
+  </g>
+  <g fill="#d7dce0" fill-opacity=".36" font-family="Arial Narrow,Arial" font-size="125" font-weight="900"><text x="700" y="380">R</text><text x="420" y="380">3</text><text x="820" y="380">8</text></g>
+  <g fill="#eef7fb" opacity=".32"><circle cx="210" cy="85" r="8"/><circle cx="480" cy="70" r="7"/><circle cx="750" cy="82" r="8"/></g>
+</svg>

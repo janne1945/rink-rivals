@@ -158,7 +158,7 @@ export function LineupsScreen({ lineups, activeLineupIds, catalog, collection, o
   }
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${styles.lineupsPage}`}>
       <header>
         <p className={styles.eyebrow}>Six cards. Every role matters.</p>
         <h1 className={styles.title}>Lineups</h1>

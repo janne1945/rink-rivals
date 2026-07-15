@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 600" preserveAspectRatio="xMidYMid slice">
+  <defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0c1720"/><stop offset="1" stop-color="#010508"/></linearGradient><radialGradient id="l"><stop stop-color="#b9d1dc" stop-opacity=".42"/><stop offset="1" stop-color="#061018" stop-opacity="0"/></radialGradient></defs>
+  <rect width="1400" height="600" fill="url(#b)"/>
+  <path d="m340 0 250 600m470-600L810 600M0 120h1400M0 410h1400" stroke="#c4d5dd" stroke-opacity=".08" stroke-width="3"/>
+  <ellipse cx="700" cy="460" rx="430" ry="210" fill="url(#l)"/>
+  <g transform="translate(575 72)">
+    <ellipse cx="127" cy="30" rx="40" ry="46" fill="#020609"/>
+    <path d="m72 70 45-18 57 15 45 50-17 145 34 245h-69l-42-190-36 190H22l33-242-22-143Z" fill="#061019" stroke="#bd9140" stroke-opacity=".22" stroke-width="3"/>
+    <path d="M65 158q62 38 139 0" fill="none" stroke="#ba8c35" stroke-opacity=".42" stroke-width="8"/>
+    <text x="126" y="137" text-anchor="middle" fill="#d6dfe3" fill-opacity=".55" font-family="Arial Narrow,Arial" font-size="28" letter-spacing="5">RIVALS</text>
+    <text x="126" y="244" text-anchor="middle" fill="#d6dfe3" fill-opacity=".46" font-family="Arial Narrow,Arial" font-size="100" font-weight="900">24</text>
+    <path d="m43 120-88 157m264-157 86 157" stroke="#061019" stroke-width="30" stroke-linecap="round"/>
+    <path d="m297 260 37 258" stroke="#6c5130" stroke-width="9"/>
+  </g>
+  <g fill="#d9e7ed" opacity=".48"><circle cx="490" cy="48" r="7"/><circle cx="580" cy="38" r="7"/><circle cx="700" cy="32" r="9"/><circle cx="820" cy="38" r="7"/><circle cx="910" cy="48" r="7"/></g>
+  <g fill="#07121b" stroke="#ad8731" stroke-width="2"><path d="M235 80h120v185l-60 42-60-42Z"/><path d="M1045 80h120v185l-60 42-60-42Z"/></g>
+  <g fill="#c49842" font-family="Arial Narrow,Arial" font-size="54" font-weight="900"><text x="295" y="205" text-anchor="middle">RR</text><text x="1105" y="205" text-anchor="middle">RR</text></g>
+</svg>
