@@ -20,7 +20,8 @@
 
 ## Assets
 
-- Keine neue Key-Art erforderlich. Der bestehende lokale Arena-/Tunnel-Hintergrund `public/assets/ui/market-tunnel.svg` wurde responsive neu inszeniert.
+- Der schematische SVG-Platzhalter wurde durch die lokal gespeicherte, textfreie Hockey-Key-Art `public/assets/ui/market-hero-keyart.webp` ersetzt. Sie zeigt einen anonymen Spieler im Arena-Tunnel und besitzt links bewusst ruhige Fläche für die Hero-Texte.
+- Desktop und Mobile verwenden eigene Overlay- und Fokuspositionen, damit der Spieler glaubwürdig bleibt und nicht wie eine übergroße Hintergrundfigur in die Typografie ragt.
 - Featured Release verwendet die echten, bereits validierten Kartenassets der aktuellen Serverrotation.
 - Keine Echtgeld-, Premium-, Bundle- oder Shop-Assets ergänzt.
 

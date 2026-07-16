@@ -36,9 +36,9 @@
   flex-direction: column;
   padding: 48px 48% 48px 42px;
   background:
-    linear-gradient(90deg, rgb(2 8 14 / 99%) 0%, rgb(2 8 14 / 88%) 35%, rgb(2 8 14 / 12%) 78%),
-    linear-gradient(0deg, rgb(2 8 14 / 68%), transparent 56%),
-    url("/assets/ui/market-tunnel.svg") 52% center / cover no-repeat;
+    linear-gradient(90deg, rgb(2 8 14 / 99%) 0%, rgb(2 8 14 / 83%) 34%, rgb(2 8 14 / 9%) 72%),
+    linear-gradient(0deg, rgb(2 8 14 / 64%), transparent 58%),
+    url("/assets/ui/market-hero-keyart.webp") 54% center / cover no-repeat;
 }
 
 .eyebrow,
@@ -241,7 +241,14 @@
 
 @media (max-width: 640px) {
   .page { gap: 14px; }
-  .marketPageHeader { min-height: 430px; padding: 30px 24px 190px; background-position: 58% center; }
+  .marketPageHeader {
+    min-height: 430px;
+    padding: 30px 24px 190px;
+    background:
+      linear-gradient(90deg, rgb(2 8 14 / 98%) 0%, rgb(2 8 14 / 78%) 48%, rgb(2 8 14 / 12%) 84%),
+      linear-gradient(0deg, rgb(2 8 14 / 78%), transparent 48%),
+      url("/assets/ui/market-hero-keyart.webp") 68% center / cover no-repeat;
+  }
   .title { font-size: clamp(3.8rem, 20vw, 5.4rem); }
   .lede { font-size: .82rem; }
   .marketTrust { gap: 8px 14px; }
