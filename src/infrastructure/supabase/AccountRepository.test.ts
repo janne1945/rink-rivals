@@ -176,6 +176,7 @@ describe("SupabaseAccountRepository RPC mapping", () => {
       play_match_round: roundPayload,
       settle_match: { status: "settled", match_id: "db-match-1", reward_credits: 345, credits: 1345, completed_matches: 1 },
       abandon_match: { status: "abandoned" },
+      abandon_open_match: { status: "none" },
     });
     const slots = lineup.slots;
 
@@ -186,6 +187,7 @@ describe("SupabaseAccountRepository RPC mapping", () => {
     await expect(repository.playMatchRound({ clientMatchId: "match-1", roundIndex: 0, playerCardId: "lw", clientRequestId: "round-request" })).resolves.toMatchObject({ winner: "player", tieBreaker: "category", transcript: { player: { value: 90 } } });
     await expect(repository.settleMatch({ clientMatchId: "match-1" })).resolves.toMatchObject({ status: "settled", rewardCredits: 345 });
     await expect(repository.abandonMatch({ clientMatchId: "match-1" })).resolves.toEqual({ status: "abandoned" });
+    await expect(repository.abandonOpenMatch()).resolves.toEqual({ status: "none", clientMatchId: null });
 
     expect(rpc).toHaveBeenCalledWith("save_lineup", {
       lineup_id: "lineup-1",
@@ -199,6 +201,7 @@ describe("SupabaseAccountRepository RPC mapping", () => {
     expect(rpc).toHaveBeenCalledWith("play_match_round", { client_match_id: "match-1", round_index: 0, player_card_id: "lw", client_request_id: "round-request" });
     expect(rpc).toHaveBeenCalledWith("settle_match", { client_match_id: "match-1" });
     expect(rpc).toHaveBeenCalledWith("abandon_match", { client_match_id: "match-1" });
+    expect(rpc).toHaveBeenCalledWith("abandon_open_match", undefined);
   });
 
   it("rejects malformed server payloads instead of inventing client defaults", async () => {
@@ -316,6 +319,7 @@ describe("SupabaseAccountRepository RPC mapping", () => {
         outcome: "win", player_wins: 3, ghost_wins: 2,
       },
       abandon_rivalry_challenge: { status: "already-abandoned" },
+      abandon_open_rivalry_challenge: { status: "abandoned", client_match_id: "ghost-orphan" },
       list_rivalry_challenges: { created: [{
         slug: "0123456789abcdef0123456789abcdef", creator_label: "Alex", mode: "nhl-circuit",
         difficulty: "rookie", challenge_strength: 84, status: "active",
@@ -331,12 +335,14 @@ describe("SupabaseAccountRepository RPC mapping", () => {
     await expect(repository.playRivalryChallengeRound({ clientMatchId: "ghost-match-1", roundIndex: 0, playerCardId: "lw", clientRequestId: "ghost-round-1" })).resolves.toMatchObject({ winner: "player", playerScore: 90 });
     await expect(repository.settleRivalryChallenge({ clientMatchId: "ghost-match-1" })).resolves.toMatchObject({ outcome: "win", playerWins: 3, ghostWins: 2 });
     await expect(repository.abandonRivalryChallenge({ clientMatchId: "ghost-match-1" })).resolves.toEqual({ status: "already-abandoned" });
+    await expect(repository.abandonOpenRivalryChallenge()).resolves.toEqual({ status: "abandoned", clientMatchId: "ghost-orphan" });
     await expect(repository.listRivalryChallenges()).resolves.toEqual([expect.objectContaining({ attempts: 2, ghostDefenses: 1 })]);
     await expect(repository.revokeRivalryChallenge("0123456789abcdef0123456789abcdef")).resolves.toBeUndefined();
     expect(rpc).toHaveBeenCalledWith("create_rivalry_challenge", { client_request_id: "create-1", source_client_match_id: "source-1", source_kind: "ai-match" });
     expect(rpc).toHaveBeenCalledWith("start_rivalry_challenge", { challenge_slug: "0123456789abcdef0123456789abcdef", client_match_id: "ghost-match-1", lineup_id: "lineup-1" });
     expect(rpc).toHaveBeenCalledWith("settle_rivalry_challenge", { client_match_id: "ghost-match-1" });
     expect(rpc).toHaveBeenCalledWith("abandon_rivalry_challenge", { client_match_id: "ghost-match-1" });
+    expect(rpc).toHaveBeenCalledWith("abandon_open_rivalry_challenge", undefined);
   });
 
   it("maps Season Locker and Rivalry Arena through server-only RPC inputs", async () => {
@@ -381,6 +387,7 @@ describe("SupabaseAccountRepository RPC mapping", () => {
       play_arena_match_round: { ...roundPayload, client_match_id: "arena-1" },
       settle_arena_match: { status: "settled", match_id: "arena-db-1", reward_credits: 420, credits: 1520, completed_matches: 2 },
       abandon_arena_match: { status: "already-settled" },
+      abandon_open_arena_match: { status: "abandoned", client_match_id: "arena-orphan" },
     });
 
     const locker = await repository.loadSeasonLocker();
@@ -393,9 +400,11 @@ describe("SupabaseAccountRepository RPC mapping", () => {
     await expect(repository.playArenaMatchRound({ clientMatchId: "arena-1", roundIndex: 0, playerCardId: "lw", clientRequestId: "arena-round-1" })).resolves.toMatchObject({ winner: "player" });
     await expect(repository.settleArenaMatch({ clientMatchId: "arena-1" })).resolves.toMatchObject({ rewardCredits: 420 });
     await expect(repository.abandonArenaMatch({ clientMatchId: "arena-1" })).resolves.toEqual({ status: "already-settled" });
+    await expect(repository.abandonOpenArenaMatch()).resolves.toEqual({ status: "abandoned", clientMatchId: "arena-orphan" });
     expect(rpc).toHaveBeenCalledWith("start_arena_match", { client_match_id: "arena-1", mode: "nhl-circuit" });
     expect(rpc).toHaveBeenCalledWith("play_arena_match_round", { client_match_id: "arena-1", round_index: 0, player_card_id: "lw", client_request_id: "arena-round-1" });
     expect(rpc).toHaveBeenCalledWith("abandon_arena_match", { client_match_id: "arena-1" });
+    expect(rpc).toHaveBeenCalledWith("abandon_open_arena_match", undefined);
   });
 
   it("maps Live rooms, sends only immutable action inputs, and rejects any non-zero reward", async () => {

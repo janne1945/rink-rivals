@@ -159,6 +159,27 @@ test.describe("Social Competition system", () => {
     browserErrors.set(page, []);
   });
 
+  test("cleans an orphaned Arena ticket whose id is missing from browser storage", async ({ page }) => {
+    const state = createSupabaseMockState();
+    await installSupabaseMock(page, { authenticated: true, onboardingCompleted: true, state });
+    await page.goto("/play");
+    await page.evaluate(async () => {
+      const response = await fetch("https://zsyoxpirfxajkruqeqam.supabase.co/rest/v1/rpc/start_arena_match", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ client_match_id: "orphaned-arena", mode: "nhl-circuit" }),
+      });
+      if (!response.ok) throw new Error("Could not seed orphaned Arena ticket.");
+    });
+    const orphanedTicket = state.matchTickets.get("orphaned-arena")!;
+    expect(orphanedTicket.status).toBe("open");
+    expect(await page.evaluate(() => sessionStorage.getItem("rink-rivals:match-experience-v2:active-match"))).toBeNull();
+    await page.getByRole("button", { name: "Enter Arena" }).click();
+    await expect(page).toHaveURL(/\/match$/);
+    expect(orphanedTicket.status).toBe("abandoned");
+    expect([...state.matchTickets.values()].filter((ticket) => ticket.source === "arena" && ticket.status === "open")).toHaveLength(1);
+  });
+
   test("keeps Live and Season keyboard accessible with motion disabled", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/ghost");

@@ -25,6 +25,9 @@ export type Database = {
         Returns: Json
       }
       abandon_match: { Args: { client_match_id: string }; Returns: Json }
+      abandon_open_arena_match: { Args: never; Returns: Json }
+      abandon_open_match: { Args: never; Returns: Json }
+      abandon_open_rivalry_challenge: { Args: never; Returns: Json }
       abandon_rivalry_challenge: {
         Args: { client_match_id: string }
         Returns: Json

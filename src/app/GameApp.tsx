@@ -246,10 +246,14 @@ export function GameApp({ account, actions }: {
     const pending = readPendingMatchAbandonment();
     const active = readActiveMatchSession();
     const target = pending ?? active;
-    if (!target) return true;
     if (!pending && active) markMatchForAbandonment(active);
     try {
-      await abandonStoredMatch(target);
+      if (target) await abandonStoredMatch(target);
+      await Promise.all([
+        actions.abandonOpenMatch(),
+        actions.abandonOpenArenaMatch(),
+        actions.abandonOpenRivalryChallenge(),
+      ]);
       clearStoredMatch();
       return true;
     } catch (error) {
@@ -258,7 +262,7 @@ export function GameApp({ account, actions }: {
         : "The previous match could not be closed. Please try again.");
       return false;
     }
-  }, [abandonStoredMatch, clearStoredMatch]);
+  }, [abandonStoredMatch, actions, clearStoredMatch]);
 
   useEffect(() => {
     let active = true;

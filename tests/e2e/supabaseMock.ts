@@ -128,6 +128,7 @@ type PurchaseReceipt = {
 };
 
 type MatchTicket = {
+  source: "ai" | "arena" | "ghost";
   clientMatchId: string;
   mode: GameMode;
   difficulty: AiDifficulty;
@@ -1117,6 +1118,17 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       ticket.status = "abandoned";
       return json(route, { status: "abandoned" });
     }
+    if (url.pathname === "/rest/v1/rpc/abandon_open_match"
+      || url.pathname === "/rest/v1/rpc/abandon_open_arena_match"
+      || url.pathname === "/rest/v1/rpc/abandon_open_rivalry_challenge") {
+      const source = url.pathname.endsWith("abandon_open_match")
+        ? "ai"
+        : url.pathname.endsWith("abandon_open_arena_match") ? "arena" : "ghost";
+      const ticket = [...state.matchTickets.values()].find((candidate) => candidate.source === source && candidate.status === "open");
+      if (!ticket) return json(route, { status: "none" });
+      ticket.status = "abandoned";
+      return json(route, { status: "abandoned", client_match_id: ticket.clientMatchId });
+    }
     if (url.pathname === "/rest/v1/rpc/start_rivalry_challenge") {
       const body = request.postDataJSON() as { challenge_slug: string; client_match_id: string; lineup_id: string };
       const challenge = state.rivalryChallenges.get(body.challenge_slug);
@@ -1126,6 +1138,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       const activeLineup = state.lineups.get(body.lineup_id);
       if (!activeLineup || !activeLineup.isActive || activeLineup.mode !== challenge.mode) return databaseError(route, "An active lineup for the challenge mode is required.");
       const ticket: MatchTicket = {
+        source: "ghost",
         clientMatchId: body.client_match_id,
         mode: challenge.mode,
         difficulty: challenge.difficulty,
@@ -1157,6 +1170,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       const activeLineup = [...state.lineups.values()].find((lineup) => lineup.mode === body.mode && lineup.isActive);
       if (!activeLineup) return databaseError(route, "An active lineup is required for this Arena.");
       const ticket: MatchTicket = {
+        source: "arena",
         clientMatchId: body.client_match_id,
         mode: body.mode,
         difficulty: "pro",
@@ -1198,6 +1212,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       const activeLineup = [...state.lineups.values()].find((lineup) => lineup.mode === mode && lineup.isActive);
       if (!activeLineup) return databaseError(route, "An active lineup is required for this mode.");
       const ticket: MatchTicket = {
+        source: "ai",
         clientMatchId,
         mode,
         difficulty,

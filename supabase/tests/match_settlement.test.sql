@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(57);
+select plan(59);
 
 select has_table('public', 'matches', 'matches exists');
 select has_table('public', 'match_rewards', 'match rewards exists');
@@ -13,6 +13,7 @@ select has_function('public', 'start_match', array['text', 'text', 'text'], 'sta
 select has_function('public', 'play_match_round', array['text', 'integer', 'text', 'text'], 'play_match_round exists');
 select has_function('public', 'settle_match', array['text'], 'one-argument settle_match exists');
 select has_function('public', 'abandon_match', array['text'], 'match abandonment RPC exists');
+select has_function('public', 'abandon_open_match', array[]::text[], 'orphaned match abandonment RPC exists');
 select hasnt_function(
   'public', 'settle_match', array['text', 'text', 'text', 'text'],
   'client-authored settlement function was removed'
@@ -49,8 +50,9 @@ select throws_ok(
   'P0001', 'A valid server-issued match ticket is required.',
   'unknown match abandonment is rejected'
 );
+select is(public.abandon_open_match() ->> 'status', 'none', 'open-match cleanup is a no-op without an orphan');
 select lives_ok($$select public.start_match('abandon-match', 'nhl-circuit', 'rookie')$$, 'abandonment fixture starts');
-select is(public.abandon_match('abandon-match') ->> 'status', 'abandoned', 'an open match can be abandoned');
+select is(public.abandon_open_match() ->> 'status', 'abandoned', 'an orphaned open match can be abandoned without its id');
 select is(public.abandon_match('abandon-match') ->> 'status', 'already-abandoned', 'match abandonment is idempotent');
 select is((select status from public.match_tickets where user_id = auth.uid() and client_match_id = 'abandon-match'), 'abandoned', 'abandoned match remains as an audit record');
 select is(public.start_match('after-abandon', 'nhl-circuit', 'rookie') ->> 'client_match_id', 'after-abandon', 'a new match starts after abandonment');

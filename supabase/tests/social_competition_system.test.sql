@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(79);
+select plan(81);
 
 select has_table('public', 'arena_match_tickets', 'Arena tickets exist');
 select has_table('public', 'arena_match_rounds', 'Arena round receipts exist');
@@ -15,6 +15,7 @@ select has_table('public', 'season_xp_receipts', 'Season XP receipts exist');
 select has_table('public', 'season_reward_claims', 'Season claims exist');
 select has_function('public', 'start_arena_match', array['text', 'text'], 'Arena start RPC exists');
 select has_function('public', 'abandon_arena_match', array['text'], 'Arena abandonment RPC exists');
+select has_function('public', 'abandon_open_arena_match', array[]::text[], 'orphaned Arena abandonment RPC exists');
 select has_function('public', 'lock_live_rivalry_choice', array['uuid', 'integer', 'text', 'text'], 'Live lock RPC exists');
 select has_function('public', 'get_season_locker', array[]::text[], 'Season Locker RPC exists');
 select ok((select relrowsecurity from pg_class where oid = 'public.live_rivalry_choices'::regclass), 'hidden choices have RLS');
@@ -71,8 +72,9 @@ select throws_ok(
   'P0001', 'A valid Arena ticket is required.',
   'unknown Arena abandonment is rejected'
 );
+select is(public.abandon_open_arena_match() ->> 'status', 'none', 'open-Arena cleanup is a no-op without an orphan');
 select lives_ok($$select public.start_arena_match('arena-abandon', 'nhl-circuit')$$, 'Arena abandonment fixture starts');
-select is(public.abandon_arena_match('arena-abandon') ->> 'status', 'abandoned', 'an open Arena match can be abandoned');
+select is(public.abandon_open_arena_match() ->> 'status', 'abandoned', 'an orphaned open Arena match can be abandoned without its id');
 select is(public.abandon_arena_match('arena-abandon') ->> 'status', 'already-abandoned', 'Arena abandonment is idempotent');
 reset role;
 select is((select status from public.arena_match_tickets where user_id = '22222222-2222-4222-8222-222222222222' and client_match_id = 'arena-abandon'), 'abandoned', 'abandoned Arena match remains as an audit record');

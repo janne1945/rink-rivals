@@ -49,6 +49,11 @@ export interface AbandonMatchResult {
   readonly status: "abandoned" | "already-abandoned" | "already-settled";
 }
 
+export interface AbandonOpenMatchResult {
+  readonly status: "abandoned" | "none";
+  readonly clientMatchId: string | null;
+}
+
 export interface SettleMatchResult {
   readonly status: "settled" | "already-settled";
   readonly matchId: string;
@@ -419,12 +424,14 @@ export interface AccountRepository {
   playMatchRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult>;
   settleMatch(input: SettleMatchInput): Promise<SettleMatchResult>;
   abandonMatch(input: AbandonMatchInput): Promise<AbandonMatchResult>;
+  abandonOpenMatch(): Promise<AbandonOpenMatchResult>;
   loadSeasonLocker(): Promise<SeasonLockerState>;
   claimSeasonReward(input: ClaimSeasonRewardInput): Promise<ClaimSeasonRewardResult>;
   startArenaMatch(input: StartArenaMatchInput): Promise<StartMatchResult>;
   playArenaMatchRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult>;
   settleArenaMatch(input: SettleMatchInput): Promise<SettleMatchResult>;
   abandonArenaMatch(input: AbandonMatchInput): Promise<AbandonMatchResult>;
+  abandonOpenArenaMatch(): Promise<AbandonOpenMatchResult>;
   loadLiveRivalryRoom(roomId?: string): Promise<LiveRivalryRoomState | null>;
   createLiveRivalryRoom(input: CreateLiveRivalryRoomInput): Promise<LiveRivalryRoomState>;
   joinLiveRivalryRoom(input: JoinLiveRivalryRoomInput): Promise<LiveRivalryRoomState>;
@@ -439,6 +446,7 @@ export interface AccountRepository {
   playRivalryChallengeRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult>;
   settleRivalryChallenge(input: SettleMatchInput): Promise<SettleRivalryChallengeResult>;
   abandonRivalryChallenge(input: AbandonMatchInput): Promise<AbandonMatchResult>;
+  abandonOpenRivalryChallenge(): Promise<AbandonOpenMatchResult>;
   revokeRivalryChallenge(slug: string): Promise<void>;
   listRivalryChallenges(): Promise<readonly RivalryChallengeSummary[]>;
 }
@@ -624,6 +632,17 @@ function abandonMatchResultField(value: unknown): AbandonMatchResult {
     throw new Error("Supabase returned an invalid match abandonment status.");
   }
   return { status: payload.status };
+}
+
+function abandonOpenMatchResultField(value: unknown): AbandonOpenMatchResult {
+  const payload = record(value, "open match abandonment result");
+  if (payload.status !== "abandoned" && payload.status !== "none") {
+    throw new Error("Supabase returned an invalid open match abandonment status.");
+  }
+  return {
+    status: payload.status,
+    clientMatchId: payload.status === "abandoned" ? textField(payload.client_match_id, "abandoned client match id") : null,
+  };
 }
 
 function startMatchResultField(value: unknown): StartMatchResult {
@@ -1187,6 +1206,10 @@ export class SupabaseAccountRepository implements AccountRepository {
     }));
   }
 
+  async abandonOpenRivalryChallenge(): Promise<AbandonOpenMatchResult> {
+    return abandonOpenMatchResultField(await this.callRpc("abandon_open_rivalry_challenge"));
+  }
+
   async revokeRivalryChallenge(slug: string): Promise<void> {
     const payload = record(await this.callRpc("revoke_rivalry_challenge", {
       challenge_slug: slug,
@@ -1238,6 +1261,10 @@ export class SupabaseAccountRepository implements AccountRepository {
     return abandonMatchResultField(await this.callRpc("abandon_match", {
       client_match_id: input.clientMatchId,
     }));
+  }
+
+  async abandonOpenMatch(): Promise<AbandonOpenMatchResult> {
+    return abandonOpenMatchResultField(await this.callRpc("abandon_open_match"));
   }
 
   async loadSeasonLocker(): Promise<SeasonLockerState> {
@@ -1299,6 +1326,10 @@ export class SupabaseAccountRepository implements AccountRepository {
     return abandonMatchResultField(await this.callRpc("abandon_arena_match", {
       client_match_id: input.clientMatchId,
     }));
+  }
+
+  async abandonOpenArenaMatch(): Promise<AbandonOpenMatchResult> {
+    return abandonOpenMatchResultField(await this.callRpc("abandon_open_arena_match"));
   }
 
   async loadLiveRivalryRoom(roomId?: string): Promise<LiveRivalryRoomState | null> {

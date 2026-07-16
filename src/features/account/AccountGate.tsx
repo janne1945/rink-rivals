@@ -4,6 +4,7 @@ import type { Session } from "@supabase/supabase-js";
 import type {
   AbandonMatchInput,
   AbandonMatchResult,
+  AbandonOpenMatchResult,
   AuthCredentials,
   AuthService,
   RegistrationCredentials,
@@ -61,11 +62,13 @@ export interface AccountActions {
   readonly playMatchRound: (input: PlayMatchRoundInput) => Promise<PlayMatchRoundResult>;
   readonly settleMatch: (input: SettleMatchInput) => Promise<SettleMatchResult>;
   readonly abandonMatch: (input: AbandonMatchInput) => Promise<AbandonMatchResult>;
+  readonly abandonOpenMatch: () => Promise<AbandonOpenMatchResult>;
   readonly claimSeasonReward: (input: ClaimSeasonRewardInput) => Promise<ClaimSeasonRewardResult>;
   readonly startArenaMatch: (input: StartArenaMatchInput) => Promise<StartMatchResult>;
   readonly playArenaMatchRound: (input: PlayMatchRoundInput) => Promise<PlayMatchRoundResult>;
   readonly settleArenaMatch: (input: SettleMatchInput) => Promise<SettleMatchResult>;
   readonly abandonArenaMatch: (input: AbandonMatchInput) => Promise<AbandonMatchResult>;
+  readonly abandonOpenArenaMatch: () => Promise<AbandonOpenMatchResult>;
   readonly loadLiveRivalryRoom: (roomId?: string) => Promise<LiveRivalryRoomState | null>;
   readonly createLiveRivalryRoom: (input: CreateLiveRivalryRoomInput) => Promise<LiveRivalryRoomState>;
   readonly joinLiveRivalryRoom: (input: JoinLiveRivalryRoomInput) => Promise<LiveRivalryRoomState>;
@@ -79,6 +82,7 @@ export interface AccountActions {
   readonly playRivalryChallengeRound: (input: PlayMatchRoundInput) => Promise<PlayMatchRoundResult>;
   readonly settleRivalryChallenge: (input: SettleMatchInput) => Promise<SettleRivalryChallengeResult>;
   readonly abandonRivalryChallenge: (input: AbandonMatchInput) => Promise<AbandonMatchResult>;
+  readonly abandonOpenRivalryChallenge: () => Promise<AbandonOpenMatchResult>;
   readonly listRivalryChallenges: () => Promise<readonly RivalryChallengeSummary[]>;
   readonly revokeRivalryChallenge: (slug: string) => Promise<void>;
   readonly loadPublicRivalryChallenge: (slug: string) => Promise<PublicRivalryChallenge>;
@@ -395,11 +399,13 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     playMatchRound,
     settleMatch,
     abandonMatch,
+    abandonOpenMatch: () => repository.abandonOpenMatch(),
     claimSeasonReward,
     startArenaMatch: (input) => repository.startArenaMatch(input),
     playArenaMatchRound: (input) => repository.playArenaMatchRound(input),
     settleArenaMatch,
     abandonArenaMatch: (input) => repository.abandonArenaMatch(input),
+    abandonOpenArenaMatch: () => repository.abandonOpenArenaMatch(),
     loadLiveRivalryRoom: (roomId) => repository.loadLiveRivalryRoom(roomId),
     createLiveRivalryRoom: (input) => repository.createLiveRivalryRoom(input),
     joinLiveRivalryRoom: (input) => repository.joinLiveRivalryRoom(input),
@@ -413,6 +419,7 @@ export function AccountGate({ auth, repository, children }: AccountGateProps) {
     playRivalryChallengeRound,
     settleRivalryChallenge,
     abandonRivalryChallenge: (input) => repository.abandonRivalryChallenge(input),
+    abandonOpenRivalryChallenge: () => repository.abandonOpenRivalryChallenge(),
     listRivalryChallenges: () => repository.listRivalryChallenges(),
     revokeRivalryChallenge: (slug) => repository.revokeRivalryChallenge(slug),
     loadPublicRivalryChallenge: (slug) => repository.loadPublicRivalryChallenge(slug),

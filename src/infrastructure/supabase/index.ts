@@ -5,6 +5,7 @@ import { getSupabaseClient } from "./client";
 export type {
   AbandonMatchInput,
   AbandonMatchResult,
+  AbandonOpenMatchResult,
   AccountCard,
   AccountLineup,
   AccountMarketEvent,
