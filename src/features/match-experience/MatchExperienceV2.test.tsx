@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { createBattle, getBattleView, getEligibleCards, revealRound, selectCard, type BattleState } from "../../domain/battle";
+import { calculateCategoryValue, createBattle, getBattleView, getEligibleCards, revealRound, selectCard, type BattleState } from "../../domain/battle";
 import { gameCatalog, starterLineups } from "../../data/generated/gameCatalog";
 import { BroadcastSting } from "./BroadcastSting";
 import { MatchExperienceV2, type MatchExperienceV2Props } from "./MatchExperienceV2";
@@ -9,6 +9,19 @@ import { MatchExperienceV2, type MatchExperienceV2Props } from "./MatchExperienc
 function battle(): BattleState {
   const lineups = starterLineups.filter((lineup) => lineup.mode === "nhl-circuit");
   return createBattle({ seed: "v2-component", mode: "nhl-circuit", difficulty: "rookie", catalog: gameCatalog, playerLineup: lineups[0], opponentLineup: lineups[1] });
+}
+
+function completedLoss(): BattleState {
+  let state = battle();
+  while (state.phase !== "complete") {
+    const situation = state.situations[state.roundIndex];
+    const player = [...getEligibleCards(state, "player")].sort((left, right) => calculateCategoryValue(left.card, situation) - calculateCategoryValue(right.card, situation))[0];
+    const opponent = [...getEligibleCards(state, "opponent")].sort((left, right) => calculateCategoryValue(right.card, situation) - calculateCategoryValue(left.card, situation))[0];
+    state = selectCard(state, "opponent", opponent.card.id);
+    state = selectCard(state, "player", player.card.id);
+    state = revealRound(state);
+  }
+  return state;
 }
 
 function props(state: BattleState, overrides: Partial<MatchExperienceV2Props> = {}): MatchExperienceV2Props {
@@ -65,5 +78,21 @@ describe("Match Experience V2", () => {
     const { container } = render(<BroadcastSting reducedMotion={false} />);
     expect(container.querySelector("[data-rive-fallback='true']")).toBeInTheDocument();
   });
-});
 
+  it("keeps a no-eligible-card round understandable without enabling a card", () => {
+    const state = battle();
+    render(<MatchExperienceV2 {...props(state, { eligibleCardIds: [] })} />);
+    const hand = screen.getByRole("region", { name: "Player hand" });
+    expect(hand.querySelectorAll("button")).toHaveLength(6);
+    expect([...hand.querySelectorAll("button")].every((button) => button.disabled)).toBe(true);
+    expect(screen.getByText("0 cards")).toBeInTheDocument();
+  });
+
+  it("renders the dedicated authoritative match-loss conclusion", () => {
+    const state = completedLoss();
+    expect(state.winner).toBe("opponent");
+    render(<MatchExperienceV2 {...props(state, { rewardGranted: true, progressionMessage: "Match settled on the server." })} />);
+    expect(screen.getByRole("heading", { name: "Rival takes the night" })).toBeInTheDocument();
+    expect(screen.getByLabelText(`Final score ${state.roundWins.player} to ${state.roundWins.opponent}`)).toBeInTheDocument();
+  });
+});

@@ -23,6 +23,7 @@ export function PlayerHand({ battle, situation, eligibleCardIds, disabled, prese
       <div className={styles.handRail}>
         {battle.lineups.player.cards.map(({ card, player }, index) => {
           const used = battle.usedCardIds.player.includes(card.id);
+          const selected = battle.visibleSelection === card.id;
           const roleMatches = card.role === situation.role;
           const allowed = eligible.has(card.id) && !disabled;
           const value = roleMatches ? calculateCategoryValue(card, situation) : null;
@@ -30,7 +31,7 @@ export function PlayerHand({ battle, situation, eligibleCardIds, disabled, prese
           return (
             <motion.div
               key={card.id}
-              layoutId={`v2-card-${card.id}`}
+              layoutId={selected ? undefined : `v2-card-${card.id}`}
               className={styles.handCard}
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -38,15 +39,21 @@ export function PlayerHand({ battle, situation, eligibleCardIds, disabled, prese
               whileHover={allowed ? { y: -8, scale: 1.015 } : undefined}
               whileFocus={allowed ? { y: -6 } : undefined}
             >
-              <HockeyCard
-                card={card}
-                player={player}
-                used={used}
-                disabled={!allowed}
-                status={status}
-                highlightedStat={value === null ? undefined : { label: situation.name, value }}
-                onClick={() => onSelect(card.id)}
-              />
+              {selected ? (
+                <div className={styles.selectedHandSlot} aria-label={`${player.name} is locked in for this round`}>
+                  <span>✓</span><strong>Locked in</strong><small>{player.name}</small>
+                </div>
+              ) : (
+                <HockeyCard
+                  card={card}
+                  player={player}
+                  used={used}
+                  disabled={!allowed}
+                  status={status}
+                  highlightedStat={value === null ? undefined : { label: situation.name, value }}
+                  onClick={() => onSelect(card.id)}
+                />
+              )}
             </motion.div>
           );
         })}

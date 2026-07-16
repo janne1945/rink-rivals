@@ -124,7 +124,9 @@ function ExperienceSession(props: MatchExperienceV2Props & {
   const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => props.onStableChange(stablePresetStates.has(state)), [props.onStableChange, state]);
-  useEffect(() => send({ type: "REDUCED_MOTION_CHANGED", reduced: reducedMotion.reduced }), [reducedMotion.reduced, send]);
+  useEffect(() => {
+    if (state !== "complete") send({ type: "REDUCED_MOTION_CHANGED", reduced: reducedMotion.reduced });
+  }, [reducedMotion.reduced, send, state]);
 
   useEffect(() => {
     if (state !== "awaitingAuthoritativeReveal") return;
@@ -199,6 +201,13 @@ function ExperienceSession(props: MatchExperienceV2Props & {
   const showHand = !finalState && !showComparison;
   const matchPoint = state === "matchPoint" || isMatchPoint(battle);
   const finalShift = state === "finalShift" || isFinalShift(battle);
+  const sidebarSituation = showComparison && latestResult ? latestResult.situation : situation;
+  const matchStatus = props.roundPlaying || snapshot.context.requestPending
+    ? "Resolving round"
+      : state === "awaitingAuthoritativeReveal" ? "Card locked"
+      : state === "reveal" ? "Revealing rival"
+        : state === "comparison" || state === "roundResult" || state === "scoreUpdate" ? "Round confirmed"
+          : finalState ? "Final horn" : "Choose your card";
 
   return (
     <MotionConfig reducedMotion={reducedMotion.reduced ? "always" : "never"} transition={reducedMotion.reduced ? { duration: 0 } : undefined}>
@@ -207,8 +216,10 @@ function ExperienceSession(props: MatchExperienceV2Props & {
         <span className={styles.v2Badge}>Rink Rivals Live</span>
         <div>{props.presetControl}<button type="button" className={styles.exitButton} onClick={props.onExit}>Exit match</button></div>
       </div>
-      <MatchHud battle={battle} preset={preset} scorePulse={state === "scoreUpdate"} matchPoint={matchPoint} finalShift={finalShift} />
-      <LayoutGroup id={`match-${battle.id}`}>
+      <div className={styles.matchLayout}>
+        <div className={styles.matchMain}>
+          <MatchHud battle={battle} preset={preset} scorePulse={state === "scoreUpdate"} matchPoint={matchPoint} finalShift={finalShift} />
+          <LayoutGroup id={`match-${battle.id}`}>
         <main className={styles.arena}>
           <div className={styles.iceLines} aria-hidden="true"><span /><span /><span /></div>
           <AnimatePresence mode="wait">
@@ -244,7 +255,11 @@ function ExperienceSession(props: MatchExperienceV2Props & {
                         <span className={styles.cardSide}>Your card</span>
                         <HockeyCard compact eager card={selected.card} player={selected.player} highlightedStat={{ label: situation.name, value: calculateCategoryValue(selected.card, situation) }} />
                       </motion.div>
-                    ) : <div className={styles.emptySlot} aria-hidden="true"><span>Your card</span></div>}
+                    ) : (
+                      <div className={styles.emptySlot} aria-label="Your card slot is empty. Select a card from below.">
+                        <span aria-hidden="true">RR</span><strong>Your card</strong><small>Select a card from below</small>
+                      </div>
+                    )}
                   </div>
                   <div className={styles.centerIce}>
                     <span>Round {battle.roundIndex + 1}</span>
@@ -261,7 +276,7 @@ function ExperienceSession(props: MatchExperienceV2Props & {
                     ) : null}
                   </div>
                   <motion.div className={styles.rivalSlot} initial={{ x: preset.distance, opacity: state === "cardCommit" ? 0 : 1 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: preset.duration.rivalEntrance / 1000 }}>
-                    <div className={styles.concealedCard} aria-label="Rival card concealed"><span>RR</span><strong>Rival locked</strong><small>Identity and value hidden</small></div>
+                    <div className={styles.concealedCard} aria-label="Rival card concealed"><span>RR</span><strong>Rival locked</strong><small><i aria-hidden="true">⌾</i> Identity and value hidden</small></div>
                   </motion.div>
                 </div>
                 {showHand ? <PlayerHand battle={battle} situation={situation} eligibleCardIds={props.eligibleCardIds} disabled={state !== "awaitingSelection"} preset={preset} onSelect={selectCard} /> : null}
@@ -281,7 +296,37 @@ function ExperienceSession(props: MatchExperienceV2Props & {
             ) : null}
           </AnimatePresence>
         </main>
-      </LayoutGroup>
+          </LayoutGroup>
+        </div>
+        <aside className={styles.matchSidebar} aria-label="Match information">
+          <section className={styles.sidebarPanel}>
+            <span>Current round</span>
+            <h2>{sidebarSituation.name}</h2>
+            <p>{sidebarSituation.description}</p>
+            <dl>
+              <div><dt>Round</dt><dd>{Math.min(battle.roundIndex + 1, 5)} / 5</dd></div>
+              <div><dt>{showComparison || finalState ? "Status" : "Eligible"}</dt><dd>{finalState ? "Complete" : showComparison ? "Resolved" : `${props.eligibleCardIds.length} cards`}</dd></div>
+              <div><dt>Role</dt><dd>{sidebarSituation.role}</dd></div>
+            </dl>
+          </section>
+          <section className={styles.sidebarPanel} aria-live="polite">
+            <span>Match status</span>
+            <h3>{matchStatus}</h3>
+            <ul>
+              <li><b aria-hidden="true">✓</b><span><strong>Server verified</strong><small>Category and score are authoritative</small></span></li>
+              <li><b aria-hidden="true">⌾</b><span><strong>Rival concealed</strong><small>Hidden until your card is committed</small></span></li>
+            </ul>
+          </section>
+          <section className={styles.sidebarPanel}>
+            <span>Tie-break order</span>
+            <ol>
+              <li>Higher visible {sidebarSituation.name}</li>
+              <li>Higher visible OVR</li>
+              <li>Immutable server match seed</li>
+            </ol>
+          </section>
+        </aside>
+      </div>
       <p className={styles.srOnly} role="status" aria-live="assertive" aria-atomic="true">{announcement}</p>
     </div>
     </MotionConfig>

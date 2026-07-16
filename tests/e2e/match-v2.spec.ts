@@ -101,8 +101,14 @@ test.describe("Match Experience V2", () => {
     const opponents = opponentSequence(ticket);
     const capture = process.env.CAPTURE_MATCH_V2 === "1";
     const reviewDirectory = resolve("test-results/match-v2-review");
+    const documentationDirectory = resolve("docs/ui-redesign/screenshots");
     const projectSlug = test.info().project.name;
-    if (capture) mkdirSync(reviewDirectory, { recursive: true });
+    let capturedWin = false;
+    let capturedLoss = false;
+    if (capture) {
+      mkdirSync(reviewDirectory, { recursive: true });
+      mkdirSync(documentationDirectory, { recursive: true });
+    }
 
     await expect(page.getByRole("navigation", { name: "Main navigation" })).toHaveCount(0);
     for (let round = 0; round < 5; round += 1) {
@@ -111,7 +117,18 @@ test.describe("Match Experience V2", () => {
         if (capture && test.info().project.name === "desktop") await page.screenshot({ path: resolve(reviewDirectory, "desktop-final-shift.png") });
       }
       await expect(page.getByText(`Round ${round + 1} of 5`)).toBeVisible();
-      if (capture && round === 0) await page.screenshot({ path: resolve(reviewDirectory, `${projectSlug}-selection.png`) });
+      if (capture && round === 0) {
+        await expect(page.locator("[data-presentation-state='awaitingSelection']")).toBeVisible();
+        await page.waitForTimeout(700);
+        await page.screenshot({ path: resolve(reviewDirectory, `${projectSlug}-selection.png`) });
+        if (projectSlug === "desktop") {
+          await page.setViewportSize({ width: 1920, height: 1080 });
+          await page.screenshot({ path: resolve(documentationDirectory, "match-selection-1920x1080.png") });
+          await page.setViewportSize({ width: 1440, height: 900 });
+          await page.screenshot({ path: resolve(documentationDirectory, "match-selection-1440x900.png") });
+        }
+        if (projectSlug === "tablet") await page.screenshot({ path: resolve(documentationDirectory, "match-selection-tablet.png") });
+      }
       const card = page.locator(`button:has([data-card-image='${sequence[round]}'])`);
       await expect(card).toBeEnabled();
       await card.click();
@@ -122,13 +139,31 @@ test.describe("Match Experience V2", () => {
         await page.reload();
         await expect(page.getByRole("button", { name: "Reveal cards" })).toBeEnabled();
         await expect(page.locator(`[data-card-image='${opponents[round]}']`)).toHaveCount(0);
+        if (capture && projectSlug === "desktop") {
+          await expect(page.locator("[data-presentation-state='awaitingAuthoritativeReveal']")).toBeVisible();
+          await page.waitForTimeout(700);
+          await page.screenshot({ path: resolve(documentationDirectory, "match-card-locked.png") });
+        }
       }
 
       await page.getByRole("button", { name: "Reveal cards" }).click();
       const result = page.getByRole("region", { name: `Round ${round + 1} result` });
       await expect(result).toBeVisible();
       await expect(result.locator(`[data-card-image='${opponents[round]}']`)).toBeVisible();
-      if (capture && round === 0) await page.screenshot({ path: resolve(reviewDirectory, `${projectSlug}-result.png`) });
+      if (capture) {
+        await expect(page.locator("[data-presentation-state='roundResult']")).toBeVisible();
+        await page.waitForTimeout(700);
+        if (round === 0) await page.screenshot({ path: resolve(reviewDirectory, `${projectSlug}-result.png`) });
+        const won = playerWins(sequence[round], opponents[round], situations[round].attribute, ticket.seed, round);
+        if (projectSlug === "desktop" && won && !capturedWin) {
+          capturedWin = true;
+          await page.screenshot({ path: resolve(documentationDirectory, "match-round-win.png") });
+        }
+        if (projectSlug === "desktop" && !won && !capturedLoss) {
+          capturedLoss = true;
+          await page.screenshot({ path: resolve(documentationDirectory, "match-round-loss.png") });
+        }
+      }
       await page.getByRole("button", { name: round === 4 ? "Final horn" : "Continue" }).click();
     }
 
@@ -136,6 +171,10 @@ test.describe("Match Experience V2", () => {
     await expect(page.getByRole("list", { name: "All round results" }).getByRole("listitem")).toHaveCount(5);
     await expect(page.getByText(/Match settled on the server/)).toBeVisible();
     await expect(page.getByRole("button", { name: "Rematch setup" })).toBeEnabled();
+    if (capture && projectSlug === "desktop") {
+      await page.waitForTimeout(700);
+      await page.screenshot({ path: resolve(documentationDirectory, "match-complete.png") });
+    }
     expect(state.completedMatches).toBe(1);
     expect(state.settleMatchCallCount).toBe(1);
     await page.reload();
