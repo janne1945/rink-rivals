@@ -12,6 +12,7 @@ export interface CatalogFilterTeam {
 }
 
 interface CatalogFiltersProps {
+  readonly className?: string;
   readonly filters: CatalogFilterState;
   readonly teams: readonly CatalogFilterTeam[];
   readonly positions: readonly string[];
@@ -50,6 +51,7 @@ function labelFor(value: string): string {
 }
 
 export function CatalogFilters({
+  className = "",
   filters,
   teams,
   positions,
@@ -88,7 +90,7 @@ export function CatalogFilters({
   }
 
   return (
-    <section className={styles.panel} aria-labelledby="catalog-filter-heading">
+    <section className={`${styles.panel} ${className}`.trim()} aria-labelledby="catalog-filter-heading">
       <div className={styles.heading}>
         <div>
           <h2 id="catalog-filter-heading">{title}</h2>

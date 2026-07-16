@@ -17,10 +17,11 @@ import type {
 import { HockeyCard } from "../../shared/HockeyCard";
 import { formatRivalryPoints } from "../../shared/rivalryPoints";
 import { createServerClockAnchor, serverTimestampAt } from "../../shared/serverClock";
-import styles from "../Screens.module.css";
+import styles from "./MarketScreen.module.css";
 import { persistMarketTab, readMarketTab, type MarketTab } from "./marketTabStorage";
 
 const OFFER_RENDER_BATCH = 6;
+type MarketSort = "market-order" | "overall-desc" | "price-asc" | "price-desc";
 
 interface MarketScreenProps {
   readonly catalog: ContentCatalog;
@@ -82,6 +83,7 @@ export function MarketScreen({ catalog, collection, credits, market, onBuy }: Ma
   const [tab, setTab] = useState<MarketTab>(readMarketTab);
   const [filters, setFilters] = useState(createCatalogFilterState);
   const [renderLimit, setRenderLimit] = useState(OFFER_RENDER_BATCH);
+  const [sort, setSort] = useState<MarketSort>("market-order");
   const [feedback, setFeedback] = useState<PurchaseFeedback | null>(null);
   const [pendingPurchase, setPendingPurchase] = useState<PendingPurchase | null>(null);
   const [busyOfferId, setBusyOfferId] = useState<string | null>(null);
@@ -169,7 +171,20 @@ export function MarketScreen({ catalog, collection, credits, market, onBuy }: Ma
       owned: Boolean(collection[card.id]?.quantity),
     }, filters);
   }), [cards, collection, filters, offers, players, teams]);
-  const renderedOffers = visibleOffers.slice(0, renderLimit);
+  const sortedOffers = useMemo(() => [...visibleOffers].sort((left, right) => {
+    if (sort === "price-asc") return left.price - right.price;
+    if (sort === "price-desc") return right.price - left.price;
+    if (sort === "overall-desc") {
+      return (cards.get(right.cardId)?.overall ?? 0) - (cards.get(left.cardId)?.overall ?? 0);
+    }
+    return 0;
+  }), [cards, sort, visibleOffers]);
+  const renderedOffers = sortedOffers.slice(0, renderLimit);
+  const featuredOffers = useMemo(() => market.offers
+    .filter((offer) => offer.source === "event_shop" && offer.startsAt !== null && offer.endsAt !== null)
+    .filter((offer) => Date.parse(offer.startsAt ?? "") <= serverNow && serverNow < Date.parse(offer.endsAt ?? ""))
+    .sort((left, right) => Number(right.placement === "spotlight") - Number(left.placement === "spotlight"))
+    .slice(0, 3), [market.offers, serverNow]);
 
   function updateFilters(nextFilters: typeof filters): void {
     setFilters(nextFilters);
@@ -250,48 +265,76 @@ export function MarketScreen({ catalog, collection, credits, market, onBuy }: Ma
     : activeEvent?.description;
 
   return (
-    <div className={styles.page}>
-      <header className={styles.marketPageHeader}>
-        <p className={styles.eyebrow}>Official player releases</p>
-        <h1 className={styles.title}>Player Market</h1>
-        <p className={styles.lede}>Build your legacy through official player releases. Acquire permanent Base cards, explore limited Event Rotations and strengthen your Collection with every new addition.</p>
-        <p className={styles.marketTrust}>Server verified <span aria-hidden="true">·</span> Instant delivery to your Collection</p>
-      </header>
-
-      <section className={styles.marketHero} aria-labelledby="market-event-heading">
-        <div>
-          <p className={styles.eyebrow}>{activeEvent ? "Live event" : "Market rotation"}</p>
-          <h2 id="market-event-heading">{activeEvent?.name ?? rotationState.title}</h2>
-          <p>{activeEvent
-            ? activeEventDescription ?? "Discover limited player editions available during the current Market Rotation."
-            : rotationState.message}</p>
-          {activeEvent && tab !== "event" ? <button type="button" className={styles.marketHeroAction} onClick={() => switchTab("event")}>Explore the Series</button> : null}
-        </div>
-        {activeEvent ? (
-          <div className={styles.countdown} aria-label={`Rotation time remaining ${countdownLabel(eventRemaining)}`}>
-            <span>Rotation ends in</span>
-            <strong>{countdownLabel(eventRemaining)}</strong>
-            <small>{new Date(activeEvent.endsAt).toLocaleString("en-US", { timeZone: "UTC", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", timeZoneName: "short" })}</small>
+    <main className={styles.page}>
+      <section className={styles.marketStage} aria-labelledby="market-title">
+        <header className={styles.marketPageHeader}>
+          <p className={styles.eyebrow}>Build your six</p>
+          <h1 className={styles.title} id="market-title">Market</h1>
+          <p className={styles.lede}>Target the players your lineup needs. Browse permanent Base releases and the current Event Rotation using Rivalry Points earned on the ice.</p>
+          <div className={styles.marketTrust} aria-label="Market guarantees">
+            <span>◇ Server verified</span>
+            <span>ϟ Instant delivery</span>
+            <span>Free progression only</span>
           </div>
-        ) : null}
+        </header>
+
+        <section className={styles.marketHero} aria-labelledby="market-event-heading">
+          <div className={styles.eventCopy}>
+            <p className={styles.liveEyebrow}>{activeEvent ? "Live rotation" : "Market rotation"}</p>
+            <h2 id="market-event-heading">{activeEvent?.name ?? rotationState.title}</h2>
+            <p>{activeEvent
+              ? activeEventDescription ?? "Discover limited player editions available during the current Market Rotation."
+              : rotationState.message}</p>
+          </div>
+
+          {featuredOffers.length > 0 ? (
+            <div className={styles.featuredCards} aria-label="Featured release cards">
+              {featuredOffers.map((offer, index) => {
+                const card = cards.get(offer.cardId);
+                const player = card ? players.get(card.playerId) : undefined;
+                if (!card || !player) return null;
+                return <HockeyCard key={offer.id} card={card} player={player} compact eager={index === 0} className={styles.featuredCard} />;
+              })}
+            </div>
+          ) : <div className={styles.rotationMark} aria-hidden="true">RR</div>}
+
+          <div className={styles.eventFooter}>
+            {activeEvent ? (
+              <div className={styles.countdown} aria-label={`Rotation time remaining ${countdownLabel(eventRemaining)}`}>
+                <span>Rotation ends in</span>
+                <strong>{countdownLabel(eventRemaining)}</strong>
+                <small>{new Date(activeEvent.endsAt).toLocaleString("en-US", { timeZone: "UTC", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", timeZoneName: "short" })}</small>
+              </div>
+            ) : null}
+            {activeEvent && tab !== "event" ? <button type="button" className={styles.marketHeroAction} onClick={() => switchTab("event")}>View Release <span aria-hidden="true">→</span></button> : null}
+          </div>
+        </section>
+      </section>
+
+      <section className={styles.rotationStrip} aria-label="Market overview">
+        <div><span>Current balance</span><strong>{formatRivalryPoints(credits)}</strong></div>
+        <div><span>Permanent releases</span><strong>{market.offers.filter((offer) => offer.source === "base_market").length}</strong></div>
+        <div><span>Live event offers</span><strong>{featuredOffers.length ? market.offers.filter((offer) => offer.source === "event_shop").length : 0}</strong></div>
+        <div><span>Delivery</span><strong>Instant to Collection</strong></div>
       </section>
 
       <section className={styles.marketBrowse} aria-labelledby="market-browse-heading">
         <div className={styles.sectionHead}>
           <div>
             <p className={styles.eyebrow}>{tab === "base" ? "Permanent releases" : "Limited releases"}</p>
-            <h2 id="market-browse-heading">{tab === "base" ? "Base Market" : "Event Shop"}</h2>
+            <h2 id="market-browse-heading">{tab === "base" ? "Base Market" : "Event Rotation"}</h2>
             <p>{tab === "base"
               ? "Browse permanent player releases available throughout the season. Base cards form the foundation of every Collection and never leave the Market."
               : "Discover limited player editions released through featured Market Rotations. Once a rotation ends, its offers leave the Market."}</p>
           </div>
           <div className={styles.marketTabs} role="group" aria-label="Market type">
             <button type="button" aria-pressed={tab === "base"} className={tab === "base" ? styles.tabActive : ""} onClick={() => switchTab("base")}>Base Market</button>
-            <button type="button" aria-pressed={tab === "event"} className={tab === "event" ? styles.tabActive : ""} onClick={() => switchTab("event")}>Event Shop</button>
+            <button type="button" aria-pressed={tab === "event"} className={tab === "event" ? styles.tabActive : ""} onClick={() => switchTab("event")}>Event Rotation</button>
           </div>
         </div>
 
         <CatalogFilters
+          className={styles.marketFilters}
           filters={filters}
           teams={catalog.teams}
           positions={HOCKEY_POSITIONS}
@@ -305,6 +348,18 @@ export function MarketScreen({ catalog, collection, credits, market, onBuy }: Ma
           description="Find players across leagues, teams, positions, sets and active releases."
           onChange={updateFilters}
         />
+        <div className={styles.resultToolbar}>
+          <p><strong>{visibleOffers.length}</strong> release{visibleOffers.length === 1 ? "" : "s"} ready to browse</p>
+          <label>
+            <span>Sort offers</span>
+            <select value={sort} onChange={(event) => setSort(event.target.value as MarketSort)}>
+              <option value="market-order">Market order</option>
+              <option value="overall-desc">Highest overall</option>
+              <option value="price-asc">Lowest price</option>
+              <option value="price-desc">Highest price</option>
+            </select>
+          </label>
+        </div>
       </section>
 
       {feedback ? (
@@ -333,7 +388,7 @@ export function MarketScreen({ catalog, collection, credits, market, onBuy }: Ma
               <HockeyCard
                 card={card}
                 player={player}
-                status={owned ? `Collection owned ×${owned.quantity}` : "Available now"}
+                status={owned ? `Owned ×${owned.quantity}` : "Available now"}
                 marketStatus={tab === "base" ? "Base release" : "Rotation exclusive"}
               />
               <div className={styles.offerDetails}>
@@ -341,7 +396,7 @@ export function MarketScreen({ catalog, collection, credits, market, onBuy }: Ma
                   {offer.placement === "spotlight" ? <span className={styles.spotlightBadge}>Featured Release</span> : <span className={styles.releaseBadge}>{tab === "base" ? "Permanent Release" : "Limited Rotation"}</span>}
                 </div>
                 <div className={styles.offerMeta}>
-                  <span>{owned ? `Collection owned ×${owned.quantity}` : "Available now"}</span>
+                  <span className={owned ? styles.ownedStatus : ""}>{owned ? `✓ Owned ×${owned.quantity}` : "Available now"}</span>
                   <span className={styles.offerPrice}>
                     {offer.regularPrice > offer.price ? <s>{formatRivalryPoints(offer.regularPrice)}</s> : null}
                     <strong>{formatRivalryPoints(offer.price)}</strong>
@@ -363,7 +418,7 @@ export function MarketScreen({ catalog, collection, credits, market, onBuy }: Ma
                   setPendingPurchase({ offer, playerName: player.name });
                 }}
               >
-                {busyOfferId === offer.id ? "Acquiring…" : ended ? "Rotation Closed" : unaffordable ? `Requires ${formatRivalryPoints(offer.price)}` : "Add to Collection"}
+                {busyOfferId === offer.id ? "Acquiring…" : ended ? "Rotation Closed" : unaffordable ? `Requires ${formatRivalryPoints(offer.price)}` : owned ? "Add Another" : "Buy Card"}
               </button>
             </article>
           );
@@ -420,6 +475,6 @@ export function MarketScreen({ catalog, collection, credits, market, onBuy }: Ma
           </section>
         </div>
       ) : null}
-    </div>
+    </main>
   );
 }

@@ -84,7 +84,7 @@ test.describe("Rink Rivals MVP", () => {
       ["Cards", "Collection"],
       ["Lineup", "Lineups"],
       ["Play", "Faceoff"],
-      ["Market", "Player Market"],
+      ["Market", "Market"],
       ["Home", /own the ice/i],
     ] as const) {
       await page.getByRole("link", { name: label, exact: true }).click();

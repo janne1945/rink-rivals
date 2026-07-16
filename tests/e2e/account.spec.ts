@@ -293,13 +293,13 @@ test.describe("Supabase account flow", () => {
     expect(state.cards.get(baseUpgradeCard.id)?.quantity).toBe(1);
   });
 
-  test("uses premium Market language and confirms an acquisition accessibly", async ({ page }) => {
+  test("uses curated Market language and confirms an acquisition accessibly", async ({ page }) => {
     const state = createSupabaseMockState(true);
     state.credits = baseUpgradeCard.price;
     await installSupabaseMock(page, { authenticated: true, state });
     await page.goto("/market");
 
-    await expect(page.getByRole("heading", { name: "Player Market" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Market", exact: true })).toBeVisible();
     await expect(page.getByText(/server verified.*instant delivery/i)).toBeVisible();
     await expect(page.getByRole("heading", { name: "Explore the Market" })).toBeVisible();
     await page.getByLabel("Search market").fill(baseUpgradePlayer.name);
@@ -357,7 +357,7 @@ test.describe("Supabase account flow", () => {
     state.eventOfferEndsAt = "2026-07-14T12:01:00.000Z";
     await installSupabaseMock(page, { authenticated: true, state });
     await page.goto("/market");
-    await page.getByRole("button", { name: "Event Shop", pressed: false }).click();
+    await page.getByRole("button", { name: "Event Rotation", pressed: false }).click();
     await expect(page.getByRole("heading", { name: "Signature Series" })).toBeVisible();
     const eventOffers = page.getByRole("button", {
       name: /^(?:Add .+ to Collection for .+ RP|.+ requires .+ RP additional)$/,

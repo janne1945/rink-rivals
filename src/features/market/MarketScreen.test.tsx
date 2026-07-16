@@ -6,7 +6,7 @@ import { gameCatalog } from "../../data/generated/gameCatalog";
 import { resolveCardImage } from "../../domain/cards/assets";
 import type { OwnedCard } from "../../domain/economy";
 import type { AccountMarketState } from "../../infrastructure/supabase";
-import styles from "../Screens.module.css";
+import styles from "./MarketScreen.module.css";
 import { MarketScreen } from "./MarketScreen";
 import { persistMarketTab } from "./marketTabStorage";
 
@@ -91,11 +91,11 @@ describe("MarketScreen full-card offers", () => {
     expect(offer).toHaveClass(styles.shopCard, styles.shopCardSpotlight);
     expect(artwork).toHaveAttribute("data-card-presentation", "full-card");
     expect(artwork.compareDocumentPosition(badge) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(within(offer).getAllByText("Collection owned ×2")).toHaveLength(1);
+    expect(within(offer).getByText("✓ Owned ×2")).toBeVisible();
     expect(within(offer).getByText(`${card.price.toLocaleString("en-US")} RP`, { selector: "s" })).toBeInTheDocument();
     expect(within(offer).getByText(`${price.toLocaleString("en-US")} RP`, { selector: "strong" })).toBeInTheDocument();
-    expect(within(offer).getByRole("button", { name: `Add ${player.name} to Collection for ${price.toLocaleString("en-US")} RP` })).toHaveTextContent("Add to Collection");
-    expect(screen.getByRole("heading", { name: "Player Market" })).toBeVisible();
+    expect(within(offer).getByRole("button", { name: `Add ${player.name} to Collection for ${price.toLocaleString("en-US")} RP` })).toHaveTextContent("Add Another");
+    expect(screen.getByRole("heading", { name: "Market" })).toBeVisible();
     expect(screen.getByText(/server verified/i)).toBeVisible();
   });
 

@@ -357,7 +357,7 @@ test.describe("card asset integration", () => {
       src: playerAssetManifest.fallback.path,
     });
 
-    await page.getByRole("button", { name: "Event Shop", exact: true }).click();
+    await page.getByRole("button", { name: "Event Rotation", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Signature Series" })).toBeVisible();
     await search.fill("");
     const currentSignatureCardIds = await page.getByLabel("Market offers").locator("img[data-card-image]").evaluateAll(
@@ -455,7 +455,7 @@ test.describe("card asset integration", () => {
     });
     expect(new Set(expectedPlayers).size).toBe(6);
 
-    await page.getByRole("button", { name: "Event Shop", exact: true }).click();
+    await page.getByRole("button", { name: "Event Rotation", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Signature Series" })).toBeVisible();
     const marketOffers = page.getByLabel("Market offers").locator(":scope > article");
     const signatureImages = marketOffers.locator("img[data-card-image]");
@@ -501,7 +501,7 @@ test.describe("card asset integration", () => {
       const card = cardsById.get(offer.card_id)!;
       const player = playersById.get(card.playerId)!;
       const approvedAsset = approvedSignatureAssetsByPlayer.get(player.id)!;
-      const image = cardImage(page, card.id);
+      const image = marketOffers.locator(`img[data-card-image="${card.id}"]`);
       await expectAssetState(image, {
         presentation: "full-card",
         requestedVariant: "signature",
@@ -516,9 +516,9 @@ test.describe("card asset integration", () => {
       expect(await image.evaluate((node) => getComputedStyle(node).objectFit)).toBe("contain");
       await expectNoFullCardOverlays(image);
 
-      const outerOffer = marketOffers.filter({ has: image });
+      const outerOffer = marketOffers.filter({ has: page.locator(`img[data-card-image="${card.id}"]`) });
       await expect(outerOffer).toHaveCount(1);
-      const visibleOwnershipLabels = await outerOffer.getByText("Collection owned ×2", { exact: true }).evaluateAll(
+      const visibleOwnershipLabels = await outerOffer.getByText("✓ Owned ×2", { exact: true }).evaluateAll(
         (nodes) => nodes.filter((node) => {
           const rect = (node as HTMLElement).getBoundingClientRect();
           const style = getComputedStyle(node);
@@ -530,7 +530,7 @@ test.describe("card asset integration", () => {
         name: `Add ${player.name} to Collection for ${offer.price.toLocaleString("en-US")} RP`,
       });
       await expect(purchase).toBeEnabled();
-      await expect(purchase).toHaveText("Add to Collection");
+      await expect(purchase).toHaveText("Add Another");
       if (offer.placement === "spotlight") {
         expect(offer.price).toBeLessThan(offer.regular_price);
         await expect(outerOffer.locator("s")).toHaveText(`${offer.regular_price.toLocaleString("en-US")} RP`);
@@ -543,7 +543,7 @@ test.describe("card asset integration", () => {
         const imageNode = node.querySelector<HTMLImageElement>("img[data-card-image]")!;
         const cardNode = imageNode.closest<HTMLElement>("article")!;
         const ownershipNode = [...node.querySelectorAll<HTMLElement>("span")].find((candidate) =>
-          candidate.textContent?.trim() === "Collection owned ×2" && getComputedStyle(candidate).display !== "none")!;
+          candidate.textContent?.trim() === "✓ Owned ×2" && getComputedStyle(candidate).display !== "none")!;
         const buttonNode = node.querySelector<HTMLElement>(":scope > button")!;
         const cardRect = cardNode.getBoundingClientRect();
         const ownershipRect = ownershipNode.getBoundingClientRect();

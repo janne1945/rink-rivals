@@ -1,0 +1,273 @@
+.page {
+  --market-panel: linear-gradient(145deg, rgb(9 22 35 / 96%), rgb(2 9 16 / 98%));
+  display: grid;
+  width: min(100%, 1540px);
+  gap: 18px;
+  margin: 0 auto;
+  color: var(--ice-50);
+}
+
+.marketStage {
+  position: relative;
+  display: grid;
+  min-height: 430px;
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 0.34fr);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #020811;
+  box-shadow: 0 24px 70px rgb(0 0 0 / 42%);
+  isolation: isolate;
+}
+
+.marketStage::after {
+  position: absolute;
+  z-index: -1;
+  background: linear-gradient(90deg, transparent 68%, rgb(1 6 11 / 68%) 78%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+}
+
+.marketPageHeader {
+  display: flex;
+  min-width: 0;
+  justify-content: center;
+  flex-direction: column;
+  padding: 48px 48% 48px 42px;
+  background:
+    linear-gradient(90deg, rgb(2 8 14 / 99%) 0%, rgb(2 8 14 / 88%) 35%, rgb(2 8 14 / 12%) 78%),
+    linear-gradient(0deg, rgb(2 8 14 / 68%), transparent 56%),
+    url("/assets/ui/market-tunnel.svg") 52% center / cover no-repeat;
+}
+
+.eyebrow,
+.liveEyebrow {
+  margin: 0 0 8px;
+  color: var(--gold-300);
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .19em;
+  text-transform: uppercase;
+}
+
+.liveEyebrow { color: #6dd6ff; }
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(4.3rem, 7vw, 7.2rem);
+  font-weight: 950;
+  letter-spacing: -.035em;
+  line-height: .84;
+  text-transform: uppercase;
+  text-shadow: 0 12px 32px rgb(0 0 0 / 72%);
+}
+
+.lede {
+  max-width: 48ch;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1.65;
+}
+
+.marketTrust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-top: 28px;
+  color: #8bd9f7;
+  font-size: .62rem;
+  font-weight: 900;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.marketHero {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  align-content: space-between;
+  gap: 20px;
+  margin: 18px;
+  padding: 26px;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 86% 12%, rgb(105 204 244 / 13%), transparent 30%),
+    linear-gradient(145deg, rgb(9 24 38 / 98%), rgb(2 9 16 / 99%));
+  box-shadow: inset 0 1px rgb(255 255 255 / 4%), 0 20px 42px rgb(0 0 0 / 30%);
+}
+
+.eventCopy { position: relative; z-index: 3; }
+.marketHero h2 { margin: 0 0 10px; font-size: clamp(1.7rem, 2.4vw, 2.35rem); line-height: .94; text-transform: uppercase; }
+.marketHero p:not(.liveEyebrow) { max-width: 42ch; margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
+
+.featuredCards {
+  position: relative;
+  display: grid;
+  min-height: 145px;
+  place-items: center;
+}
+
+.featuredCard {
+  position: absolute !important;
+  width: 104px !important;
+  filter: drop-shadow(0 18px 18px rgb(0 0 0 / 52%));
+}
+.featuredCard:nth-child(1) { z-index: 3; transform: translateY(-3px) scale(1.08); }
+.featuredCard:nth-child(2) { z-index: 2; transform: translateX(-70px) rotate(-8deg) scale(.91); opacity: .82; }
+.featuredCard:nth-child(3) { z-index: 1; transform: translateX(70px) rotate(8deg) scale(.91); opacity: .82; }
+
+.rotationMark {
+  display: grid;
+  width: 106px;
+  height: 126px;
+  margin: auto;
+  place-items: center;
+  border: 1px solid rgb(220 184 92 / 42%);
+  color: var(--gold-300);
+  background: rgb(255 255 255 / 2%);
+  clip-path: polygon(50% 0, 95% 20%, 95% 79%, 50% 100%, 5% 79%, 5% 20%);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 950;
+}
+
+.eventFooter { position: relative; z-index: 4; display: grid; gap: 10px; }
+.countdown { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 5px; background: rgb(1 6 11 / 64%); }
+.countdown span, .countdown small { color: var(--muted); font-size: .56rem; letter-spacing: .08em; text-transform: uppercase; }
+.countdown small { grid-column: 1 / -1; text-align: right; }
+.countdown strong { color: var(--gold-300); font-family: var(--font-display); font-size: 1.25rem; }
+.marketHeroAction { min-height: 46px; border: 1px solid var(--gold-400); border-radius: 5px; color: #081019; background: linear-gradient(135deg, var(--gold-300), var(--gold-500)); font: inherit; font-size: .68rem; font-weight: 950; letter-spacing: .07em; text-transform: uppercase; cursor: pointer; }
+
+.rotationStrip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--market-panel);
+}
+.rotationStrip > div { display: grid; gap: 4px; min-width: 0; padding: 16px 20px; border-right: 1px solid var(--line); }
+.rotationStrip > div:last-child { border: 0; }
+.rotationStrip span { color: var(--muted); font-size: .56rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+.rotationStrip strong { overflow: hidden; color: var(--ice-50); font-size: .8rem; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.rotationStrip > div:first-child strong { color: var(--gold-300); }
+
+.marketBrowse { display: grid; gap: 18px; padding: 24px; border: 1px solid var(--line); border-radius: 8px; background: var(--market-panel); }
+.sectionHead { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 24px; }
+.sectionHead h2 { margin: 0 0 6px; font-size: 1.7rem; text-transform: uppercase; }
+.sectionHead p:not(.eyebrow) { max-width: 68ch; margin: 0; color: var(--muted); font-size: .76rem; line-height: 1.5; }
+.marketTabs { display: flex; gap: 8px; }
+.marketTabs button { min-width: 150px; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 4px; color: var(--muted); background: transparent; font: inherit; font-size: .65rem; font-weight: 900; letter-spacing: .07em; text-transform: uppercase; cursor: pointer; }
+.marketTabs .tabActive { border-color: var(--gold-400); color: #081019; background: linear-gradient(135deg, var(--gold-300), var(--gold-500)); box-shadow: 0 8px 24px rgb(220 184 92 / 16%); }
+
+.marketFilters {
+  gap: 12px !important;
+  padding: 16px !important;
+  border-radius: 6px !important;
+  background: linear-gradient(145deg, rgb(5 15 25 / 92%), rgb(2 8 14 / 96%)) !important;
+}
+.marketFilters > div:first-child { align-items: end; }
+.marketFilters > div:first-child h2 { color: var(--ice-100); font-size: .72rem; letter-spacing: .11em; }
+.marketFilters > div:first-child p:first-of-type { display: none; }
+.marketFilters > div:first-child button { border-radius: 4px; text-transform: uppercase; }
+.marketFilters input, .marketFilters select { border-radius: 4px !important; background: #07131f !important; }
+
+.resultToolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.resultToolbar p { margin: 0; color: var(--muted); font-size: .7rem; }
+.resultToolbar p strong { color: var(--ice-50); }
+.resultToolbar label { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: .6rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.resultToolbar select { min-height: 42px; padding: 0 36px 0 12px; border: 1px solid var(--line-strong); border-radius: 5px; color: var(--ice-50); background: #07131f; font: inherit; font-size: .7rem; }
+
+.cardGrid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+.shopCard { position: relative; display: grid; min-width: 0; grid-template-rows: auto minmax(58px, auto) 48px; gap: 8px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: linear-gradient(155deg, #0a1825, #030a11 78%); box-shadow: 0 18px 42px rgb(0 0 0 / 32%); isolation: isolate; transition: transform 220ms cubic-bezier(.2,.8,.2,1), border-color 180ms ease, box-shadow 220ms ease; }
+.shopCardSpotlight { border-color: var(--gold-400); box-shadow: 0 0 0 1px rgb(220 184 92 / 24%), 0 22px 48px rgb(0 0 0 / 44%), 0 0 30px rgb(220 184 92 / 9%); }
+.offerDetails { display: grid; min-width: 0; align-content: center; gap: 6px; padding: 0 3px; }
+.offerBadgeRow { display: flex; min-height: 22px; align-items: center; }
+.spotlightBadge, .releaseBadge { font-size: .52rem; font-weight: 950; letter-spacing: .08em; text-transform: uppercase; }
+.spotlightBadge { display: inline-flex; min-height: 21px; align-items: center; padding: 0 7px; border-radius: 999px; color: #07101a; background: var(--gold-300); }
+.releaseBadge { color: var(--ice-300); }
+.offerMeta { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px; color: var(--muted); font-size: .58rem; }
+.offerMeta > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ownedStatus { color: #72d999; font-weight: 850; }
+.offerPrice { display: grid; justify-items: end; line-height: 1.1; white-space: nowrap; }
+.offerPrice strong { color: var(--gold-300); font-size: .7rem; }
+.offerPrice s { color: var(--danger); font-size: .52rem; }
+.offerRequirement { color: #ff9dab; font-size: .54rem; }
+.shopAction { min-height: 44px; border: 1px solid rgb(220 184 92 / 42%); border-radius: 5px; color: var(--gold-300); background: rgb(220 184 92 / 8%); font: inherit; font-size: .62rem; font-weight: 950; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; transition: background 180ms ease, color 180ms ease, border-color 180ms ease; }
+.shopAction:disabled { border-color: var(--line); color: var(--muted); background: rgb(255 255 255 / 2%); cursor: not-allowed; opacity: .68; }
+
+.empty { display: grid; grid-column: 1 / -1; min-height: 240px; place-content: center; justify-items: center; gap: 10px; padding: 34px; border: 1px dashed var(--line-strong); border-radius: 8px; background: radial-gradient(circle, rgb(66 142 178 / 7%), transparent 64%); text-align: center; }
+.empty h2, .marketFeedback h2, .marketFeedbackError h2, .marketDialog h2 { margin: 0; font-size: 1.65rem; text-transform: uppercase; }
+.empty p, .marketFeedback p, .marketFeedbackError p, .marketDialog p { max-width: 58ch; margin: 0; color: var(--muted); line-height: 1.55; }
+.empty button, .loadMoreRow button, .marketFeedbackActions a, .marketFeedbackActions button, .marketDialogActions button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: 5px; color: var(--gold-300); background: rgb(220 184 92 / 7%); font: inherit; font-size: .65rem; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; }
+.loadMoreRow { display: flex; align-items: center; justify-content: center; gap: 16px; color: var(--muted); font-size: .68rem; }
+.loadMoreRow p { margin: 0; }
+
+.marketFeedback, .marketFeedbackError { display: grid; gap: 8px; padding: 22px; border: 1px solid rgb(98 216 155 / 28%); border-radius: 8px; background: linear-gradient(145deg, rgb(20 64 61 / 76%), rgb(7 22 29 / 94%)); }
+.marketFeedbackError { border-color: rgb(255 114 131 / 28%); background: linear-gradient(145deg, rgb(69 28 42 / 70%), rgb(24 10 20 / 94%)); }
+.marketFeedbackActions, .marketDialogActions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.marketDialogBackdrop { position: fixed; z-index: 80; display: grid; padding: 20px; background: rgb(1 5 10 / 80%); inset: 0; place-items: center; backdrop-filter: blur(12px); }
+.marketDialog { display: grid; width: min(100%, 520px); gap: 12px; padding: 30px; border: 1px solid var(--line-strong); border-radius: 10px; background: radial-gradient(circle at 90% 0%, rgb(246 217 139 / 13%), transparent 35%), #081320; box-shadow: 0 28px 80px rgb(0 0 0 / 60%); }
+.marketDialogSupport { font-size: .78rem; }
+
+.page button:focus-visible, .page a:focus-visible, .page select:focus-visible { outline: 3px solid rgb(246 217 139 / 28%); outline-offset: 3px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .shopCard:hover { border-color: rgb(220 184 92 / 56%); box-shadow: 0 26px 58px rgb(0 0 0 / 46%), 0 0 28px rgb(220 184 92 / 8%); transform: translateY(-6px); }
+  .shopCard:hover .shopAction:not(:disabled) { border-color: var(--gold-400); color: #07101a; background: var(--gold-300); }
+}
+
+@media (max-width: 1200px) {
+  .marketStage { grid-template-columns: minmax(0, 1fr) 350px; }
+  .marketPageHeader { padding-right: 40%; }
+  .cardGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  .marketStage { grid-template-columns: 1fr; }
+  .marketPageHeader { min-height: 390px; padding: 36px 45% 36px 28px; }
+  .marketHero { min-height: 330px; }
+  .rotationStrip { grid-template-columns: repeat(2, 1fr); }
+  .rotationStrip > div:nth-child(2) { border-right: 0; }
+  .rotationStrip > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .sectionHead { grid-template-columns: 1fr; }
+  .marketTabs { width: 100%; }
+  .marketTabs button { flex: 1; }
+}
+
+@media (max-width: 640px) {
+  .page { gap: 14px; }
+  .marketPageHeader { min-height: 430px; padding: 30px 24px 190px; background-position: 58% center; }
+  .title { font-size: clamp(3.8rem, 20vw, 5.4rem); }
+  .lede { font-size: .82rem; }
+  .marketTrust { gap: 8px 14px; }
+  .marketHero { margin: 10px; padding: 20px; }
+  .featuredCards { min-height: 158px; }
+  .rotationStrip { grid-template-columns: 1fr 1fr; }
+  .rotationStrip > div { padding: 14px; }
+  .marketBrowse { padding: 18px; }
+  .marketFilters > div:first-child { align-items: stretch; flex-direction: column; }
+  .marketTabs { flex-direction: column; }
+  .marketTabs button { width: 100%; }
+  .resultToolbar { align-items: stretch; flex-direction: column; }
+  .resultToolbar label { justify-content: space-between; }
+  .resultToolbar select { flex: 1; }
+  .cardGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .loadMoreRow { flex-direction: column; }
+}
+
+@media (max-width: 390px) {
+  .cardGrid { grid-template-columns: 1fr; }
+  .rotationStrip { grid-template-columns: 1fr; }
+  .rotationStrip > div { border-right: 0; border-bottom: 1px solid var(--line); }
+  .marketDialogActions { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shopCard, .shopAction { transition: none; }
+  .shopCard:hover { transform: none; }
+}
