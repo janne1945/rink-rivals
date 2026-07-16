@@ -140,7 +140,7 @@ type MatchTicket = {
   opponentSlots: Record<LineupSlot, string>;
   rounds: Map<number, MockRoundReceipt>;
   roundRequests: Map<string, MockRoundReceipt>;
-  status: "open" | "settled";
+  status: "open" | "settled" | "abandoned";
 };
 
 type MockRoundReceipt = {
@@ -206,6 +206,7 @@ export interface SupabaseMockOptions {
   readonly roundDelayMs?: number;
   readonly settlementError?: boolean;
   readonly settlementErrorOnce?: boolean;
+  readonly abandonErrorOnce?: boolean;
   /** Test-only deterministic server seed for match choreography fixtures. */
   readonly matchSeed?: string;
   /** Test-only server clock override for deterministic Event Shop rotations. */
@@ -709,6 +710,7 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
   let dropRoundResponseOnce = options.roundResponseLossOnce ?? false;
   let dropRivalryStartResponseOnce = options.rivalryStartResponseLossOnce ?? false;
   let failSettlementOnce = options.settlementErrorOnce ?? false;
+  let failAbandonmentOnce = options.abandonErrorOnce ?? false;
   await page.routeWebSocket(new RegExp(`^wss://${projectRef}\\.supabase\\.co/realtime/v1/websocket`), (socket) => {
     socket.onMessage((message) => {
       if (typeof message !== "string") return;
@@ -1099,6 +1101,21 @@ export async function installSupabaseMock(page: Page, options: SupabaseMockOptio
       const alreadyRevoked = challenge.status === "revoked";
       challenge.status = "revoked";
       return json(route, { status: alreadyRevoked ? "already-revoked" : "revoked", slug: challenge.slug });
+    }
+    if (url.pathname === "/rest/v1/rpc/abandon_match"
+      || url.pathname === "/rest/v1/rpc/abandon_arena_match"
+      || url.pathname === "/rest/v1/rpc/abandon_rivalry_challenge") {
+      if (failAbandonmentOnce) {
+        failAbandonmentOnce = false;
+        return databaseError(route, "Abandonment service temporarily unavailable", 503);
+      }
+      const body = request.postDataJSON() as { client_match_id: string };
+      const ticket = state.matchTickets.get(body.client_match_id);
+      if (!ticket) return databaseError(route, "A valid server-issued match ticket is required.");
+      if (ticket.status === "settled") return json(route, { status: "already-settled" });
+      if (ticket.status === "abandoned") return json(route, { status: "already-abandoned" });
+      ticket.status = "abandoned";
+      return json(route, { status: "abandoned" });
     }
     if (url.pathname === "/rest/v1/rpc/start_rivalry_challenge") {
       const body = request.postDataJSON() as { challenge_slug: string; client_match_id: string; lineup_id: string };

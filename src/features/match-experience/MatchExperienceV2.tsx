@@ -27,6 +27,8 @@ export interface MatchExperienceV2Props {
   readonly roundError?: string;
   readonly settlementError?: string;
   readonly progressionMessage?: string;
+  readonly exitBusy?: boolean;
+  readonly exitError?: string;
   readonly challengeBusy?: boolean;
   readonly challengeUrl?: string;
   readonly challengeError?: string;
@@ -121,7 +123,9 @@ function ExperienceSession(props: MatchExperienceV2Props & {
   const emitted = useRef(new Set<string>());
   const eventSink = props.eventSink ?? noopExperienceEventSink;
   const rootRef = useRef<HTMLDivElement>(null);
+  const exitDialogRef = useRef<HTMLElement>(null);
   const [announcement, setAnnouncement] = useState("");
+  const [exitConfirmationOpen, setExitConfirmationOpen] = useState(false);
 
   useEffect(() => props.onStableChange(stablePresetStates.has(state)), [props.onStableChange, state]);
   useEffect(() => {
@@ -196,6 +200,26 @@ function ExperienceSession(props: MatchExperienceV2Props & {
     send({ type: "CONTINUE" });
   }
 
+  function handleExitDialogKeyDown(event: React.KeyboardEvent<HTMLElement>) {
+    if (event.key === "Escape" && !props.exitBusy) {
+      event.preventDefault();
+      setExitConfirmationOpen(false);
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const buttons = [...(exitDialogRef.current?.querySelectorAll<HTMLButtonElement>("button:not(:disabled)") ?? [])];
+    if (buttons.length === 0) return;
+    const first = buttons[0];
+    const last = buttons.at(-1)!;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   const finalState = ["matchFinal", "settling", "settlementError", "complete"].includes(state);
   const showComparison = ["reveal", "comparison", "roundResult", "scoreUpdate"].includes(state) && latestResult;
   const showHand = !finalState && !showComparison;
@@ -214,8 +238,22 @@ function ExperienceSession(props: MatchExperienceV2Props & {
     <div ref={rootRef} className={`${styles.experience} ${styles[`preset_${preset.name}`]}`} data-presentation-state={state} data-reduced-motion={reducedMotion.reduced ? "true" : "false"}>
       <div className={styles.utilityBar}>
         <span className={styles.v2Badge}>Rink Rivals Live</span>
-        <div>{props.presetControl}<button type="button" className={styles.exitButton} onClick={props.onExit}>Exit match</button></div>
+        <div>{props.presetControl}<button type="button" className={styles.exitButton} disabled={props.exitBusy} onClick={() => setExitConfirmationOpen(true)}>Exit match</button></div>
       </div>
+      {exitConfirmationOpen ? (
+        <div className={styles.exitBackdrop} role="presentation">
+          <section ref={exitDialogRef} className={styles.exitDialog} role="dialog" aria-modal="true" aria-labelledby="exit-match-title" aria-describedby="exit-match-description" onKeyDown={handleExitDialogKeyDown}>
+            <span className={styles.exitEyebrow}>MATCH IN PROGRESS</span>
+            <h2 id="exit-match-title">Abandon match?</h2>
+            <p id="exit-match-description">Your progress in this match will be lost.</p>
+            {props.exitError ? <p className={styles.exitError} role="alert">{props.exitError}</p> : null}
+            <div className={styles.exitActions}>
+              <Button autoFocus variant="secondary" disabled={props.exitBusy} onClick={() => setExitConfirmationOpen(false)}>Continue match</Button>
+              <Button disabled={props.exitBusy} onClick={props.onExit}>{props.exitBusy ? "Abandoning…" : "Abandon match"}</Button>
+            </div>
+          </section>
+        </div>
+      ) : null}
       <div className={styles.matchLayout}>
         <div className={styles.matchMain}>
           <MatchHud battle={battle} preset={preset} scorePulse={state === "scoreUpdate"} matchPoint={matchPoint} finalShift={finalShift} />

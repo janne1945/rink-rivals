@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(49);
+select plan(57);
 
 select has_table('public', 'matches', 'matches exists');
 select has_table('public', 'match_rewards', 'match rewards exists');
@@ -12,6 +12,7 @@ select has_table('public', 'match_rounds', 'immutable server rounds exist');
 select has_function('public', 'start_match', array['text', 'text', 'text'], 'start_match exists');
 select has_function('public', 'play_match_round', array['text', 'integer', 'text', 'text'], 'play_match_round exists');
 select has_function('public', 'settle_match', array['text'], 'one-argument settle_match exists');
+select has_function('public', 'abandon_match', array['text'], 'match abandonment RPC exists');
 select hasnt_function(
   'public', 'settle_match', array['text', 'text', 'text', 'text'],
   'client-authored settlement function was removed'
@@ -43,6 +44,17 @@ select lives_ok(
   $$select public.claim_starter_team('nhl-edmonton-oilers')$$,
   'starter claim prepares an active, valid lineup'
 );
+select throws_ok(
+  $$select public.abandon_match('missing-match')$$,
+  'P0001', 'A valid server-issued match ticket is required.',
+  'unknown match abandonment is rejected'
+);
+select lives_ok($$select public.start_match('abandon-match', 'nhl-circuit', 'rookie')$$, 'abandonment fixture starts');
+select is(public.abandon_match('abandon-match') ->> 'status', 'abandoned', 'an open match can be abandoned');
+select is(public.abandon_match('abandon-match') ->> 'status', 'already-abandoned', 'match abandonment is idempotent');
+select is((select status from public.match_tickets where user_id = auth.uid() and client_match_id = 'abandon-match'), 'abandoned', 'abandoned match remains as an audit record');
+select is(public.start_match('after-abandon', 'nhl-circuit', 'rookie') ->> 'client_match_id', 'after-abandon', 'a new match starts after abandonment');
+select is(public.abandon_match('after-abandon') ->> 'status', 'abandoned', 'replacement fixture is released');
 select throws_ok(
   $$select public.settle_match('forged-without-ticket')$$,
   'P0001', 'A valid server-issued match ticket is required.',
@@ -100,7 +112,7 @@ select is(
   1,
   'resumed match returns its played rounds for client hydration'
 );
-select is((select count(*)::integer from public.match_tickets where user_id = auth.uid()), 1, 'reroll attempt creates no second ticket');
+select is((select count(*)::integer from public.match_tickets where user_id = auth.uid() and status = 'open'), 1, 'reroll attempt creates no second open ticket');
 select throws_ok(
   $$select public.start_match('tier-reroll-attempt', 'nhl-circuit', 'pro')$$,
   'P0001', 'An active match with different match data must be completed first.',
@@ -175,7 +187,7 @@ select is((select completed_matches from public.profiles where id = auth.uid()),
 select is((select count(*)::integer from public.matches where user_id = auth.uid()), 1, 'one match row exists');
 select is((select count(*)::integer from public.match_rewards where user_id = auth.uid()), 1, 'one reward row exists');
 select is((select count(*)::integer from public.match_rounds where user_id = auth.uid()), 5, 'five immutable round receipts exist');
-select is((select status from public.match_tickets where user_id = auth.uid()), 'settled', 'ticket is settled');
+select is((select status from public.match_tickets where user_id = auth.uid() and client_match_id = 'match-once'), 'settled', 'ticket is settled');
 select ok((select credits > 1000 from public.profiles where id = auth.uid()), 'server-derived reward increases Credits');
 select is(
   (select current_step_index from public.rivalry_road_progress where user_id = auth.uid()),

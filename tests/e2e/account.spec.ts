@@ -483,43 +483,26 @@ test.describe("Supabase account flow", () => {
     expect(ticket.roundRequests.size).toBe(1);
   });
 
-  test("resumes round two with the original ticket, seed, lineup snapshot, and round history after reload", async ({ page }) => {
+  test("abandons an in-progress Faceoff after a confirmed reload and starts a fresh match", async ({ page }) => {
     const state = await installSupabaseMock(page, { authenticated: true });
     await page.goto("/play");
     await page.getByRole("button", { name: "Start match" }).click();
     const ticket = [...state.matchTickets.values()][0];
     expect(ticket).toBeDefined();
-    const originalClientMatchId = ticket.clientMatchId;
-    const originalSeed = ticket.seed;
-
     await page.getByRole("region", { name: "Player hand" }).locator("button[aria-label*='overall']:not([disabled])").first().click();
     await page.getByRole("button", { name: "Reveal cards" }).click();
     await page.getByRole("button", { name: "Continue" }).click();
     await expect(page.getByText("Round 2 of 5")).toBeVisible();
-    const firstRound = ticket.rounds.get(0);
-    expect(firstRound).toBeDefined();
-
-    const accountLineup = state.lineups.get(ticket.playerLineupId)!;
-    const replacementBySlot = {
-      LW: "nhl-artemi-panarin-base",
-      C: "nhl-auston-matthews-base",
-      RW: "nhl-nikita-kucherov-base",
-      LD: "nhl-quinn-hughes-base",
-      RD: "nhl-adam-fox-base",
-      G: "nhl-connor-hellebuyck-base",
-    } as const;
-    accountLineup.slots[firstRound!.playerSlot] = replacementBySlot[firstRound!.playerSlot];
-
+    page.on("dialog", (dialog) => dialog.accept());
     await page.reload();
+    await expect(page).toHaveURL(/\/play$/);
+    expect(ticket.status).toBe("abandoned");
+    expect(ticket.rounds.size).toBe(1);
+    await page.getByRole("button", { name: "Start match" }).click();
     await expect(page).toHaveURL(/\/match$/);
-    await expect(page.getByText("Round 2 of 5")).toBeVisible();
-
-    expect(state.matchTickets.size).toBe(1);
-    const resumed = [...state.matchTickets.values()][0];
-    expect(resumed.clientMatchId).toBe(originalClientMatchId);
-    expect(resumed.seed).toBe(originalSeed);
-    expect(resumed.rounds.size).toBe(1);
-    expect(state.startMatchCallCount).toBe(2);
+    const openTickets = [...state.matchTickets.values()].filter((candidate) => candidate.status === "open");
+    expect(openTickets).toHaveLength(1);
+    expect(openTickets[0]?.clientMatchId).not.toBe(ticket.clientMatchId);
   });
 
   test("persists a Rivalry Road reward choice and owned card across reload", async ({ page }) => {

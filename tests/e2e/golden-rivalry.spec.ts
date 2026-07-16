@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { createSupabaseMockState, installSupabaseMock, seedRivalryChallenge } from "./supabaseMock";
 
 test.describe("Golden Ghost Rivalry journey", () => {
-  test("moves from a safe public invite through a reward-free resumable match and into the creator inbox", async ({ page, context }) => {
+  test("moves from a safe public invite through a reward-free authoritative match and into the creator inbox", async ({ page, context }) => {
     test.slow();
     const browserErrors: string[] = [];
     page.on("pageerror", (error) => browserErrors.push(error.message));
@@ -38,20 +38,10 @@ test.describe("Golden Ghost Rivalry journey", () => {
       const card = page.locator("[data-player-hand] button:not([disabled])").first();
       await card.click();
       await expect(page.getByLabel("Rival card concealed")).toBeVisible();
-      if (round === 0) {
-        await page.reload();
-        await expect(page.getByRole("button", { name: "Reveal cards" })).toBeEnabled();
-        await expect(page.locator(`[data-card-image='${source.ghostSelections[0].cardId}']`)).toHaveCount(0);
-      }
       await page.getByRole("button", { name: "Reveal cards" }).click();
       await expect(page.getByRole("region", { name: `Round ${round + 1} result` })).toBeVisible();
       await expect(page.locator(`[data-card-image='${source.ghostSelections[round].cardId}']`)).toBeVisible();
       await page.getByRole("button", { name: round === 4 ? "Final horn" : "Continue" }).click();
-      if (round === 0) {
-        await page.reload();
-        await expect(page.locator("[data-player-hand] button:not([disabled])").first()).toBeVisible();
-        expect(acceptedTicket?.opponentSlots).toEqual(acceptedTicket?.playerSlots);
-      }
     }
 
     await expect(page.getByText(/No Credits, cards, goals, or progression were awarded/i)).toBeVisible();
@@ -64,6 +54,24 @@ test.describe("Golden Ghost Rivalry journey", () => {
     await expect(page.getByText(/Both choices stay hidden until both players lock/i)).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
     expect(browserErrors).toEqual([]);
+  });
+
+  test("abandons a Ghost attempt through Exit match and accepts the challenge again", async ({ page }) => {
+    const state = createSupabaseMockState();
+    const source = seedRivalryChallenge(state);
+    await installSupabaseMock(page, { authenticated: true, state });
+    await page.goto(`/accept/${source.slug}`);
+    await page.getByRole("button", { name: "Accept and enter the arena" }).click();
+    await expect(page).toHaveURL(/\/match$/);
+    const firstAttempt = [...state.matchTickets.values()].find((ticket) => state.ghostAttemptSlugs.has(ticket.clientMatchId))!;
+    await page.getByRole("button", { name: "Exit match" }).click();
+    await page.getByRole("button", { name: "Abandon match" }).click();
+    await expect(page).toHaveURL(/\/play$/);
+    expect(firstAttempt.status).toBe("abandoned");
+    await page.goto(`/accept/${source.slug}`);
+    await page.getByRole("button", { name: "Accept and enter the arena" }).click();
+    await expect(page).toHaveURL(/\/match$/);
+    expect([...state.matchTickets.values()].filter((ticket) => ticket.status === "open")).toHaveLength(1);
   });
 
   test("retries a lost acceptance response with the same server attempt", async ({ page }, testInfo) => {

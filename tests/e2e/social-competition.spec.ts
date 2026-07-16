@@ -105,14 +105,58 @@ test.describe("Social Competition system", () => {
     await expectNoViewportOverflow(page);
   });
 
-  test("starts Rivalry Arena with a masked real-club lineup in the shared match experience", async ({ page }) => {
+  test("abandons Rivalry Arena through the confirmed exit and immediately starts a fresh Arena", async ({ page }) => {
+    const state = createSupabaseMockState();
+    await installSupabaseMock(page, { authenticated: true, onboardingCompleted: true, state });
     await page.goto("/play");
     await page.getByRole("button", { name: "Enter Arena" }).click();
     await expect(page).toHaveURL(/\/match$/);
     await expect(page.getByText("Morgan's Six", { exact: true })).toBeVisible();
     await expect(page.locator("[data-player-hand] button:not([disabled])").first()).toBeVisible();
     await expect(page.getByRole("button", { name: "Create Ghost Rivalry" })).toHaveCount(0);
+    const originalTicket = [...state.matchTickets.values()][0]!;
+    await page.getByRole("button", { name: "Exit match" }).click();
+    await expect(page.getByRole("dialog", { name: "Abandon match?" })).toBeVisible();
+    await page.getByRole("button", { name: "Continue match" }).click();
+    await expect(page).toHaveURL(/\/match$/);
+    await page.getByRole("button", { name: "Exit match" }).click();
+    await page.getByRole("button", { name: "Abandon match" }).click();
+    await expect(page).toHaveURL(/\/play$/);
+    expect(originalTicket.status).toBe("abandoned");
+    await page.getByRole("button", { name: "Enter Arena" }).click();
+    await expect(page).toHaveURL(/\/match$/);
+    expect([...state.matchTickets.values()].filter((ticket) => ticket.status === "open")).toHaveLength(1);
     await expectNoViewportOverflow(page);
+  });
+
+  test("confirms browser Back before abandoning an active Arena", async ({ page }) => {
+    const state = createSupabaseMockState();
+    await installSupabaseMock(page, { authenticated: true, onboardingCompleted: true, state });
+    await page.goto("/play");
+    await page.getByRole("button", { name: "Enter Arena" }).click();
+    await expect(page).toHaveURL(/\/match$/);
+    const ticket = [...state.matchTickets.values()][0]!;
+    page.once("dialog", (dialog) => dialog.accept());
+    await page.goBack();
+    await expect(page).toHaveURL(/\/play$/);
+    await expect.poll(() => ticket.status).toBe("abandoned");
+  });
+
+  test("keeps a failed Arena abandonment retryable", async ({ page }) => {
+    const state = createSupabaseMockState();
+    await installSupabaseMock(page, { authenticated: true, onboardingCompleted: true, abandonErrorOnce: true, state });
+    await page.goto("/play");
+    await page.getByRole("button", { name: "Enter Arena" }).click();
+    const ticket = [...state.matchTickets.values()][0]!;
+    await page.getByRole("button", { name: "Exit match" }).click();
+    await page.getByRole("button", { name: "Abandon match" }).click();
+    await expect(page.getByRole("alert")).toContainText("temporarily unavailable");
+    expect(ticket.status).toBe("open");
+    await page.getByRole("button", { name: "Abandon match" }).click();
+    await expect(page).toHaveURL(/\/play$/);
+    expect(ticket.status).toBe("abandoned");
+    expect(browserErrors.get(page)).toEqual([expect.stringContaining("503 (Service Unavailable)")]);
+    browserErrors.set(page, []);
   });
 
   test("keeps Live and Season keyboard accessible with motion disabled", async ({ page }) => {

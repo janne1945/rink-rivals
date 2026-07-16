@@ -41,6 +41,14 @@ export interface SettleMatchInput {
   readonly clientMatchId: string;
 }
 
+export interface AbandonMatchInput {
+  readonly clientMatchId: string;
+}
+
+export interface AbandonMatchResult {
+  readonly status: "abandoned" | "already-abandoned" | "already-settled";
+}
+
 export interface SettleMatchResult {
   readonly status: "settled" | "already-settled";
   readonly matchId: string;
@@ -410,11 +418,13 @@ export interface AccountRepository {
   startMatch(input: StartMatchInput): Promise<StartMatchResult>;
   playMatchRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult>;
   settleMatch(input: SettleMatchInput): Promise<SettleMatchResult>;
+  abandonMatch(input: AbandonMatchInput): Promise<AbandonMatchResult>;
   loadSeasonLocker(): Promise<SeasonLockerState>;
   claimSeasonReward(input: ClaimSeasonRewardInput): Promise<ClaimSeasonRewardResult>;
   startArenaMatch(input: StartArenaMatchInput): Promise<StartMatchResult>;
   playArenaMatchRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult>;
   settleArenaMatch(input: SettleMatchInput): Promise<SettleMatchResult>;
+  abandonArenaMatch(input: AbandonMatchInput): Promise<AbandonMatchResult>;
   loadLiveRivalryRoom(roomId?: string): Promise<LiveRivalryRoomState | null>;
   createLiveRivalryRoom(input: CreateLiveRivalryRoomInput): Promise<LiveRivalryRoomState>;
   joinLiveRivalryRoom(input: JoinLiveRivalryRoomInput): Promise<LiveRivalryRoomState>;
@@ -428,6 +438,7 @@ export interface AccountRepository {
   startRivalryChallenge(input: StartRivalryChallengeInput): Promise<StartMatchResult>;
   playRivalryChallengeRound(input: PlayMatchRoundInput): Promise<PlayMatchRoundResult>;
   settleRivalryChallenge(input: SettleMatchInput): Promise<SettleRivalryChallengeResult>;
+  abandonRivalryChallenge(input: AbandonMatchInput): Promise<AbandonMatchResult>;
   revokeRivalryChallenge(slug: string): Promise<void>;
   listRivalryChallenges(): Promise<readonly RivalryChallengeSummary[]>;
 }
@@ -605,6 +616,14 @@ function matchRoundField(value: unknown): PlayMatchRoundResult {
       opponent: scoreField(transcript.opponent, "opponent round score"),
     },
   };
+}
+
+function abandonMatchResultField(value: unknown): AbandonMatchResult {
+  const payload = record(value, "match abandonment result");
+  if (payload.status !== "abandoned" && payload.status !== "already-abandoned" && payload.status !== "already-settled") {
+    throw new Error("Supabase returned an invalid match abandonment status.");
+  }
+  return { status: payload.status };
 }
 
 function startMatchResultField(value: unknown): StartMatchResult {
@@ -1162,6 +1181,12 @@ export class SupabaseAccountRepository implements AccountRepository {
     };
   }
 
+  async abandonRivalryChallenge(input: AbandonMatchInput): Promise<AbandonMatchResult> {
+    return abandonMatchResultField(await this.callRpc("abandon_rivalry_challenge", {
+      client_match_id: input.clientMatchId,
+    }));
+  }
+
   async revokeRivalryChallenge(slug: string): Promise<void> {
     const payload = record(await this.callRpc("revoke_rivalry_challenge", {
       challenge_slug: slug,
@@ -1207,6 +1232,12 @@ export class SupabaseAccountRepository implements AccountRepository {
       credits: nonNegativeIntegerField(result.credits, "settlement credit balance"),
       completedMatches: nonNegativeIntegerField(result.completed_matches, "settlement completed matches"),
     };
+  }
+
+  async abandonMatch(input: AbandonMatchInput): Promise<AbandonMatchResult> {
+    return abandonMatchResultField(await this.callRpc("abandon_match", {
+      client_match_id: input.clientMatchId,
+    }));
   }
 
   async loadSeasonLocker(): Promise<SeasonLockerState> {
@@ -1262,6 +1293,12 @@ export class SupabaseAccountRepository implements AccountRepository {
       credits: nonNegativeIntegerField(result.credits, "Arena credit balance"),
       completedMatches: nonNegativeIntegerField(result.completed_matches, "Arena completed matches"),
     };
+  }
+
+  async abandonArenaMatch(input: AbandonMatchInput): Promise<AbandonMatchResult> {
+    return abandonMatchResultField(await this.callRpc("abandon_arena_match", {
+      client_match_id: input.clientMatchId,
+    }));
   }
 
   async loadLiveRivalryRoom(roomId?: string): Promise<LiveRivalryRoomState | null> {

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   createBattle,
@@ -26,9 +26,14 @@ import { MarketScreen } from "../features/market/MarketScreen";
 import { applyAuthoritativeRound } from "../features/match/authoritativeBattle";
 import {
   clearActiveMatchSession,
+  clearPendingMatchAbandonment,
+  markMatchForAbandonment,
   readActiveMatchSession,
+  readPendingMatchAbandonment,
   updateActiveMatchSession,
   writeActiveMatchSession,
+  type ActiveMatchSession,
+  type PendingMatchAbandonment,
 } from "../features/match-experience/activeMatchSession";
 import { ObjectiveScreen } from "../features/objectives/ObjectiveScreen";
 import { PlayScreen } from "../features/play/PlayScreen";
@@ -71,6 +76,7 @@ type MatchSource = { readonly kind: "ai" } | { readonly kind: "arena" } | {
   readonly slug: string;
   readonly lineupId: string;
 };
+type AbandonableMatch = Pick<ActiveMatchSession | PendingMatchAbandonment, "clientMatchId" | "source">;
 
 function completeLineup(lineup: AccountLineup): Lineup | null {
   if (!LINEUP_SLOT_IDS.every((slot) => lineup.slots[slot])) return null;
@@ -183,6 +189,9 @@ export function GameApp({ account, actions }: {
   const [matchProgressionMessage, setMatchProgressionMessage] = useState("");
   const [matchSettlementError, setMatchSettlementError] = useState("");
   const [matchSettling, setMatchSettling] = useState(false);
+  const [matchAbandoning, setMatchAbandoning] = useState(false);
+  const [matchAbandonError, setMatchAbandonError] = useState("");
+  const [matchCleanupReady, setMatchCleanupReady] = useState(false);
   const [roundPlaying, setRoundPlaying] = useState(false);
   const [reviewingRound, setReviewingRound] = useState(false);
   const [roundError, setRoundError] = useState("");
@@ -196,6 +205,9 @@ export function GameApp({ account, actions }: {
   const matchStartingRef = useRef(false);
   const matchResumingRef = useRef(false);
   const matchSettlingRef = useRef(false);
+  const abandonmentPromiseRef = useRef<Promise<void> | null>(null);
+  const cleanupAttemptedRef = useRef(false);
+  const leavingMatchRef = useRef(false);
   const roundPlayingRef = useRef(false);
   const roundRequestIds = useRef(new Map<number, string>());
   const startAttemptRef = useRef<{ id: string; mode: GameMode; difficulty: AiDifficulty } | null>(null);
@@ -206,6 +218,47 @@ export function GameApp({ account, actions }: {
     [account.market.serverTime],
   );
   const progressionClock = new Date(serverTimestampAt(serverClockAnchor, monotonicClock));
+
+  const abandonStoredMatch = useCallback(async (session: AbandonableMatch): Promise<void> => {
+    if (abandonmentPromiseRef.current) return abandonmentPromiseRef.current;
+    const request = session.source.kind === "ai"
+      ? actions.abandonMatch({ clientMatchId: session.clientMatchId })
+      : session.source.kind === "arena"
+        ? actions.abandonArenaMatch({ clientMatchId: session.clientMatchId })
+        : actions.abandonRivalryChallenge({ clientMatchId: session.clientMatchId });
+    const promise = request.then(() => undefined).finally(() => {
+      abandonmentPromiseRef.current = null;
+    });
+    abandonmentPromiseRef.current = promise;
+    return promise;
+  }, [actions]);
+
+  const clearStoredMatch = useCallback(() => {
+    clearActiveMatchSession();
+    clearPendingMatchAbandonment();
+    roundRequestIds.current.clear();
+    setBattle(null);
+    setMatchClientId(null);
+    setReviewingRound(false);
+  }, []);
+
+  const clearStrandedMatchBeforeStart = useCallback(async (): Promise<boolean> => {
+    const pending = readPendingMatchAbandonment();
+    const active = readActiveMatchSession();
+    const target = pending ?? active;
+    if (!target) return true;
+    if (!pending && active) markMatchForAbandonment(active);
+    try {
+      await abandonStoredMatch(target);
+      clearStoredMatch();
+      return true;
+    } catch (error) {
+      setMatchStartError(error instanceof Error
+        ? `The previous match could not be closed: ${error.message}`
+        : "The previous match could not be closed. Please try again.");
+      return false;
+    }
+  }, [abandonStoredMatch, clearStoredMatch]);
 
   useEffect(() => {
     let active = true;
@@ -234,6 +287,85 @@ export function GameApp({ account, actions }: {
   }, [pathname]);
 
   useEffect(() => {
+    if (cleanupAttemptedRef.current) return;
+    const pending = readPendingMatchAbandonment();
+    const stranded = pathname === "/match" ? null : readActiveMatchSession();
+    const target = pending ?? stranded;
+    if (!target) {
+      setMatchCleanupReady(true);
+      return;
+    }
+    cleanupAttemptedRef.current = true;
+    setMatchStarting(true);
+    setMatchStartError("");
+    void abandonStoredMatch(target)
+      .then(() => {
+        clearStoredMatch();
+        if (pathname === "/match") navigate("/play", { replace: true });
+      })
+      .catch((error: unknown) => {
+        setMatchStartError(error instanceof Error
+          ? `The previous match could not be closed: ${error.message}`
+          : "The previous match could not be closed. Please try again.");
+        if (pathname === "/match") navigate("/play", { replace: true });
+      })
+      .finally(() => {
+        setMatchStarting(false);
+        setMatchCleanupReady(true);
+      });
+  }, [abandonStoredMatch, clearStoredMatch, navigate, pathname]);
+
+  useEffect(() => {
+    if (pathname !== "/match" || !battle || battle.phase === "complete") return;
+    const warnBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    const rememberAbandonment = () => {
+      if (leavingMatchRef.current) return;
+      const session = readActiveMatchSession();
+      if (session) markMatchForAbandonment(session);
+    };
+    window.addEventListener("beforeunload", warnBeforeUnload);
+    window.addEventListener("pagehide", rememberAbandonment);
+    return () => {
+      window.removeEventListener("beforeunload", warnBeforeUnload);
+      window.removeEventListener("pagehide", rememberAbandonment);
+    };
+  }, [battle, pathname]);
+
+  useEffect(() => {
+    if (pathname !== "/match" || !battle || battle.phase === "complete") return;
+    const handleBrowserBack = () => {
+      if (leavingMatchRef.current) return;
+      const session = readActiveMatchSession();
+      if (!session) return;
+      const confirmed = window.confirm("Abandon match? Your progress in this match will be lost.");
+      if (!confirmed) {
+        window.setTimeout(() => navigate("/match", { replace: true }), 0);
+        return;
+      }
+      leavingMatchRef.current = true;
+      cleanupAttemptedRef.current = true;
+      markMatchForAbandonment(session);
+      setMatchAbandoning(true);
+      setMatchAbandonError("");
+      void abandonStoredMatch(session)
+        .then(clearStoredMatch)
+        .catch((error: unknown) => {
+          setMatchAbandonError(error instanceof Error ? error.message : "The match could not be abandoned.");
+          navigate("/match", { replace: true });
+        })
+        .finally(() => {
+          leavingMatchRef.current = false;
+          setMatchAbandoning(false);
+        });
+    };
+    window.addEventListener("popstate", handleBrowserBack);
+    return () => window.removeEventListener("popstate", handleBrowserBack);
+  }, [abandonStoredMatch, battle, clearStoredMatch, navigate, pathname]);
+
+  useEffect(() => {
     if (pathname === "/match" || battle?.phase !== "complete" || !rewardGranted) return;
     roundRequestIds.current.clear();
     setBattle(null);
@@ -241,7 +373,7 @@ export function GameApp({ account, actions }: {
   }, [battle?.phase, pathname, rewardGranted]);
 
   useEffect(() => {
-    if (pathname !== "/match" || !save || battle || matchResumingRef.current) return;
+    if (!matchCleanupReady || pathname !== "/match" || !save || battle || matchResumingRef.current) return;
     const session = readActiveMatchSession();
     if (!session) {
       navigate("/play", { replace: true });
@@ -297,7 +429,7 @@ export function GameApp({ account, actions }: {
         if (active) setMatchStarting(false);
       });
     return () => { active = false; };
-  }, [actions, battle, navigate, pathname, save]);
+  }, [actions, battle, matchCleanupReady, navigate, pathname, save]);
 
   async function selectDifficulty(difficulty: AiDifficulty) {
     const cloudScore = calculateCollectionScore(
@@ -328,6 +460,7 @@ export function GameApp({ account, actions }: {
     setMatchStarting(true);
     setMatchStartError("");
     try {
+      if (!(await clearStrandedMatchBeforeStart())) return;
       const currentAttempt = startAttemptRef.current;
       const attempt = currentAttempt?.mode === mode && currentAttempt.difficulty === difficulty
         ? currentAttempt
@@ -375,6 +508,7 @@ export function GameApp({ account, actions }: {
     setMatchStarting(true);
     setMatchStartError("");
     try {
+      if (!(await clearStrandedMatchBeforeStart())) return;
       const currentAttempt = arenaStartAttemptRef.current;
       const attempt = currentAttempt?.mode === mode ? currentAttempt : { id: crypto.randomUUID(), mode };
       arenaStartAttemptRef.current = attempt;
@@ -422,6 +556,7 @@ export function GameApp({ account, actions }: {
     const clientMatchId = attempt.id;
     const source: MatchSource = { kind: "ghost-challenge", slug, lineupId };
     try {
+      if (!(await clearStrandedMatchBeforeStart())) return;
       const ticket = await actions.startRivalryChallenge({ slug, clientMatchId, lineupId });
       const nextBattle = battleFromTicket(ticket, ticket.mode, ticket.difficulty, true);
       ghostStartAttemptRef.current = null;
@@ -553,7 +688,35 @@ export function GameApp({ account, actions }: {
 
   function finishV2(destination: "/play" | "/") {
     clearActiveMatchSession();
+    clearPendingMatchAbandonment();
     navigate(destination);
+  }
+
+  async function abandonCurrentMatch() {
+    if (battle?.phase === "complete") {
+      finishV2("/play");
+      return;
+    }
+    const session = readActiveMatchSession();
+    if (!session) {
+      setMatchAbandonError("The active match session could not be found.");
+      return;
+    }
+    leavingMatchRef.current = true;
+    cleanupAttemptedRef.current = true;
+    markMatchForAbandonment(session);
+    setMatchAbandoning(true);
+    setMatchAbandonError("");
+    try {
+      await abandonStoredMatch(session);
+      clearStoredMatch();
+      navigate("/play");
+    } catch (error) {
+      setMatchAbandonError(error instanceof Error ? error.message : "The match could not be abandoned.");
+    } finally {
+      leavingMatchRef.current = false;
+      setMatchAbandoning(false);
+    }
   }
 
   async function chooseRivalryCard(cardId: string) {
@@ -644,6 +807,8 @@ export function GameApp({ account, actions }: {
                 settling={matchSettling}
                 settlementError={matchSettlementError}
                 progressionMessage={matchProgressionMessage}
+                exitBusy={matchAbandoning}
+                exitError={matchAbandonError}
                 roundPlaying={roundPlaying}
                 reviewingRound={reviewingRound}
                 restored={matchRestored}
@@ -654,7 +819,7 @@ export function GameApp({ account, actions }: {
                 onRetrySettlement={() => void settleCompletedBattle(matchClientId, matchSource)}
                 onPlayAgain={() => finishV2("/play")}
                 onFinish={() => finishV2("/")}
-                onExit={() => navigate("/play")}
+                onExit={() => void abandonCurrentMatch()}
               />
             </Suspense>
           ) : <div className={styles.loading}><div><div className={styles.puck} /><h1>Restoring the broadcast</h1><p>Checking the active server match…</p></div></div>} />

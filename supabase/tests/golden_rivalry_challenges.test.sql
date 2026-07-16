@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(35);
+select plan(43);
 
 select has_table('public', 'rivalry_challenges', 'rivalry challenges exist');
 select has_table('public', 'rivalry_challenge_attempts', 'challenge attempts exist');
@@ -11,6 +11,7 @@ select has_function('public', 'get_public_rivalry_challenge', array['text'], 'pu
 select has_function('public', 'start_rivalry_challenge', array['text', 'text', 'uuid'], 'challenge start RPC exists');
 select has_function('public', 'play_rivalry_challenge_round', array['text', 'integer', 'text', 'text'], 'challenge round RPC exists');
 select has_function('public', 'settle_rivalry_challenge', array['text'], 'challenge settlement RPC exists');
+select has_function('public', 'abandon_rivalry_challenge', array['text'], 'challenge abandonment RPC exists');
 select ok((select relrowsecurity from pg_class where oid = 'public.rivalry_challenges'::regclass), 'challenge RLS is enabled');
 select ok(not has_table_privilege('authenticated', 'public.rivalry_challenges', 'insert'), 'clients cannot insert challenges');
 select ok(not has_table_privilege('authenticated', 'public.rivalry_challenge_rounds', 'insert'), 'clients cannot forge challenge rounds');
@@ -72,6 +73,23 @@ select throws_ok(
   format('select public.start_rivalry_challenge(%L, %L, %L::uuid)', (select response ->> 'slug' from challenge_fixture), 'inactive-lineup-attempt', (select id from inactive_lineup_fixture)),
   'P0001', 'An active lineup for the challenge mode is required.', 'challenge acceptance rejects an inactive lineup'
 );
+select throws_ok(
+  $$select public.abandon_rivalry_challenge('missing-attempt')$$,
+  'P0001', 'A valid Ghost Rivalry attempt is required.',
+  'unknown challenge abandonment is rejected'
+);
+select lives_ok(
+  format('select public.start_rivalry_challenge(%L, %L, %L::uuid)', (select response ->> 'slug' from challenge_fixture), 'ghost-abandon', (select starter_lineup_id from public.profiles where id = auth.uid())),
+  'challenge abandonment fixture starts'
+);
+select is(public.abandon_rivalry_challenge('ghost-abandon') ->> 'status', 'abandoned', 'an open challenge can be abandoned');
+select is(public.abandon_rivalry_challenge('ghost-abandon') ->> 'status', 'already-abandoned', 'challenge abandonment is idempotent');
+select is((select status from public.rivalry_challenge_attempts where user_id = auth.uid() and client_match_id = 'ghost-abandon'), 'abandoned', 'abandoned challenge remains as an audit record');
+select lives_ok(
+  format('select public.start_rivalry_challenge(%L, %L, %L::uuid)', (select response ->> 'slug' from challenge_fixture), 'ghost-after-abandon', (select starter_lineup_id from public.profiles where id = auth.uid())),
+  'a new challenge starts after abandonment'
+);
+select is(public.abandon_rivalry_challenge('ghost-after-abandon') ->> 'status', 'abandoned', 'replacement challenge fixture is released');
 create temporary table attempt_fixture on commit drop as
 select public.start_rivalry_challenge(
   (select response ->> 'slug' from challenge_fixture),

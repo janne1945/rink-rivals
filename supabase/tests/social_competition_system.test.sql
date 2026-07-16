@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(71);
+select plan(79);
 
 select has_table('public', 'arena_match_tickets', 'Arena tickets exist');
 select has_table('public', 'arena_match_rounds', 'Arena round receipts exist');
@@ -14,6 +14,7 @@ select has_table('public', 'season_reward_definitions', 'Season rewards exist');
 select has_table('public', 'season_xp_receipts', 'Season XP receipts exist');
 select has_table('public', 'season_reward_claims', 'Season claims exist');
 select has_function('public', 'start_arena_match', array['text', 'text'], 'Arena start RPC exists');
+select has_function('public', 'abandon_arena_match', array['text'], 'Arena abandonment RPC exists');
 select has_function('public', 'lock_live_rivalry_choice', array['uuid', 'integer', 'text', 'text'], 'Live lock RPC exists');
 select has_function('public', 'get_season_locker', array[]::text[], 'Season Locker RPC exists');
 select ok((select relrowsecurity from pg_class where oid = 'public.live_rivalry_choices'::regclass), 'hidden choices have RLS');
@@ -65,6 +66,21 @@ set local request.jwt.claim.sub = '22222222-2222-4222-8222-222222222222';
 select public.claim_starter_team('nhl-edmonton-oilers');
 create temporary table guest_before on commit drop as
 select credits, completed_matches from public.profiles where id = auth.uid();
+select throws_ok(
+  $$select public.abandon_arena_match('missing-arena')$$,
+  'P0001', 'A valid Arena ticket is required.',
+  'unknown Arena abandonment is rejected'
+);
+select lives_ok($$select public.start_arena_match('arena-abandon', 'nhl-circuit')$$, 'Arena abandonment fixture starts');
+select is(public.abandon_arena_match('arena-abandon') ->> 'status', 'abandoned', 'an open Arena match can be abandoned');
+select is(public.abandon_arena_match('arena-abandon') ->> 'status', 'already-abandoned', 'Arena abandonment is idempotent');
+reset role;
+select is((select status from public.arena_match_tickets where user_id = '22222222-2222-4222-8222-222222222222' and client_match_id = 'arena-abandon'), 'abandoned', 'abandoned Arena match remains as an audit record');
+set local role authenticated;
+set local request.jwt.claim.role = 'authenticated';
+set local request.jwt.claim.sub = '22222222-2222-4222-8222-222222222222';
+select lives_ok($$select public.start_arena_match('arena-after-abandon', 'nhl-circuit')$$, 'a new Arena match starts after abandonment');
+select is(public.abandon_arena_match('arena-after-abandon') ->> 'status', 'abandoned', 'replacement Arena fixture is released');
 select is(public.join_live_rivalry_room(
   (select response ->> 'room_code' from live_fixture), 'live-join-1',
   (select starter_lineup_id from public.profiles where id = auth.uid())

@@ -98,10 +98,12 @@ function createRepository(profile: AccountProfile = readyProfile): AccountReposi
     settleMatch: vi.fn().mockResolvedValue({
       status: "settled", matchId: "match-db-1", rewardCredits: 345, credits: 1345, completedMatches: 1,
     }),
+    abandonMatch: vi.fn().mockResolvedValue({ status: "abandoned" }),
     claimSeasonReward: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
     startArenaMatch: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
     playArenaMatchRound: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
     settleArenaMatch: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    abandonArenaMatch: vi.fn().mockResolvedValue({ status: "abandoned" }),
     loadLiveRivalryRoom: vi.fn().mockResolvedValue(null),
     createLiveRivalryRoom: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
     joinLiveRivalryRoom: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
@@ -115,6 +117,7 @@ function createRepository(profile: AccountProfile = readyProfile): AccountReposi
     startRivalryChallenge: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
     playRivalryChallengeRound: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
     settleRivalryChallenge: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
+    abandonRivalryChallenge: vi.fn().mockResolvedValue({ status: "abandoned" }),
     revokeRivalryChallenge: vi.fn().mockRejectedValue(new Error("Not used in this test.")),
     listRivalryChallenges: vi.fn().mockResolvedValue([]),
   };

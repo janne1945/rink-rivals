@@ -55,6 +55,14 @@
 .presetControl select { padding: 0 28px 0 10px; font-size: .65rem; }
 .presetControl select:disabled { opacity: .45; }
 .exitButton { padding: 0 12px; cursor: pointer; font-size: .63rem; font-weight: 850; }
+.exitButton:disabled { cursor: wait; opacity: .58; }
+.exitBackdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgb(0 4 9 / 78%); backdrop-filter: blur(12px); }
+.exitDialog { width: min(100%, 460px); padding: 28px; border: 1px solid rgb(246 217 139 / 38%); border-radius: 12px; background: linear-gradient(145deg, #0b1e2d, #030a12); box-shadow: 0 28px 90px rgb(0 0 0 / 65%); }
+.exitDialog h2 { margin: 8px 0; font-family: var(--font-display); font-size: clamp(2rem, 7vw, 3.2rem); line-height: .95; text-transform: uppercase; }
+.exitDialog > p { margin: 0; color: #9eb0bc; }
+.exitEyebrow { color: var(--v2-gold); font-size: .65rem; font-weight: 950; letter-spacing: .14em; }
+.exitDialog .exitError { margin-top: 14px; color: #ff9cab; }
+.exitActions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
 
 .hud {
   position: relative;

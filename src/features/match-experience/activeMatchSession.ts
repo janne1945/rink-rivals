@@ -2,6 +2,7 @@ import type { AiDifficulty, BattleState } from "../../domain/battle";
 import type { GameMode } from "../../domain/lineups";
 
 const STORAGE_KEY = "rink-rivals:match-experience-v2:active-match";
+const PENDING_ABANDONMENT_KEY = "rink-rivals:match-experience-v2:pending-abandonment";
 
 export interface ActiveMatchSession {
   readonly version: 2;
@@ -17,6 +18,10 @@ export interface ActiveMatchSession {
   readonly reviewingRound: boolean;
   readonly completedBattle?: BattleState;
 }
+
+export type PendingMatchAbandonment = Pick<ActiveMatchSession, "clientMatchId" | "source"> & {
+  readonly version: 1;
+};
 
 function validMode(value: unknown): value is GameMode {
   return value === "nhl-circuit" || value === "pwhl-circuit" || value === "open-ice";
@@ -72,4 +77,45 @@ export function updateActiveMatchSession(update: (session: ActiveMatchSession) =
 
 export function clearActiveMatchSession(): void {
   sessionStorage.removeItem(STORAGE_KEY);
+}
+
+export function markMatchForAbandonment(session: ActiveMatchSession): void {
+  try {
+    window.localStorage.setItem(PENDING_ABANDONMENT_KEY, JSON.stringify({
+      version: 1,
+      clientMatchId: session.clientMatchId,
+      source: session.source,
+    } satisfies PendingMatchAbandonment));
+  } catch {
+    // Explicit exits still call the server directly when durable browser
+    // storage is unavailable.
+  }
+}
+
+export function readPendingMatchAbandonment(): PendingMatchAbandonment | null {
+  try {
+    const raw = window.localStorage.getItem(PENDING_ABANDONMENT_KEY);
+    if (!raw) return null;
+    const value = JSON.parse(raw) as Partial<PendingMatchAbandonment>;
+    const source = value.source;
+    if (value.version !== 1 || typeof value.clientMatchId !== "string" || !source || (
+      source.kind !== "ai" && source.kind !== "arena" && (
+        source.kind !== "ghost-challenge"
+        || typeof source.slug !== "string"
+        || !/^[0-9a-f]{32}$/.test(source.slug)
+        || typeof source.lineupId !== "string"
+      )
+    )) return null;
+    return { version: 1, clientMatchId: value.clientMatchId, source };
+  } catch {
+    return null;
+  }
+}
+
+export function clearPendingMatchAbandonment(): void {
+  try {
+    window.localStorage.removeItem(PENDING_ABANDONMENT_KEY);
+  } catch {
+    // No pending marker can remain when storage itself is unavailable.
+  }
 }

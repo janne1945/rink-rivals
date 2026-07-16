@@ -88,6 +88,19 @@ describe("Match Experience V2", () => {
     expect(screen.getByText("0 cards")).toBeInTheDocument();
   });
 
+  it("confirms an exit before abandoning the active match", () => {
+    const callbacks = props(battle());
+    render(<MatchExperienceV2 {...callbacks} />);
+    fireEvent.click(screen.getByRole("button", { name: "Exit match" }));
+    expect(screen.getByRole("dialog", { name: "Abandon match?" })).toBeInTheDocument();
+    expect(screen.getByText("Your progress in this match will be lost.")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Continue match" }));
+    expect(screen.queryByRole("dialog", { name: "Abandon match?" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Exit match" }));
+    fireEvent.click(screen.getByRole("button", { name: "Abandon match" }));
+    expect(callbacks.onExit).toHaveBeenCalledTimes(1);
+  });
+
   it("renders the dedicated authoritative match-loss conclusion", () => {
     const state = completedLoss();
     expect(state.winner).toBe("opponent");

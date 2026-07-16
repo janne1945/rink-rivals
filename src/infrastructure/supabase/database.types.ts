@@ -20,6 +20,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      abandon_arena_match: {
+        Args: { client_match_id: string }
+        Returns: Json
+      }
+      abandon_match: { Args: { client_match_id: string }; Returns: Json }
+      abandon_rivalry_challenge: {
+        Args: { client_match_id: string }
+        Returns: Json
+      }
       graphql: {
         Args: {
           extensions?: Json

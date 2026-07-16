@@ -3,6 +3,8 @@ import { SupabaseAuthService } from "./AuthService";
 import { getSupabaseClient } from "./client";
 
 export type {
+  AbandonMatchInput,
+  AbandonMatchResult,
   AccountCard,
   AccountLineup,
   AccountMarketEvent,
